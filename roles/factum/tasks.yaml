@@ -1,0 +1,17 @@
+---
+- name: Set OS family
+  ansible.builtin.set_fact:
+    factum_os_family: "{{ ansible_os_family | lower }}"
+
+- name: Detect OS like
+  ansible.builtin.include_tasks:
+    file: os-like.yaml
+
+- name: Detect Ubuntu codename
+  ansible.builtin.include_tasks:
+    file: ubuntu-codename.yaml
+  when: factum_os_like in ['ubuntu']
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    _factum_done: true

@@ -1,0 +1,8 @@
+---
+all:
+  vars:
+    ansbile_become_method: ansible.builtin.sudo
+    ansible_python_interpreter: /usr/bin/python3
+  hosts:
+    sample-server.home:
+      ansible_host: 10.0.0.5  # <- Not required if hostname is ssh-resolvable

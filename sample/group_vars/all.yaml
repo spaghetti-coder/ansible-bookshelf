@@ -1,0 +1,26 @@
+---
+# *_managed vars denote whether ansible takes care of the application or not.
+#   `X_managed: false` application will still fire if it is in `Y_managed: true`
+#   application dependencies
+#
+# *_enabled vars denote whether the application is enabled or not. Unlike
+#   *_managed it disables the application when `*_enabled: false`
+
+###
+### Server connection configuration
+###
+# Don't keep passwords in plain text, encrypt then. One option would be:
+#   ansible-vault encrypt_string -J PASSWORD_PLACEHOLDER
+ansible_user: ansible-guy   # <- Not required for ssh-key-based connection
+ansible_password: changeme  # <- Not required for ssh-key-based connection
+ansible_become_password: changeme
+
+# {{ CONFIGURAION }}
+
+###
+### DOCKER
+###
+# docker_users:   # <- Users to be added to docker group
+#   - "{{ ansible_user | default(ansible_user_id) }}"
+docker_managed: false
+docker_users: []
