@@ -10,6 +10,10 @@
     #
     # Base roles
     #
+    - role: cli-downloaders
+      tags: [cli-downloaders]
+      when: cli_downloaders_managed | default(false)
+
     - role: docker
       tags: [docker]
       when: docker_managed | default(false)
