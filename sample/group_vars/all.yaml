@@ -24,3 +24,13 @@ ansible_become_password: changeme
 #   - "{{ ansible_user | default(ansible_user_id) }}"
 docker_managed: false
 docker_users: []
+
+###
+### EDITORS
+###
+# Installs: nano, neovim, vim
+# -----
+# editors_exclude:   # <- Won't install list
+#   - vim
+editors_managed: false
+editors_exclude: []
