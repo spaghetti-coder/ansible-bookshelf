@@ -1,0 +1,6 @@
+---
+- name: Upgrade all packages
+  community.general.apk:
+    available: true
+    upgrade: true
+  become: true

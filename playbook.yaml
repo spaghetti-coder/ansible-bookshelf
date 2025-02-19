@@ -21,3 +21,6 @@
     - role: editors
       tags: [editors]
       when: editors_managed | default(false)
+
+    - role: upgrade
+      tags: [upgrade, upgradable, never]
