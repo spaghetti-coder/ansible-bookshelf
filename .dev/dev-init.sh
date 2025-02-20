@@ -12,7 +12,7 @@ dev_init() (
   }
 
   main() {
-    hooks_install
+    hooks_install || return
   }
 
   main "${@}"

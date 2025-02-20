@@ -1,5 +1,5 @@
 ---
-- name: Install {{ cli_downloaders_packages | join(', ') }}
+- name: Install
   ansible.builtin.package:
     name: "{{ cli_downloaders_packages }}"
   become: true

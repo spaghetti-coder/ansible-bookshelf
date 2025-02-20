@@ -1,7 +1,7 @@
 ---
 # https://www.cyberciti.biz/faq/ansible-apt-update-all-packages-on-ubuntu-debian-linux/
 
-- name: Dist upgrade
+- name: Upgrade (Debian family)
   ansible.builtin.apt:
     upgrade: dist
     update_cache: true

@@ -1,5 +1,5 @@
 ---
-- name: Upgrade all packages
+- name: Upgrade (RHEL family)
   ansible.builtin.dnf:
     name: "*"
     state: latest

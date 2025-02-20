@@ -1,4 +1,16 @@
-# TODO
+<a id="top"></a>
+
+# Ansible BaseBook
+
+This a basic playbook and roles collection.
+
+* [Requirements](#requirements)
+* [Project structure](#project-structure)
+* [Usage](#usage)
+* [Development](#development)
+* [Skeleton](#skeleton)
+
+[To top]
 
 ## Requirements
 
@@ -19,8 +31,29 @@ Ansible managed nodes:
 
 <details><summary>Tips</summary>
 
+  **Debian**-like managed node:
+  ```sh
+  # Performed by root user
+
+  # Install prereqs
+  apt-get update
+  apt-get install -y openssh-server python3 sudo
+
+  # Ensure ssh server running
+  systemctl enable --now sshd
+
+  # Create ansible user, replace USERNAME
+  useradd -m USERNAME
+  passwd USERNAME
+
+  # Make ansible user sudoer
+  usermod -aG sudo USERNAME
+  ```
+
   **Alpine** managed node:
   ```sh
+  # Performed by root user
+
   # Install prereqs
   apk add --update --no-cache openssh-server python3 sudo shadow
 
@@ -38,24 +71,60 @@ Ansible managed nodes:
   ```
 </details>
 
+[To top]
+
+## Project structure
+
+```sh
+├── .dev                # <- Development convenience scripts
+├── ansible.cfg
+├── bin                 # <- Playbook convenience scripts
+├── playbook.yaml
+├── requirements        # <- Required roles and collections
+├── requirements.yaml   # <- Required roles and collections declaretions
+├── roles
+├── sample    # <- Configuration samples
+└── skeleton  # <- New projects skeleton and install script
+```
+
+[To top]
+
 ## Usage
 
-1.  Initialize installation. This step doesn't break anything, so it can be repeated at any point of time, but must be performed on initial install and after playbook update
-
-    ~~~sh
-    ./bin/init.sh
-    ~~~
-
-2.  Copy configurations from sample directory and edit them:
+1.  Copy configurations from sample directory and edit them:
 
     ~~~sh
     cp -rfp ./sample/* ./
     ~~~
 
+2.  Use `ansible-playbook` wrapper scripts from `bin` directory to deploy  
+    In order to provoke vault password prompt by `bin` scripts create `vaulted.txt` file in the project root directory
+    ```sh
+    touch ./vaulted.txt
+    ```
+
+[To top]
+
 ## Development
 
-See `docker` and `demo-noapp` roles for demos on how to write roles and run `.dev/build.sh` when completed to add configurations to sample vars file.
+1.  If your playbook development is under git source control run `.dev/dev-init.sh` script to ensure hooks.
+2.  See `docker` and `demo-noapp` roles for demos on how to write roles.
+3.  Run `.dev/build-sample-args.sh` when completed to add configurations to sample vars file.
 
-## Usage
+[To top]
 
-TODO
+## Skeleton
+
+In order to create a new project with the same concept as this one, issue
+
+```sh
+bash -- <(
+  curl -fsSL https://github.com/spaghetti-coder/ansible-basebook/raw/master/skeleton/skel-init.sh
+) ./my/project/directory
+```
+
+And than review [README.md](./skeleton/README.md) file in the generated directory.
+
+[To top]
+
+[To top]: #top
