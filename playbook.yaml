@@ -2,10 +2,7 @@
 - name: BaseBook
   hosts: all
   roles:
-    #
-    # Required
-    #
-    - { role: factum, tags: [always] }  # <- Collect additional facts
+    - { role: init, tags: [always] }  # <- Required initial tasks
 
     #
     # Base roles

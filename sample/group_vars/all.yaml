@@ -9,7 +9,7 @@
 ###
 ### Server connection configuration
 ###
-# Don't keep passwords in plain text, encrypt then. One option would be:
+# Don't keep passwords in plain text, encrypt them. One option would be:
 #   ansible-vault encrypt_string -J PASSWORD_PLACEHOLDER
 ansible_user: ansible-guy   # <- Not required for ssh-key-based connection
 ansible_password: changeme  # <- Not required for ssh-key-based connection

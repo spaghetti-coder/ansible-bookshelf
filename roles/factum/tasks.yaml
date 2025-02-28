@@ -1,4 +1,10 @@
 ---
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/getent_module.html
+# https://stackoverflow.com/questions/60414055/how-can-i-find-the-user-id-using-ansible-and-use-that-in-a-jinja2-template
+- name: Load users database
+  ansible.builtin.getent:
+    database: passwd
+
 - name: Set OS family
   ansible.builtin.set_fact:
     factum_os_family: "{{ ansible_os_family | lower }}"

@@ -13,12 +13,20 @@ play() (
   )
 
   init() {
+    if grep -qxf <(printf -- '%s\n' \
+      '--list-.\+' \
+      '-\(h\|-help\)' \
+    ) <<< "${1}"; then
+      COLLECTIONS_CMD=(true)
+      return
+    fi
+
     cat -- "${PROJ_DIR}/${REQS_FILE}" &>/dev/null || COLLECTIONS_CMD=(true)
     cat -- "${PROJ_DIR}/vaulted.txt" &>/dev/null && PLAYBOOK_CMD+=(-J)
   }
 
   main() {
-    init
+    init "${@}"
 
     cd -- "${PROJ_DIR}" || return
 

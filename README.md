@@ -111,6 +111,38 @@ Ansible managed nodes:
 2.  See `docker` and `demo-noapp` roles for demos on how to write roles.
 3.  Run `.dev/build-sample-args.sh` when completed to add configurations to sample vars file.
 
+### `factum` role
+
+A lot of roles depend on data collected by `factum`, so it's better to be the first role in the playbook. It provides the following:
+
+```yaml
+getent_passwd:
+  root:
+    - ...   # <- Useless
+    - UID   # [1]
+    - GID   # [2]
+    - ...   # <- Useless
+    - HOME  # [4]
+    - SHELL # [5]
+  # ...  # <- Other users
+
+factum_os_family:         # <- Lowercase ansible_os_family
+factum_os_like:           # <- More prioritized OS like
+factum_ubuntu_codename:   # <- Ubuntu code name for Ubuntu-like distros
+```
+
+### `init` role
+
+Performs all necessary initialization tasks (`factum` included), so it basically must be the first role in the playbook.
+
+```yaml
+- name: 'MyBook'
+  hosts: all
+  roles:
+    - { role: init, tags: [always] }  # <- Required initial tasks
+    # ... more roles
+```
+
 [To top]
 
 ## Skeleton
