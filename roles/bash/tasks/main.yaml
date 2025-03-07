@@ -2,4 +2,6 @@
 - name: Load tasks
   ansible.builtin.include_tasks:
     file: tasks.yaml
-  when: not (_bash_done | default(false))
+  vars:
+    bash_packages_todo: "{{ bash_packages | difference(bash_packages_done | default([])) }}"
+  when: bash_packages_todo | length > 0

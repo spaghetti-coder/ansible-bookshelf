@@ -3,7 +3,7 @@
   ansible.builtin.include_tasks:
     file: tasks.yaml
   vars:
-    envar_users_left: "{{ envar_users | difference(_envar_users_done | default([])) }}"
+    envar_users_todo: "{{ envar_users | difference(envar_users_done | default([])) }}"
   when: |
-    not (_envar_done | default(false))
-    or (envar_users_left | length) > 0
+    not (envar_install_done | default(false))
+    or (envar_users_todo | length) > 0

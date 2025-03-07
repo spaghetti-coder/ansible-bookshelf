@@ -1,0 +1,22 @@
+---
+- name: Check user exists
+  ansible.builtin.user:
+    name: "{{ user }}"
+  check_mode: true
+  register: docker_user_create
+
+- name: Setup user group
+  ansible.builtin.user:
+    name: "{{ user }}{{ appendix }}"  # Add invalid appndix to non-existing user
+    groups: docker
+    append: true
+  vars:
+    appendix: "{{ docker_user_create.changed | ternary(' (does not exist)', '') }}"
+  become: true
+
+- name: Reset connection to apply groups
+  ansible.builtin.meta: reset_connection
+
+- name: Mark user done
+  ansible.builtin.set_fact:
+    docker_users_done: "{{ (docker_users_done | default([])) + [user] }}"
