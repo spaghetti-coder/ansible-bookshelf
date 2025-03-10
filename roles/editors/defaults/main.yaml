@@ -1,7 +1,0 @@
----
-# Installs: nano, neovim, vim
-# -----
-# editors_pick:   # <- Only install packages, or [] to install all
-#   - vim
-editors_managed: false
-editors_pick: []

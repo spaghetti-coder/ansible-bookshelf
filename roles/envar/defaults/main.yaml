@@ -1,8 +1,0 @@
----
-# Installs envar for bash
-# -----
-# envar_users:  # <- Existing users that will have access to envar
-#   - "{{ ansible_user | default(ansible_user_id) }}"
-#   - root
-envar_managed: false
-envar_users: []

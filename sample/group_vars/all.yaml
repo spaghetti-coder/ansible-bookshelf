@@ -15,7 +15,7 @@ ansible_password: changeme  # <- Not required for ssh-key-based connection
 ansible_become_password: changeme
 
 # All before this ROLES_CONF_TS4LE64m91 marker stays
-# unchanged by build-sample-vars.sh script
+# unchanged by sample-vars.sh script
 #################### {{ ROLES_CONF_TS4LE64m91 }} ####################
 
 ###
@@ -29,10 +29,10 @@ bash_completion: false
 ###
 # Installs: curl, wget
 # -----
-# cli_downloaders_pick:   # <- Only install packages, or [] to install all
+# cli_downloaders_pick:   # <- Only install packages, or empty to install all
 #   - curl
 cli_downloaders_managed: false
-cli_downloaders_pick: []
+cli_downloaders_pick:
 
 ###
 ### DOCKER
@@ -40,37 +40,73 @@ cli_downloaders_pick: []
 # docker_users:   # <- Existing users to be added to docker group
 #   - "{{ ansible_user | default(ansible_user_id) }}"
 docker_managed: false
-docker_users: []
+docker_users:
 
 ###
 ### EDITORS
 ###
 # Installs: nano, neovim, vim
 # -----
-# editors_pick:   # <- Only install packages, or [] to install all
+# editors_pick:   # <- Only install packages, or empty to install all
 #   - vim
 editors_managed: false
-editors_pick: []
+editors_pick:
 
 ###
 ### ENVAR
 ###
 # Installs envar for bash
 # -----
-# envar_users:  # <- Existing users that will have access to envar
+# envar_users:  # <- Existing users to have access to envar
 #   - "{{ ansible_user | default(ansible_user_id) }}"
 #   - root
 envar_managed: false
-envar_users: []
+envar_users:
 
 ###
 ### PS1-GIT
 ###
-# Installs fancy PS1 wigh git PS1 suffix support. Loaded with envar.
+# Installs fancy PS1 with git PS1 suffix support. Loaded with envar.
 # Doesn't require git
 # -----
-# ps1_git_users:  # <- Existing users that will have this PS1
+# ps1_git_users:  # <- Existing users to have this PS1
 #   - "{{ ansible_user | default(ansible_user_id) }}"
 #   - root
 ps1_git_managed: false
-ps1_git_users: []
+ps1_git_users:
+
+###
+### NGINX-PROXY-MANAGER
+###
+# Versions:
+# * https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
+# -----
+# # Optional path to extra configuration .env.j2 file
+# nginx_proxy_manager_extra_envfile: "{{ playbook_dir }}/resources/npm/extra.env.j2"
+nginx_proxy_manager_managed: false
+nginx_proxy_manager_enabled: false
+nginx_proxy_manager_version: latest
+nginx_proxy_manager_owner: "{{ ansible_user | default(ansible_user_id) }}"
+nginx_proxy_manager_conf_dir: ~/conf/nginx-proxy-manager
+# nginx_proxy_manager_compose_dir: ~/docker/nginx-proxy-manager # <- Better leave automanaged, or uncomment and edit
+nginx_proxy_manager_service_name: nginx-proxy-manager
+nginx_proxy_manager_hostname: "{{ nginx_proxy_manager_service_name }}"
+nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"
+nginx_proxy_manager_extra_envfile:
+
+###
+### NGINX-PROXY
+###
+# Versions:
+# * https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
+# Exposes:
+# * nginx_proxy_net - proxy network name
+# -----
+nginx_proxy_managed: false
+nginx_proxy_enabled: false
+nginx_proxy_version: alpine
+nginx_proxy_owner: "{{ ansible_user | default(ansible_user_id) }}"
+# nginx_proxy_compose_dir: ~/docker/nginx-proxy # <- Better leave automanaged, or uncomment and edit
+nginx_proxy_service_name: nginx-proxy
+nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
+nginx_proxy_http_port: 80

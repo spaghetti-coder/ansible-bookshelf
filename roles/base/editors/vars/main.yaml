@@ -1,0 +1,8 @@
+---
+editors_all:
+  - nano
+  - neovim
+  - vim
+
+editors_packages: "{{ (editors_pick | default([], true) | length > 0) \
+  | ternary(editors_pick | default([], true) | intersect(editors_all), editors_all) }}"

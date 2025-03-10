@@ -1,0 +1,7 @@
+---
+cli_downloaders_all:
+  - curl
+  - wget
+
+cli_downloaders_packages: "{{ (cli_downloaders_pick | default([], true) | length > 0) \
+  | ternary(cli_downloaders_pick | default([], true) | intersect(cli_downloaders_all), cli_downloaders_all) }}"

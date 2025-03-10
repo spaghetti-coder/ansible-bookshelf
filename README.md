@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Ansible BaseBook
+# Ansible Bookshelf
 
 This a basic playbook and roles collection.
 
@@ -80,7 +80,7 @@ Ansible managed nodes:
 ├── ansible.cfg
 ├── bin                 # <- Playbook convenience scripts
 ├── playbook.yaml
-├── requirements        # <- Required roles and collections
+├── vendor              # <- Required roles and collections
 ├── requirements.yaml   # <- Required roles and collections declaretions
 ├── roles
 ├── sample    # <- Configuration samples
@@ -109,7 +109,7 @@ Ansible managed nodes:
 
 1.  If your playbook development is under git source control run `.dev/dev-init.sh` script to ensure hooks.
 2.  See `docker` and `demo-noapp` roles for demos on how to write roles.
-3.  Run `.dev/build-sample-args.sh` when completed to add configurations to sample vars file.
+3.  Run `.dev/sample-vars.sh` when completed to add configurations to sample vars file.
 
 ### `factum` role
 
@@ -151,7 +151,7 @@ In order to create a new project with the same concept as this one, issue
 
 ```sh
 bash -- <(
-  curl -fsSL https://github.com/spaghetti-coder/ansible-basebook/raw/master/skeleton/skel-init.sh
+  curl -fsSL https://github.com/spaghetti-coder/ansible-bookshelf/raw/master/skeleton/skel-init.sh
 ) ./my/project/directory
 ```
 
@@ -162,7 +162,7 @@ And than review [README.md](./skeleton/README.md) file in the generated director
 TODO
 
 ```sh
-curl -fsSL https://github.com/spaghetti-coder/ansible-basebook/raw/master/roles/envar/files/envar.sh | sudo bash -s -- install
+curl -fsSL https://github.com/spaghetti-coder/ansible-bookshelf/raw/master/roles/envar/files/envar.sh | sudo bash -s -- install
 ```
 
 [To top]
