@@ -488,7 +488,7 @@ _envar_lib() (
      ,
       MY_VAR="demo value"
      ,
-      # envar_ps1_suffix() { echo "my-desk > "; }   # <- Custom PS1 suffix
+      envar_ps1_suffix() { echo "demo-desk > "; }   # <- Custom PS1 suffix
       # envar_ps1_suffix() { return; }              # <- Dont'\'' PS1 suffix the desk
     '
   }
