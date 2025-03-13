@@ -1,0 +1,12 @@
+---
+# git_extraconf:
+#   - owner: "{{ ansible_user_id }}"    # <- Required, must be unique
+#     template: gitconfig.extra.ini.j2  # <- Required. No full path for the ones defined in the role
+#     # Optional variables, can be addressed in the template via 'conf' map
+#     user_name: Foo            # <- 'conf.user_name' in the template
+#     user_email: foo@bar.baz
+#   - owner: another-user
+#     template: "{{ playbook_dir }}/resources/git/extra.ini.j2" # <- Full path for ones out of the role directory
+#     # ...
+git_managed: false
+git_extraconf:

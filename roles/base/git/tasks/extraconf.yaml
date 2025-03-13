@@ -1,0 +1,25 @@
+---
+- name: Owned
+  vars:
+    extraconf_path: ~/.gitconfig.extra.ini
+  become: true
+  become_user: "{{ conf.owner }}"
+  block:
+    - name: Install extraconf
+      ansible.builtin.template:
+        src: "{{ conf.template }}"
+        dest: "{{ extraconf_path }}"
+        mode: '0600'
+
+    - name: Include to gitconfig
+      community.general.ini_file:
+        path: ~/.gitconfig
+        section: include
+        option: path
+        value: "{{ extraconf_path }}"
+        mode: '0600'
+        exclusive: false
+
+- name: Mark extraconf done
+  ansible.builtin.set_fact:
+    git_extraconf_done: "{{ (git_extraconf_done | default([])) + [conf.owner] }}"

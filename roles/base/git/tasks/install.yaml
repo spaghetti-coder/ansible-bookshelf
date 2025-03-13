@@ -1,0 +1,15 @@
+---
+- name: Ubuntu repo
+  ansible.builtin.include_tasks:
+    file: repo.ubuntu-like.yaml
+  when: factum_os_like in ['ubuntu']
+
+- name: Install
+  ansible.builtin.package:
+    name: git
+    state: "{{ (git_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
+  become: true
+
+- name: Mark install done
+  ansible.builtin.set_fact:
+    git_install_done: true

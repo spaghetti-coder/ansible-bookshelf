@@ -1,0 +1,13 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  vars:
+    # git_extraconf_map: { OWNER: git_extraconf_list_item, ... }
+    git_extraconf_map: "{{ dict(git_extraconf | map(attribute='owner') | zip(git_extraconf | default({}, true))) }}"
+    # https://stackoverflow.com/a/68686225
+    # Extraconf map without done owners
+    git_extraconf_todo: "{{ git_extraconf_map | dict2items | rejectattr('key', 'in', (git_extraconf_done | default([]))) | list | items2dict }}"
+  when: |
+    not (git_install_done | default(false))
+    or (git_extraconf_todo.keys() | length) > 0

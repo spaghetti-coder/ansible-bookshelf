@@ -1,0 +1,14 @@
+---
+- name: Load install
+  ansible.builtin.include_tasks:
+    file: install.yaml
+  when: not (git_install_done | default(false))
+
+- name: Load extraconf
+  ansible.builtin.include_tasks:
+    file: extraconf.yaml
+  loop: "{{ git_extraconf_todo.values() }}"
+  loop_control:
+    loop_var: conf
+    label: "{{ conf.owner }} ({{ conf.template }})"
+  when: (git_extraconf_todo.keys() | length) > 0

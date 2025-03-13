@@ -1,18 +1,17 @@
 ---
-- name: Privileged
+- name: Create keyrings directory
+  ansible.builtin.file:
+    path: "{{ ppa_deps_keyrings_dir }}"
+    mode: '0755'
+    state: directory
   become: true
-  block:
-    - name: Create keyrings directory
-      ansible.builtin.file:
-        path: "{{ ppa_deps_keyrings_dir }}"
-        mode: '0755'
-        state: directory
 
-    - name: Install packages
-      ansible.builtin.package:
-        name:
-          - ca-certificates
-          - gpg
+# - name: Install packages  # <- Not needed when downloading asc keys directly
+#   ansible.builtin.package:
+#     name:
+#       - ca-certificates
+#       - gpg
+#   become: true
 
 - name: Mark done
   ansible.builtin.set_fact:
