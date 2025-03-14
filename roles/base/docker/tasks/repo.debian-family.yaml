@@ -19,3 +19,4 @@
         state: present
         filename: docker-ce
         update_cache: true
+      register: docker_repo_state

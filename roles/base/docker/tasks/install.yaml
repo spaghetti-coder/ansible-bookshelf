@@ -4,7 +4,11 @@
     file: "{{ factum_os_like }}.yaml"
   when: factum_os_like in ['alpine']
 
-- name: OS specific repo
+- name: Load uninstall conflicts
+  ansible.builtin.include_tasks:
+    file: uninstall-conflicts.yaml
+
+- name: Load OS specific repo
   ansible.builtin.include_tasks:
     file: repo.{{ factum_os_family }}-family.yaml
   when: factum_os_family in ['debian', 'redhat']
@@ -15,6 +19,7 @@
     - name: Install
       ansible.builtin.package:
         name: "{{ docker_packages }}"
+        state: "{{ (docker_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
 
     # https://wiki.alpinelinux.org/wiki/Docker#Docker_rootless
     - name: Enable cgroups

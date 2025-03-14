@@ -5,6 +5,7 @@
     dest: /etc/yum.repos.d/docker-ce.repo
     mode: '0644'
     force: true
-  become: true
   vars:
     url: https://download.docker.com/linux/{{ docker_rhel_distro_url_segment }}/docker-ce.repo
+  become: true
+  register: docker_repo_state

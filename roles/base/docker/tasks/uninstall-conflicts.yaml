@@ -1,0 +1,28 @@
+---
+- name: Uninstall conflicting packages
+  ansible.builtin.package:
+    name: "{{ docker_conflicts[factum_os_family] | default(omit) }}"
+    state: absent
+  vars:
+    docker_conflicts:
+      debian:
+        - docker.io
+        - docker-doc
+        - docker-compose
+        - docker-compose-v2
+        - podman-docker
+        - containerd
+        - runc
+      redhat:
+        - docker
+        - docker-client
+        - docker-client-latest
+        - docker-common
+        - docker-latest
+        - docker-latest-logrotate
+        - docker-logrotate
+        - docker-engine
+        - podman
+        - runc
+  become: true
+  when: docker_conflicts[factum_os_family] | default([]) | length > 0
