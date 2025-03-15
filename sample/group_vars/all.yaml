@@ -91,6 +91,11 @@ ps1_git_managed: false
 ps1_git_users:
 
 ###
+### SNAPD
+###
+snapd_managed: false
+
+###
 ### NGINX-PROXY
 ###
 # Versions:

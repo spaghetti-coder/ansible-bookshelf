@@ -1,0 +1,24 @@
+---
+- name: Privileged
+  become: true
+  block:
+    - name: Allow snapd   # <- https://linuxmint-user-guide.readthedocs.io/en/latest/snap.html
+      ansible.builtin.replace:
+        path: /etc/apt/preferences.d/nosnap.pref
+        regexp: '^([^\s#].*)'   # <- Comment out all the lines that are not commented
+        replace: '# \1'
+      failed_when: false        # <- No need the file to exist
+
+    - name: Install
+      ansible.builtin.package:
+        name: snapd
+
+    - name: Enable
+      ansible.builtin.service:
+        name: snapd.socket
+        state: started
+        enabled: true
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    snapd_done: true

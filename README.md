@@ -7,6 +7,7 @@ This a basic playbook and roles collection.
 * [Requirements](#requirements)
 * [Project structure](#project-structure)
 * [Usage](#usage)
+* [Limitations and specifics](#limitations-and-specifics)
 * [Development](#development)
 * [Skeleton](#skeleton)
 
@@ -104,6 +105,12 @@ Ansible managed nodes:
     ```
 
 [To top]
+
+## Limitations and specifics
+
+* `base/snapd` role is not supported by Alpine
+* `desktop/*` roles are mostly oriented to Debian-based (sometimes narrowed to Ubuntu-based) distros
+* `service/*` roles are primarely deployed with docker
 
 ## Development
 
