@@ -158,3 +158,8 @@ teams_users:
 #   - "{{ ansible_user | default(ansible_user_id) }}"
 viber_managed: false
 viber_users:
+
+###
+### VLC
+###
+vlc_managed: false

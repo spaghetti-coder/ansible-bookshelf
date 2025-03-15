@@ -71,3 +71,7 @@
     - role: viber
       tags: [viber]
       when: viber_managed | default(false)
+
+    - role: vlc
+      tags: [vlc]
+      when: vlc_managed | default(false)
