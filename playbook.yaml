@@ -31,6 +31,10 @@
       tags: [git]
       when: git_managed | default(false)
 
+    - role: htop
+      tags: [htop]
+      when: htop_managed | default(false)
+
     - role: ps1-git
       tags: [ps1-git]
       when: ps1_git_managed | default(false)

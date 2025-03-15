@@ -79,6 +79,11 @@ git_managed: false
 git_extraconf:
 
 ###
+### HTOP
+###
+htop_managed: false
+
+###
 ### PS1-GIT
 ###
 # Installs fancy PS1 with git PS1 suffix support. Loaded with envar.
