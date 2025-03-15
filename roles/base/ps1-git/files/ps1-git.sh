@@ -12,7 +12,7 @@ _iife_source_prompt() { unset _iife_source_prompt
   ! git --version &>/dev/null && return
 
   local f; for f in \
-    /usr/share/git-core/contrib/completion/git-prompt.sh \
+    /usr/share/git-core/contrib/completion/git-prompt.sh `# RHEL` \
     /usr/lib/git-core/git-sh-prompt `# Debian` \
     /usr/share/git-core/git-prompt.sh \
   ; do

@@ -80,11 +80,11 @@ Ansible managed nodes:
 ├── ansible.cfg
 ├── bin                 # <- Playbook convenience scripts
 ├── playbook.yaml
-├── vendor              # <- Required roles and collections
 ├── requirements.yaml   # <- Required roles and collections declaretions
-├── roles
-├── sample    # <- Configuration samples
-└── skeleton  # <- New projects skeleton and install script
+├── roles       # <- Categorized roles
+├── sample      # <- Configuration samples
+├── vaulted.txt # <- (optional) Create this empty file to trigger vault pass prompt
+└── vendor      # <- Vendor directory
 ```
 
 [To top]
@@ -94,7 +94,7 @@ Ansible managed nodes:
 1.  Copy configurations from sample directory and edit them:
 
     ~~~sh
-    cp -rfp ./sample/* ./
+    cp -rp ./sample/* ./
     ~~~
 
 2.  Use `ansible-playbook` wrapper scripts from `bin` directory to deploy  
@@ -147,23 +147,24 @@ Performs all necessary initialization tasks (`factum` included), so it basically
 
 ## Skeleton
 
-In order to create a new project with the same concept as this one, issue
+In order to create a project cloned from this one, issue
 
 ```sh
-bash -- <(
-  curl -fsSL https://github.com/spaghetti-coder/ansible-bookshelf/raw/master/skeleton/skel-init.sh
-) ./my/project/directory
+curl -fsSL https://github.com/spaghetti-coder/ansible-bookshelf/raw/master/.dev/remote-proj.sh | bash -s -- install \
+  path/to/new/project \
+  master `# <- Optional tree-ish`
 ```
 
-And than review [README.md](./skeleton/README.md) file in the generated directory.
+To sync libraries and tools in the new project with the upstream issues:
+
+```sh
+# Alway `git commit` before this action
+.dev/remote-proj.sh pull-upstream
+```
 
 ## Standalones
 
-TODO
-
-```sh
-curl -fsSL https://github.com/spaghetti-coder/ansible-bookshelf/raw/master/roles/envar/files/envar.sh | sudo bash -s -- install
-```
+* [`envar`](./roles/base/envar)
 
 [To top]
 
