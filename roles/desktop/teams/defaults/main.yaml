@@ -1,0 +1,5 @@
+---
+# teams_users:  # <- Existing users to have teams autostarted
+#   - "{{ ansible_user | default(ansible_user_id) }}"
+teams_managed: false
+teams_users:

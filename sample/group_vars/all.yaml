@@ -132,6 +132,14 @@ nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"
 nginx_proxy_manager_extra_envfile:
 
 ###
+### TEAMS
+###
+# teams_users:  # <- Existing users to have teams autostarted
+#   - "{{ ansible_user | default(ansible_user_id) }}"
+teams_managed: false
+teams_users:
+
+###
 ### VIBER
 ###
 # Currently only Debian-based platforms supported

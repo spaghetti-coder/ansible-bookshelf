@@ -1,0 +1,12 @@
+---
+- name: Link autostart
+  ansible.builtin.file:
+    src: /var/lib/snapd/desktop/applications/teams-for-linux_teams-for-linux.desktop
+    dest: ~/.config/autostart/teams-for-linux.desktop
+    state: link
+  become: true
+  become_user: "{{ user }}"
+
+- name: Mark user done
+  ansible.builtin.set_fact:
+    docker_users_done: "{{ (teams_users_done | default([])) + [user] }}"
