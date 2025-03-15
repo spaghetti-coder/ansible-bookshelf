@@ -1,0 +1,5 @@
+---
+- name: Install
+  ansible.builtin.apt:
+    deb: "{{ viber_cdn_url }}/viber.deb"
+  become: true

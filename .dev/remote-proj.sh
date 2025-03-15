@@ -80,7 +80,7 @@ remote_proj_lib() (
         declare -f "${SELF}" | sed  -e 's/\(SELF_TGZ_URL=\)[^;]*/\1'\'\''/' \
                                     -e 's#\(UPSTREAM_TGZ_URL=\)[^;]*#\1'"'${UPSTREAM_URL}'"'#'
         declare -f "${SELF_LIB}"
-      } | wrap_self | (set -x; tee -- "${script}" >/dev/null)
+      } | wrap_script_funcs | (set -x; tee -- "${script}" >/dev/null)
     ) || return
 
     local loc_text; loc_text="$(make_lock_txt "${tmp_dir}" | grep '[^\s]')" && {
@@ -134,7 +134,7 @@ remote_proj_lib() (
       {
         printf -- '%s\n' "${self_func_text}"
         declare -f "${SELF_LIB}"
-      } | wrap_self | (set -x; tee -- "${script}" >/dev/null)
+      } | wrap_script_funcs | (set -x; tee -- "${script}" >/dev/null)
     ) || return
 
     local lock_text; lock_text="$(make_lock_txt "${tmp_dir}" | grep '[^\s]')" && {
@@ -176,7 +176,7 @@ remote_proj_lib() (
     (set -x; wget -q -O - -- "${url}")
   }
 
-  wrap_self() {
+  wrap_script_funcs() {
     printf -- '%s\n' \
       '#!/usr/bin/env bash' '' \
       '# shellcheck disable=SC2016,SC2092,SC2317,SC2001,SC1090,SC2002' '' \

@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
 
-sample_vars() (
-  declare -a ROLES_PATH=("${@}")
+# shellcheck disable=SC2092
 
+sample_vars() {
+  `# Relative to the project directory paths to roles`
+  local DEST_FILE=./sample/group_vars/all.yaml
+  declare -a ROLES_PATHS=(./roles/base ./roles/service ./roles/desktop)
+  `##### Configuration section end #####`
+  sample_vars_lib "${@}"
+}
+
+sample_vars_lib() (
   local PROJ_DIR; PROJ_DIR="$(dirname -- "${BASH_SOURCE[0]}")/.."
-  local DEST_FILE=sample/group_vars/all.yaml
 
   declare -A ARGS=(
     [is_help]=false
@@ -110,7 +117,7 @@ sample_vars() (
     cd -- "${PROJ_DIR}" || return
 
     declare -a default_files tmp_list
-    local tmp; tmp="$(_get_default_files "${ROLES_PATH[@]}")"
+    local tmp; tmp="$(_get_default_files "${ROLES_PATHS[@]}")"
 
     [ -n "${tmp}" ] && mapfile -t tmp_list <<< "${tmp}"
     default_files+=("${tmp_list[@]}")
@@ -124,4 +131,4 @@ sample_vars() (
   main "${@}"
 )
 
-(return 2>/dev/null) || sample_vars ./roles/base ./roles/service
+(return 2>/dev/null) || sample_vars "${@}"

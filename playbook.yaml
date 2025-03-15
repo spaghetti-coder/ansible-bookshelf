@@ -48,3 +48,10 @@
     - role: nginx-proxy-manager
       tags: [nginx-proxy-manager, upgradable]
       when: nginx_proxy_manager_managed | default(false)
+
+- name: DesktopBook
+  hosts: all
+  roles:
+    - role: viber
+      tags: [viber]
+      when: viber_managed | default(false)
