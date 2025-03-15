@@ -1,0 +1,23 @@
+---
+- name: Check current installation
+  ansible.builtin.stat:
+    path: /opt/viber/Viber
+  register: viber_installation
+  failed_when: false
+
+- name: Load OS specific install
+  ansible.builtin.include_tasks:
+    file: install-{{ factum_os_family }}.yaml
+  when: not viber_installation.stat.exists
+
+- name: Configure minimized start   # <- https://askubuntu.com/a/1534295
+  ansible.builtin.lineinfile:
+    path: /usr/share/applications/com.viber.Viber.desktop
+    regexp: ^(\s*Exec=.+Viber).*
+    line: '\1 %u StartInBackground'
+    backrefs: true
+  become: true
+
+- name: Mark install done
+  ansible.builtin.set_fact:
+    viber_install_done: true

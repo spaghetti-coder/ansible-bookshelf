@@ -125,3 +125,13 @@ nginx_proxy_manager_service_name: nginx-proxy-manager
 nginx_proxy_manager_hostname: "{{ nginx_proxy_manager_service_name }}"
 nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"
 nginx_proxy_manager_extra_envfile:
+
+###
+### VIBER
+###
+# Currently only Debian-based platforms supported
+# -----
+# viber_users:  # <- Existing users to have viber autostarted
+#   - "{{ ansible_user | default(ansible_user_id) }}"
+viber_managed: false
+viber_users:
