@@ -4,13 +4,14 @@
 
 sample_vars() {
   `# Relative to the project directory paths to roles`
-  local DEST_FILE=./sample/group_vars/all.yaml
   declare -a ROLES_PATHS=(./roles/base ./roles/service ./roles/desktop)
   `##### Configuration section end #####`
   sample_vars_lib "${@}"
+  return
 }
 
 sample_vars_lib() (
+  local DEST_FILE=./sample/group_vars/all.yaml
   local PROJ_DIR; PROJ_DIR="$(dirname -- "${BASH_SOURCE[0]}")/.."
 
   declare -A ARGS=(
@@ -30,15 +31,15 @@ sample_vars_lib() (
   trap_help() {
     ${ARGS[is_help]} || return
 
-    local self; self=sample-vars.sh
-    grep -q '.\+' -- "${0}" && self="$(basename -- "${0}")"
+    local the_script; the_script=sample-vars.sh
+    grep -q '.\+' -- "${0}" && the_script="$(basename -- "${0}")"
 
     _text_fmt "
       Build sample vars file based on defaults in available roles.
 
       Usage:
       =====
-      ${self}
+      ${the_script}
     "
   }
 

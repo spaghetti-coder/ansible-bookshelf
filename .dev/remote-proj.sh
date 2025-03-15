@@ -126,7 +126,7 @@ remote_proj_lib() (
     #
     # Preprocessing
     #
-    (
+    ( # Create replace for remote-proj.sh script
       local script="${tmp_dir}/.dev/remote-proj.sh"
       local script_txt; script_txt="$(cat -- "${script}")" || exit
       . <(printf -- '%s\n' "${script_txt}")
@@ -135,6 +135,23 @@ remote_proj_lib() (
         printf -- '%s\n' "${self_func_text}"
         declare -f "${SELF_LIB}"
       } | wrap_script_funcs | (set -x; tee -- "${script}" >/dev/null)
+    ) || return
+
+    ( # Create replace for sample-vars.sh script
+      local sample_vars_func; sample_vars_func="$(
+        local text; text="$(cat "${PROJ_DIR}/.dev/sample-vars.sh")" || exit
+        . <(printf -- '%s\n' "${text}")
+        declare -f sample_vars
+      )" || exit
+
+      local script="${tmp_dir}/.dev/sample-vars.sh"
+      local script_txt; script_txt="$(cat -- "${script}")" || exit
+      . <(printf -- '%s\n' "${script_txt}")
+
+      {
+        printf -- '%s\n' "${sample_vars_func}"
+        declare -f sample_vars_lib
+      } | SELF=sample_vars wrap_script_funcs | (set -x; tee -- "${script}" >/dev/null)
     ) || return
 
     local lock_text; lock_text="$(make_lock_txt "${tmp_dir}" | grep '[^\s]')" && {
