@@ -56,6 +56,10 @@
 - name: DesktopBook
   hosts: all
   roles:
+    - role: phpstorm
+      tags: [phpstorm]
+      when: phpstorm_managed | default(false)
+
     - role: teams
       tags: [teams]
       when: teams_managed | default(false)

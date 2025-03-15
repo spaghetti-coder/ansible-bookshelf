@@ -132,6 +132,11 @@ nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"
 nginx_proxy_manager_extra_envfile:
 
 ###
+### PHPSTORM
+###
+phpstorm_managed: false
+
+###
 ### TEAMS
 ###
 # teams_users:  # <- Existing users to have teams autostarted
