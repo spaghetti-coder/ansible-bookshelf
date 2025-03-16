@@ -79,3 +79,7 @@
     - role: vlc
       tags: [vlc]
       when: vlc_managed | default(false)
+
+    - role: vscode
+      tags: [vscode]
+      when: vscode_managed | default(false)

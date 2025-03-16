@@ -1,0 +1,13 @@
+---
+- name: Snapd
+  ansible.builtin.import_role: { 'name': 'snapd' }
+
+- name: Install   # <- Install from snap, because it has CLI interface
+  community.general.snap:
+    name: code
+    classic: true
+  become: true
+
+- name: Mark install done
+  ansible.builtin.set_fact:
+    vscode_install_done: true

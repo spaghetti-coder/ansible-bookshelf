@@ -1,0 +1,7 @@
+---
+- name: Load install
+  ansible.builtin.include_tasks:
+    file: install.yaml
+  when: not (vscode_install_done | default(false))
+
+# TODO: install per-user extension

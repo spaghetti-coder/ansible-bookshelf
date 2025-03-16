@@ -171,3 +171,8 @@ viber_users:
 ### VLC
 ###
 vlc_managed: false
+
+###
+### VSCODE
+###
+vscode_managed: false
