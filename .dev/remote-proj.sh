@@ -175,7 +175,7 @@ remote_proj_lib() (
       cd -- "${tmp_dir}" || exit
       set -x
       cp playbook.yaml requirements.yaml ansible.cfg "${PROJ_DIR}/sample"
-      cp -rf .dev bin roles "${PROJ_DIR}"
+      cp -rf .dev .lock bin roles "${PROJ_DIR}"
     ) || return
 
     "${PROJ_DIR}/.dev/sample-vars.sh" || return
@@ -203,12 +203,12 @@ remote_proj_lib() (
 
   make_lock_txt() {
     local dir="${1}"
-    (
+    ( set -o pipefail; {
       cd -- "${dir}" || exit
       [ -d .dev ]   && find ./.dev -type f
       [ -d bin ]    && find ./bin -type f
       [ -d roles ]  && find ./roles -mindepth 2 -maxdepth 2 -type d
-    )
+    } | LC_ALL=C sort -n )
   }
 
   main() {
