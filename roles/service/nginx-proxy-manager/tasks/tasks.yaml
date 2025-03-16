@@ -1,7 +1,7 @@
 ---
 - name: Docker
-  ansible.builtin.include_role: {'name': 'docker'}
-  vars: {"docker_users": ["{{ nginx_proxy_manager_owner }}"]}
+  ansible.builtin.import_role: { 'name': 'docker' }
+  vars: { "docker_users": ["{{ nginx_proxy_manager_owner }}"] }
 
 - name: Compose
   become: true
@@ -26,7 +26,7 @@
         dest: "{{ compose_dir }}/main.env"
         mode: '0600'
 
-    - name: Remove extra.env
+    - name: Remove obsolete extra.env
       ansible.builtin.file:
         path: "{{ compose_dir }}/extra.env"
         state: absent

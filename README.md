@@ -8,6 +8,7 @@ This a basic playbook and roles collection.
 * [Project structure](#project-structure)
 * [Usage](#usage)
 * [Limitations and specifics](#limitations-and-specifics)
+* [Issues](#issues)
 * [Development](#development)
 * [Skeleton](#skeleton)
 
@@ -112,11 +113,21 @@ Ansible managed nodes:
 * `desktop/*` roles are mostly oriented to Debian-based (sometimes narrowed to Ubuntu-based) distros
 * `service/*` roles are primarely deployed with docker
 
+## Issues
+
+* Due to keyserver.ubuntu.com sometimes switches comment in PGP keys, all tasks that download them from there are `changed_when: false`.  
+  Issues:
+  * https://answers.launchpad.net/launchpad/+question/818969
+  * https://github.com/ClickHouse/ClickHouse/issues/57415
+
+
 ## Development
 
 1.  If your playbook development is under git source control run `.dev/dev-init.sh` script to ensure hooks.
 2.  See `base/docker` and `base/demo-noapp` roles for demos on how to write roles.
 3.  Run `.dev/sample-vars.sh` when completed to add configurations to sample vars file.
+
+The goal of all these `*_done` variables is to reduce noise in the ansible-playbook log when roles are played more than once.
 
 ### `factum` role
 

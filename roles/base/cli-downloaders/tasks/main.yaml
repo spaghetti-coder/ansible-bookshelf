@@ -1,9 +1,6 @@
 ---
-- name: Load tasks
-  ansible.builtin.include_tasks:
-    file: tasks.yaml
-  vars:
-    cli_downloaders_packages_todo: "{{
-        cli_downloaders_packages | difference(cli_downloaders_packages_done | default([]))
-      }}"
-  when: cli_downloaders_packages_todo | length > 0
+- name: Install
+  ansible.builtin.package:
+    name: "{{ cli_downloaders_packages | default(omit, true) }}"
+  become: true
+  when: (cli_downloaders_packages | length) > 0

@@ -1,4 +1,7 @@
 ---
+- name: Ppa-deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { 'name': 'ppa-deps' }
+
 - name: Git repo
   become: true
   vars:
@@ -11,6 +14,11 @@
         url: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xf911ab184317630c59970973e363c90f8f1b6217
         dest: "{{ keyfile }}"
         mode: "0644"
+      # Sometimes changes comment lines position causing file change
+      # Issues:
+      # * https://answers.launchpad.net/launchpad/+question/818969
+      # * https://github.com/ClickHouse/ClickHouse/issues/57415
+      changed_when: false
 
     - name: Install repo
       ansible.builtin.apt_repository:

@@ -1,6 +1,6 @@
 ---
 - name: Snapd
-  ansible.builtin.include_role: {'name': 'snapd'}
+  ansible.builtin.import_role: { 'name': 'snapd' }
 
 - name: Install
   community.general.snap:
@@ -10,4 +10,4 @@
 
 - name: Mark install done
   ansible.builtin.set_fact:
-    phpstorm_install_done: true
+    phpstorm_done: true

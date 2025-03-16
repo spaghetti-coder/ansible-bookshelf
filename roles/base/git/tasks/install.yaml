@@ -1,7 +1,7 @@
 ---
 - name: Ubuntu repo
   ansible.builtin.include_tasks:
-    file: repo.ubuntu-like.yaml
+    file: repo.{{ factum_os_like }}-like.yaml
   when: factum_os_like in ['ubuntu']
 
 - name: Install

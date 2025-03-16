@@ -49,7 +49,7 @@ sample_vars_lib() (
       append="$(
         find -- "${dir}" -mindepth 3 -maxdepth 3 \
           -type f -path '*/defaults/main.yaml' \
-        | sort -n | grep '.\+'
+        | LC_ALL=C sort -n | grep '.\+'
       )" || continue
 
       result+="${result:+$'\n'}${append}"

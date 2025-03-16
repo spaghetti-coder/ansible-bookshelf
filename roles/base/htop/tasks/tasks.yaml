@@ -1,7 +1,6 @@
 ---
 - name: Epel-release
-  ansible.builtin.include_role:
-    name: epel-release
+  ansible.builtin.import_role: { 'name': 'epel-release' }
 
 - name: Install
   ansible.builtin.package:

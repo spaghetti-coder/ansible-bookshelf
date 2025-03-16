@@ -1,4 +1,7 @@
 ---
+- name: Bash
+  ansible.builtin.import_role: { 'name': 'bash' }
+
 - name: Load install
   ansible.builtin.include_tasks:
     file: install.yaml

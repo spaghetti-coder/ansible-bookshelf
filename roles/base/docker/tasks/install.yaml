@@ -1,9 +1,4 @@
 ---
-- name: Load OS specific vars
-  ansible.builtin.include_vars:
-    file: "{{ factum_os_like }}.yaml"
-  when: factum_os_like in ['alpine']
-
 - name: Load uninstall conflicts
   ansible.builtin.include_tasks:
     file: uninstall-conflicts.yaml
@@ -18,7 +13,7 @@
   block:
     - name: Install
       ansible.builtin.package:
-        name: "{{ docker_packages }}"
+        name: "{{ docker_packages[factum_os_like] | default(docker_packages['_default']) }}"
         state: "{{ (docker_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
 
     # https://wiki.alpinelinux.org/wiki/Docker#Docker_rootless
