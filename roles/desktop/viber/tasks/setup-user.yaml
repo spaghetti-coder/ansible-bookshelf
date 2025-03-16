@@ -5,7 +5,7 @@
   block:
     - name: Link autostart
       ansible.builtin.file:
-        src: /usr/share/applications/com.viber.Viber.desktop
+        src: /var/lib/flatpak/exports/share/applications/com.viber.Viber.desktop
         dest: ~/.config/autostart/com.viber.Viber.desktop
         state: link
 

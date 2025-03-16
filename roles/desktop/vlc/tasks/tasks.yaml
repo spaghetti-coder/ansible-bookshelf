@@ -1,10 +1,12 @@
 ---
-- name: Snapd
-  ansible.builtin.import_role: { 'name': 'snapd' }
+- name: Flatpak
+  ansible.builtin.import_role: { name: flatpak }
+  vars: { flatpak_repos: ["{{ viber_flatpak_remote }}"] }
 
 - name: Install
-  community.general.snap:
-    name: vlc
+  community.general.flatpak:
+    name: org.videolan.VLC
+    remote: "{{ viber_flatpak_remote }}"
   become: true
 
 - name: Mark install done

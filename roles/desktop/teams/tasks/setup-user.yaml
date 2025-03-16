@@ -9,4 +9,4 @@
 
 - name: Mark user done
   ansible.builtin.set_fact:
-    docker_users_done: "{{ (teams_users_done | default([])) + [user] }}"
+    teams_users_done: "{{ (teams_users_done | default([])) + [user] }}"
