@@ -1,0 +1,5 @@
+---
+# flatpak_repos:  # <- These are all supported repos
+#   - flathub
+flatpak_managed: false
+flatpak_repos:

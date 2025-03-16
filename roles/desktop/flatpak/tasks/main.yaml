@@ -1,0 +1,10 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  vars:
+    flatpak_repos_todo: "{{ flatpak_repos | default([], true) \
+      | intersect(flatpak_repos_map.keys()) | difference(flatpak_repos_done | default([])) }}"
+  when: |
+    not (flatpak_install_done | default(false))
+    or (flatpak_repos_todo | length) > 0

@@ -1,0 +1,9 @@
+---
+- name: Install
+  ansible.builtin.package:
+    name: flatpak
+  become: true
+
+- name: Mark install done
+  ansible.builtin.set_fact:
+    flatpak_install_done: true

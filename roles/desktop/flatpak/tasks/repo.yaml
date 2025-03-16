@@ -1,0 +1,12 @@
+---
+- name: Install
+  community.general.flatpak_remote:
+    name: "{{ repo }}"
+    state: present
+    flatpakrepo_url: "{{ flatpak_repos_map[repo] }}"
+    enabled: true
+  become: true
+
+- name: Mark repo done
+  ansible.builtin.set_fact:
+    docker_users_done: "{{ (flatpak_repos_done | default([])) + [repo] }}"

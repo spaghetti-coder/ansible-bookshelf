@@ -137,6 +137,14 @@ nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
 nginx_proxy_http_port: 80
 
 ###
+### FLATPAK
+###
+# flatpak_repos:  # <- These are all supported repos
+#   - flathub
+flatpak_managed: false
+flatpak_repos:
+
+###
 ### PHPSTORM
 ###
 phpstorm_managed: false

@@ -1,0 +1,13 @@
+---
+- name: Load install
+  ansible.builtin.include_tasks:
+    file: install.yaml
+  when: not (flatpak_install_done | default(false))
+
+- name: Load add repo
+  ansible.builtin.include_tasks:
+    file: repo.yaml
+  when: (flatpak_repos_todo | length) > 0
+  loop: "{{ flatpak_repos_todo }}"
+  loop_control:
+    loop_var: repo
