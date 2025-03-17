@@ -2,15 +2,12 @@
 
 # shellcheck disable=SC2092
 
-sample_vars() {
+sample_vars_conf() {
   `# Relative to the project directory paths to roles`
-  declare -a ROLES_PATHS=(./roles/base ./roles/service ./roles/desktop)
-  `##### Configuration section end #####`
-  sample_vars_lib "${@}"
-  return
+  ROLES_PATHS=(./roles/base ./roles/service ./roles/desktop)
 }
 
-sample_vars_lib() (
+sample_vars() (
   local DEST_FILE=./sample/group_vars/all.yaml
   local PROJ_DIR; PROJ_DIR="$(dirname -- "${BASH_SOURCE[0]}")/.."
 
@@ -126,6 +123,8 @@ sample_vars_lib() (
   }
 
   main() {
+    sample_vars_conf
+
     parse_args "${@}" || return
     trap_help && return
 

@@ -2,22 +2,18 @@
 
 # shellcheck disable=SC2016,SC2092,SC2317,SC2001,SC1090,SC2002
 
-remote_proj() {
+remote_proj_conf() {
   `# In downstream project change SELF_TGZ_URL to the downstream one`
   `# {{ BRANCH }} placeholder to support branches`
-  local SELF_TGZ_URL='https://github.com/spaghetti-coder/ansible-bookshelf/archive/{{ BRANCH }}.tar.gz'
-  local SELF_DEFAULT_BRANCH=master `# <- Change to 'main' if you prefer it this way`
-  local UPSTREAM_TGZ_URL=''
-  `##### Configuration section end #####`
-
-  local SELF="${FUNCNAME[0]}"
-  local SELF_LIB=remote_proj_lib
-
-  "${SELF_LIB}" "${@}"
-  return
+  SELF_TGZ_URL='https://github.com/spaghetti-coder/ansible-bookshelf/archive/{{ BRANCH }}.tar.gz'
+  SELF_DEFAULT_BRANCH=master `# <- Change to 'main' if you prefer it this way`
+  UPSTREAM_TGZ_URL=''
 }
 
-remote_proj_lib() (
+remote_proj() (
+  local SELF_CONF=remote_proj_conf
+  local SELF="${FUNCNAME[0]}"
+
   print_help() {
     local the_script=remote-proj.sh
     head -c 2 "${0}" 2>/dev/null | grep -q '^#!' && {
@@ -77,9 +73,9 @@ remote_proj_lib() (
       . <(printf -- '%s\n' "${script_txt}")
 
       {
-        declare -f "${SELF}" | sed  -e 's/\(SELF_TGZ_URL=\)[^;]*/\1'\'\''/' \
+        declare -f "${SELF_CONF}" | sed  -e 's/\(SELF_TGZ_URL=\)[^;]*/\1'\'\''/' \
                                     -e 's#\(UPSTREAM_TGZ_URL=\)[^;]*#\1'"'${UPSTREAM_URL}'"'#'
-        declare -f "${SELF_LIB}"
+        declare -f "${SELF}"
       } | wrap_script_funcs | (set -x; tee -- "${script}" >/dev/null)
     ) || return
 
@@ -119,7 +115,7 @@ remote_proj_lib() (
       return 1
     fi
 
-    declare self_func_text; self_func_text="$(declare -f "${SELF}")"
+    declare conf_func_text; conf_func_text="$(declare -f "${SELF_CONF}")"
     local tmp_dir; tmp_dir="$(set -x; mktemp -d)" || return
     dl_tool "${UPSTREAM_TGZ_URL}" | (set -x; tar --strip-components 1 -xzf - -C "${tmp_dir}") || return
 
@@ -132,16 +128,16 @@ remote_proj_lib() (
       . <(printf -- '%s\n' "${script_txt}")
 
       {
-        printf -- '%s\n' "${self_func_text}"
-        declare -f "${SELF_LIB}"
+        printf -- '%s\n' "${conf_func_text}"
+        declare -f "${SELF}"
       } | wrap_script_funcs | (set -x; tee -- "${script}" >/dev/null)
     ) || return
 
     ( # Create replace for sample-vars.sh script
-      local sample_vars_func; sample_vars_func="$(
+      local conf_func; conf_func="$(
         local text; text="$(cat "${PROJ_DIR}/.dev/sample-vars.sh")" || exit
         . <(printf -- '%s\n' "${text}")
-        declare -f sample_vars
+        declare -f sample_vars_conf
       )" || exit
 
       local script="${tmp_dir}/.dev/sample-vars.sh"
@@ -149,8 +145,8 @@ remote_proj_lib() (
       . <(printf -- '%s\n' "${script_txt}")
 
       {
-        printf -- '%s\n' "${sample_vars_func}"
-        declare -f sample_vars_lib
+        printf -- '%s\n' "${conf_func}"
+        declare -f sample_vars
       } | SELF=sample_vars wrap_script_funcs | (set -x; tee -- "${script}" >/dev/null)
     ) || return
 
@@ -198,7 +194,7 @@ remote_proj_lib() (
       '#!/usr/bin/env bash' '' \
       '# shellcheck disable=SC2016,SC2092,SC2317,SC2001,SC1090,SC2002' '' \
       "$(cat)" \
-      '' '(return 2>/dev/null) || '"${SELF}"' "${@}"'
+      '' '(return 2>/dev/null) || { '"${SELF}"' "${@}"; exit; }'
   }
 
   make_lock_txt() {
@@ -212,6 +208,8 @@ remote_proj_lib() (
   }
 
   main() {
+    "${SELF_CONF}"
+
     declare -A FUNC_MAP=(
       [install]=self_install
       [pull-upstream]=pull_upstream
@@ -229,4 +227,4 @@ remote_proj_lib() (
   main "${@}"
 )
 
-(return 2>/dev/null) || remote_proj "${@}"
+(return 2>/dev/null) || { remote_proj "${@}"; exit; }
