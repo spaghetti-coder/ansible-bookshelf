@@ -1,0 +1,16 @@
+---
+- name: Repo
+  become: true
+  block:
+    - name: Install signing key
+      ansible.builtin.rpm_key:
+        state: present
+        key: "{{ key_url }}"
+
+    - name: Install repo
+      ansible.builtin.get_url:
+        url: https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+        dest: /etc/yum.repos.d/sublimehq.repo
+        mode: '0644'
+        force: true
+      register: sublime_repo_state

@@ -1,0 +1,16 @@
+---
+- name: Load repo
+  ansible.builtin.include_tasks:
+    file: repo-{{ factum_os_family }}-family.yaml
+
+- name: Install
+  ansible.builtin.package:
+    name: "{{ packages }}"
+    state: "{{ (sublime_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
+  vars:
+    packages: "{{ ['sublime-text'] + (sublime_merge | ternary(['sublime-merge'], [])) }}"
+  become: true
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    sublime_done: true

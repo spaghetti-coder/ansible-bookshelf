@@ -169,6 +169,12 @@ flatpak_repos:
 # ============
 phpstorm_managed: false
 
+# ===========
+#   SUBLIME
+# ===========
+sublime_managed: false
+sublime_merge: false
+
 # =========
 #   TEAMS
 # =========
