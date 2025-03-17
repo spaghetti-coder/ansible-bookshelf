@@ -60,7 +60,8 @@ sample_vars_lib() (
 
   _get_vars() {
     local append result
-    local role_name
+    local section section_prev section_len
+    local role_name role_len
     local file; for file in "${@}"; do
       append="$(
         sed -e '/^[^- ]/,$!d' -- "${file}" \
@@ -72,14 +73,27 @@ sample_vars_lib() (
 
       role_name="$(rev <<< "${file}" | cut -d'/' -f3 | rev)"
 
-      # Skip demo-app role
-      [ "${role_name}" == 'demo-app' ] && continue
+      section="$(rev <<< "${file}" | cut -d'/' -f4 | rev)"
+      ! [ "${section}" = "${section_prev}" ] && {
+        section_prev="${section}"
+        section_len="${#section}"
 
+        result+="${result:+$'\n\n\n'}$(
+          printf '%*s\n' "$(( section_len + 12 ))" | tr ' ' '#'
+          printf "###   %s   ###\n" "${section^^}"
+          printf '%*s\n' "$(( section_len + 12 ))" | tr ' ' '#'
+        )"
+      }
+
+      role_len="${#role_name}"
       result+="${result:+$'\n\n'}"
-      result+=$'###\n### '"${role_name^^}"
-      result+=$'\n###\n'
+      result+="$(
+        printf '# '; printf '%*s\n' "$(( role_len + 4 ))" | tr ' ' '='
+        printf "#   %s\n" "${role_name^^}"
+        printf '# '; printf '%*s\n' "$(( role_len + 4 ))" | tr ' ' '='
+      )"
 
-      result+="${append}"
+      result+=$'\n'"${append}"
     done
 
     [[ -z "${result}" ]] || printf -- '%s\n' "${result}"
@@ -91,7 +105,7 @@ sample_vars_lib() (
 
     local head; head="$(
       sed '1,/^\s*#\+\s*{{\s*ROLES_CONF_TS4LE64m91\s*}}\s*\(#.*\)\?$/!d' -- "${DEST_FILE}" 2>/dev/null
-    )" && head+=$'\n\n'
+    )" && head+=$'\n\n\n'
 
     local dest_dir; dest_dir="$(dirname -- "${DEST_FILE}")"
     {
