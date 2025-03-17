@@ -1,0 +1,14 @@
+---
+- name: Flatpak
+  ansible.builtin.import_role: { name: flatpak }
+  vars: { flatpak_repos: ["{{ audacity_flatpak_remote }}"] }
+
+- name: Install
+  community.general.flatpak:
+    name: org.audacityteam.Audacity
+    remote: "{{ vlc_flatpak_remote }}"
+  become: true
+
+- name: Mark install done
+  ansible.builtin.set_fact:
+    audacity_done: true

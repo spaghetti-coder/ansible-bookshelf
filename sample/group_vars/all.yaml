@@ -137,6 +137,11 @@ nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
 nginx_proxy_http_port: 80
 
 ###
+### AUDACITY
+###
+audacity_managed: false
+
+###
 ### FLATPAK
 ###
 # flatpak_repos:  # <- These are all supported repos
