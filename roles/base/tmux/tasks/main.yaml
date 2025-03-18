@@ -1,0 +1,9 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  vars:
+    tmux_sane_todo: "{{ tmux_sane_users | default([], true) | difference(tmux_sane_done | default([])) }}"
+  when: |
+    not (tmux_install_done | default(false))
+    or (tmux_sane_todo | length) > 0

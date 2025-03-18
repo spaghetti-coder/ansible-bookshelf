@@ -1,0 +1,37 @@
+---
+- name: Sane profile
+  become: true
+  become_user: "{{ user }}"
+  block:
+    - name: Install tpm
+      ansible.builtin.git:
+        repo: https://github.com/tmux-plugins/tpm
+        dest: "{{ tmux_user_plugins_dir }}/tpm"
+      tags:
+        - skip_ansible_lint
+
+    - name: Source conf files to .tmux.conf
+      ansible.builtin.lineinfile:
+        path: ~/.tmux.conf
+        line: source {{ item }}
+        create: true
+        mode: '0600'
+      loop:
+        - "{{ tmux_conf_dir }}/default.conf"
+        - "{{ tmux_conf_dir }}/plugins.conf"
+
+    - name: Source appendix .tmux.conf
+      ansible.builtin.lineinfile:
+        path: ~/.tmux.conf
+        line: "source {{ tmux_conf_dir }}/plugins.appendix.conf   # <- Must be source after plugins setup"
+        insertafter: '^source {{ tmux_conf_dir }}/plugins.conf$'
+
+    - name: Install plugins
+      ansible.builtin.command:
+        cmd: "{{ tmux_user_plugins_dir }}/tpm/bin/install_plugins"
+      register: tmux_plugins_state
+      changed_when: "'Installing' in tmux_plugins_state.stdout"
+
+- name: Mark sane done
+  ansible.builtin.set_fact:
+    tmux_sane_done: "{{ (tmux_sane_done | default([])) + [user] }}"

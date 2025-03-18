@@ -1,0 +1,4 @@
+---
+tmux_conf_dir: /etc/tmux
+tmux_user_conf_dir: ~/.tmux
+tmux_user_plugins_dir: "{{ tmux_user_conf_dir }}/plugins"

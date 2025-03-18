@@ -1,0 +1,5 @@
+---
+# tmux_sane_users:   # <- Existing users to source my preferred configuration
+#   - "{{ ansible_user_id }}"
+tmux_managed: false
+tmux_sane_users:

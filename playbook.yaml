@@ -43,6 +43,10 @@
       tags: [snapd]
       when: snapd_managed | default(false)
 
+    - role: tmux
+      tags: [tmux]
+      when: tmux_managed | default(false)
+
     - role: upgrade
       tags: [upgrade, upgradable, never]
 
