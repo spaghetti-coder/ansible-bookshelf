@@ -105,6 +105,10 @@ ps1_git_users:
 # =================
 #       SNAPD
 # =================
+# Not supported by Alpine
+# -----
+# snapd_managed: "{{ not factum_os_family in ['alpine'] }}"   # <- All hosts but Alpines
+# -----
 snapd_managed: false
 
 
