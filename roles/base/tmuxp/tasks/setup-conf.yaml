@@ -1,0 +1,25 @@
+---
+- name: Setup conf
+  become: true
+  become_user: "{{ user }}"
+  block:
+    - name: Create conf directory
+      ansible.builtin.file:
+        path: "{{ tmuxp_conf_dir }}"
+        state: directory
+        mode: '0700'
+
+    - name: Install confs
+      ansible.builtin.template:
+        src: "{{ item.template }}"
+        dest: "{{ tmuxp_conf_dir }}/{{ item.name }}.yaml"
+        mode: '0600'
+      loop: "{{ user_confs }}"
+      vars:
+        conf: "{{ item }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+- name: Mark conf done
+  ansible.builtin.set_fact:
+    tmuxp_conf_done: "{{ (tmuxp_conf_done | default([])) + [user] }}"

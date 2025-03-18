@@ -1,0 +1,17 @@
+---
+- name: Load install
+  ansible.builtin.include_tasks:
+    file: install.yaml
+  when: not (tmuxp_install_done | default(false))
+
+- name: Load setup conf
+  ansible.builtin.include_tasks:
+    file: setup-conf.yaml
+  when: (tmuxp_conf_todo | length) > 0
+  loop: "{{ tmuxp_conf_todo }}"
+  vars:
+    user: "{{ the_conf.owner }}"
+    user_confs: "{{ the_conf.conf | default([]) }}"
+  loop_control:
+    loop_var: the_conf
+    label: "{{ user }}"

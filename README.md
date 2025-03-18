@@ -110,6 +110,7 @@ Ansible managed nodes:
 ## Limitations and specifics
 
 * `base/snapd` role is not supported by Alpine
+* `base/tmuxp` role is not supported by Alpine
 * `desktop/*` roles are mostly oriented to Debian-based (sometimes narrowed to Ubuntu-based) distros
 * `service/*` roles are primarely deployed with docker
 

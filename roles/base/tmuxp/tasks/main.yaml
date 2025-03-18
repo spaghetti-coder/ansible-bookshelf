@@ -1,0 +1,9 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  vars:
+    tmuxp_conf_todo: "{{ tmuxp_conf | default([], true) | rejectattr('owner', 'in', (tmuxp_conf_done | default([]))) | list }}"
+  when: |
+    not (tmuxp_install_done | default(false))
+    or (tmuxp_conf_todo | length) > 0

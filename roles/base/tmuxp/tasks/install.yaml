@@ -1,0 +1,15 @@
+---
+- name: Epel-release
+  ansible.builtin.import_role: { name: epel-release }
+
+- name: Tmux
+  ansible.builtin.import_role: { name: tmux }
+
+- name: Install
+  ansible.builtin.package:
+    name: "{{ tmuxp_pkg_name[factum_os_family] | default(tmuxp_pkg_name['_default']) }}"
+  become: true
+
+- name: Mark install done
+  ansible.builtin.set_fact:
+    tmuxp_install_done: true

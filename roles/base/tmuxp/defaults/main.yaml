@@ -1,0 +1,20 @@
+---
+# Not supported by Alpine
+# -----
+# tmuxp_managed: "{{ not factum_os_family in ['alpine'] }}"   # <- All hosts but Alpines
+# -----
+# tmuxp_conf:
+#   - owner: "{{ ansible_user_id }}"
+#     conf:
+#         # Also available: triple.yaml.j2, quad.yaml.j2
+#       - template: sensors.yaml.j2   # <- Required. No full path for the ones defined in the role
+#         name: my-sensors            # <- Required. Will land in ~/.tmuxp/my-sensors.yaml
+#         # Optional variables, can be addressed in the template via 'conf' map
+#         session_name: Foo           # <- 'conf.session_name' in the template
+#         window_name: bar
+#       - template: "{{ playbook_dir }}/resources/tmuxp/demo1.yaml.j2"  # <- Full path for ones out of the role directory
+#         ...
+#   - owner: ...
+#     ...
+tmuxp_managed: false
+tmuxp_conf:

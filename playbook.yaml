@@ -47,6 +47,10 @@
       tags: [tmux]
       when: tmux_managed | default(false)
 
+    - role: tmuxp
+      tags: [tmuxp]
+      when: tmuxp_managed | default(false)
+
     - role: upgrade
       tags: [upgrade, upgradable, never]
 

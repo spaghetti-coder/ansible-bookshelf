@@ -1,0 +1,26 @@
+---
+session_name: {{ conf.session_name | default('Quad') }}
+windows:
+  - window_name: {{ conf.window_name | default('quad') }}
+    focus: true
+    layout: tiled
+{% if conf.start_dir | default('', true) %}
+    start_directory: "{{ conf.start_dir }}"
+{% endif %}
+    panes:
+      - focus: true
+{% if conf.pane1_start_dir | default('', true) %}
+        start_directory: "{{ conf.pane1_start_dir }}"
+{% endif %}
+      -
+{% if conf.pane2_start_dir | default('', true) %}
+        start_directory: "{{ conf.pane2_start_dir }}"
+{% endif %}
+      -
+{% if conf.pane3_start_dir | default('', true) %}
+        start_directory: "{{ conf.pane3_start_dir }}"
+{% endif %}
+      -
+{% if conf.pane4_start_dir | default('', true) %}
+        start_directory: "{{ conf.pane4_start_dir }}"
+{% endif %}
