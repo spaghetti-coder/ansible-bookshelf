@@ -102,6 +102,11 @@ htop_managed: false
 ps1_git_managed: false
 ps1_git_users:
 
+# ===================
+#       SENSORS
+# ===================
+sensors_managed: false
+
 # =================
 #       SNAPD
 # =================

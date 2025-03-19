@@ -39,6 +39,10 @@
       tags: [ps1-git]
       when: ps1_git_managed | default(false)
 
+    - role: sensors
+      tags: [sensors]
+      when: sensors_managed | default(false)
+
     - role: snapd
       tags: [snapd]
       when: snapd_managed | default(false)

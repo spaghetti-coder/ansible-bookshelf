@@ -1,0 +1,4 @@
+---
+sensors_pkg_name:
+  _default: lm-sensors
+  redhat: lm_sensors
