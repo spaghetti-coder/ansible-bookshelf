@@ -1,3 +1,4 @@
+---
 # *_managed vars denote whether ansible takes care of the application or not.
 #   `X_managed: false` application will still fire if it is in `Y_managed: true`
 #   application dependencies
@@ -19,19 +20,20 @@ ansible_become_password: changeme
 #################### {{ ROLES_CONF_TS4LE64m91 }} ####################
 
 
-################
-###   BASE   ###
-################
 
-# ========
-#   BASH
-# ========
+########################
+###       BASE       ###
+########################
+
+# ================
+#       BASH
+# ================
 bash_managed: false
 bash_completion: false
 
-# ===================
-#   CLI-DOWNLOADERS
-# ===================
+# ===========================
+#       CLI-DOWNLOADERS
+# ===========================
 # Installs: curl, wget
 # -----
 # cli_downloaders_pick:   # <- Only install packages, or empty to install all
@@ -39,17 +41,17 @@ bash_completion: false
 cli_downloaders_managed: false
 cli_downloaders_pick:
 
-# ==========
-#   DOCKER
-# ==========
+# ==================
+#       DOCKER
+# ==================
 # docker_users:   # <- Existing users to be added to docker group
 #   - "{{ ansible_user | default(ansible_user_id) }}"
 docker_managed: false
 docker_users:
 
-# ===========
-#   EDITORS
-# ===========
+# ===================
+#       EDITORS
+# ===================
 # Installs: nano, neovim, vim
 # -----
 # editors_pick:   # <- Only install packages, or empty to install all
@@ -57,9 +59,9 @@ docker_users:
 editors_managed: false
 editors_pick:
 
-# =========
-#   ENVAR
-# =========
+# =================
+#       ENVAR
+# =================
 # Installs envar for bash
 # -----
 # envar_users:  # <- Existing users to have access to envar
@@ -68,9 +70,9 @@ editors_pick:
 envar_managed: false
 envar_users:
 
-# =======
-#   GIT
-# =======
+# ===============
+#       GIT
+# ===============
 # git_extraconf:
 #   - owner: "{{ ansible_user_id }}"    # <- Required, must be unique
 #     template: gitconfig.extra.ini.j2  # <- Required. No full path for the ones defined in the role
@@ -83,14 +85,14 @@ envar_users:
 git_managed: false
 git_extraconf:
 
-# ========
-#   HTOP
-# ========
+# ================
+#       HTOP
+# ================
 htop_managed: false
 
-# ===========
-#   PS1-GIT
-# ===========
+# ===================
+#       PS1-GIT
+# ===================
 # Installs fancy PS1 with git PS1 suffix support. Loaded with envar.
 # Doesn't require git
 # -----
@@ -100,19 +102,20 @@ htop_managed: false
 ps1_git_managed: false
 ps1_git_users:
 
-# =========
-#   SNAPD
-# =========
+# =================
+#       SNAPD
+# =================
 snapd_managed: false
 
 
-###################
-###   SERVICE   ###
-###################
 
-# =======================
-#   NGINX-PROXY-MANAGER
-# =======================
+###########################
+###       SERVICE       ###
+###########################
+
+# ===============================
+#       NGINX-PROXY-MANAGER
+# ===============================
 # Versions:
 # * https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
 # -----
@@ -129,9 +132,9 @@ nginx_proxy_manager_hostname: "{{ nginx_proxy_manager_service_name }}"
 nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"
 nginx_proxy_manager_extra_envfile:
 
-# ===============
-#   NGINX-PROXY
-# ===============
+# =======================
+#       NGINX-PROXY
+# =======================
 # Versions:
 # * https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
 # Exposes:
@@ -147,45 +150,46 @@ nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
 nginx_proxy_http_port: 80
 
 
-###################
-###   DESKTOP   ###
-###################
 
-# ============
-#   AUDACITY
-# ============
+###########################
+###       DESKTOP       ###
+###########################
+
+# ====================
+#       AUDACITY
+# ====================
 audacity_managed: false
 
-# ===========
-#   FLATPAK
-# ===========
+# ===================
+#       FLATPAK
+# ===================
 # flatpak_repos:  # <- These are all supported repos
 #   - flathub
 flatpak_managed: false
 flatpak_repos:
 
-# ============
-#   PHPSTORM
-# ============
+# ====================
+#       PHPSTORM
+# ====================
 phpstorm_managed: false
 
-# ===========
-#   SUBLIME
-# ===========
+# ===================
+#       SUBLIME
+# ===================
 sublime_managed: false
 sublime_merge: false
 
-# =========
-#   TEAMS
-# =========
+# =================
+#       TEAMS
+# =================
 # teams_users:  # <- Existing users to have teams autostarted
 #   - "{{ ansible_user | default(ansible_user_id) }}"
 teams_managed: false
 teams_users:
 
-# =========
-#   VIBER
-# =========
+# =================
+#       VIBER
+# =================
 # Currently only Debian-based platforms supported
 # -----
 # viber_users:  # <- Existing users to have viber autostarted
@@ -193,12 +197,12 @@ teams_users:
 viber_managed: false
 viber_users:
 
-# =======
-#   VLC
-# =======
+# ===============
+#       VLC
+# ===============
 vlc_managed: false
 
-# ==========
-#   VSCODE
-# ==========
+# ==================
+#       VSCODE
+# ==================
 vscode_managed: false

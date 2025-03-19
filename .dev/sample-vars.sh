@@ -75,19 +75,19 @@ sample_vars() (
         section_prev="${section}"
         section_len="${#section}"
 
-        result+="${result:+$'\n\n\n'}$(
-          printf '%*s\n' "$(( section_len + 12 ))" | tr ' ' '#'
-          printf "###   %s   ###\n" "${section^^}"
-          printf '%*s\n' "$(( section_len + 12 ))" | tr ' ' '#'
+        result+="${result:+$'\n\n\n\n'}$(
+          printf '%*s\n' "$(( section_len + 20 ))" | tr ' ' '#'
+          printf "###       %s       ###\n" "${section^^}"
+          printf '%*s\n' "$(( section_len + 20 ))" | tr ' ' '#'
         )"
       }
 
       role_len="${#role_name}"
       result+="${result:+$'\n\n'}"
       result+="$(
-        printf '# '; printf '%*s\n' "$(( role_len + 4 ))" | tr ' ' '='
-        printf "#   %s\n" "${role_name^^}"
-        printf '# '; printf '%*s\n' "$(( role_len + 4 ))" | tr ' ' '='
+        printf '# '; printf '%*s\n' "$(( role_len + 12 ))" | tr ' ' '='
+        printf "#       %s\n" "${role_name^^}"
+        printf '# '; printf '%*s\n' "$(( role_len + 12 ))" | tr ' ' '='
       )"
 
       result+=$'\n'"${append}"
@@ -102,7 +102,7 @@ sample_vars() (
 
     local head; head="$(
       sed '1,/^\s*#\+\s*{{\s*ROLES_CONF_TS4LE64m91\s*}}\s*\(#.*\)\?$/!d' -- "${DEST_FILE}" 2>/dev/null
-    )" && head+=$'\n\n\n'
+    )" && head+=$'\n\n\n\n'
 
     local dest_dir; dest_dir="$(dirname -- "${DEST_FILE}")"
     {
