@@ -1,0 +1,14 @@
+---
+- name: Epel-release
+  ansible.builtin.import_role: { name: epel-release }
+
+- name: Ubuntu repo
+  ansible.builtin.include_tasks:
+    file: repo-{{ factum_os_like }}-like.yaml
+  when: factum_os_like in ['ubuntu']
+
+- name: Install
+  ansible.builtin.package:
+    name: copyq
+    state: "{{ (copyq_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
+  become: true

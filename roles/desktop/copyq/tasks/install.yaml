@@ -1,0 +1,16 @@
+---
+- name: Load install method
+  ansible.builtin.include_tasks:
+    file: install-{{ copyq_install_method }}-method.yaml
+
+- name: Configure minimized start
+  ansible.builtin.lineinfile:
+    path: "{{ copyq_desktop_file[copyq_install_method] }}"
+    regexp: ^(Exec=.*)(\sshow(\s.*)?)$
+    line: '\1\3'
+    backrefs: true
+  become: true
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    copyq_install_done: true

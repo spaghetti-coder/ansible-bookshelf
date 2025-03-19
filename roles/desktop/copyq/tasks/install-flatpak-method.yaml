@@ -1,0 +1,10 @@
+---
+- name: Flatpak
+  ansible.builtin.import_role: { name: flatpak }
+  vars: { flatpak_repos: ["{{ copyq_flatpak_remote }}"] }
+
+- name: Install
+  community.general.flatpak:
+    name: com.github.hluk.copyq
+    remote: "{{ copyq_flatpak_remote }}"
+  become: true

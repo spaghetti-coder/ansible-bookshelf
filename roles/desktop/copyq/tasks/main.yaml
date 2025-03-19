@@ -1,0 +1,9 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  vars:
+    copyq_users_todo: "{{ copyq_users | default([], true) | difference(copyq_users_done | default([])) }}"
+  when: |
+    not (copyq_install_done | default(false))
+    or (copyq_users_todo | length) > 0

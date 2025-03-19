@@ -76,6 +76,10 @@
       tags: [audacity]
       when: audacity_managed | default(false)
 
+    - role: copyq
+      tags: [copyq]
+      when: copyq_managed | default(false)
+
     - role: flatpak
       tags: [flatpak]
       when: flatpak_managed | default(false)

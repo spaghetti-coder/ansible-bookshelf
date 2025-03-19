@@ -1,0 +1,5 @@
+---
+copyq_flatpak_remote: flathub
+copyq_desktop_file:
+  pm: /usr/share/applications/com.github.hluk.copyq.desktop
+  flatpak: /var/lib/flatpak/exports/share/applications/com.github.hluk.copyq.desktop

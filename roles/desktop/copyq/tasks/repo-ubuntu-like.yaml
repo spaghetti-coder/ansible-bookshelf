@@ -1,0 +1,28 @@
+---
+- name: Ppa-deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: ppa-deps }
+
+- name: CopyQ repo
+  become: true
+  vars:
+    keyfile: "{{ ppa_deps_keyrings_dir }}/copyq.asc"
+    codename: "{{ factum_ubuntu_codename }}"
+    repo_url: https://ppa.launchpadcontent.net/hluk/copyq/{{ factum_os_like }}
+  block:
+    - name: Install signing key
+      ansible.builtin.get_url:
+        url: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x407dcf2158b84056d11bbc944f0b2f06aa07d22f
+        dest: "{{ keyfile }}"
+        mode: "0644"
+      changed_when: false
+
+    - name: Install repo
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        state: present
+        filename: copyq
+        update_cache: true
+      loop:
+        - deb [signed-by={{ keyfile }}] {{ repo_url }} {{ codename }} main
+        - deb-src [signed-by={{ keyfile }}] {{ repo_url }} {{ codename }} main
+      register: copyq_repo_state

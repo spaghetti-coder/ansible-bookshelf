@@ -1,0 +1,14 @@
+---
+- name: Setup user
+  become: true
+  become_user: "{{ user }}"
+  block:
+    - name: Link autostart
+      ansible.builtin.file:
+        src: "{{ copyq_desktop_file[copyq_install_method] }}"
+        dest: ~/.config/autostart/com.github.hluk.copyq.desktop
+        state: link
+
+- name: Mark user done
+  ansible.builtin.set_fact:
+    docker_users_done: "{{ (copyq_users_done | default([])) + [user] }}"
