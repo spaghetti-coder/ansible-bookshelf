@@ -1,6 +1,6 @@
 ---
 - name: Snapd
-  ansible.builtin.import_role: { 'name': 'snapd' }
+  ansible.builtin.import_role: { name: snapd }
 
 - name: Install   # <- Install from snap, because it has CLI interface
   community.general.snap:

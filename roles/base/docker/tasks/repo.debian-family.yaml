@@ -1,6 +1,6 @@
 ---
 - name: Ppa-deps    # <- 'import' because will need the role vars
-  ansible.builtin.import_role: { 'name': 'ppa-deps' }
+  ansible.builtin.import_role: { name: ppa-deps }
 
 - name: Docker repo
   become: true

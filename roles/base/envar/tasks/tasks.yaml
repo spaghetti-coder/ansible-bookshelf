@@ -1,6 +1,6 @@
 ---
 - name: Bash
-  ansible.builtin.import_role: { 'name': 'bash' }
+  ansible.builtin.import_role: { name: bash }
 
 - name: Load install
   ansible.builtin.include_tasks:

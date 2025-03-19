@@ -1,6 +1,6 @@
 ---
 - name: Ppa-deps
-  ansible.builtin.import_role: { 'name': 'ppa-deps' }
+  ansible.builtin.import_role: { name: ppa-deps }
 
 - name: Repo
   become: true

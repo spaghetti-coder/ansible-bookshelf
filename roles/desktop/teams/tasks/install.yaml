@@ -1,6 +1,6 @@
 ---
 - name: Snapd
-  ansible.builtin.import_role: { 'name': 'snapd' }
+  ansible.builtin.import_role: { name: snapd }
 
 - name: Privileged
   become: true

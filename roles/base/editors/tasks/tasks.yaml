@@ -1,6 +1,6 @@
 ---
 - name: Epel-release for neovim   # <- 'include' to reduce noise when no neovim
-  ansible.builtin.include_role: { 'name': 'epel-release' }
+  ansible.builtin.import_role: { name: epel-release }
   when: editors_packages_todo | intersect(['neovim']) | length > 0
 
 - name: Install

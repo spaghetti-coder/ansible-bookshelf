@@ -1,6 +1,6 @@
 ---
 - name: Envar   # <- 'import' because will need the role vars
-  ansible.builtin.import_role: { 'name': 'envar' }
+  ansible.builtin.import_role: { name: envar }
   vars:
     envar_users: "{{ ps1_git_users_todo }}"
 
