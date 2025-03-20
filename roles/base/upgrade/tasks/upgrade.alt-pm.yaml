@@ -1,0 +1,13 @@
+---
+- name: Detect installation ({{ pm_tool }})
+  ansible.builtin.command: "{{ pm_tool }} --version"
+  register: upgrade_alt_pm_detect_result
+  failed_when: false
+  changed_when: false
+
+- name: Upgrade apps ({{ pm_tool }})
+  ansible.builtin.command: "{{ pm_tool }} {{ update_args }}"
+  register: upgrade_alt_pm_result
+  changed_when: "updated_marker in upgrade_alt_pm_result.stdout"
+  when: upgrade_alt_pm_detect_result.rc < 1
+  become: true

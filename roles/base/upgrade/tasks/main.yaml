@@ -2,3 +2,17 @@
 - name: OS specific upgrade
   ansible.builtin.include_tasks:
     file: "upgrade.{{ factum_os_family }}-family.yaml"
+
+- name: Alt pms
+  ansible.builtin.include_tasks:
+    file: upgrade.alt-pm.yaml
+  vars:
+    pm_tool: "{{ item.key }}"
+    update_args: "{{ item.value.update_args }}"
+    updated_marker: "{{ item.value.updated_marker }}"
+  with_dict:
+    flatpak:  # <- Tool name
+      update_args: update --noninteractive
+      updated_marker: Updating
+  loop_control:
+    label: "{{ pm_tool }}"
