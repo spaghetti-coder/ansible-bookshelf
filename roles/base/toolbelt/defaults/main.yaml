@@ -1,0 +1,11 @@
+---
+# * tar
+# * nano, neovim, vim   (editors)
+# * curl, wget          (downloaders)
+# -----
+# toolbelt_pick:    # <- Install only a fraction, or empty to install all
+#   - nano          # <- curl will be installed
+#   - downloaders   # <- All downloaders will be installed
+#   - tar           # <- tar will be installed
+toolbelt_managed: false
+toolbelt_pick:

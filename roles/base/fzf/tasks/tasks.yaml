@@ -1,0 +1,24 @@
+---
+- name: Envar
+  ansible.builtin.import_role: { name: envar }
+  vars:
+    envar_users: "{{ fzf_users_todo }}"
+
+- name: Fzf
+  vars:
+    fzf_hook: "{{ envar_etc_dir }}/fzf.skip.sh"
+    fzf_hook_user_link: "{{ envar_user_dir }}/500-fzf.sh"
+    fzf_dir: "{{ fzf_bin_file | dirname }}"
+  block:
+    - name: Load install
+      ansible.builtin.include_tasks:
+        file: install.yaml
+      when: not (fzf_install_done | default(false))
+
+    - name: Load setup users
+      ansible.builtin.include_tasks:
+        file: setup-user.yaml
+      when: (fzf_users_todo | length) > 0
+      loop: "{{ fzf_users_todo }}"
+      loop_control:
+        loop_var: user

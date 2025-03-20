@@ -31,16 +31,6 @@ ansible_become_password: changeme
 bash_managed: false
 bash_completion: false
 
-# ===========================
-#       CLI-DOWNLOADERS
-# ===========================
-# Installs: curl, wget
-# -----
-# cli_downloaders_pick:   # <- Only install packages, or empty to install all
-#   - curl
-cli_downloaders_managed: false
-cli_downloaders_pick:
-
 # ==================
 #       DOCKER
 # ==================
@@ -48,16 +38,6 @@ cli_downloaders_pick:
 #   - "{{ ansible_user | default(ansible_user_id) }}"
 docker_managed: false
 docker_users:
-
-# ===================
-#       EDITORS
-# ===================
-# Installs: nano, neovim, vim
-# -----
-# editors_pick:   # <- Only install packages, or empty to install all
-#   - vim
-editors_managed: false
-editors_pick:
 
 # =================
 #       ENVAR
@@ -69,6 +49,19 @@ editors_pick:
 #   - root
 envar_managed: false
 envar_users:
+
+# ===============
+#       FZF
+# ===============
+# Versions: https://github.com/junegunn/fzf/releases
+# fzf_version better leave as is or change to a specific version
+# -----
+# fzf_users:  # <- Existing users to have access to fzf
+#   - "{{ ansible_user_id }}"
+#   - root
+fzf_managed: false
+fzf_version: "{{ bookshelf_const_version.fzf }}"
+fzf_users:
 
 # ===============
 #       GIT
@@ -146,6 +139,20 @@ tmux_sane_users:
 #     ...
 tmuxp_managed: false
 tmuxp_conf:
+
+# ====================
+#       TOOLBELT
+# ====================
+# * tar
+# * nano, neovim, vim   (editors)
+# * curl, wget          (downloaders)
+# -----
+# toolbelt_pick:    # <- Install only a fraction, or empty to install all
+#   - nano          # <- curl will be installed
+#   - downloaders   # <- All downloaders will be installed
+#   - tar           # <- tar will be installed
+toolbelt_managed: false
+toolbelt_pick:
 
 
 

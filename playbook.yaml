@@ -11,21 +11,17 @@
       tags: [bash]
       when: bash_managed | default(false)
 
-    - role: cli-downloaders
-      tags: [cli-downloaders]
-      when: cli_downloaders_managed | default(false)
-
     - role: docker
       tags: [docker]
       when: docker_managed | default(false)
 
-    - role: editors
-      tags: [editors]
-      when: editors_managed | default(false)
-
     - role: envar
       tags: [envar]
       when: envar_managed | default(false)
+
+    - role: fzf
+      tags: [fzf, upgradable]
+      when: fzf_managed | default(false)
 
     - role: git
       tags: [git]
@@ -54,6 +50,10 @@
     - role: tmuxp
       tags: [tmuxp]
       when: tmuxp_managed | default(false)
+
+    - role: toolbelt
+      tags: [toolbelt]
+      when: toolbelt_managed | default(false)
 
     - role: upgrade
       tags: [upgrade, upgradable, never]

@@ -1,15 +1,15 @@
 ---
 - name: Epel-release for neovim   # <- 'include' to reduce noise when no neovim
   ansible.builtin.import_role: { name: epel-release }
-  when: editors_packages_todo | intersect(['neovim']) | length > 0
+  when: toolbelt_packages_todo | intersect(['neovim']) | length > 0
 
 - name: Install
   ansible.builtin.package:
-    name: "{{ editors_packages_todo }}"
+    name: "{{ toolbelt_packages_todo }}"
   become: true
 
 - name: Mark packages done
   ansible.builtin.set_fact:
-    editors_packages_done: "{{
-        editors_packages_todo + (editors_packages_done | default([]))
+    toolbelt_packages_done: "{{
+        toolbelt_packages_todo + (toolbelt_packages_done | default([]))
       }}"

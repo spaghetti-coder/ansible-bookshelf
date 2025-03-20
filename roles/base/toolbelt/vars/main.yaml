@@ -1,0 +1,23 @@
+---
+toolbelt_sections:
+  downloaders:
+    - curl
+    - wget
+  editors:
+    - nano
+    - neovim
+    - vim
+
+toolbelt_all: "{{
+    ['tar'] \
+    + toolbelt_sections['downloaders'] \
+    + toolbelt_sections['editors']
+  }}"
+
+_toolbelt_pick: "{{ toolbelt_pick | default([], true) }}"
+
+toolbelt_packages: "{{ (_toolbelt_pick | length < 1) | ternary(toolbelt_all,
+    (_toolbelt_pick | intersect(toolbelt_all)) +
+      (toolbelt_sections | dict2items | selectattr('key', 'in', _toolbelt_pick) | map(attribute='value'))) \
+    | flatten | unique
+  }}"

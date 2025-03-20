@@ -1,6 +1,0 @@
----
-- name: Install
-  ansible.builtin.package:
-    name: "{{ cli_downloaders_packages | default(omit, true) }}"
-  become: true
-  when: (cli_downloaders_packages | length) > 0

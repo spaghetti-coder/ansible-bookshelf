@@ -1,0 +1,4 @@
+---
+fzf_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+fzf_dl_url: https://github.com/junegunn/fzf/releases/download/v{{ fzf_version }}/fzf-{{ fzf_version }}-linux_{{ fzf_arch }}.tar.gz
+fzf_bin_file: "/opt/junegunn/fzf/fzf"

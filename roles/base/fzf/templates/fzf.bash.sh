@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+_iife_fzf() {
+  unset _iife_fzf
+
+  local bin_file="{{ fzf_bin_file }}"
+
+  # Not installed
+  ! [ -f "${bin_file}" ] && return
+
+  # Add to path
+  local fzf_dir; fzf_dir="$(dirname -- "${bin_file}")"
+  [[ ":${PATH}:" == *"${fzf_dir}"* ]] || PATH+="${PATH:+:}${fzf_dir}"
+
+  # Set up fzf key bindings and fuzzy completion
+  eval "$(fzf --bash)"
+
+  local -a opts=(
+    --height "'100%'"
+    --border
+    --history-size 999999
+    # https://github.com/junegunn/fzf/issues/577#issuecomment-225953097
+    --preview "'echo {}'" --bind ctrl-p:toggle-preview
+    --preview-window down:50%:wrap
+  )
+
+  FZF_DEFAULT_OPTS+="${FZF_DEFAULT_OPTS:+ }${opts[*]}"
+}; _iife_fzf

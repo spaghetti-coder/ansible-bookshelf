@@ -1,0 +1,30 @@
+---
+- name: Toolbelt
+  ansible.builtin.import_role: { name: toolbelt }
+  vars:
+    toolbelt_pick: ['tar']  # <- unarchive module requirement
+
+- name: Privileged
+  become: true
+  block:
+    - name: Create directories
+      ansible.builtin.file:
+        path: "{{ fzf_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Install
+      ansible.builtin.unarchive:
+        src: "{{ fzf_dl_url }}"
+        dest: "{{ fzf_dir }}"
+        remote_src: true
+
+    - name: Install hook
+      ansible.builtin.template:
+        src: fzf.bash.sh
+        dest: "{{ fzf_hook }}"
+        mode: '0644'
+
+- name: Mark install done
+  ansible.builtin.set_fact:
+    fzf_install_done: true

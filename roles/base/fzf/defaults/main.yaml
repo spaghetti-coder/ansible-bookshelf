@@ -1,0 +1,10 @@
+---
+# Versions: https://github.com/junegunn/fzf/releases
+# fzf_version better leave as is or change to a specific version
+# -----
+# fzf_users:  # <- Existing users to have access to fzf
+#   - "{{ ansible_user_id }}"
+#   - root
+fzf_managed: false
+fzf_version: "{{ bookshelf_const_version.fzf }}"
+fzf_users:
