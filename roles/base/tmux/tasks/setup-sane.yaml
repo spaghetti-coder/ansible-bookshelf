@@ -13,7 +13,7 @@
     - name: Source conf files to .tmux.conf
       ansible.builtin.lineinfile:
         path: ~/.tmux.conf
-        line: source {{ item }}
+        line: source-file {{ item }}
         create: true
         mode: '0600'
       loop:
@@ -23,8 +23,8 @@
     - name: Source appendix .tmux.conf
       ansible.builtin.lineinfile:
         path: ~/.tmux.conf
-        line: "source {{ tmux_conf_dir }}/plugins.appendix.conf   # <- Must be source after plugins setup"
-        insertafter: '^source {{ tmux_conf_dir }}/plugins.conf$'
+        line: "source-file {{ tmux_conf_dir }}/plugins.appendix.conf   # <- Must be source after plugins setup"
+        insertafter: '^source-file {{ tmux_conf_dir }}/plugins.conf$'
 
     - name: Install plugins
       ansible.builtin.command:
