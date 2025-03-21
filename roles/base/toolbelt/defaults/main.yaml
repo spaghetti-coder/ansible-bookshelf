@@ -1,11 +1,19 @@
 ---
-# * tar
-# * nano, neovim, vim   (editors)
-# * curl, wget          (downloaders)
+# Contains very basic and often needed tools that for most often usage don't
+# require any additional configuration. Some of the tools are categorized and
+# the categories can be used to install the whole set of underlying tools.
 # -----
-# toolbelt_pick:    # <- Install only a fraction, or empty to install all
-#   - nano          # <- curl will be installed
-#   - downloaders   # <- All downloaders will be installed
-#   - tar           # <- tar will be installed
+# * editors:      nano, neovim, vim
+# * downloaders:  curl, wget
+# * htop, jq, sensors, speedtest, tar
+# -----
+# toolbelt_pick:    # <- Install only a fraction. Leave empty to install all
+#   - nano            # <- curl will be installed
+#   - downloaders     # <- All downloaders will be installed
+#   - tar             # <- tar will be installed
+# toolbelt_exclude: # <- Opposed to toolbelt_pick, higher priority than toolbelt_pick
+#   - wget            # <- In conjunction with toolbelt_pick above, only curl will be installed
+#   - editors         # <- Dispite toolbelt_pick above, nano will not be installed
 toolbelt_managed: false
 toolbelt_pick:
+toolbelt_exclude:

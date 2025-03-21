@@ -1,5 +1,0 @@
----
-- name: Load tasks
-  ansible.builtin.include_tasks:
-    file: tasks.yaml
-  when: not (htop_done | default(false))

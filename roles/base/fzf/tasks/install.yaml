@@ -2,7 +2,8 @@
 - name: Toolbelt
   ansible.builtin.import_role: { name: toolbelt }
   vars:
-    toolbelt_pick: ['tar']  # <- unarchive module requirement
+    toolbelt_pick: ['tar']  # <- 'unarchive' module requirement
+    toolbelt_exclude: []    # <- Ensure it's not excluded somewhere else
 
 - name: Privileged
   become: true

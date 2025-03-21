@@ -1,5 +1,0 @@
----
-- name: Install
-  ansible.builtin.package:
-    name: "{{ sensors_pkg_name[factum_os_family] | default(sensors_pkg_name['_default']) }}"
-  become: true

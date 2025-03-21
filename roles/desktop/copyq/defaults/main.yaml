@@ -1,6 +1,7 @@
 ---
-# For platforms different from ubuntu probably better flatpak
-# copyq_install_method - pm (package manager) or flatpak
+# For platforms different from ubuntu probably better flatpak.
+# -----
+# copyq_install_method: pm  # <- For package manager or 'flatpak'
 # -----
 # copyq_users:  # <- Existing users to have copyq autostarted
 #   - "{{ ansible_user | default(ansible_user_id) }}"

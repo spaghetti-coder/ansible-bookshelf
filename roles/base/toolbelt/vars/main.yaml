@@ -1,4 +1,5 @@
 ---
+# Definition of all supported packages
 toolbelt_sections:
   downloaders:
     - curl
@@ -9,15 +10,39 @@ toolbelt_sections:
     - vim
 
 toolbelt_all: "{{
-    ['tar'] \
+    ['htop', 'jq', 'sensors', 'speedtest', 'tar'] \
     + toolbelt_sections['downloaders'] \
     + toolbelt_sections['editors']
   }}"
 
 _toolbelt_pick: "{{ toolbelt_pick | default([], true) }}"
 
-toolbelt_packages: "{{ (_toolbelt_pick | length < 1) | ternary(toolbelt_all,
+# All picked packages
+toolbelt_packages_picked: "{{ (_toolbelt_pick | length < 1) | ternary(toolbelt_all,
     (_toolbelt_pick | intersect(toolbelt_all)) +
       (toolbelt_sections | dict2items | selectattr('key', 'in', _toolbelt_pick) | map(attribute='value'))) \
-    | flatten | unique
+    | flatten
+  }}"
+
+_toolbelt_exclude: "{{ toolbelt_exclude | default([], true) }}"
+
+# All excluded packages
+toolbelt_packages_excluded: "{{ (_toolbelt_exclude | intersect(toolbelt_all)) \
+    + (toolbelt_sections | dict2items | selectattr('key', 'in', _toolbelt_exclude) | map(attribute='value')) \
+    | flatten
+  }}"
+
+# All desired packages, but potentially can include alises
+toolbelt_aliased: "{{
+    toolbelt_packages_picked | difference(toolbelt_packages_excluded) | unique
+  }}"
+
+toolbelt_aliases:
+  speedtest: speedtest-cli
+  sensors: "{{ 'lm_sensors' if factum_os_family in ['redhat'] else 'lm-sensors' }}"
+
+# Desired packages list, unique, unaliased
+toolbelt_packages: "{{ (toolbelt_aliased \
+    + (toolbelt_aliases | dict2items | selectattr('key', 'in', toolbelt_aliased) | map(attribute='value'))) \
+    | difference(toolbelt_aliases.keys()) | unique
   }}"
