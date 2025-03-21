@@ -1,7 +1,14 @@
 ---
 bookshelf_const_version:
+  #
+  # BASE
+  #
+  # https://github.com/FiloSottile/age/releases
+  age: v1.2.1
   # https://github.com/junegunn/fzf/releases
   fzf: '0.60.3'
+  #
+  # SERVICE
   #
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
   nginx_proxy: 1.7.0-alpine

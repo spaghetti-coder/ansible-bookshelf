@@ -25,6 +25,15 @@ ansible_become_password: changeme
 ###       BASE       ###
 ########################
 
+# ===============
+#       AGE
+# ===============
+# Versions: https://github.com/FiloSottile/age/releases
+# age_version better leave as is or change to a specific version
+# -----
+age_managed: false
+age_version: "{{ bookshelf_const_version.age }}"
+
 # ================
 #       BASH
 # ================

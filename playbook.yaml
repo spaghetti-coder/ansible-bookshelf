@@ -7,6 +7,10 @@
 - name: BaseBook
   hosts: all
   roles:
+    - role: age
+      tags: [age]
+      when: age_managed | default(false)
+
     - role: bash
       tags: [bash]
       when: bash_managed | default(false)

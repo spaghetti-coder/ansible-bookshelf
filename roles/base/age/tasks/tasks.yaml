@@ -1,0 +1,36 @@
+---
+- name: Toolbelt
+  ansible.builtin.import_role: { name: toolbelt }
+  vars:
+    toolbelt_pick: ['tar']  # <- 'unarchive' module requirement
+    toolbelt_exclude: []    # <- Ensure it's not excluded somewhere else
+
+- name: Privileged
+  become: true
+  block:
+    - name: Create directory
+      ansible.builtin.file:
+        path: "{{ age_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Install
+      ansible.builtin.unarchive:
+        src: "{{ age_dl_url }}"
+        dest: "{{ age_dir }}"
+        extra_opts:
+          - --strip-components=1
+        remote_src: true
+
+    - name: Create symlinks
+      ansible.builtin.file:
+        path: /usr/bin/{{ item }}
+        src: "{{ age_dir }}/{{ item }}"
+        state: link
+      loop:
+        - age
+        - age-keygen
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    age_done: true
