@@ -14,3 +14,5 @@ bookshelf_const_version:
   nginx_proxy: 1.7.0-alpine
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
   nginx_proxy_manager: 2.12.3
+
+bookshelf_const_compose_dir: ~/docker

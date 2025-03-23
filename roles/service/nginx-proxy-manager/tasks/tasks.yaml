@@ -7,7 +7,7 @@
   become: true
   become_user: "{{ nginx_proxy_manager_owner }}"
   vars:
-    compose_dir: "{{ nginx_proxy_manager_compose_dir | default('~/docker/nginx-proxy-manager') }}"
+    compose_dir: "{{ nginx_proxy_manager_compose_dir | default(bookshelf_const_compose_dir + '/nginx-proxy-manager', true) }}"
     extra_envfile: "{{ nginx_proxy_manager_extra_envfile }}"
     conf_dir: "{{ nginx_proxy_manager_conf_dir }}"
     service_state: "{{ nginx_proxy_manager_enabled | ternary('present', 'absent') }}"
@@ -50,6 +50,8 @@
         src: compose.yaml.j2
         dest: "{{ compose_dir }}/compose.yaml"
         mode: '0600'
+      vars:
+        version: "{{ nginx_proxy_manager_version | default(bookshelf_const_version.nginx_proxy_manager, true) }}"
 
     - name: Apply service state
       community.docker.docker_compose_v2:

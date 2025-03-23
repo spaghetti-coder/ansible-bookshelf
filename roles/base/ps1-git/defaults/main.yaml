@@ -3,7 +3,7 @@
 # Doesn't require git
 # -----
 # ps1_git_users:  # <- Existing users to have this PS1
-#   - "{{ ansible_user | default(ansible_user_id) }}"
+#   - "{{ ansible_user_id }}"
 #   - root
 ps1_git_managed: false
 ps1_git_users:

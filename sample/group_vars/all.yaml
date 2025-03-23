@@ -44,7 +44,7 @@ bash_completion: false
 #       DOCKER
 # ==================
 # docker_users:   # <- Existing users to be added to docker group
-#   - "{{ ansible_user | default(ansible_user_id) }}"
+#   - "{{ ansible_user_id }}"
 docker_managed: false
 docker_users:
 
@@ -54,7 +54,7 @@ docker_users:
 # Installs envar for bash
 # -----
 # envar_users:  # <- Existing users to have access to envar
-#   - "{{ ansible_user | default(ansible_user_id) }}"
+#   - "{{ ansible_user_id }}"
 #   - root
 envar_managed: false
 envar_users:
@@ -94,7 +94,7 @@ git_extraconf:
 # Doesn't require git
 # -----
 # ps1_git_users:  # <- Existing users to have this PS1
-#   - "{{ ansible_user | default(ansible_user_id) }}"
+#   - "{{ ansible_user_id }}"
 #   - root
 ps1_git_managed: false
 ps1_git_users:
@@ -104,7 +104,7 @@ ps1_git_users:
 # =================
 # Not supported by Alpine
 # -----
-# snapd_managed: "{{ not factum_os_family in ['alpine'] }}"   # <- All hosts but Alpines
+# snapd_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- All hosts but Alpines
 # -----
 snapd_managed: false
 
@@ -121,7 +121,7 @@ tmux_sane_users:
 # =================
 # Not supported by Alpine
 # -----
-# tmuxp_managed: "{{ not factum_os_family in ['alpine'] }}"   # <- All hosts but Alpines
+# tmuxp_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- All hosts but Alpines
 # -----
 # tmuxp_conf:
 #   - owner: "{{ ansible_user_id }}"
@@ -177,10 +177,10 @@ toolbelt_exclude:
 # nginx_proxy_manager_extra_envfile: "{{ playbook_dir }}/resources/npm/extra.env.j2"
 nginx_proxy_manager_managed: false
 nginx_proxy_manager_enabled: false
-nginx_proxy_manager_version: "{{ bookshelf_const_version.nginx_proxy_manager }}"
-nginx_proxy_manager_owner: "{{ ansible_user | default(ansible_user_id) }}"
+nginx_proxy_manager_version:        # Leave blank to leverage bookshelf configuration
+nginx_proxy_manager_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+nginx_proxy_manager_owner: "{{ ansible_user_id }}"
 nginx_proxy_manager_conf_dir: ~/conf/nginx-proxy-manager
-# nginx_proxy_manager_compose_dir: ~/docker/nginx-proxy-manager # <- Better leave automanaged, or uncomment and edit
 nginx_proxy_manager_service_name: nginx-proxy-manager
 nginx_proxy_manager_hostname: "{{ nginx_proxy_manager_service_name }}"
 nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"
@@ -196,9 +196,9 @@ nginx_proxy_manager_extra_envfile:
 # -----
 nginx_proxy_managed: false
 nginx_proxy_enabled: false
-nginx_proxy_version: "{{ bookshelf_const_version.nginx_proxy }}"
-nginx_proxy_owner: "{{ ansible_user | default(ansible_user_id) }}"
-# nginx_proxy_compose_dir: ~/docker/nginx-proxy # <- Better leave automanaged, or uncomment and edit
+nginx_proxy_version:        # Leave blank to leverage bookshelf configuration
+nginx_proxy_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+nginx_proxy_owner: "{{ ansible_user_id }}"
 nginx_proxy_service_name: nginx-proxy
 nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
 nginx_proxy_http_port: 80
@@ -222,7 +222,7 @@ audacity_managed: false
 # copyq_install_method: pm  # <- For package manager or 'flatpak'
 # -----
 # copyq_users:  # <- Existing users to have copyq autostarted
-#   - "{{ ansible_user | default(ansible_user_id) }}"
+#   - "{{ ansible_user_id }}"
 copyq_managed: false
 copyq_install_method: pm
 copyq_users:
@@ -250,7 +250,7 @@ sublime_merge: false
 #       TEAMS
 # =================
 # teams_users:  # <- Existing users to have teams autostarted
-#   - "{{ ansible_user | default(ansible_user_id) }}"
+#   - "{{ ansible_user_id }}"
 teams_managed: false
 teams_users:
 
@@ -258,7 +258,7 @@ teams_users:
 #       VIBER
 # =================
 # viber_users:  # <- Existing users to have viber autostarted
-#   - "{{ ansible_user | default(ansible_user_id) }}"
+#   - "{{ ansible_user_id }}"
 viber_managed: false
 viber_users:
 

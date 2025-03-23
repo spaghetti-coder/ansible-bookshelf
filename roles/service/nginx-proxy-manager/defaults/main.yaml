@@ -6,10 +6,10 @@
 # nginx_proxy_manager_extra_envfile: "{{ playbook_dir }}/resources/npm/extra.env.j2"
 nginx_proxy_manager_managed: false
 nginx_proxy_manager_enabled: false
-nginx_proxy_manager_version: "{{ bookshelf_const_version.nginx_proxy_manager }}"
-nginx_proxy_manager_owner: "{{ ansible_user | default(ansible_user_id) }}"
+nginx_proxy_manager_version:        # Leave blank to leverage bookshelf configuration
+nginx_proxy_manager_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+nginx_proxy_manager_owner: "{{ ansible_user_id }}"
 nginx_proxy_manager_conf_dir: ~/conf/nginx-proxy-manager
-# nginx_proxy_manager_compose_dir: ~/docker/nginx-proxy-manager # <- Better leave automanaged, or uncomment and edit
 nginx_proxy_manager_service_name: nginx-proxy-manager
 nginx_proxy_manager_hostname: "{{ nginx_proxy_manager_service_name }}"
 nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"

@@ -2,7 +2,7 @@
 services:
   nginx-proxy-manager:
     # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
-    image: jc21/nginx-proxy-manager:{{ nginx_proxy_manager_version }}
+    image: jc21/nginx-proxy-manager:{{ version }}
     container_name: "{{ nginx_proxy_manager_service_name }}"
     restart: unless-stopped
     hostname: "{{ nginx_proxy_manager_hostname }}"
@@ -23,6 +23,7 @@ services:
 {% endif %}
 {% if nginx_proxy_enabled | default(false) %}
     environment:
+      # Meta data for nginx-proxy
       - VIRTUAL_HOST={{ nginx_proxy_manager_vhost }}
       - VIRTUAL_PORT=81
 

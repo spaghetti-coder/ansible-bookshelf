@@ -1,7 +1,7 @@
 ---
 # Not supported by Alpine
 # -----
-# tmuxp_managed: "{{ not factum_os_family in ['alpine'] }}"   # <- All hosts but Alpines
+# tmuxp_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- All hosts but Alpines
 # -----
 # tmuxp_conf:
 #   - owner: "{{ ansible_user_id }}"

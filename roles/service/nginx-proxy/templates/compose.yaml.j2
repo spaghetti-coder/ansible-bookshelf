@@ -2,7 +2,7 @@
 services:
   nginx-proxy:
     # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
-    image: jwilder/nginx-proxy:{{ nginx_proxy_version }}
+    image: jwilder/nginx-proxy:{{ version }}
     container_name: "{{ nginx_proxy_service_name }}"
     restart: unless-stopped
     hostname: "{{ nginx_proxy_hostname }}"
