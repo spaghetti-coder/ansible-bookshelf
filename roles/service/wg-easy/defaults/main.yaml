@@ -1,0 +1,26 @@
+# Versions:
+# * https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
+# Options description:
+# * https://github.com/wg-easy/wg-easy/tree/production?tab=readme-ov-file#options
+# * https://github.com/wg-easy/wg-easy/blob/production/How_to_generate_an_bcrypt_hash.md
+# -----
+wg_easy_managed: false
+wg_easy_enabled: false
+wg_easy_version:        # Leave blank to leverage bookshelf configuration
+wg_easy_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+wg_easy_owner: "{{ ansible_user_id }}"
+wg_easy_conf_dir: ~/conf/wg-easy
+wg_easy_service_name: wg-easy
+wg_easy_hostname: "{{ wg_easy_service_name }}"
+wg_easy_vhost: "{{ wg_easy_service_name }}.domain.local"
+# Defaults to defined in WG-Easy. Ex.: '8.4.4.8,10.0.0.1'
+wg_easy_dns:
+# Defaults to no-pass login. See options description for how to generate
+wg_easy_pass_hash:
+# Required. Ex.: 'my.vpn-server.domain.com' or '8.8.8.8'
+wg_easy_host:
+wg_easy_web_ui_port:    # Leave blank to leverage bookshelf configuration
+wg_easy_udp_port: 51820
+# Optional path to extra configuration .env.j2 file
+# Ex.: "{{ playbook_dir }}/resources/wg-easy/extra.env.j2"
+wg_easy_extra_envfile:
