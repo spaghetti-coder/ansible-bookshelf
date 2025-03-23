@@ -29,10 +29,9 @@ ansible_become_password: changeme
 #       AGE
 # ===============
 # Versions: https://github.com/FiloSottile/age/releases
-# age_version better leave as is or change to a specific version
 # -----
 age_managed: false
-age_version: "{{ bookshelf_const_version.age }}"
+age_version:    # Leave blank to leverage bookshelf configuration
 
 # ================
 #       BASH
@@ -63,13 +62,12 @@ envar_users:
 #       FZF
 # ===============
 # Versions: https://github.com/junegunn/fzf/releases
-# fzf_version better leave as is or change to a specific version
 # -----
 # fzf_users:  # <- Existing users to have access to fzf
 #   - "{{ ansible_user_id }}"
 #   - root
 fzf_managed: false
-fzf_version: "{{ bookshelf_const_version.fzf }}"
+fzf_version:    # Leave blank to leverage bookshelf configuration
 fzf_users:
 
 # ===============
@@ -201,7 +199,9 @@ nginx_proxy_compose_dir:    # Unless you know ..., leave blank to leverage books
 nginx_proxy_owner: "{{ ansible_user_id }}"
 nginx_proxy_service_name: nginx-proxy
 nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
-nginx_proxy_http_port: 80
+nginx_proxy_http_port:      # Ex.: '80', no HTTP when empty
+nginx_proxy_https_port:     # Ex.: '443', no HTTPS when empty
+nginx_proxy_certs_dir:      # Path to certs on the managed machine. Works paired with HTTPS
 
 # ===================
 #       WG-EASY
@@ -225,7 +225,7 @@ wg_easy_vhost: "{{ wg_easy_service_name }}.domain.local"
 wg_easy_dns:
 # Defaults to no-pass login. See options description for how to generate
 wg_easy_pass_hash:
-# Required. Ex.: 'my.vpn-server.domain.com' or '8.8.8.8'
+# Required. Ex.: 'my-vpn-server.public-domain.com' or '112.2.84.234'
 wg_easy_host:
 wg_easy_web_ui_port:    # Leave blank to leverage bookshelf configuration
 wg_easy_udp_port: 51820

@@ -1,2 +1,2 @@
 ---
-nginx_proxy_net: nginx-proxy
+nginx_proxy_net: nginx-proxy    # <- Meant to be used by other services

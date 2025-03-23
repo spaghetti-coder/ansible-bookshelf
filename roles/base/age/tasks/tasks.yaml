@@ -18,6 +18,8 @@
       ansible.builtin.unarchive:
         src: "{{ age_dl_url }}"
         dest: "{{ age_dir }}"
+        owner: root
+        group: root
         extra_opts:
           - --strip-components=1
         remote_src: true

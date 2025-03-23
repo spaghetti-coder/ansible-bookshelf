@@ -1,3 +1,4 @@
+---
 # Versions:
 # * https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
 # Options description:
@@ -17,7 +18,7 @@ wg_easy_vhost: "{{ wg_easy_service_name }}.domain.local"
 wg_easy_dns:
 # Defaults to no-pass login. See options description for how to generate
 wg_easy_pass_hash:
-# Required. Ex.: 'my.vpn-server.domain.com' or '8.8.8.8'
+# Required. Ex.: 'my-vpn-server.public-domain.com' or '112.2.84.234'
 wg_easy_host:
 wg_easy_web_ui_port:    # Leave blank to leverage bookshelf configuration
 wg_easy_udp_port: 51820

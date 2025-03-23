@@ -11,4 +11,6 @@ nginx_proxy_compose_dir:    # Unless you know ..., leave blank to leverage books
 nginx_proxy_owner: "{{ ansible_user_id }}"
 nginx_proxy_service_name: nginx-proxy
 nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
-nginx_proxy_http_port: 80
+nginx_proxy_http_port:      # Ex.: '80', no HTTP when empty
+nginx_proxy_https_port:     # Ex.: '443', no HTTPS when empty
+nginx_proxy_certs_dir:      # Path to certs on the managed machine. Works paired with HTTPS

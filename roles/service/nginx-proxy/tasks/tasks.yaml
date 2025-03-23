@@ -21,13 +21,12 @@
         src: compose.yaml.j2
         dest: "{{ compose_dir }}/compose.yaml"
         mode: '0600'
-      vars:
-        version: "{{ nginx_proxy_version | default(bookshelf_const_version.nginx_proxy, true) }}"
 
     - name: Apply service state
       community.docker.docker_compose_v2:
         project_src: "{{ compose_dir }}"
         state: "{{ service_state }}"
+        remove_orphans: true
 
 - name: Mark done
   ansible.builtin.set_fact:

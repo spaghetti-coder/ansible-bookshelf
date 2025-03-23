@@ -1,3 +1,5 @@
+{% set version = (wg_easy_version | default(bookshelf_const_version.wg_easy, true)) %}
+{% set web_ui_port = (wg_easy_web_ui_port | default(bookshelf_const_port.wg_easy.web_ui, true)) %}
 ---
 services:
   wg-easy:
@@ -26,7 +28,9 @@ services:
       - net.ipv4.conf.all.src_valid_mark=1
     environment:
       - WG_PORT={{ wg_easy_udp_port }}       # <- The port exposed to the wild
-{% if nginx_proxy_enabled | default(false) %}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge    # <- Avoid creating default compose network
+{% else %}
       - VIRTUAL_HOST={{ wg_easy_vhost }}
       - VIRTUAL_PORT=51821
     networks:

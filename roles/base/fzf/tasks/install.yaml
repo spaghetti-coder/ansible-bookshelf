@@ -18,11 +18,13 @@
       ansible.builtin.unarchive:
         src: "{{ fzf_dl_url }}"
         dest: "{{ fzf_dir }}"
+        owner: root
+        group: root
         remote_src: true
 
     - name: Install hook
       ansible.builtin.template:
-        src: fzf.bash.sh
+        src: fzf.bash.sh.j2
         dest: "{{ fzf_hook }}"
         mode: '0644'
 

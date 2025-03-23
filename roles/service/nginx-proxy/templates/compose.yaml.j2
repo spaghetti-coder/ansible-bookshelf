@@ -1,3 +1,6 @@
+{% set version = (nginx_proxy_version | default(bookshelf_const_version.nginx_proxy, true)) %}
+{% set http_port = nginx_proxy_http_port %}
+{% set https_port = nginx_proxy_https_port %}
 ---
 services:
   nginx-proxy:
@@ -10,8 +13,18 @@ services:
       - "{{ nginx_proxy_net }}"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+{% if nginx_proxy_certs_dir %}
+      - {{ nginx_proxy_certs_dir }}:/etc/nginx/certs
+{% endif %}
+{% if http_port or https_port %}
     ports:
-      - "{{ nginx_proxy_http_port }}:80"
+{% if http_port %}
+      - "{{ http_port }}:80"
+{% endif %}
+{% if https_port %}
+      - "{{ https_port }}:443"
+{% endif %}
+{% endif %}{# http_port or https_port #}
 
 networks:
   "{{ nginx_proxy_net }}":

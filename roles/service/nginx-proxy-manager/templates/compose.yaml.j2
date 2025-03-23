@@ -1,3 +1,4 @@
+{% set version = (nginx_proxy_manager_version | default(bookshelf_const_version.nginx_proxy_manager, true)) %}
 ---
 services:
   nginx-proxy-manager:

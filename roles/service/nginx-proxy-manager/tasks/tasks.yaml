@@ -7,7 +7,6 @@
   become: true
   become_user: "{{ nginx_proxy_manager_owner }}"
   vars:
-    version: "{{ nginx_proxy_manager_version | default(bookshelf_const_version.nginx_proxy_manager, true) }}"
     compose_dir: "{{ nginx_proxy_manager_compose_dir | default(bookshelf_const_compose_dir + '/nginx-proxy-manager', true) }}"
     extra_envfile: "{{ nginx_proxy_manager_extra_envfile }}"
     conf_dir: "{{ nginx_proxy_manager_conf_dir }}"
@@ -56,6 +55,7 @@
       community.docker.docker_compose_v2:
         project_src: "{{ compose_dir }}"
         state: "{{ service_state }}"
+        remove_orphans: true
 
 - name: Mark done
   ansible.builtin.set_fact:

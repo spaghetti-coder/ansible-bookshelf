@@ -7,14 +7,12 @@
   become: true
   become_user: "{{ wg_easy_owner }}"
   vars:
-    version: "{{ wg_easy_version | default(bookshelf_const_version.wg_easy, true) }}"
     compose_dir: "{{ wg_easy_compose_dir | default(bookshelf_const_compose_dir + '/wg-easy', true) }}"
     extra_envfile: "{{ wg_easy_extra_envfile }}"
     conf_dir: "{{ wg_easy_conf_dir }}"
     service_state: "{{ wg_easy_enabled | ternary('present', 'absent') }}"
     owner_uid: "{{ getent_passwd[wg_easy_owner].1 }}"
     owner_gid: "{{ getent_passwd[wg_easy_owner].2 }}"
-    web_ui_port: "{{ wg_easy_web_ui_port | default(bookshelf_const_port.wg_easy.web_ui, true) }}"
   block:
     - name: Create compose directory
       ansible.builtin.file:
@@ -63,6 +61,7 @@
       community.docker.docker_compose_v2:
         project_src: "{{ compose_dir }}"
         state: "{{ service_state }}"
+        remove_orphans: true
 
 - name: Mark done
   ansible.builtin.set_fact:
