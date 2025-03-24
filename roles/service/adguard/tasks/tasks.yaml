@@ -1,0 +1,66 @@
+---
+- name: Docker
+  ansible.builtin.import_role: { name: docker }
+  vars: { docker_users: ["{{ adguard_owner }}"] }
+
+- name: Compose
+  become: true
+  become_user: "{{ adguard_owner }}"
+  vars:
+    compose_dir: "{{ adguard_compose_dir | default(bookshelf_const_compose_dir + '/adguard', true) }}"
+    conf_dir: "{{ adguard_conf_dir }}"
+    extra_envfile: "{{ adguard_extra_envfile }}"
+    service_state: "{{ adguard_enabled | ternary('present', 'absent') }}"
+  block:
+    - name: Create compose directory
+      ansible.builtin.file:
+        path: "{{ compose_dir }}"
+        state: directory
+        mode: '0700'
+
+    - name: Create main.env
+      ansible.builtin.template:
+        src: main.env.j2
+        dest: "{{ compose_dir }}/main.env"
+        mode: '0600'
+
+    - name: Create secret.env
+      ansible.builtin.template:
+        src: secret.env.j2
+        dest: "{{ compose_dir }}/secret.env"
+        mode: '0600'
+
+    - name: Remove obsolete extra.env
+      ansible.builtin.file:
+        path: "{{ compose_dir }}/extra.env"
+        state: absent
+      when: not extra_envfile
+
+    - name: Create extra.env
+      ansible.builtin.template:
+        src: "{{ extra_envfile }}"
+        dest: "{{ compose_dir }}/extra.env"
+        mode: '0600'
+      when: extra_envfile
+
+    - name: Create config directory
+      ansible.builtin.file:
+        path: "{{ conf_dir }}"
+        state: directory
+        mode: '0700'
+
+    - name: Create compose.yaml
+      ansible.builtin.template:
+        src: compose.yaml.j2
+        dest: "{{ compose_dir }}/compose.yaml"
+        mode: '0600'
+
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    adguard_done: true
