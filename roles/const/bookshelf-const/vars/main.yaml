@@ -10,15 +10,22 @@ bookshelf_const_version:
   #
   # SERVICE
   #
+  # https://hub.docker.com/r/adguard/adguardhome/tags
+  adguard: v0.107.59
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
   nginx_proxy: 1.7.0-alpine
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
   nginx_proxy_manager: 2.12.3
+  # https://hub.docker.com/r/tailscale/tailscale/tags
+  tailscale: v1.80.3
   # https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
   wg_easy: 14
 
 bookshelf_const_compose_dir: ~/docker
 
 bookshelf_const_port:
+  adguard:
+    web_ui: 8083
+    init_ui: 8084
   wg_easy:
     web_ui: 8082

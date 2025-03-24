@@ -57,6 +57,10 @@
 - name: ServiceBook
   hosts: all
   roles:
+    - role: adguard
+      tags: [adguard, upgradable]
+      when: adguard_managed | default(false)
+
     - role: nginx-proxy
       tags: [nginx-proxy, upgradable]
       when: nginx_proxy_managed | default(false)
