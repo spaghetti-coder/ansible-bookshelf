@@ -1,0 +1,42 @@
+---
+- name: Bash  # <- Required by tailscale-up.sh script
+  ansible.builtin.import_role: { name: bash }
+
+- name: Load OS specific repo
+  ansible.builtin.include_tasks:
+    file: repo.{{ factum_os_family }}-family.yaml
+  when: factum_os_family in ['debian', 'redhat']
+
+- name: Privileged
+  become: true
+  vars:
+    up_script: /usr/local/bin/tailscale-up.sh
+    service_name_map: "{{ tailscale_client_service_name_map }}"
+    service_name: "{{ service_name_map[factum_os_like] | default(service_name_map['_default']) }}"
+  block:
+    - name: Install
+      ansible.builtin.package:
+        name: tailscale
+        state: "{{ (tailscale_client_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
+
+    - name: Enable service
+      ansible.builtin.service:
+        name: "{{ service_name }}"
+        state: started
+        enabled: true
+
+    - name: Install tailscale-up.sh
+      ansible.builtin.copy:
+        src: tailscale-up.sh
+        dest: "{{ up_script }}"
+        mode: '0755'
+
+    - name: Install ts-up shortcut
+      ansible.builtin.file:
+        src: "{{ up_script }}"
+        path: /usr/local/bin/ts-up
+        state: link
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    tailscale_client_done: true

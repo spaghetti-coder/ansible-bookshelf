@@ -1,0 +1,13 @@
+---
+- name: Install repo
+  ansible.builtin.get_url:
+    url: "{{ url }}"
+    dest: /etc/yum.repos.d/tailscale.repo
+    mode: '0644'
+    force: true
+  vars:
+    distro_url_segment: "{{ (factum_os_like == 'centos') | ternary('centos', 'rhel') }}"
+    distro_version: "{{ ansible_distribution_major_version }}"
+    url: https://pkgs.tailscale.com/stable/{{ distro_url_segment }}/{{ distro_version }}/tailscale.repo
+  become: true
+  register: tailscale_client_repo_state

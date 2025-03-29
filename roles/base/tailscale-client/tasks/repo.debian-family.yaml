@@ -1,0 +1,25 @@
+---
+- name: Ppa-deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: ppa-deps }
+
+- name: Tailscale client repo
+  become: true
+  vars:
+    keyfile: "{{ ppa_deps_keyrings_dir }}/tailscale.gpg"
+    codename: "{{ factum_ubuntu_codename | default(ansible_distribution_release) }}"
+    repo_url: https://pkgs.tailscale.com/stable/{{ factum_os_like }}
+    key_url: https://pkgs.tailscale.com/stable/{{ factum_os_like }}/{{ codename }}.noarmor.gpg
+  block:
+    - name: Install signing key
+      ansible.builtin.get_url:
+        url: "{{ key_url }}"
+        dest: "{{ keyfile }}"
+        mode: "0644"
+
+    - name: Install repo
+      ansible.builtin.apt_repository:
+        repo: deb [signed-by={{ keyfile }}] {{ repo_url }} {{ codename }} main
+        state: present
+        filename: tailscale
+        update_cache: true
+      register: tailscale_client_repo_state
