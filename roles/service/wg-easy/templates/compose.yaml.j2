@@ -34,9 +34,9 @@ services:
       - VIRTUAL_HOST={{ wg_easy_vhost }}
       - VIRTUAL_PORT=51821
     networks:
-      - nginx-proxy
+      - {{ nginx_proxy_net }}
 
 networks:
-  nginx-proxy:
+  {{ nginx_proxy_net }}:
     external: true
 {% endif %}{# nginx_proxy_enabled #}
