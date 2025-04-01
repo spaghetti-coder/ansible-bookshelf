@@ -23,18 +23,15 @@ adguard_extra_envfile:
 # allows to configure adguard for a tailnet DNS server under
 # https://tailscale.com/admin/dns -> Nameservers
 #
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+#
 # NOTE 1: Local network is not accessible within tailnet, which means that if i
 # create an adguard DNS rewrite for 'my-site.local' to '192.168.0.20', the site
 # will not be reachable in the tailnet. SOLUTION: deploy another tailscale
 # service with "advertised routes" (https://tailscale.com/kb/1019/subnets)
-#
-# IMPORTANT 1: Auth key is required for initial container run:
-# https://tailscale.com/admin/settings/keys -> 'Generate auth key...'
-#   -> generate single time or reusable
-#
-# IMPORTANT 2: After deployment https://tailscale.com/admin/machines -> 3 dots
-# next to the machine -> Disable key expiry (to avoid re-login to tailscale)
 adguard_tailscaled: false
 adguard_tailscale_version:    # Leave blank to leverage bookshelf configuration
 adguard_tailscale_service_name: "{{ adguard_service_name }}-tailscale"
+# Hostname within tailnet
+adguard_tailscale_ts_hostname: "{{ adguard_tailscale_service_name }}"
 adguard_tailscale_auth_key:

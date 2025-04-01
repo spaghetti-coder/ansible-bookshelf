@@ -197,20 +197,17 @@ adguard_extra_envfile:
 # allows to configure adguard for a tailnet DNS server under
 # https://tailscale.com/admin/dns -> Nameservers
 #
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+#
 # NOTE 1: Local network is not accessible within tailnet, which means that if i
 # create an adguard DNS rewrite for 'my-site.local' to '192.168.0.20', the site
 # will not be reachable in the tailnet. SOLUTION: deploy another tailscale
 # service with "advertised routes" (https://tailscale.com/kb/1019/subnets)
-#
-# IMPORTANT 1: Auth key is required for initial container run:
-# https://tailscale.com/admin/settings/keys -> 'Generate auth key...'
-#   -> generate single time or reusable
-#
-# IMPORTANT 2: After deployment https://tailscale.com/admin/machines -> 3 dots
-# next to the machine -> Disable key expiry (to avoid re-login to tailscale)
 adguard_tailscaled: false
 adguard_tailscale_version:    # Leave blank to leverage bookshelf configuration
 adguard_tailscale_service_name: "{{ adguard_service_name }}-tailscale"
+# Hostname within tailnet
+adguard_tailscale_ts_hostname: "{{ adguard_tailscale_service_name }}"
 adguard_tailscale_auth_key:
 
 # ===============================
@@ -250,6 +247,44 @@ nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
 nginx_proxy_http_port:      # Ex.: '80', no HTTP when empty
 nginx_proxy_https_port:     # Ex.: '443', no HTTPS when empty
 nginx_proxy_certs_dir:      # Path to certs on the managed machine. Works paired with HTTPS
+
+# =====================
+#       TAILSCALE
+# =====================
+# Versions:
+# * https://hub.docker.com/r/tailscale/tailscale/tags
+# -----
+# Meant for tailscale server configuration: https://tailscale.com/kb/1352/servers
+#
+# IMPORTANT 1: Auth key is required for initial container run:
+# https://tailscale.com/admin/settings/keys -> 'Generate auth key...'
+#   -> generate single time or reusable
+#
+# IMPORTANT 2: After deployment https://tailscale.com/admin/machines -> 3 dots
+# next to the machine -> Disable key expiry (to avoid re-login to tailscale)
+#
+# IMPORTANT 3: With changed routes or exit node params service requires a valid
+# auth key, i.e. if it's one-timer new one must be provided
+#
+# NOTE 1: The service is useless unless it's configured for exit node or subnet
+# router. Both need to be confirmed in the machines admin
+tailscale_managed: false
+tailscale_enabled: false
+tailscale_version:          # Leave blank to leverage bookshelf configuration
+tailscale_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
+tailscale_owner: "{{ ansible_user_id }}"
+tailscale_conf_dir: ~/conf/tailscale
+tailscale_service_name: tailscale
+tailscale_hostname: "{{ tailscale_service_name }}"
+# Hostname within tailnet
+tailscale_ts_hostname: "{{ tailscale_service_name }}"
+tailscale_auth_key:
+# Ex.: '192.168.0.0/24,192.168.2.0/24'
+tailscale_routes:
+tailscale_exit_node: false  # Advertise exit node
+# Optional path to extra configuration .env.j2 file
+# Ex.: "{{ playbook_dir }}/resources/tailscale/extra.env.j2"
+tailscale_extra_envfile:
 
 # ===================
 #       WG-EASY

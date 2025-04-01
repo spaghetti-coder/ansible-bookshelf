@@ -1,0 +1,64 @@
+---
+- name: Docker
+  ansible.builtin.import_role: { name: docker }
+  vars: { docker_users: ["{{ tailscale_owner }}"] }
+
+- name: Compose
+  become: true
+  become_user: "{{ tailscale_owner }}"
+  vars:
+    compose_dir: "{{ tailscale_compose_dir | default(bookshelf_const_compose_dir + '/tailscale', true) }}"
+    conf_dir: "{{ tailscale_conf_dir }}"
+    extra_envfile: "{{ tailscale_extra_envfile }}"
+    service_state: "{{ tailscale_enabled | ternary('present', 'absent') }}"
+  block:
+    - name: Create compose directory
+      ansible.builtin.file:
+        path: "{{ compose_dir }}"
+        state: directory
+        mode: '0700'
+
+    - name: Create .env files
+      ansible.builtin.template:
+        src: "{{ item }}.env.j2"
+        dest: "{{ compose_dir }}/{{ item }}.env"
+        mode: '0600'
+      loop:
+        - main
+        - secret
+        - ts-extra
+
+    - name: Remove obsolete extra.env
+      ansible.builtin.file:
+        path: "{{ compose_dir }}/extra.env"
+        state: absent
+      when: not extra_envfile
+
+    - name: Create extra.env
+      ansible.builtin.template:
+        src: "{{ extra_envfile }}"
+        dest: "{{ compose_dir }}/extra.env"
+        mode: '0600'
+      when: extra_envfile
+
+    - name: Create config directory
+      ansible.builtin.file:
+        path: "{{ conf_dir }}"
+        state: directory
+        mode: '0700'
+
+    - name: Create compose.yaml
+      ansible.builtin.template:
+        src: compose.yaml.j2
+        dest: "{{ compose_dir }}/compose.yaml"
+        mode: '0600'
+
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    tailscale_done: true
