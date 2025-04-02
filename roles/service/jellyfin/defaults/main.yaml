@@ -1,0 +1,29 @@
+---
+# Versions:
+# * https://hub.docker.com/r/linuxserver/jellyfin/tags
+# -----
+jellyfin_managed: false
+jellyfin_enabled: false
+jellyfin_version:       # Leave blank to leverage bookshelf configuration
+jellyfin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
+jellyfin_owner: "{{ ansible_user_id }}"
+jellyfin_conf_dir: ~/conf/jellyfin
+jellyfin_data_dir:      # Directory with media files. Required
+jellyfin_service_name: jellyfin
+jellyfin_hostname: "{{ jellyfin_service_name }}"
+jellyfin_vhost: "{{ jellyfin_service_name }}.domain.local"
+jellyfin_web_ui_port:   # Leave blank to leverage bookshelf configuration
+jellyfin_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional path to extra configuration .env.j2 file
+# Ex.: "{{ playbook_dir }}/resources/jellyfin/extra.env.j2"
+jellyfin_extra_envfile:
+# ----------
+# The following settings configure Jellyfin to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+jellyfin_tailscaled: false
+jellyfin_tailscale_version:    # Leave blank to leverage bookshelf configuration
+jellyfin_tailscale_service_name: "{{ jellyfin_service_name }}-tailscale"
+# Hostname within tailnet
+jellyfin_tailscale_ts_hostname: "{{ jellyfin_tailscale_service_name }}"
+jellyfin_tailscale_auth_key:

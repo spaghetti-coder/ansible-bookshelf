@@ -1,0 +1,65 @@
+{% set version = (jellyfin_version | default(bookshelf_const_version.jellyfin, true)) %}
+{% set web_ui_port = (jellyfin_web_ui_port | default(bookshelf_const_port.jellyfin.web_ui, true)) %}
+{% set tailscale_version = (jellyfin_tailscale_version | default(bookshelf_const_version.tailscale, true)) %}
+{% set tailscale_service = 'jellyfin-tailscale' %}
+---
+services:
+  jellyfin:
+    # https://hub.docker.com/r/linuxserver/jellyfin/tags
+    image: linuxserver/jellyfin:{{ version }}
+    container_name: {{ jellyfin_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./main.env
+      - ./secret.env
+{% if extra_envfile %}
+      - ./extra.env
+{% endif %}
+    volumes:
+      - '{{ conf_dir }}:/config'
+      - '{{ data_dir }}:/data'
+    devices:
+      # https://github.com/linuxserver/docker-jellyfin#intelatiamd
+      - /dev/dri:/dev/dri
+{% if jellyfin_tailscaled %}
+    network_mode: service:{{ tailscale_service }}
+
+  {{ tailscale_service }}:
+    # https://hub.docker.com/r/tailscale/tailscale/tags
+    image: tailscale/tailscale:{{ tailscale_version }}
+    container_name: {{ jellyfin_tailscale_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./main.env
+      - ./secret.env
+{% if extra_envfile %}
+      - ./extra.env
+{% endif %}
+    volumes:
+      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+{% endif %}{# jellyfin_tailscaled #}
+    # https://jellyfin.org/docs/general/networking/#port-bindings
+    ports:
+      - '{{ web_ui_port }}:8096'
+      # - 8920:8920     # HTTPS traffic, optional
+      - '{{ bookshelf_const_port.jellyfin.service_discovery }}:1900/udp' # <- Service discovery, optional
+      - '{{ bookshelf_const_port.jellyfin.client_discovery }}:7359/udp' # <- Client discovery, optional
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge    # <- Avoid creating default compose network
+{% else %}
+    hostname: {{ jellyfin_hostname }}
+    networks:
+      - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ jellyfin_vhost }}
+      - VIRTUAL_PORT=8096
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}

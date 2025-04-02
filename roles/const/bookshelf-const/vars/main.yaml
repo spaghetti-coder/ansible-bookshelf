@@ -12,6 +12,8 @@ bookshelf_const_version:
   #
   # https://hub.docker.com/r/adguard/adguardhome/tags
   adguard: v0.107.59
+  # https://hub.docker.com/r/linuxserver/jellyfin/tags
+  jellyfin: 10.10.6
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
   nginx_proxy: 1.7.0-alpine
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
@@ -27,5 +29,9 @@ bookshelf_const_port:
   adguard:
     web_ui: 8083
     init_ui: 8084
+  jellyfin:
+    service_discovery: 1900
+    client_discovery: 7359
+    web_ui: 8081
   wg_easy:
     web_ui: 8082
