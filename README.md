@@ -7,6 +7,7 @@ This a basic playbook and roles collection.
 * [Requirements](#requirements)
 * [Project structure](#project-structure)
 * [Usage](#usage)
+* [Tailscale integration](#tailscale-integration)
 * [Limitations and specifics](#limitations-and-specifics)
 * [Issues](#issues)
 * [Development](#development)
@@ -107,6 +108,14 @@ Ansible managed nodes:
 
 [To top]
 
+## Tailscale integration
+
+Some services have capability to be proxied via tailscale. Mostly these are traffic intensive ones, and they gain in afficiency when routed via tailnet (vs subnet routing).
+
+Tailscale is just my personal preference. I don't get payed from them (wouldn't mind though :smirk:)
+
+[To top]
+
 ## Limitations and specifics
 
 * `base/snapd` role is not supported by Alpine
@@ -174,7 +183,7 @@ curl -fsSL https://github.com/spaghetti-coder/ansible-bookshelf/raw/master/.dev/
   master `# <- Optional tree-ish`
 ```
 
-To sync libraries and tools in the new project with the upstream issues:
+To sync libraries and tools in the new project with the upstream issue:
 
 ```sh
 # Alway `git commit` before this action
