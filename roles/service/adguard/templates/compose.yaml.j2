@@ -40,6 +40,7 @@ services:
       - NET_ADMIN
       - SYS_MODULE
 {% endif %}{# adguard_tailscaled #}
+    hostname: "{{ adguard_hostname }}"
     ports:
       - '53:53/udp'
       - '53:53/tcp'
@@ -57,7 +58,6 @@ services:
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge
 {% else %}
-    hostname: "{{ adguard_hostname }}"
     networks:
       - {{ nginx_proxy_net }}
     environment:
