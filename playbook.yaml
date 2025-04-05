@@ -77,6 +77,10 @@
       tags: [nginx-proxy-manager, upgradable]
       when: nginx_proxy_manager_managed | default(false)
 
+    - role: portainer
+      tags: [portainer, upgradable]
+      when: portainer_managed | default(false)
+
     - role: tailscale
       tags: [tailscale, upgradable]
       when: tailscale_managed | default(false)
