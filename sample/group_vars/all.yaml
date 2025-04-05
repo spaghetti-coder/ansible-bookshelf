@@ -280,6 +280,42 @@ nginx_proxy_http_port:      # Ex.: '80', no HTTP when empty
 nginx_proxy_https_port:     # Ex.: '443', no HTTPS when empty
 nginx_proxy_certs_dir:      # Path to certs on the managed machine. Works paired with HTTPS
 
+# ===========================
+#       PORTAINER-AGENT
+# ===========================
+# Versions:
+# * https://hub.docker.com/r/portainer/agent/tags?name=alpine
+# -----
+portainer_agent_managed: false
+portainer_agent_enabled: false
+portainer_agent_version:        # Leave blank to leverage bookshelf configuration
+portainer_agent_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+portainer_agent_owner: "{{ ansible_user_id }}"
+portainer_agent_conf_dir: ~/conf/portainer-agent
+portainer_agent_service_name: portainer-agent
+portainer_agent_hostname: "{{ portainer_service_name }}"
+portainer_agent_host_management: false
+portainer_agent_tcp_port:       # Leave blank to leverage bookshelf configuration
+
+# =====================
+#       PORTAINER
+# =====================
+# Versions:
+# * https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
+# -----
+portainer_managed: false
+portainer_enabled: false
+portainer_version:        # Leave blank to leverage bookshelf configuration
+portainer_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+portainer_owner: "{{ ansible_user_id }}"
+portainer_conf_dir: ~/conf/portainer
+portainer_service_name: portainer
+portainer_hostname: "{{ portainer_service_name }}"
+portainer_vhost: "{{ portainer_service_name }}.domain.local"
+portainer_web_ui_port:    # Leave blank to leverage bookshelf configuration
+# Publish ssh tunnel server port
+portainer_agent_ready: false
+
 # =====================
 #       TAILSCALE
 # =====================

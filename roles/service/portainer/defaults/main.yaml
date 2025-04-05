@@ -1,0 +1,16 @@
+---
+# Versions:
+# * https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
+# -----
+portainer_managed: false
+portainer_enabled: false
+portainer_version:        # Leave blank to leverage bookshelf configuration
+portainer_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+portainer_owner: "{{ ansible_user_id }}"
+portainer_conf_dir: ~/conf/portainer
+portainer_service_name: portainer
+portainer_hostname: "{{ portainer_service_name }}"
+portainer_vhost: "{{ portainer_service_name }}.domain.local"
+portainer_web_ui_port:    # Leave blank to leverage bookshelf configuration
+# Publish ssh tunnel server port
+portainer_agent_ready: false
