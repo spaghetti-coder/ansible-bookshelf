@@ -1,5 +1,13 @@
 ---
 copyq_flatpak_remote: flathub
-copyq_desktop_file:
-  pm: /usr/share/applications/com.github.hluk.copyq.desktop
-  flatpak: /var/lib/flatpak/exports/share/applications/com.github.hluk.copyq.desktop
+copyq_map:
+  pm:
+    desktop_file: /usr/share/applications/com.github.hluk.copyq.desktop
+    start_server_cmd: copyq --start-server
+    icon: copyq
+  flatpak:
+    desktop_file: /var/lib/flatpak/exports/share/applications/com.github.hluk.copyq.desktop
+    start_server_cmd: /usr/bin/flatpak run --branch=stable --arch=x86_64 --command=copyq com.github.hluk.copyq --start-server
+    icon: com.github.hluk.copyq
+
+copyq_desktop_file: "{{ copyq_map[copyq_install_method].desktop_file }}"

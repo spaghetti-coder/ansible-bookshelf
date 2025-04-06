@@ -1,9 +1,9 @@
 ---
-- name: Link autostart
-  ansible.builtin.file:
-    src: /var/lib/snapd/desktop/applications/teams-for-linux_teams-for-linux.desktop
-    dest: ~/.config/autostart/teams-for-linux.desktop
-    state: link
+- name: Install autostart
+  ansible.builtin.template:
+    src: teams.desktop.j2
+    dest: ~/.config/autostart/teams.desktop
+    mode: '0600'
   become: true
   become_user: "{{ user }}"
 

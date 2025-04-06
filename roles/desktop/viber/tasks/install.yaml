@@ -9,14 +9,6 @@
     remote: "{{ vlc_flatpak_remote }}"
   become: true
 
-- name: Configure minimized start   # <- https://askubuntu.com/a/1534295
-  ansible.builtin.lineinfile:
-    path: /var/lib/flatpak/exports/share/applications/com.viber.Viber.desktop
-    regexp: ^\s*(Exec=.+@@)\s*$
-    line: '\1 StartInBackground'
-    backrefs: true
-  become: true
-
 - name: Mark install done
   ansible.builtin.set_fact:
     viber_install_done: true

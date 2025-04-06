@@ -3,11 +3,11 @@
   become: true
   become_user: "{{ user }}"
   block:
-    - name: Link autostart
-      ansible.builtin.file:
-        src: /var/lib/flatpak/exports/share/applications/com.viber.Viber.desktop
-        dest: ~/.config/autostart/com.viber.Viber.desktop
-        state: link
+    - name: Install autostart
+      ansible.builtin.template:
+        src: viber.desktop.j2
+        dest: ~/.config/autostart/viber.desktop
+        mode: '0600'
 
     - name: Create downloads directory
       ansible.builtin.file:
@@ -17,4 +17,4 @@
 
 - name: Mark user done
   ansible.builtin.set_fact:
-    docker_users_done: "{{ (viber_users_done | default([])) + [user] }}"
+    viber_users_done: "{{ (viber_users_done | default([])) + [user] }}"

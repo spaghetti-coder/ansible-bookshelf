@@ -2,19 +2,10 @@
 - name: Snapd
   ansible.builtin.import_role: { name: snapd }
 
-- name: Privileged
+- name: Install
+  community.general.snap:
+    name: teams-for-linux
   become: true
-  block:
-    - name: Install
-      community.general.snap:
-        name: teams-for-linux
-
-    - name: Configure minimized start   # <- https://askubuntu.com/a/1534295
-      ansible.builtin.lineinfile:
-        path: /var/lib/snapd/desktop/applications/teams-for-linux_teams-for-linux.desktop
-        regexp: '^(\s*Exec=.+teams-for-linux\s+%U).*'
-        line: '\1 --minimized'
-        backrefs: true
 
 - name: Mark install done
   ansible.builtin.set_fact:

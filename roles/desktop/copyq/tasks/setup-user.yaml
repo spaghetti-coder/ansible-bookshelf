@@ -1,14 +1,12 @@
 ---
-- name: Setup user
+- name: Install autostart
+  ansible.builtin.template:
+    src: copyq.desktop.j2
+    dest: ~/.config/autostart/copyq.desktop
+    mode: '0600'
   become: true
   become_user: "{{ user }}"
-  block:
-    - name: Link autostart
-      ansible.builtin.file:
-        src: "{{ copyq_desktop_file[copyq_install_method] }}"
-        dest: ~/.config/autostart/com.github.hluk.copyq.desktop
-        state: link
 
 - name: Mark user done
   ansible.builtin.set_fact:
-    docker_users_done: "{{ (copyq_users_done | default([])) + [user] }}"
+    copyq_users_done: "{{ (copyq_users_done | default([])) + [user] }}"
