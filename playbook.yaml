@@ -65,6 +65,10 @@
       tags: [adguard, upgradable]
       when: adguard_managed | default(false)
 
+    - role: gotify
+      tags: [gotify, upgradable]
+      when: gotify_managed | default(false)
+
     - role: jellyfin
       tags: [jellyfin, upgradable]
       when: jellyfin_managed | default(false)

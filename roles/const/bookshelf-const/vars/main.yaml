@@ -12,6 +12,8 @@ bookshelf_const_version:
   #
   # https://hub.docker.com/r/adguard/adguardhome/tags
   adguard: v0.107.59
+  # https://hub.docker.com/r/gotify/server/tags
+  gotify: 2.6.1
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
@@ -33,6 +35,8 @@ bookshelf_const_port:
   adguard:
     web_ui: 8083
     init_ui: 8084
+  gotify:
+    web_ui: 8085
   jellyfin:
     service_discovery: 1900
     client_discovery: 7359

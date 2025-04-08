@@ -1,0 +1,15 @@
+---
+# Versions:
+# * https://hub.docker.com/r/gotify/server/tags
+# -----
+gotify_managed: false
+gotify_enabled: false
+gotify_version:       # Leave blank to leverage bookshelf configuration
+gotify_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
+gotify_owner: "{{ ansible_user_id }}"
+gotify_conf_dir: ~/conf/gotify
+gotify_service_name: gotify
+gotify_hostname: "{{ gotify_service_name }}"
+gotify_vhost: "{{ gotify_service_name }}.domain.local"
+gotify_web_ui_port:   # Leave blank to leverage bookshelf configuration
+gotify_tz: "{{ ansible_date_time.tz | default('UTC') }}"
