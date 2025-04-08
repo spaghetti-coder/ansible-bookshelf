@@ -12,11 +12,14 @@
     extra_envfile: "{{ tailscale_extra_envfile }}"
     service_state: "{{ tailscale_enabled | ternary('present', 'absent') }}"
   block:
-    - name: Create compose directory
+    - name: Create directories
       ansible.builtin.file:
-        path: "{{ compose_dir }}"
+        path: "{{ item }}"
         state: directory
         mode: '0700'
+      loop:
+        - "{{ compose_dir }}"
+        - "{{ conf_dir }}"
 
     - name: Create .env files
       ansible.builtin.template:
@@ -40,12 +43,6 @@
         dest: "{{ compose_dir }}/extra.env"
         mode: '0600'
       when: extra_envfile
-
-    - name: Create config directory
-      ansible.builtin.file:
-        path: "{{ conf_dir }}"
-        state: directory
-        mode: '0700'
 
     - name: Create compose.yaml
       ansible.builtin.template:

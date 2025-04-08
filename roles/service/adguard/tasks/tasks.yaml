@@ -12,23 +12,23 @@
     extra_envfile: "{{ adguard_extra_envfile }}"
     service_state: "{{ adguard_enabled | ternary('present', 'absent') }}"
   block:
-    - name: Create compose directory
+    - name: Create directories
       ansible.builtin.file:
-        path: "{{ compose_dir }}"
+        path: "{{ item }}"
         state: directory
         mode: '0700'
+      loop:
+        - "{{ compose_dir }}"
+        - "{{ conf_dir }}"
 
-    - name: Create main.env
+    - name: Create .env files
       ansible.builtin.template:
-        src: main.env.j2
-        dest: "{{ compose_dir }}/main.env"
+        src: "{{ item }}.env.j2"
+        dest: "{{ compose_dir }}/{{ item }}.env"
         mode: '0600'
-
-    - name: Create secret.env
-      ansible.builtin.template:
-        src: secret.env.j2
-        dest: "{{ compose_dir }}/secret.env"
-        mode: '0600'
+      loop:
+        - main
+        - secret
 
     - name: Remove obsolete extra.env
       ansible.builtin.file:
@@ -42,12 +42,6 @@
         dest: "{{ compose_dir }}/extra.env"
         mode: '0600'
       when: extra_envfile
-
-    - name: Create config directory
-      ansible.builtin.file:
-        path: "{{ conf_dir }}"
-        state: directory
-        mode: '0700'
 
     - name: Create compose.yaml
       ansible.builtin.template:

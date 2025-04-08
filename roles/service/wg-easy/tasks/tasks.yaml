@@ -14,11 +14,14 @@
     owner_uid: "{{ getent_passwd[wg_easy_owner].1 }}"
     owner_gid: "{{ getent_passwd[wg_easy_owner].2 }}"
   block:
-    - name: Create compose directory
+    - name: Create directories
       ansible.builtin.file:
-        path: "{{ compose_dir }}"
+        path: "{{ item }}"
         state: directory
         mode: '0700'
+      loop:
+        - "{{ compose_dir }}"
+        - "{{ conf_dir }}"
 
     - name: Create main.env
       ansible.builtin.template:
@@ -44,12 +47,6 @@
         dest: "{{ compose_dir }}/extra.env"
         mode: '0600'
       when: extra_envfile
-
-    - name: Create config directory
-      ansible.builtin.file:
-        path: "{{ conf_dir }}"
-        state: directory
-        mode: '0700'
 
     - name: Create compose.yaml
       ansible.builtin.template:
