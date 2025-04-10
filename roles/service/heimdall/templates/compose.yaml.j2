@@ -1,0 +1,37 @@
+{% set version = (heimdall_version | default(bookshelf_const_version.heimdall, true)) %}
+{% set web_ui_port = (heimdall_web_ui_port | default(bookshelf_const_port.heimdall.web_ui, true)) %}
+---
+services:
+  heimdall:
+    # https://hub.docker.com/r/linuxserver/heimdall/tags
+    image: linuxserver/heimdall:{{ version }}
+    container_name: heimdall
+    restart: unless-stopped
+    hostname: {{ heimdall_hostname }}
+    env_file:
+      - ./main.env
+    volumes:
+      - '{{ conf_dir }}:/config'
+{% if (nginx_proxy_enabled | default(false)) %}
+      - ./fix-https.sh:/scripts/fix-https.sh:ro
+{% endif %}
+    ports:
+      - '{{ web_ui_port }}:80'
+      # - 443:443
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge    # <- Avoid creating default compose network
+{% else %}
+    environment:
+      - VIRTUAL_HOST={{ heimdall_vhost }}
+      - VIRTUAL_PORT=443
+      - VIRTUAL_PROTO=https
+    networks:
+      - {{ nginx_proxy_net }}
+    post_start:
+      # Use with reverse proxy
+      - command: /bin/bash /scripts/fix-https.sh
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

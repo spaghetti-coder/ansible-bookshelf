@@ -69,6 +69,10 @@
       tags: [gotify, upgradable]
       when: gotify_managed | default(false)
 
+    - role: heimdall
+      tags: [heimdall, upgradable]
+      when: heimdall_managed | default(false)
+
     - role: jellyfin
       tags: [jellyfin, upgradable]
       when: jellyfin_managed | default(false)

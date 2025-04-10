@@ -1,0 +1,51 @@
+---
+- name: Docker
+  ansible.builtin.import_role: { name: docker }
+  vars: { docker_users: ["{{ heimdall_owner }}"] }
+
+- name: Compose
+  become: true
+  become_user: "{{ heimdall_owner }}"
+  vars:
+    compose_dir: "{{ heimdall_compose_dir | default(bookshelf_const_compose_dir + '/heimdall', true) }}"
+    conf_dir: "{{ heimdall_conf_dir }}"
+    service_state: "{{ heimdall_enabled | ternary('present', 'absent') }}"
+    owner_uid: "{{ getent_passwd[heimdall_owner].1 }}"
+    owner_gid: "{{ getent_passwd[heimdall_owner].2 }}"
+  block:
+    - name: Create directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop:
+        - "{{ compose_dir }}"
+        - "{{ conf_dir }}"
+
+    - name: Create main.env files
+      ansible.builtin.template:
+        src: main.env.j2
+        dest: "{{ compose_dir }}/main.env"
+        mode: '0600'
+
+    - name: Create fix-https script
+      ansible.builtin.copy:
+        src: fix-https.sh
+        dest: "{{ compose_dir }}/fix-https.sh"
+        mode: '0755'
+
+    - name: Create compose.yaml
+      ansible.builtin.template:
+        src: compose.yaml.j2
+        dest: "{{ compose_dir }}/compose.yaml"
+        mode: '0600'
+
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    heimdall_done: true
