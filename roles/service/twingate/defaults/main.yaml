@@ -1,0 +1,19 @@
+---
+# Versions:
+# * https://hub.docker.com/r/twingate/connector/tags
+# -----
+twingate_managed: false
+twingate_enabled: false
+twingate_version:         # Leave blank to leverage bookshelf configuration
+twingate_compose_dir:     # Unless you know ..., leave blank to leverage bookshelf configuration
+twingate_owner: "{{ ansible_user_id }}"
+twingate_service_name: twingate
+twingate_hostname: "{{ twingate_service_name }}"
+twingate_tenant_name:     # Your twingate network name. Required
+# https://<tenant>.twingate.com/networks/overview -> 'Deploy ... Connector'
+#   -> 'Docker' -> 'Generate Tokens'
+twingate_access_token:    # Required
+twingate_refresh_token:   # Required
+# Optional path to extra configuration .env.j2 file
+# Ex.: "{{ playbook_dir }}/resources/twingate/extra.env.j2"
+twingate_extra_envfile:

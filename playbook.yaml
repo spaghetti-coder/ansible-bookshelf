@@ -97,6 +97,10 @@
       tags: [tailscale, upgradable]
       when: tailscale_managed | default(false)
 
+    - role: twingate
+      tags: [twingate, upgradable]
+      when: twingate_managed | default(false)
+
     - role: wg-easy
       tags: [wg-easy, upgradable]
       when: wg_easy_managed | default(false)

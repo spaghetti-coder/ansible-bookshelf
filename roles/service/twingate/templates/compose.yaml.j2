@@ -1,0 +1,21 @@
+{% set version = (twingate_version | default(bookshelf_const_version.twingate, true)) %}
+---
+# https://www.twingate.com/docs/deploy-connector-with-docker-compose
+
+services:
+  twingate-connector:
+    # https://hub.docker.com/r/twingate/connector/tags
+    image: twingate/connector:{{ version }}
+    container_name: {{ twingate_service_name }}
+    restart: unless-stopped
+    hostname: {{ twingate_hostname }}
+    # Make Connector available only in local network
+    # network_mode: host
+    env_file:
+      - ./main.env
+      - ./secret.env
+{% if twingate_extra_envfile %}
+      - ./extra.env
+{% endif %}
+#     sysctls:
+#       net.ipv4.ping_group_range: '0 2147483647'
