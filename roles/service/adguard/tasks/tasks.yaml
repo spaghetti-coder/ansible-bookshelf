@@ -3,6 +3,10 @@
   ansible.builtin.import_role: { name: docker }
   vars: { docker_users: ["{{ adguard_owner }}"] }
 
+- name: Disable stub DNS server
+  ansible.builtin.import_role: { name: resolved-disable-stub-dns }
+  when: adguard_enabled
+
 - name: Compose
   become: true
   become_user: "{{ adguard_owner }}"

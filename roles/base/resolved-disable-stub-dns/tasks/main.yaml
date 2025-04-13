@@ -1,0 +1,7 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  when:
+    - factum_os_like in ['ubuntu']
+    - not (resolved_disable_stub_dns_done | default(false))

@@ -1,0 +1,40 @@
+---
+# https://www.turek.dev/posts/disable-systemd-resolved-cleanly/
+
+- name: Disable DNS
+  become: true
+  vars:
+    confd_dir: /etc/systemd/resolved.conf.d
+  block:
+    - name: Create resolved confd directory
+      ansible.builtin.file:
+        path: "{{ confd_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Create config file
+      ansible.builtin.copy:
+        dest: "{{ confd_dir }}/disable-dns.conf"
+        src: disable-dns.conf
+        mode: '0644'
+      register: resolved_disable_stub_dns_conffile
+
+    # - name: Repoint resolv.conf file
+    #   ansible.builtin.file:
+    #     path: /etc/resolv.conf
+    #     src: /run/systemd/resolve/resolv.conf
+    #     state: link
+    #     force: true
+    #   register: resolved_disable_stub_dns_resolv_conf
+
+    - name: Restart service
+      ansible.builtin.service:
+        name: systemd-resolved
+        state: restarted
+      when: resolved_disable_stub_dns_conffile.changed
+      tags:
+        - skip_ansible_lint
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    resolved_disable_stub_dns_done: true
