@@ -6,7 +6,7 @@ bookshelf_const_version:
   # https://github.com/FiloSottile/age/releases
   age: v1.2.1
   # https://github.com/junegunn/fzf/releases
-  fzf: '0.61.0'
+  fzf: '0.61.1'
   #
   # SERVICE
   #
