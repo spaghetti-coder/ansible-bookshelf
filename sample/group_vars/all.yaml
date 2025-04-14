@@ -474,6 +474,11 @@ copyq_users:
 flatpak_managed: false
 flatpak_repos:
 
+# ================
+#       GIMP
+# ================
+gimp_managed: false
+
 # ====================
 #       PHPSTORM
 # ====================

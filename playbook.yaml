@@ -120,6 +120,10 @@
       tags: [flatpak]
       when: flatpak_managed | default(false)
 
+    - role: gimp
+      tags: [gimp]
+      when: gimp_managed | default(false)
+
     - role: phpstorm
       tags: [phpstorm]
       when: phpstorm_managed | default(false)
