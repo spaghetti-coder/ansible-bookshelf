@@ -380,7 +380,7 @@ _envar_lib() (
     # shellcheck disable=SC2001,SC2016,SC2031
     sed -e '/^\s*$/d' -e 's/^\s*//' -e 's/^,//' <<< "
       This tool unclutters you .bashrc by autoloading environments from ${GLOBAL_DIR}
-      and ~/${USER_DIR_SUFFIX} directories and using desks (desks are ividually loaded files).
+      and ~/${USER_DIR_SUFFIX} directories and using desks (desks are individually loaded files).
      ,
       SETUP:
       =====
@@ -461,10 +461,12 @@ _envar_lib() (
      ,
       # Unreadable files from ~/${USER_DIR_SUFFIX} provoke warnings. Files from ${GLOBAL_DIR} that
       # can't be read by the current user are silently skipped. This allows creating
-      # global environments for specific groups. Usecase:
-      echo \"echo 'gamers rock'\" | sudo tee /etc/envar/games-group.sh
-      sudo chgrp games /etc/envar/games-group.sh
-      sudo 0060 /etc/envar/games-group.sh
+      # global environments for specific groups.
+      # USECASE:
+      #   echo \"echo 'gamers rock'\" | sudo tee /etc/envar/games-group.sh
+      #   sudo chgrp games /etc/envar/games-group.sh
+      #   # Will be loaded only by 'games' group users and ignored by others
+      #   sudo 0060 /etc/envar/games-group.sh
     "
   }
 
@@ -489,7 +491,7 @@ _envar_lib() (
       MY_VAR="demo value"
      ,
       envar_ps1_suffix() { echo "demo-desk > "; }   # <- Custom PS1 suffix
-      # envar_ps1_suffix() { return; }              # <- Dont'\'' PS1 suffix the desk
+      # envar_ps1_suffix() { return; }              # <- Don'\''t PS1 suffix the desk
     '
   }
 
