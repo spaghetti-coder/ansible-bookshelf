@@ -480,6 +480,11 @@ flatpak_repos:
 gimp_managed: false
 
 # ====================
+#       NXPLAYER
+# ====================
+nxplayer_managed: false
+
+# ====================
 #       PHPSTORM
 # ====================
 phpstorm_managed: false

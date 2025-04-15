@@ -1,0 +1,14 @@
+---
+- name: Flatpak
+  ansible.builtin.import_role: { name: flatpak }
+  vars: { flatpak_repos: ["{{ nxplayer_flatpak_remote }}"] }
+
+- name: Install
+  community.general.flatpak:
+    name: com.nomachine.nxplayer
+    remote: "{{ nxplayer_flatpak_remote }}"
+  become: true
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    nxplayer_done: true
