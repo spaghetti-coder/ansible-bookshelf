@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+# USAGE:
+# qBittorrent UI -> Settings -> Downloads -> External ... on finished
+#   /scripts/downloaded.sh '%N'
+#
+# NOTE: The script takes advantage of the linuxserver/qbittorrent image tools
+#   * bash
+#   * curl
+#   * jq
+# It may not work in other environments that don't have those
+
+gotify_push_conf() {
+  `# Example: https://gotify.lab.home`
+  PUSH_SERVER='{{ qbittorrent_push_server }}'
+
+  `# Must contain:`
+  `#   GOTIFY_TOKEN='...' # <- Token from gotify server`
+  . "$(dirname -- "${0}")/downloaded.secret.sh"
+}
+
+gotify_push() (
+  json_quote() { printf -- '%s' "${1}" | jq -Rsa .; }
+
+  # Obtain connection settings
+  local PUSH_SERVER GOTIFY_TOKEN
+  gotify_push_conf
+
+  local message="${1}" \
+        priority=5 \
+        title="Filibuster downloaded" \
+        content_type='text/plain' `# <- Can be 'text/markdown', risky`
+
+  local endpoint="${PUSH_SERVER%*/}/message?token=${GOTIFY_TOKEN}"
+
+  local offset=2  # <- Space offset of the current line
+  local payload; payload="$(sed -e 's/^\s\{'"${offset}"'\}//' <<< '{
+    "title": '"$(json_quote "${title}")"',
+    "message": '"$(json_quote "${message}")"',
+    "priority": '"${priority}"',
+    "extras": {
+      "client::display": {
+        "contentType": '"$(json_quote "${content_type}")"'
+      }
+    }
+  }')"
+
+  # * https://gotify.net/docs/pushmsg
+  # * https://gotify.net/docs/msgextras
+  curl -sSL -X POST -H 'Content-Type: application/json' \
+    --data "${payload}" -- "${endpoint}"
+)
+
+(return 2>/dev/null) || gotify_push "${@}"

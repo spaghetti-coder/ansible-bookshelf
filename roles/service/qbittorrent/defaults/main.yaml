@@ -1,0 +1,44 @@
+---
+# Free and reliable P2P Bittorrent client
+#   https://www.qbittorrent.org/
+#   https://hub.docker.com/r/linuxserver/qbittorrent
+# -----
+# Versions:
+# * https://hub.docker.com/r/linuxserver/qbittorrent/tags
+# * https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
+# -----
+# NOTE 1: Temporary password for the admin user will be printed to the container
+# log on startup
+#
+# NOTE 2: Switch to alternative UI
+#   Settings > WebUI > check Use alternative WebUI, Files location: /vuetorrent
+qbittorrent_managed: false
+qbittorrent_enabled: false
+qbittorrent_version:              # Leave blank to leverage bookshelf configuration
+qbittorrent_vuetorrent_version:   # Leave blank to leverage bookshelf configuration
+qbittorrent_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
+qbittorrent_owner: "{{ ansible_user_id }}"
+qbittorrent_conf_dir: ~/conf/qbittorrent
+qbittorrent_data_dir:             # Torrent downloads directory. Required
+qbittorrent_service_name: qbittorrent
+qbittorrent_hostname: "{{ qbittorrent_service_name }}"
+qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"
+qbittorrent_web_ui_port:          # Leave blank to leverage bookshelf configuration
+qbittorrent_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional. Will be available in the container in
+#   /scripts/downloaded.sh (0700)
+#   /scripts/downloaded.secret.sh (0600)
+# Configure in qBittorrent UI -> Settings -> Downloads -> External ... on finished
+# For demo scripts see:
+#   templates/gotify-push.*
+#   templates/discord-push.*
+# Ex.: "{{ playbook_dir }}/resources/qbittorrent/downloaded.sh.j2"
+qbittorrent_downloaded_script:
+# Optional, can be used in conjunction with qbittorrent_downloaded_script to keep
+# secrets separately from .
+# Will only be used when qbittorrent_downloaded_script is set
+# Ex.: "{{ playbook_dir }}/resources/qbittorrent/downloaded.secret.sh.j2"
+qbittorrent_downloaded_secret_file:
+# Optional path to extra configuration .env.j2 file
+# Ex.: "{{ playbook_dir }}/resources/qbittorrent/extra.env.j2"
+qbittorrent_extra_envfile:

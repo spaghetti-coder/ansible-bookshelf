@@ -11,8 +11,6 @@
     extra_envfile: "{{ wg_easy_extra_envfile }}"
     conf_dir: "{{ wg_easy_conf_dir }}"
     service_state: "{{ wg_easy_enabled | ternary('present', 'absent') }}"
-    owner_uid: "{{ getent_passwd[wg_easy_owner].1 }}"
-    owner_gid: "{{ getent_passwd[wg_easy_owner].2 }}"
   block:
     - name: Create directories
       ansible.builtin.file:

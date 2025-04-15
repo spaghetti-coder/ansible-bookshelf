@@ -10,8 +10,6 @@
     compose_dir: "{{ heimdall_compose_dir | default(bookshelf_const_compose_dir + '/heimdall', true) }}"
     conf_dir: "{{ heimdall_conf_dir }}"
     service_state: "{{ heimdall_enabled | ternary('present', 'absent') }}"
-    owner_uid: "{{ getent_passwd[heimdall_owner].1 }}"
-    owner_gid: "{{ getent_passwd[heimdall_owner].2 }}"
   block:
     - name: Create directories
       ansible.builtin.file:

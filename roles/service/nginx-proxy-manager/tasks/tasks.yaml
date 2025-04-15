@@ -11,8 +11,6 @@
     extra_envfile: "{{ nginx_proxy_manager_extra_envfile }}"
     conf_dir: "{{ nginx_proxy_manager_conf_dir }}"
     service_state: "{{ nginx_proxy_manager_enabled | ternary('present', 'absent') }}"
-    owner_uid: "{{ getent_passwd[nginx_proxy_manager_owner].1 }}"
-    owner_gid: "{{ getent_passwd[nginx_proxy_manager_owner].2 }}"
   block:
     - name: Create directories
       ansible.builtin.file:

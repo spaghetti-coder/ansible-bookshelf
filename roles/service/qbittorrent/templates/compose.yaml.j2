@@ -1,0 +1,49 @@
+{% set version = (qbittorrent_version | default(bookshelf_const_version.qbittorrent, true)) %}
+{% set vuetorrent_version = (qbittorrent_vuetorrent_version | default(bookshelf_const_version.vuetorrent, true)) %}
+{% set web_ui_port = (qbittorrent_web_ui_port | default(bookshelf_const_port.qbittorrent.web_ui, true)) %}
+{% set torrenting_port = bookshelf_const_port.qbittorrent.torrenting %}
+---
+# Temporary password for the admin user will be printed to the container log on startup
+services:
+  qbittorrent:
+    # https://hub.docker.com/r/linuxserver/qbittorrent/tags
+    # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
+    image: linuxserver/qbittorrent:{{ version }}
+    container_name: {{ qbittorrent_service_name }}
+    restart: unless-stopped
+    hostname: {{ qbittorrent_hostname }}
+    env_file:
+      - ./main.env
+{% if qbittorrent_extra_envfile %}
+      - ./extra.env
+{% endif %}
+    volumes:
+      - '{{ qbittorrent_conf_dir }}:/config'
+      - '{{ qbittorrent_data_dir }}:/downloads'
+{% if qbittorrent_downloaded_script %}
+      # Usage:
+      #   qBittorrent UI -> Settings -> Downloads -> External ... on finished -> "/scripts/downloaded.sh '%N'"
+      - ./scripts:/scripts:ro
+{% endif %}{# qbittorrent_downloaded_script #}
+    ports:
+      - '{{ web_ui_port }}:{{ web_ui_port }}'
+      - '{{ torrenting_port }}:{{ torrenting_port }}'
+      - '{{ torrenting_port }}:{{ torrenting_port }}/udp'
+    environment:
+      # Enable VueTorrent mod
+      # https://github.com/VueTorrent/VueTorrent/wiki/Installation#using-lsio-docker-mod
+      - DOCKER_MODS=ghcr.io/vuetorrent/vuetorrent-lsio-mod:{{ vuetorrent_version }}
+      - WEBUI_PORT={{ web_ui_port }}   # <- Due to issues with CSRF port mapping must be explicit
+      - TORRENTING_PORT={{ torrenting_port }}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge    # <- Avoid creating default compose network
+{% else %}
+      - VIRTUAL_HOST={{ qbittorrent_vhost }}
+      - VIRTUAL_PORT={{ web_ui_port }}
+    networks:
+      - {{ nginx_proxy_net }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

@@ -12,8 +12,6 @@
     conf_dir: "{{ jellyfin_conf_dir }}"
     data_dir: "{{ jellyfin_data_dir }}"
     service_state: "{{ jellyfin_enabled | ternary('present', 'absent') }}"
-    owner_uid: "{{ getent_passwd[jellyfin_owner].1 }}"
-    owner_gid: "{{ getent_passwd[jellyfin_owner].2 }}"
   block:
     - name: Create directories
       ansible.builtin.file:
@@ -46,20 +44,11 @@
         mode: '0600'
       when: extra_envfile
 
-    - name: Check data directory exists
-      ansible.builtin.file:
-        path: "{{ data_dir }}"
-        mode: "{{ omit }}"
-      check_mode: true
-      failed_when: false
-      register: jellyfin_data_dir_state
-
     - name: Create data directory
       ansible.builtin.file:
         path: "{{ data_dir }}"
         state: directory
-        mode: '0700'
-      when: jellyfin_data_dir_state.state not in ['directory']
+        mode: "{{ omit }}"
 
     - name: Create compose.yaml
       ansible.builtin.template:

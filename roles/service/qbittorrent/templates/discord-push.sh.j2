@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# USAGE:
+# qBittorrent UI -> Settings -> Downloads -> External ... on finished
+#   /scripts/downloaded.sh '%N'
+#
+# NOTE: The script takes advantage of the linuxserver/qbittorrent image tools
+#   * bash
+#   * curl
+#   * jq
+# It may not work in other environments that don't have those
+
+discord_push_conf() {
+  `# Must contain:`
+  `#   DISCORD_TOKEN='...' # <- <HOOK_ID>/<HOOK_TOKEN> from discord channel`
+  . "$(dirname -- "${0}")/downloaded.secret.sh"
+}
+
+discord_push() (
+  json_quote() { printf -- '%s' "${1}" | jq -Rsa .; }
+
+  # Obtain connection settings
+  local DISCORD_TOKEN
+  discord_push_conf
+
+  local message="${1}" \
+        title="Filibuster downloaded"
+
+  local endpoint="https://discord.com/api/webhooks/${DISCORD_TOKEN}"
+
+  local offset=2  # <- Space offset of the current line
+  local payload; payload="$(sed -e 's/^\s\{'"${offset}"'\}//' <<< '{
+    "embeds": [{
+      "title": '"$(json_quote "${title}")"',
+      "description": '"$(json_quote "${message}")"'
+    }]
+  }')"
+
+  # * https://wchesley.dev/posts/discord_curl_notifications/
+  # * https://birdie0.github.io/discord-webhooks-guide/
+  curl -sSL -X POST -H 'Content-Type: application/json' \
+    --data "${payload}" -- "${endpoint}"
+)
+
+(return 2>/dev/null) || discord_push "${@}"
