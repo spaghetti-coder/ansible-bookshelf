@@ -1,4 +1,7 @@
 ---
+# General-purpose command-line fuzzy finder.
+#   https://github.com/junegunn/fzf
+# -----
 # Versions: https://github.com/junegunn/fzf/releases
 # -----
 # fzf_users:  # <- Existing users to have access to fzf

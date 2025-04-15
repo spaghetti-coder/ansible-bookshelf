@@ -1,2 +1,6 @@
 ---
+# Tailscale makes creating software-defined networks easy: securely connecting
+# users, services, and devices.
+#   https://tailscale.com/
+# -----
 tailscale_client_managed: false

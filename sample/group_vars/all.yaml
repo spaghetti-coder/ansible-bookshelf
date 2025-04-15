@@ -28,7 +28,10 @@ ansible_become_password: changeme
 # ===============
 #       AGE
 # ===============
-# Versions: https://github.com/FiloSottile/age/releases
+# Simple, modern and secure file encryption tool.
+#   https://github.com/FiloSottile/age
+# -----
+# VERSIONS: https://github.com/FiloSottile/age/releases
 # -----
 age_managed: false
 age_version:    # Leave blank to leverage bookshelf configuration
@@ -61,6 +64,9 @@ envar_users:
 # ===============
 #       FZF
 # ===============
+# General-purpose command-line fuzzy finder.
+#   https://github.com/junegunn/fzf
+# -----
 # Versions: https://github.com/junegunn/fzf/releases
 # -----
 # fzf_users:  # <- Existing users to have access to fzf
@@ -109,6 +115,10 @@ snapd_managed: false
 # ============================
 #       TAILSCALE-CLIENT
 # ============================
+# Tailscale makes creating software-defined networks easy: securely connecting
+# users, services, and devices.
+#   https://tailscale.com/
+# -----
 tailscale_client_managed: false
 
 # ================
@@ -173,6 +183,9 @@ toolbelt_exclude:
 # ===================
 #       ADGUARD
 # ===================
+# The world’s most advanced ad blocker!
+#   https://adguard.com/en/adguard-home/overview.html
+# -----
 # Versions:
 # * https://hub.docker.com/r/adguard/adguardhome/tags
 # * https://hub.docker.com/r/tailscale/tailscale/tags
@@ -213,6 +226,9 @@ adguard_tailscale_auth_key:
 # ==================
 #       GOTIFY
 # ==================
+# A simple server for sending and receiving messages
+#   https://gotify.net/
+# -----
 # Versions:
 # * https://hub.docker.com/r/gotify/server/tags
 # -----
@@ -231,6 +247,9 @@ gotify_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # ====================
 #       HEIMDALL
 # ====================
+# Application Dashboard
+#   https://heimdall.site/
+# -----
 # Versions:
 # * https://hub.docker.com/r/linuxserver/heimdall/tags
 # -----
@@ -249,6 +268,9 @@ heimdall_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # ====================
 #       JELLYFIN
 # ====================
+# The Free Software Media System
+#   https://jellyfin.org/
+# -----
 # Versions:
 # * https://hub.docker.com/r/linuxserver/jellyfin/tags
 # -----
@@ -281,6 +303,9 @@ jellyfin_tailscale_auth_key:
 # ===============================
 #       NGINX-PROXY-MANAGER
 # ===============================
+# Docker container for managing Nginx proxy hosts with a simple, powerful interface
+#   https://nginxproxymanager.com/
+# -----
 # Versions:
 # * https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
 # -----
@@ -300,6 +325,9 @@ nginx_proxy_manager_extra_envfile:
 # =======================
 #       NGINX-PROXY
 # =======================
+# Automated nginx proxy for Docker containers using docker-gen
+#   https://github.com/nginx-proxy/nginx-proxy
+# -----
 # Versions:
 # * https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
 # Exposes:
@@ -319,6 +347,9 @@ nginx_proxy_certs_dir:      # Path to certs on the managed machine. Works paired
 # ===========================
 #       PORTAINER-AGENT
 # ===========================
+# The Portainer agent.
+#   https://www.portainer.io/
+# -----
 # Versions:
 # * https://hub.docker.com/r/portainer/agent/tags?name=alpine
 # -----
@@ -336,6 +367,9 @@ portainer_agent_tcp_port:       # Leave blank to leverage bookshelf configuratio
 # =====================
 #       PORTAINER
 # =====================
+# A universal container management platform.
+#   https://www.portainer.io/
+# -----
 # Versions:
 # * https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
 # -----
@@ -355,6 +389,10 @@ portainer_agent_ready: false
 # =====================
 #       TAILSCALE
 # =====================
+# Tailscale makes creating software-defined networks easy: securely connecting
+# users, services, and devices.
+#   https://tailscale.com/
+# -----
 # Versions:
 # * https://hub.docker.com/r/tailscale/tailscale/tags
 # -----
@@ -393,6 +431,9 @@ tailscale_extra_envfile:
 # ====================
 #       TWINGATE
 # ====================
+# It's time to ditch your VPN
+#   https://www.twingate.com/
+# -----
 # Versions:
 # * https://hub.docker.com/r/twingate/connector/tags
 # -----
@@ -415,6 +456,9 @@ twingate_extra_envfile:
 # ===================
 #       WG-EASY
 # ===================
+# The easiest way to run WireGuard VPN + Web-based Admin UI.
+#   https://github.com/wg-easy/wg-easy
+# -----
 # Versions:
 # * https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
 # Options description:
@@ -451,18 +495,27 @@ wg_easy_extra_envfile:
 # ====================
 #       AUDACITY
 # ====================
+# Free Audio editor, recorder, music making and more!
+#   https://www.audacityteam.org/
+# -----
 audacity_managed: false
 
 # =================
 #       BRAVE
 # =================
+# The browser that puts you first. Block ads. Save data. And get way faster
+# webpages. Just by switching your browser.
+#   https://brave.com/
+# -----
 brave_managed: false
 
 # =================
 #       COPYQ
 # =================
-# For platforms different from ubuntu probably better flatpak.
+# Advanced clipboard manager with editing and scripting features.
+#   https://hluk.github.io/CopyQ/
 # -----
+# # For platforms different from ubuntu probably better flatpak.
 # copyq_install_method: pm  # <- For package manager or 'flatpak'
 # -----
 # copyq_users:  # <- Existing users to have copyq autostarted
@@ -482,11 +535,17 @@ flatpak_repos:
 # ================
 #       GIMP
 # ================
+# GNU Image Manipulation Program
+#   https://www.gimp.org/
+# -----
 gimp_managed: false
 
 # ====================
 #       KDENLIVE
 # ====================
+# FOS Video Editor.
+#   https://kdenlive.org/
+# -----
 kdenlive_managed: false
 # 'snap' or 'flatpak'
 kdenlive_install_method: snap
@@ -494,26 +553,41 @@ kdenlive_install_method: snap
 # ====================
 #       NXPLAYER
 # ====================
+# NoMachine client.
+#   https://www.nomachine.com/
+# -----
 nxplayer_managed: false
 
 # ======================
 #       OBS-STUDIO
 # ======================
+# Free and open source software for video recording and live streaming.
+#   https://obsproject.com/
+# -----
 obs_studio_managed: false
 
 # =================
 #       OPERA
 # =================
+# Experience faster, distraction-free browsing with Ad blocking, and browse privately.
+#   https://www.opera.com/
+# -----
 opera_managed: false
 
 # ====================
 #       PHPSTORM
 # ====================
+# PHP IDE for Professional Development
+#   https://www.jetbrains.com/phpstorm/
+# -----
 phpstorm_managed: false
 
 # =================
 #       PINTA
 # =================
+# FOS painting and image editing program designed for simplicity and power.
+#   https://www.pinta-project.com/
+# -----
 pinta_managed: false
 # 'snap' or 'flatpak'
 pinta_install_method: flatpak
@@ -521,6 +595,9 @@ pinta_install_method: flatpak
 # ===================
 #       SUBLIME
 # ===================
+# Text Editing, Done Right.
+#   https://www.sublimetext.com/
+# -----
 sublime_managed: false
 sublime_merge: false
 

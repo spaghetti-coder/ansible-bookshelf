@@ -1,4 +1,7 @@
 ---
+# FOS painting and image editing program designed for simplicity and power.
+#   https://www.pinta-project.com/
+# -----
 pinta_managed: false
 # 'snap' or 'flatpak'
 pinta_install_method: flatpak

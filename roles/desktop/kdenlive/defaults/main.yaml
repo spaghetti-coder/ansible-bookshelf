@@ -1,4 +1,7 @@
 ---
+# FOS Video Editor.
+#   https://kdenlive.org/
+# -----
 kdenlive_managed: false
 # 'snap' or 'flatpak'
 kdenlive_install_method: snap

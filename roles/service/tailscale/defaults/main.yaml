@@ -1,4 +1,8 @@
 ---
+# Tailscale makes creating software-defined networks easy: securely connecting
+# users, services, and devices.
+#   https://tailscale.com/
+# -----
 # Versions:
 # * https://hub.docker.com/r/tailscale/tailscale/tags
 # -----
