@@ -1,4 +1,7 @@
 ---
+# Automated nginx proxy for Docker containers using docker-gen
+#   https://github.com/nginx-proxy/nginx-proxy
+# -----
 # Versions:
 # * https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
 # Exposes:

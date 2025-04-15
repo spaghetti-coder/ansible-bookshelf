@@ -1,4 +1,7 @@
 ---
+# Docker container for managing Nginx proxy hosts with a simple, powerful interface
+#   https://nginxproxymanager.com/
+# -----
 # Versions:
 # * https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
 # -----
