@@ -1,0 +1,37 @@
+{% set version = (qbittorrent_version | default(bookshelf_const_version.qbittorrent, true)) %}
+---
+# Temporary password for the admin user will be printed to the container log on startup
+services:
+  qbittorrent:
+    # https://hub.docker.com/r/linuxserver/qbittorrent/tags
+    # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
+    image: linuxserver/qbittorrent:{{ version }}
+    container_name: qbittorrent
+    restart: unless-stopped
+    hostname: qbittorrent.nas.kos.giize.com
+    networks:
+      - nginx-proxy
+    environment:
+      # Enable VueTorrent mod
+      # https://github.com/VueTorrent/VueTorrent/wiki/Installation#using-lsio-docker-mod
+      - DOCKER_MODS=ghcr.io/vuetorrent/vuetorrent-lsio-mod:2.22.0
+      - VIRTUAL_HOST=qbittorrent.nas.kos.giize.com
+      - VIRTUAL_PORT=8080
+      - WEBUI_PORT=8080   # <- Due to issues with CSRF port mapping must be explicit
+      - TORRENTING_PORT=6881
+    env_file:
+      - ./config.env
+    volumes:
+      - '~/conf/nas.kos.giize.com/qbittorrent:/config'
+      - '~/share/master/Torrent:/downloads'
+      # Usage:
+      #   qBittorrent UI -> Settings -> Downloads -> External ... on finished -> "/scripts/downloaded.sh '%N'"
+      - ./scripts:/scripts:ro
+    ports:
+      - '8083:8080'
+      - '6881:6881'
+      - '6881:6881/udp'
+
+networks:
+  nginx-proxy:
+    external: true

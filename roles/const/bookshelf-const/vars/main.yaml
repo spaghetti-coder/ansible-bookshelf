@@ -26,6 +26,8 @@ bookshelf_const_version:
   portainer: 2.27.3-alpine
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
   portainer_agent: 2.27.3-alpine
+  # https://hub.docker.com/r/linuxserver/qbittorrent/tags
+  qbittorrent: 5.0.4
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.82.0
   # https://hub.docker.com/r/twingate/connector/tags
@@ -52,5 +54,7 @@ bookshelf_const_port:
     tunnel: 8000
   portainer_agent:
     tcp_port: 9001
+  qbittorrent:
+    web_ui: 8088
   wg_easy:
     web_ui: 8082

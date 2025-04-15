@@ -93,6 +93,10 @@
       tags: [portainer-agent, upgradable]
       when: portainer_agent_managed | default(false)
 
+    - role: qbittorrent
+      tags: [qbittorrent, upgradable]
+      when: qbittorrent_managed | default(false)
+
     - role: tailscale
       tags: [tailscale, upgradable]
       when: tailscale_managed | default(false)
