@@ -1,5 +1,8 @@
 ---
-# Versions: https://github.com/FiloSottile/age/releases
+# Simple, modern and secure file encryption tool.
+#   https://github.com/FiloSottile/age
+# -----
+# VERSIONS: https://github.com/FiloSottile/age/releases
 # -----
 age_managed: false
 age_version:    # Leave blank to leverage bookshelf configuration

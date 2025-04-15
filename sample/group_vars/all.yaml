@@ -28,6 +28,9 @@ ansible_become_password: changeme
 # ===============
 #       AGE
 # ===============
+# Simple, modern and secure file encryption tool.
+# https://github.com/FiloSottile/age
+# -----
 # Versions: https://github.com/FiloSottile/age/releases
 # -----
 age_managed: false
@@ -61,6 +64,9 @@ envar_users:
 # ===============
 #       FZF
 # ===============
+# General-purpose command-line fuzzy finder.
+# https://github.com/junegunn/fzf
+# -----
 # Versions: https://github.com/junegunn/fzf/releases
 # -----
 # fzf_users:  # <- Existing users to have access to fzf
@@ -109,6 +115,10 @@ snapd_managed: false
 # ============================
 #       TAILSCALE-CLIENT
 # ============================
+# Tailscale makes creating software-defined networks easy: securely connecting
+# users, services, and devices.
+# https://tailscale.com/
+# -----
 tailscale_client_managed: false
 
 # ================

@@ -1,6 +1,8 @@
 ---
-# For platforms different from ubuntu probably better flatpak.
+# Advanced clipboard manager with editing and scripting features.
+#   https://hluk.github.io/CopyQ/
 # -----
+# # For platforms different from ubuntu probably better flatpak.
 # copyq_install_method: pm  # <- For package manager or 'flatpak'
 # -----
 # copyq_users:  # <- Existing users to have copyq autostarted
