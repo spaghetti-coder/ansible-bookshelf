@@ -484,6 +484,11 @@ gimp_managed: false
 # ====================
 nxplayer_managed: false
 
+# ======================
+#       OBS-STUDIO
+# ======================
+obs_studio_managed: false
+
 # ====================
 #       PHPSTORM
 # ====================
