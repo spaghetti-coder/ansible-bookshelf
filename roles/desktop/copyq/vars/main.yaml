@@ -1,5 +1,4 @@
 ---
-copyq_flatpak_remote: flathub
 copyq_map:
   pm:
     desktop_file: /usr/share/applications/com.github.hluk.copyq.desktop
