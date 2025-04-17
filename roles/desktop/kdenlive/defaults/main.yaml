@@ -1,0 +1,4 @@
+---
+kdenlive_managed: false
+# 'snap' or 'flatpak'
+kdenlive_install_method: snap

@@ -124,6 +124,10 @@
       tags: [gimp]
       when: gimp_managed | default(false)
 
+    - role: kdenlive
+      tags: [kdenlive]
+      when: kdenlive_managed | default(false)
+
     - role: nxplayer
       tags: [nxplayer]
       when: nxplayer_managed | default(false)

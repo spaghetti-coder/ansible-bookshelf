@@ -480,6 +480,13 @@ flatpak_repos:
 gimp_managed: false
 
 # ====================
+#       KDENLIVE
+# ====================
+kdenlive_managed: false
+# 'snap' or 'flatpak'
+kdenlive_install_method: snap
+
+# ====================
 #       NXPLAYER
 # ====================
 nxplayer_managed: false
