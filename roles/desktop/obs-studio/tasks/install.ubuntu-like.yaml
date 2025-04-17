@@ -1,0 +1,37 @@
+---
+- name: Ppa-deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: ppa-deps }
+
+- name: Install
+  become: true
+  vars:
+    keyfile: "{{ ppa_deps_keyrings_dir }}/obs-studio.asc"
+    codename: "{{ factum_ubuntu_codename }}"
+    repo_url: https://ppa.launchpadcontent.net/obsproject/obs-studio/{{ factum_os_like }}
+  block:
+    - name: Install signing key
+      ansible.builtin.get_url:
+        url: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xbc7345f522079769f5bbe987efc71127f425e228
+        dest: "{{ keyfile }}"
+        mode: "0644"
+      # Sometimes changes comment lines position causing file change
+      # Issues:
+      # * https://answers.launchpad.net/launchpad/+question/818969
+      # * https://github.com/ClickHouse/ClickHouse/issues/57415
+      changed_when: false
+
+    - name: Install repo
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        state: present
+        filename: obs-studio
+        update_cache: true
+      loop:
+        - deb [signed-by={{ keyfile }}] {{ repo_url }} {{ codename }} main
+        - deb-src [signed-by={{ keyfile }}] {{ repo_url }} {{ codename }} main
+      register: obs_studio_repo_state
+
+    - name: Install
+      ansible.builtin.package:
+        name: obs-studio
+        state: "{{ (obs_studio_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
