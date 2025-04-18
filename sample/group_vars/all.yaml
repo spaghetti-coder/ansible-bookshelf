@@ -501,6 +501,13 @@ obs_studio_managed: false
 # ====================
 phpstorm_managed: false
 
+# =================
+#       PINTA
+# =================
+pinta_managed: false
+# 'snap' or 'flatpak'
+pinta_install_method: flatpak
+
 # ===================
 #       SUBLIME
 # ===================
