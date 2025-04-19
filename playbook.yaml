@@ -112,6 +112,10 @@
       tags: [audacity]
       when: audacity_managed | default(false)
 
+    - role: brave
+      tags: [brave]
+      when: brave_managed | default(false)
+
     - role: copyq
       tags: [copyq]
       when: copyq_managed | default(false)
@@ -135,6 +139,10 @@
     - role: obs-studio
       tags: [obs-studio]
       when: obs_studio_managed | default(false)
+
+    - role: opera
+      tags: [opera]
+      when: opera_managed | default(false)
 
     - role: phpstorm
       tags: [phpstorm]

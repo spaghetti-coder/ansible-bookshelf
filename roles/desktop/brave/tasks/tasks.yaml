@@ -1,0 +1,14 @@
+---
+- name: Load OS specific repo
+  ansible.builtin.include_tasks:
+    file: repo.{{ factum_os_family }}-family.yaml
+
+- name: Install
+  ansible.builtin.package:
+    name: brave-browser
+    state: "{{ (brave_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
+  become: true
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    brave_done: true

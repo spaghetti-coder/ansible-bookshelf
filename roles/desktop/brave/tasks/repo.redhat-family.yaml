@@ -1,0 +1,9 @@
+---
+- name: Install repo
+  ansible.builtin.get_url:
+    url: https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+    dest: /etc/yum.repos.d/brave.repo
+    mode: '0644'
+    force: true
+  become: true
+  register: brave_repo_state

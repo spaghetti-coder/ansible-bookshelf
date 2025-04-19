@@ -1,0 +1,28 @@
+---
+- name: Ppa-deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: ppa-deps }
+
+- name: Install
+  become: true
+  vars:
+    keyfile: "{{ ppa_deps_keyrings_dir }}/opera.asc"
+    repo_url: https://deb.opera.com/opera-stable/
+  block:
+    - name: Install signing key
+      ansible.builtin.get_url:
+        url: https://deb.opera.com/archive.key
+        dest: "{{ keyfile }}"
+        mode: "0644"
+
+    - name: Install repo
+      ansible.builtin.apt_repository:
+        repo: deb [signed-by={{ keyfile }}] {{ repo_url }} stable non-free
+        state: present
+        filename: opera
+        update_cache: true
+      register: opera_repo_state
+
+    - name: Install
+      ansible.builtin.package:
+        name: opera-stable
+        state: "{{ (opera_repo_state.changed | default(false)) | ternary('latest', 'present') }}"

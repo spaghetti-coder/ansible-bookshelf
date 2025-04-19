@@ -1,0 +1,23 @@
+---
+- name: Ppa-deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: ppa-deps }
+
+- name: Brave repo
+  become: true
+  vars:
+    keyfile: "{{ ppa_deps_keyrings_dir }}/brave.gpg"
+    repo_url: https://brave-browser-apt-release.s3.brave.com/
+  block:
+    - name: Install signing key
+      ansible.builtin.get_url:
+        url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+        dest: "{{ keyfile }}"
+        mode: "0644"
+
+    - name: Install repo
+      ansible.builtin.apt_repository:
+        repo: deb [signed-by={{ keyfile }}] {{ repo_url }} stable main
+        state: present
+        filename: brave
+        update_cache: true
+      register: brave_repo_state

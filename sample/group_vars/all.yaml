@@ -454,6 +454,11 @@ wg_easy_extra_envfile:
 audacity_managed: false
 
 # =================
+#       BRAVE
+# =================
+brave_managed: false
+
+# =================
 #       COPYQ
 # =================
 # For platforms different from ubuntu probably better flatpak.
@@ -495,6 +500,11 @@ nxplayer_managed: false
 #       OBS-STUDIO
 # ======================
 obs_studio_managed: false
+
+# =================
+#       OPERA
+# =================
+opera_managed: false
 
 # ====================
 #       PHPSTORM
