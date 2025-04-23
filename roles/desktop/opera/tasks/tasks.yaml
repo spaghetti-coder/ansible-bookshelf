@@ -5,7 +5,7 @@
   vars:
     install_type_map:
       _default: flatpak
-      debian: debian-family
+      # debian: debian-family   # <- Dropped, update installs its own list-file
 
 - name: Mark done
   ansible.builtin.set_fact:
