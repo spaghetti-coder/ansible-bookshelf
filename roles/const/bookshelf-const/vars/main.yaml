@@ -32,6 +32,8 @@ bookshelf_const_version:
   tailscale: v1.82.0
   # https://hub.docker.com/r/twingate/connector/tags
   twingate: 1.74.0
+  # https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
+  vaultwarden: 1.33.2-alpine
   # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
   vuetorrent: 2.24.1
   # https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
@@ -59,5 +61,7 @@ bookshelf_const_port:
   qbittorrent:
     web_ui: 8088
     torrenting: 6881
+  vaultwarden:
+    web_ui: 8089
   wg_easy:
     web_ui: 8082

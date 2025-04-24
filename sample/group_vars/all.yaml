@@ -500,6 +500,41 @@ twingate_refresh_token:   # Required
 # Ex.: "{{ playbook_dir }}/resources/twingate/extra.env.j2"
 twingate_extra_envfile:
 
+# =======================
+#       VAULTWARDEN
+# =======================
+# The community driven password manager.
+#   https://www.vaultwarden.net/
+# -----
+# Versions:
+# * https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
+# Options description:
+# * https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
+# -----
+vaultwarden_managed: false
+vaultwarden_enabled: false
+vaultwarden_version:        # Leave blank to leverage bookshelf configuration
+vaultwarden_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+vaultwarden_owner: "{{ ansible_user_id }}"
+vaultwarden_conf_dir: ~/conf/vaultwarden
+vaultwarden_service_name: vaultwarden
+vaultwarden_hostname: "{{ vaultwarden_service_name }}"
+vaultwarden_vhost: "{{ vaultwarden_service_name }}.domain.local"
+# Required with https via reverse proxy, vaultwarden needs to know it's https
+# to work properly with attachments.
+# https://github.com/dani-garcia/vaultwarden/wiki/Using-Docker-Compose
+# Ex.: https://{{ vaultwarden_vhost }}
+vaultwarden_vdomain:
+# Access token for http(s)://VAULTWARDEN_HOST/admin
+# Generate with:
+#   docker container run -it --rm vaultwarden/server:latest /vaultwarden hash
+vaultwarden_admin_token_hash:
+vaultwarden_web_ui_port:    # Leave blank to leverage bookshelf configuration
+vaultwarden_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional path to extra configuration .env.j2 file
+# Ex.: "{{ playbook_dir }}/resources/vaultwarden/extra.env.j2"
+vaultwarden_extra_envfile:
+
 # ===================
 #       WG-EASY
 # ===================
