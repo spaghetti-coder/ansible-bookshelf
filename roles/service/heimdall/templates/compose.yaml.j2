@@ -5,7 +5,7 @@ services:
   heimdall:
     # https://hub.docker.com/r/linuxserver/heimdall/tags
     image: linuxserver/heimdall:{{ version }}
-    container_name: heimdall
+    container_name: {{ heimdall_service_name }}
     restart: unless-stopped
     hostname: {{ heimdall_hostname }}
     env_file:
