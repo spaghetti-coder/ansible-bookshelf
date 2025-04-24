@@ -4,7 +4,7 @@
 
 all:
   vars:
-    ansbile_become_method: ansible.builtin.sudo
+    ansible_become_method: ansible.builtin.sudo
     ansible_python_interpreter: /usr/bin/python3
   hosts:
     file-server.home:
