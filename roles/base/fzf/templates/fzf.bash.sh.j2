@@ -10,7 +10,7 @@ _iife_fzf() {
 
   # Add to path
   local fzf_dir; fzf_dir="$(dirname -- "${bin_file}")"
-  [[ ":${PATH}:" == *"${fzf_dir}"* ]] || PATH+="${PATH:+:}${fzf_dir}"
+  [[ ":${PATH}:" == *":${fzf_dir}:"* ]] || PATH+="${PATH:+:}${fzf_dir}"
 
   # Set up fzf key bindings and fuzzy completion
   eval "$(fzf --bash)"
