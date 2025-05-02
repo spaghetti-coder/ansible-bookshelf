@@ -39,8 +39,6 @@ bookshelf_const_version:
   # https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
   wg_easy: 14
 
-bookshelf_const_compose_dir: ~/docker
-
 bookshelf_const_port:
   adguard:
     web_ui: 8083
@@ -65,3 +63,8 @@ bookshelf_const_port:
     web_ui: 8089
   wg_easy:
     web_ui: 8082
+
+bookshelf_const_compose_dir: ~/docker
+# Not used within bookshelf space, but can be used to keep envar desks.
+# Also compatible with desk tool (https://github.com/jamesob/desk)
+bookshelf_const_desks_dir: ~/.desks
