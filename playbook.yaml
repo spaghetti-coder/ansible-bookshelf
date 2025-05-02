@@ -8,7 +8,7 @@
   hosts: all
   roles:
     - role: age
-      tags: [age]
+      tags: [age, upgradable]
       when: age_managed | default(false)
 
     - role: bash

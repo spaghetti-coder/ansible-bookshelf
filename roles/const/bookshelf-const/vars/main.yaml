@@ -6,14 +6,14 @@ bookshelf_const_version:
   # https://github.com/FiloSottile/age/releases
   age: v1.2.1
   # https://github.com/junegunn/fzf/releases
-  fzf: '0.61.1'
+  fzf: '0.61.3'
   #
   # SERVICE
   #
   # https://hub.docker.com/r/adguard/adguardhome/tags
-  adguard: v0.107.59
+  adguard: v0.107.61
   # https://hub.docker.com/r/gotify/server/tags
-  gotify: 2.6.1
+  gotify: 2.6.3
   # https://hub.docker.com/r/linuxserver/heimdall/tags
   heimdall: 2.6.3
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
@@ -23,19 +23,19 @@ bookshelf_const_version:
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
   nginx_proxy_manager: 2.12.3
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
-  portainer: 2.27.3-alpine
+  portainer: 2.27.5-alpine
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
-  portainer_agent: 2.27.3-alpine
+  portainer_agent: 2.27.5-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags
   qbittorrent: 5.0.4
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.82.0
   # https://hub.docker.com/r/twingate/connector/tags
-  twingate: 1.74.0
+  twingate: 1.75.0
   # https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
   vaultwarden: 1.33.2-alpine
   # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
-  vuetorrent: 2.24.1
+  vuetorrent: 2.24.2
   # https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
   wg_easy: 14
 
