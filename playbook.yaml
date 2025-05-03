@@ -124,6 +124,10 @@
       tags: [brave]
       when: brave_managed | default(false)
 
+    - role: chrome
+      tags: [chrome]
+      when: chrome_managed | default(false)
+
     - role: copyq
       tags: [copyq]
       when: copyq_managed | default(false)

@@ -591,6 +591,14 @@ audacity_managed: false
 # -----
 brave_managed: false
 
+# ==================
+#       CHROME
+# ==================
+# Official web browser from Google, built to be fast, secure, and customizable.
+#   https://www.google.com/chrome/
+# -----
+chrome_managed: false
+
 # =================
 #       COPYQ
 # =================
