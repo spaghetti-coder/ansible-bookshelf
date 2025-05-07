@@ -4,5 +4,6 @@
 
 - name: Install
   community.general.snap:
-    name: pinta
+    name: "{{ packages }}"
+    classic: true
   become: true

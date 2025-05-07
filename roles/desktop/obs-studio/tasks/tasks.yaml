@@ -1,9 +1,9 @@
 ---
 - name: Load install
   ansible.builtin.include_tasks:
-    file: install.{{ install_type_map[factum_os_like] | default(install_type_map['_default']) }}.yaml
+    file: install.{{ type_map[factum_os_like] | default(type_map['_default']) }}.yaml
   vars:
-    install_type_map:
+    type_map:
       _default: flatpak
       ubuntu: ubuntu-like
 

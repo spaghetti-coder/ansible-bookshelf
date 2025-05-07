@@ -1,0 +1,10 @@
+---
+- name: Load repo
+  ansible.builtin.include_tasks:
+    file: repo.{{ factum_os_family }}-family.yaml
+
+- name: Install
+  ansible.builtin.package:
+    name: "{{ packages }}"
+    state: "{{ (sublime_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
+  become: true

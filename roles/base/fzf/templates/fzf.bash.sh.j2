@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-_iife_fzf() {
-  unset _iife_fzf
-
-  local bin_file="{{ fzf_bin_file }}"
+_iife_fzf() { unset _iife_fzf
+  local bin_file='{{ fzf_bin_file }}'
 
   # Not installed
   ! [ -f "${bin_file}" ] && return

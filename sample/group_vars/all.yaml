@@ -698,6 +698,7 @@ pinta_install_method: flatpak
 # -----
 sublime_managed: false
 sublime_merge: false
+sublime_install_method: pm # <- 'pm' or 'snap'
 
 # =================
 #       TEAMS
