@@ -1,0 +1,42 @@
+---
+- name: Ppa-deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: ppa-deps }
+
+- name: Install
+  become: true
+  vars:
+    keyfile: "{{ ppa_deps_keyrings_dir }}/moritzbunkus.gpg"
+    codename: "{{ factum_ubuntu_codename | default(ansible_distribution_release) }}"
+    # NOTE:
+    # Don't use LinuxMint (https://mkvtoolnix.download/downloads.html#linuxmint),
+    # because not all its codenames are supported
+    repo_url: https://mkvtoolnix.download/{{ factum_os_like }}/
+    arch_map:
+      _default: amd64
+      aarch64: arm64
+      armv7l: armhf
+    arch: "{{ arch_map[ansible_architecture] | default(arch_map['_default']) }}"
+  block:
+    - name: Install signing key
+      ansible.builtin.get_url:
+        url: https://mkvtoolnix.download/gpg-pub-moritzbunkus.gpg
+        dest: "{{ keyfile }}"
+        mode: "0644"
+
+    - name: Install repo
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        state: present
+        filename: mkvtoolnix
+        update_cache: true
+      loop:
+        - deb [arch={{ arch }} signed-by={{ keyfile }}] {{ repo_url }} {{ codename }} main
+        - deb-src [arch={{ arch }} signed-by={{ keyfile }}] {{ repo_url }} {{ codename }} main
+      register: mkvtoolnix_repo_state
+
+    - name: Install
+      ansible.builtin.package:
+        name:
+          - mkvtoolnix
+          - mkvtoolnix-gui
+        state: "{{ (mkvtoolnix_repo_state.changed | default(false)) | ternary('latest', 'present') }}"

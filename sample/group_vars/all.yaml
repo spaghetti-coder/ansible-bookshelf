@@ -640,6 +640,14 @@ kdenlive_managed: false
 # 'snap' or 'flatpak'
 kdenlive_install_method: snap
 
+# ======================
+#       MKVTOOLNIX
+# ======================
+# Ultimate Tool for Editing and Merging MKV Files.
+#   https://mkvtoolnix.org/
+# -----
+mkvtoolnix_managed: false
+
 # ====================
 #       NXPLAYER
 # ====================
