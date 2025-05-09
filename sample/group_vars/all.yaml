@@ -630,6 +630,16 @@ flatpak_repos:
 # -----
 gimp_managed: false
 
+# =========================
+#       INTELLIJ-IDEA
+# =========================
+# The IDE for Java and Kotlin
+#   https://www.jetbrains.com/idea/
+# -----
+intellij_idea_managed: false
+# Ultimate edition, unless community
+intellij_idea_ultimate: false
+
 # ====================
 #       KDENLIVE
 # ====================

@@ -1,0 +1,15 @@
+---
+- name: Snapd
+  ansible.builtin.import_role: { name: snapd }
+
+- name: Install   # <- Install from snap, because it has CLI interface
+  community.general.snap:
+    name: intellij-idea-{{ pkg_name_suffix }}
+    classic: true
+  vars:
+    pkg_name_suffix: "{{ intellij_idea_ultimate | ternary('ultimate', 'community') }}"
+  become: true
+
+- name: Mark install done
+  ansible.builtin.set_fact:
+    intellij_idea_done: true

@@ -140,6 +140,10 @@
       tags: [gimp]
       when: gimp_managed | default(false)
 
+    - role: intellij-idea
+      tags: [intellij-idea]
+      when: intellij_idea_managed | default(false)
+
     - role: kdenlive
       tags: [kdenlive]
       when: kdenlive_managed | default(false)
