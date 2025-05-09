@@ -19,19 +19,19 @@ bookshelf_const_version:
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
-  nginx_proxy: 1.7.0-alpine
+  nginx_proxy: 1.7.1-alpine
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
   nginx_proxy_manager: 2.12.3
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
-  portainer: 2.27.5-alpine
+  portainer: 2.27.6-alpine
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
-  portainer_agent: 2.27.5-alpine
+  portainer_agent: 2.27.6-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags
-  qbittorrent: 5.0.4
+  qbittorrent: 5.1.0
   # https://hub.docker.com/r/tailscale/tailscale/tags
-  tailscale: v1.82.0
+  tailscale: v1.82.5
   # https://hub.docker.com/r/twingate/connector/tags
-  twingate: 1.75.0
+  twingate: 1.76.0
   # https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
   vaultwarden: 1.33.2-alpine
   # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
