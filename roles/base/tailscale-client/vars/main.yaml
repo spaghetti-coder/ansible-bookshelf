@@ -1,4 +1,0 @@
----
-tailscale_client_service_name_map:
-  _default: tailscaled
-  alpine: tailscale

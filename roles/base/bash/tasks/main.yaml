@@ -1,5 +1,7 @@
 ---
 - name: Install
   ansible.builtin.package:
-    name: "{{ bash_packages }}"
+    name: "{{ packages }}"
+  vars:
+    packages: "{{ ['bash'] + (bash_completion | ternary(['bash-completion'], [])) }}"
   become: true

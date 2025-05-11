@@ -1,2 +1,0 @@
----
-bash_packages: "{{ ['bash'] + (bash_completion | ternary(['bash-completion'], [])) }}"

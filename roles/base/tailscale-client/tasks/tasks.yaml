@@ -11,7 +11,9 @@
   become: true
   vars:
     up_script: /usr/local/bin/tailscale-up.sh
-    service_name_map: "{{ tailscale_client_service_name_map }}"
+    service_name_map:
+      _default: tailscaled
+      alpine: tailscale
     service_name: "{{ service_name_map[factum_os_like] | default(service_name_map['_default']) }}"
   block:
     - name: Install

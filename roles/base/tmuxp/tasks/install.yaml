@@ -7,7 +7,11 @@
 
 - name: Install
   ansible.builtin.package:
-    name: "{{ tmuxp_pkg_name[factum_os_family] | default(tmuxp_pkg_name['_default']) }}"
+    name: "{{ pkg_name_map[factum_os_family] | default(pkg_name_map['_default']) }}"
+  vars:
+    pkg_name_map:
+      _default: tmuxp
+      redhat: python3-tmuxp
   become: true
 
 - name: Mark install done
