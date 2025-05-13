@@ -1,0 +1,10 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  vars:
+    virt_manager_users_todo: "{{ virt_manager_users | default([], true) \
+      | difference(virt_manager_users_done | default([])) }}"
+  when: |
+    not (virt_manager_install_done | default(false))
+    or (virt_manager_users_todo | length) > 0

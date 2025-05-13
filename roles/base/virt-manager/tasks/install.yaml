@@ -1,0 +1,25 @@
+---
+- name: Install
+  become: true
+  block:
+    - name: Install
+      ansible.builtin.package:
+        name: "{{ pkgs }}"
+      vars:
+        pkgs:
+          - qemu-kvm
+          - virt-manager
+      register: virt_manager_installation_state
+
+    - name: Start service
+      ansible.builtin.service:
+        name: libvirtd
+        state: started
+        enabled: true
+      when: virt_manager_installation_state.changed
+      tags:
+        - skip_ansible_lint
+
+- name: Mark install done
+  ansible.builtin.set_fact:
+    virt_manager_install_done: true

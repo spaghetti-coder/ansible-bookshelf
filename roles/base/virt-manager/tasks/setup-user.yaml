@@ -1,0 +1,17 @@
+---
+- name: Check user exists
+  ansible.builtin.command: /bin/true
+  changed_when: false
+  become: true
+  become_user: "{{ user }}"
+
+- name: Setup user group
+  ansible.builtin.user:
+    name: "{{ user }}"
+    groups: libvirt
+    append: true
+  become: true
+
+- name: Mark user done
+  ansible.builtin.set_fact:
+    virt_manager_users_done: "{{ (virt_manager_users_done | default([])) + [user] }}"

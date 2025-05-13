@@ -58,6 +58,10 @@
     - role: upgrade
       tags: [upgrade, upgradable, never]
 
+    - role: virt-manager
+      tags: [virt-manager]
+      when: virt_manager_managed | default(false)
+
 - name: ServiceBook
   hosts: all
   roles:
