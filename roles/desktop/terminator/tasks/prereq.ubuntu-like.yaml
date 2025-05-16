@@ -1,0 +1,32 @@
+---
+- name: Ppa-deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: ppa-deps }
+
+- name: Add repo
+  become: true
+  vars:
+    keyfile: "{{ ppa_deps_keyrings_dir }}/terminator.asc"
+    codename: "{{ factum_ubuntu_codename }}"
+    repo_url: https://ppa.launchpadcontent.net/gnome-terminator/ppa/ubuntu
+  block:
+    - name: Install signing key
+      ansible.builtin.get_url:
+        url: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xba16c9803bd7508ad91eddb3e1065547e5d4cfd1
+        dest: "{{ keyfile }}"
+        mode: "0644"
+      # Sometimes changes comment lines position causing file change
+      # Issues:
+      # * https://answers.launchpad.net/launchpad/+question/818969
+      # * https://github.com/ClickHouse/ClickHouse/issues/57415
+      changed_when: false
+
+    - name: Install repo
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        state: present
+        filename: terminator
+        update_cache: true
+      loop:
+        - deb [signed-by={{ keyfile }}] {{ repo_url }} {{ codename }} main
+        - deb-src [signed-by={{ keyfile }}] {{ repo_url }} {{ codename }} main
+      register: terminator_repo_state

@@ -1,0 +1,3 @@
+---
+- name: Epel-release
+  ansible.builtin.import_role: { name: epel-release }

@@ -184,6 +184,10 @@
       tags: [teams]
       when: teams_managed | default(false)
 
+    - role: terminator
+      tags: [terminator]
+      when: terminator_managed | default(false)
+
     - role: viber
       tags: [viber]
       when: viber_managed | default(false)

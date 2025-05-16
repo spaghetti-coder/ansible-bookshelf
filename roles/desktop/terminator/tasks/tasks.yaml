@@ -1,0 +1,18 @@
+---
+- name: Load Prereqs
+  ansible.builtin.include_tasks:
+    file: prereq.{{ suffix_map[factum_os_like] | default(suffix_map[factum_os_family]) }}.yaml
+  vars:
+    suffix_map:
+      ubuntu: ubuntu-like
+      redhat: redhat-family
+
+- name: Install
+  ansible.builtin.package:
+    name: terminator
+    state: "{{ (terminator_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
+  become: true
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    terminator_done: true

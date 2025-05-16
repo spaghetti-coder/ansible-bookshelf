@@ -731,6 +731,11 @@ sublime_install_method: pm # <- 'pm' or 'snap'
 teams_managed: false
 teams_users:
 
+# ======================
+#       TERMINATOR
+# ======================
+terminator_managed: false
+
 # =================
 #       VIBER
 # =================
