@@ -643,6 +643,13 @@ flatpak_repos:
 # -----
 gimp_managed: false
 
+# ======================
+#       INPUT-LEAP
+# ======================
+# Open-source KVM software (Barrier fork)
+#   https://github.com/input-leap/input-leap
+input_leap_managed: false
+
 # =========================
 #       INTELLIJ-IDEA
 # =========================

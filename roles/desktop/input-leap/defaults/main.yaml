@@ -1,0 +1,4 @@
+---
+# Open-source KVM software (Barrier fork)
+#   https://github.com/input-leap/input-leap
+input_leap_managed: false

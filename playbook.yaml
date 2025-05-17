@@ -144,6 +144,10 @@
       tags: [gimp]
       when: gimp_managed | default(false)
 
+    - role: input-leap
+      tags: [input-leap]
+      when: input_leap_managed | default(false)
+
     - role: intellij-idea
       tags: [intellij-idea]
       when: intellij_idea_managed | default(false)
