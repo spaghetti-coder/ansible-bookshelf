@@ -618,12 +618,10 @@ chrome_managed: false
 # Advanced clipboard manager with editing and scripting features.
 #   https://hluk.github.io/CopyQ/
 # -----
-# # For platforms different from ubuntu probably better flatpak.
-# copyq_install_method: pm  # <- For package manager or 'flatpak'
-# -----
 # copyq_users:  # <- Existing users to have copyq autostarted
 #   - "{{ ansible_user_id }}"
 copyq_managed: false
+# 'pm' or 'flatpak'. With non-ubuntu always forced to 'flatpak'
 copyq_install_method: pm
 copyq_users:
 
