@@ -2,4 +2,8 @@
 - name: Load tasks
   ansible.builtin.include_tasks:
     file: tasks.yaml
-  when: not (input_leap_done | default(false))
+  vars:
+    input_leap_users_todo: "{{ input_leap_users | default([], true) | difference(input_leap_users_done | default([])) }}"
+  when: |
+    not (input_leap_install_done | default(false))
+    or (input_leap_users_todo | length) > 0

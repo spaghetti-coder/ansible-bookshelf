@@ -1,18 +1,13 @@
 ---
-- name: Install
-  vars:
-    flatpak_remote: flathub
-  block:
-    - name: Flatpak
-      ansible.builtin.import_role: { name: flatpak }
-      vars: { flatpak_repos: ["{{ flatpak_remote }}"] }
+- name: Load install
+  ansible.builtin.include_tasks:
+    file: install.yaml
+  when: not (input_leap_install_done | default(false))
 
-    - name: Install
-      community.general.flatpak:
-        name: io.github.input_leap.input-leap
-        remote: "{{ flatpak_remote }}"
-      become: true
-
-- name: Mark install done
-  ansible.builtin.set_fact:
-    input_leap_done: true
+- name: Load setup users
+  ansible.builtin.include_tasks:
+    file: setup-user.yaml
+  when: (input_leap_users_todo | length) > 0
+  loop: "{{ input_leap_users_todo }}"
+  loop_control:
+    loop_var: user

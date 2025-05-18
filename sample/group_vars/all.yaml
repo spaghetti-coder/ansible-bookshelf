@@ -646,7 +646,11 @@ gimp_managed: false
 # ======================
 # Open-source KVM software (Barrier fork)
 #   https://github.com/input-leap/input-leap
+# -----
+# input_leap_users:  # <- Existing users to have InputLeap autostarted
+#   - "{{ ansible_user_id }}"
 input_leap_managed: false
+input_leap_users:
 
 # =========================
 #       INTELLIJ-IDEA

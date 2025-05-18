@@ -1,0 +1,18 @@
+---
+- name: Install
+  vars:
+    flatpak_remote: flathub
+  block:
+    - name: Flatpak
+      ansible.builtin.import_role: { name: flatpak }
+      vars: { flatpak_repos: ["{{ flatpak_remote }}"] }
+
+    - name: Install
+      community.general.flatpak:
+        name: io.github.input_leap.input-leap
+        remote: "{{ flatpak_remote }}"
+      become: true
+
+- name: Mark install done
+  ansible.builtin.set_fact:
+    input_leap_install_done: true
