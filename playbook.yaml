@@ -69,6 +69,10 @@
       tags: [adguard, upgradable]
       when: adguard_managed | default(false)
 
+    - role: code-server
+      tags: [code-server, upgradable]
+      when: code_server_managed | default(false)
+
     - role: gotify
       tags: [gotify, upgradable]
       when: gotify_managed | default(false)
