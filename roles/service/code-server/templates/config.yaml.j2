@@ -1,0 +1,8 @@
+{% set web_ui_port = (code_server_web_ui_port | default(bookshelf_const_port.code_server.web_ui, true)) %}
+bind-addr: 0.0.0.0:{{ web_ui_port }}
+auth: password
+password: "{{ code_server_pass }}"
+cert: false
+{% if code_server_hashed_pass %}
+hashed-password: "{{ code_server_hashed_pass }}"
+{% endif %}
