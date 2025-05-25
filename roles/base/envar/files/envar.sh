@@ -482,6 +482,16 @@ _envar_lib() (
       # By default loaded desk appends desk file name (without extension) and
       # arrow to PS1: '\''DEFAULT_PS1 DESK_SUFFIX > '\''
       #
+      # Personal convention: keep common desks in ~/.desks directory, which makes
+      # envar tool complient with desk tool (https://github.com/jamesob/desk).
+      #
+      # To create a basic desk dummy:
+      # ```
+      # mkdir ~/.desks
+      # cp '"${DEMO_DESK_FILE}"' ~/.desks/mydesk.sh
+      # # Now edit the ~/.desks/mydesk.sh to match your needs
+      # ```
+      #
       # ```
       # # Usage demo:
       # touch ~/'"${IGNORE_PS1_SUFFIX_FILE}"'   # <- Disable PS1 suffixing

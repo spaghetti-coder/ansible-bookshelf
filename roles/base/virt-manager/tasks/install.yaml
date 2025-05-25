@@ -12,13 +12,12 @@
       register: virt_manager_installation_state
 
     - name: Start service
+      # noqa: no-handler
       ansible.builtin.service:
         name: libvirtd
         state: started
         enabled: true
       when: virt_manager_installation_state.changed
-      tags:
-        - skip_ansible_lint
 
 - name: Mark install done
   ansible.builtin.set_fact:

@@ -24,13 +24,12 @@
 # https://github.com/coder/code-server/releases/download/v${VERSION}/code-server-${VERSION}-amd64.rpm
 
 - name: Get installed version
+  # noqa: risky-shell-pipe
   ansible.builtin.shell:
     cmd: /usr/bin/code-server --version | grep -o '^[0-9\.]\+'
   register: code_server_current_version
   changed_when: false
   failed_when: false
-  tags:
-    - skip_ansible_lint   # <- Ansible wants pipefail, while it's not supported by all shells
 
 - name: Privileged
   become: true

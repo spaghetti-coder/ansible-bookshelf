@@ -4,11 +4,10 @@
   become_user: "{{ user }}"
   block:
     - name: Install tpm
+      # noqa: latest[git]
       ansible.builtin.git:
         repo: https://github.com/tmux-plugins/tpm
         dest: "{{ tmux_user_plugins_dir }}/tpm"
-      tags:
-        - skip_ansible_lint
 
     - name: Source conf files to .tmux.conf
       ansible.builtin.lineinfile:

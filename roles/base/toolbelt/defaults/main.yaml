@@ -8,7 +8,7 @@
 # * htop, jq, sensors, speedtest, tar
 # -----
 # toolbelt_pick:    # <- Install only a fraction. Leave empty to install all
-#   - nano            # <- curl will be installed
+#   - nano            # <- nano will be installed
 #   - downloaders     # <- All downloaders will be installed
 #   - tar             # <- tar will be installed
 # toolbelt_exclude: # <- Opposed to toolbelt_pick, higher priority than toolbelt_pick

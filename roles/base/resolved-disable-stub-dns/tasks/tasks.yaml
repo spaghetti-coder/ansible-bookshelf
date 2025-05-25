@@ -19,7 +19,7 @@
         mode: '0644'
       register: resolved_disable_stub_dns_conffile
 
-    # - name: Repoint resolv.conf file
+    # - name: Repoint resolv.conf file  # <- Breaks internet in some LXC configurations
     #   ansible.builtin.file:
     #     path: /etc/resolv.conf
     #     src: /run/systemd/resolve/resolv.conf
@@ -28,12 +28,13 @@
     #   register: resolved_disable_stub_dns_resolv_conf
 
     - name: Restart service
+      # noqa: no-handler
       ansible.builtin.service:
         name: systemd-resolved
         state: restarted
-      when: resolved_disable_stub_dns_conffile.changed
-      tags:
-        - skip_ansible_lint
+      when: |
+        resolved_disable_stub_dns_conffile.changed
+#         or resolved_disable_stub_dns_resolv_conf.changed
 
 - name: Mark done
   ansible.builtin.set_fact:
