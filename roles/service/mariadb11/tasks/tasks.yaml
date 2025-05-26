@@ -1,0 +1,14 @@
+---
+- name: Load deploy
+  ansible.builtin.include_tasks:
+    file: deploy.yaml
+  when: not (mariadb11_deploy_done | default(false))
+
+- name: Load create user
+  ansible.builtin.include_tasks:
+    file: create-user.yaml
+  when: (mariadb11_users_todo | length) > 0
+  loop: "{{ mariadb11_users_todo }}"
+  loop_control:
+    loop_var: the_user
+    label: "{{ the_user.user }}"

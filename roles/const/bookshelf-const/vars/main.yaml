@@ -20,6 +20,8 @@ bookshelf_const_version:
   heimdall: 2.6.3
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
+  # https://hub.docker.com/_/mariadb (use 11.* LTS)
+  mariadb11: 11.4.7
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
   nginx_proxy: 1.7.1-alpine
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
@@ -57,6 +59,8 @@ bookshelf_const_port:
     web_ui: 8081
     service_discovery: 1900
     client_discovery: 7359
+  mariadb11:
+    tcp: 3306   # <- Last (3306+)
   portainer:
     web_ui: 8086
     tunnel: 8000

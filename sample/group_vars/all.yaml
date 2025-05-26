@@ -339,6 +339,30 @@ jellyfin_tailscale_service_name: "{{ jellyfin_service_name }}-tailscale"
 jellyfin_tailscale_ts_hostname: "{{ jellyfin_tailscale_service_name }}"
 jellyfin_tailscale_auth_key:
 
+# =====================
+#       MARIADB11
+# =====================
+# Versions (use 11.* LTS):
+# * https://hub.docker.com/_/mariadb
+# Exposes:
+# * mariadb11_net - mariadb network name
+# -----
+mariadb11_managed: false
+mariadb11_enabled: false
+mariadb11_version:      # Leave blank to leverage bookshelf configuration
+mariadb11_compose_dir:  # Unless you know ..., leave blank to leverage bookshelf configuration
+mariadb11_owner: "{{ ansible_user_id }}"
+mariadb11_conf_dir: ~/conf/mariadb11
+mariadb11_service_name: mariadb11
+mariadb11_hostname: "{{ mariadb11_service_name }}"
+mariadb11_tcp_port:   # Leave blank to leverage bookshelf configuration
+mariadb11_root_pass: changeme
+# mariadb11_users:
+#   - name: test-user1    # <- Required, by default has *.* access
+#     pass: changeme      # <- Required
+#     database: testdb1   # <- Optional. The user will only have testdb1.* access
+mariadb11_users:
+
 # ===============================
 #       NGINX-PROXY-MANAGER
 # ===============================

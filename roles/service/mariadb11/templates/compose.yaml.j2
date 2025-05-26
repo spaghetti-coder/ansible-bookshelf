@@ -1,0 +1,22 @@
+{% set version = (mariadb11_version | default(bookshelf_const_version.mariadb11, true)) %}
+{% set tcp_port = (mariadb11_tcp_port | default(bookshelf_const_port.mariadb11.tcp, true))  %}
+---
+services:
+  mariadb11:
+    # https://hub.docker.com/_/mariadb (use 11.* LTS)
+    image: mariadb:{{ version }}
+    container_name: "{{ mariadb11_service_name }}"
+    restart: unless-stopped
+    env_file:
+      - secret.env
+    hostname: "{{ mariadb11_hostname }}"
+    networks:
+      - "{{ mariadb11_net }}"
+    volumes:
+      - {{ mariadb11_conf_dir }}:/var/lib/mysql:Z
+    ports:
+      - "{{ tcp_port }}:3306"
+
+networks:
+  "{{ mariadb11_net }}":
+    name: "{{ mariadb11_net }}"

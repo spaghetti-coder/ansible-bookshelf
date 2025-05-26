@@ -89,6 +89,10 @@
       tags: [nginx-proxy, upgradable]
       when: nginx_proxy_managed | default(false)
 
+    - role: mariadb11
+      tags: [mariadb11, upgradable]
+      when: mariadb11_managed | default(false)
+
     - role: nginx-proxy-manager
       tags: [nginx-proxy-manager, upgradable]
       when: nginx_proxy_manager_managed | default(false)

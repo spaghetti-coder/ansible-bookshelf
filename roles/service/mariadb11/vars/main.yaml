@@ -1,0 +1,2 @@
+---
+mariadb11_net: mariadb11  # <- Meant to be used by other services
