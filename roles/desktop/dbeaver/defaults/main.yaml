@@ -1,0 +1,7 @@
+---
+# Universal Database Tool.
+#   https://dbeaver.io/
+# -----
+dbeaver_managed: false
+# 'snap' or 'flatpak'. With non-ubuntu always forced to 'flatpak'
+dbeaver_install_method: flatpak
