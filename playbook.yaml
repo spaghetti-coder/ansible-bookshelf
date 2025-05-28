@@ -105,6 +105,10 @@
       tags: [qbittorrent, upgradable]
       when: qbittorrent_managed | default(false)
 
+    - role: syncthing
+      tags: [syncthing, upgradable]
+      when: syncthing_managed | default(false)
+
     - role: tailscale
       tags: [tailscale, upgradable]
       when: tailscale_managed | default(false)

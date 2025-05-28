@@ -30,6 +30,8 @@ bookshelf_const_version:
   portainer_agent: 2.27.6-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
   qbittorrent: 5.1.0-r0-ls395
+  # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
+  syncthing: v1.29.6-ls183
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.84.0
   # https://hub.docker.com/r/twingate/connector/tags
@@ -46,7 +48,7 @@ bookshelf_const_port:
     web_ui: 8083
     init_ui: 8084
   code_server:
-    web_ui: 8090  # <- Last
+    web_ui: 8090
   gotify:
     web_ui: 8085
   heimdall:
@@ -63,6 +65,10 @@ bookshelf_const_port:
   qbittorrent:
     web_ui: 8088
     torrenting: 6881
+  syncthing:
+    web_ui: 8091  # <- Last (8081+)
+    file_transfers: 22000
+    local_discovery: 21027
   vaultwarden:
     web_ui: 8089
   wg_easy:

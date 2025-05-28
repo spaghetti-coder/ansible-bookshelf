@@ -473,6 +473,28 @@ qbittorrent_downloaded_secret_file:
 qbittorrent_extra_envfile:
 
 # =====================
+#       SYNCTHING
+# =====================
+# Open Source Continuous File Synchronization
+#   https://syncthing.net/
+# -----
+# Versions:
+# * https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
+# -----
+syncthing_managed: false
+syncthing_enabled: false
+syncthing_version:              # Leave blank to leverage bookshelf configuration
+syncthing_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
+syncthing_owner: "{{ ansible_user_id }}"
+syncthing_conf_dir: ~/conf/syncthing
+syncthing_data_dir:             # Required
+syncthing_service_name: syncthing
+syncthing_hostname: "{{ syncthing_service_name }}"
+syncthing_vhost: "{{ syncthing_service_name }}.domain.local"
+syncthing_web_ui_port:          # Leave blank to leverage bookshelf configuration
+syncthing_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+
+# =====================
 #       TAILSCALE
 # =====================
 # Tailscale makes creating software-defined networks easy: securely connecting
