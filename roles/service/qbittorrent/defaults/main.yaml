@@ -4,7 +4,7 @@
 #   https://hub.docker.com/r/linuxserver/qbittorrent
 # -----
 # Versions:
-# * https://hub.docker.com/r/linuxserver/qbittorrent/tags
+# * https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
 # * https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
 # -----
 # NOTE 1: Temporary password for the admin user will be printed to the container

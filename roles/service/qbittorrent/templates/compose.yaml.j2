@@ -6,7 +6,7 @@
 # Temporary password for the admin user will be printed to the container log on startup
 services:
   qbittorrent:
-    # https://hub.docker.com/r/linuxserver/qbittorrent/tags
+    # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
     # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
     image: linuxserver/qbittorrent:{{ version }}
     container_name: {{ qbittorrent_service_name }}
