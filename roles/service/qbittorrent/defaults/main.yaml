@@ -19,7 +19,7 @@ qbittorrent_vuetorrent_version:   # Leave blank to leverage bookshelf configurat
 qbittorrent_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
 qbittorrent_owner: "{{ ansible_user_id }}"
 qbittorrent_conf_dir: ~/conf/qbittorrent
-qbittorrent_data_dir:             # Torrent downloads directory. Required
+qbittorrent_data_dir:             # (REQUIRED) Torrent downloads directory
 qbittorrent_service_name: qbittorrent
 qbittorrent_hostname: "{{ qbittorrent_service_name }}"
 qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"

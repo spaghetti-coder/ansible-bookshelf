@@ -319,7 +319,7 @@ jellyfin_version:       # Leave blank to leverage bookshelf configuration
 jellyfin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
 jellyfin_owner: "{{ ansible_user_id }}"
 jellyfin_conf_dir: ~/conf/jellyfin
-jellyfin_data_dir:      # Directory with media files. Required
+jellyfin_data_dir:      # (REQUIRED) Directory with media files
 jellyfin_service_name: jellyfin
 jellyfin_hostname: "{{ jellyfin_service_name }}"
 jellyfin_vhost: "{{ jellyfin_service_name }}.domain.local"
@@ -448,7 +448,7 @@ qbittorrent_vuetorrent_version:   # Leave blank to leverage bookshelf configurat
 qbittorrent_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
 qbittorrent_owner: "{{ ansible_user_id }}"
 qbittorrent_conf_dir: ~/conf/qbittorrent
-qbittorrent_data_dir:             # Torrent downloads directory. Required
+qbittorrent_data_dir:             # (REQUIRED) Torrent downloads directory
 qbittorrent_service_name: qbittorrent
 qbittorrent_hostname: "{{ qbittorrent_service_name }}"
 qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"
@@ -487,7 +487,7 @@ syncthing_version:              # Leave blank to leverage bookshelf configuratio
 syncthing_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
 syncthing_owner: "{{ ansible_user_id }}"
 syncthing_conf_dir: ~/conf/syncthing
-syncthing_data_dir:             # Required
+syncthing_data_dir:             # (REQUIRED)
 syncthing_service_name: syncthing
 syncthing_hostname: "{{ syncthing_service_name }}"
 syncthing_vhost: "{{ syncthing_service_name }}.domain.local"
@@ -528,7 +528,7 @@ tailscale_service_name: tailscale
 tailscale_hostname: "{{ tailscale_service_name }}"
 # Hostname within tailnet
 tailscale_ts_hostname: "{{ tailscale_service_name }}"
-tailscale_auth_key:
+tailscale_auth_key:         # (REQUIRED)
 # Ex.: '192.168.0.0/24,192.168.2.0/24'
 tailscale_routes:
 tailscale_exit_node: false  # Advertise exit node
@@ -552,11 +552,11 @@ twingate_compose_dir:     # Unless you know ..., leave blank to leverage bookshe
 twingate_owner: "{{ ansible_user_id }}"
 twingate_service_name: twingate
 twingate_hostname: "{{ twingate_service_name }}"
-twingate_tenant_name:     # Your twingate network name. Required
+twingate_tenant_name:     # (REQUIRED) Your twingate network name
 # https://<tenant>.twingate.com/networks/overview -> 'Deploy ... Connector'
 #   -> 'Docker' -> 'Generate Tokens'
-twingate_access_token:    # Required
-twingate_refresh_token:   # Required
+twingate_access_token:    # (REQUIRED)
+twingate_refresh_token:   # (REQUIRED)
 # Optional path to extra configuration .env.j2 file
 # Ex.: "{{ playbook_dir }}/resources/twingate/extra.env.j2"
 twingate_extra_envfile:
@@ -621,8 +621,8 @@ wg_easy_vhost: "{{ wg_easy_service_name }}.domain.local"
 wg_easy_dns:
 # Defaults to no-pass login. See options description for how to generate
 wg_easy_pass_hash:
-# Required. Ex.: 'my-vpn-server.public-domain.com' or '112.2.84.234'
-wg_easy_host:
+# Ex.: 'my-vpn-server.public-domain.com' or '112.2.84.234'
+wg_easy_host:           # (REQUIRED)
 wg_easy_web_ui_port:    # Leave blank to leverage bookshelf configuration
 wg_easy_udp_port: 51820
 # Optional path to extra configuration .env.j2 file
