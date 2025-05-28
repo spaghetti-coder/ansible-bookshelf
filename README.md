@@ -12,6 +12,7 @@ This a basic playbook and roles collection.
 * [Issues](#issues)
 * [Development](#development)
 * [Skeleton](#skeleton)
+* [Standalones](#standalones)
 
 [To top]
 
@@ -193,6 +194,7 @@ To sync libraries and tools in the new project with the upstream issue:
 ## Standalones
 
 * [`envar`](./roles/base/envar)
+* [`ps1-git`](./roles/base/ps1-git)
 
 [To top]
 
