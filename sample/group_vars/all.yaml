@@ -179,7 +179,7 @@ toolbelt_exclude:
 # ========================
 # Virtual Machine Manager
 # -----
-# Only supports Debian-like hosts
+# Only supports Debian family hosts
 # -----
 # virt_manager_managed: "{{ factum_os_family in ['debian'] }}"
 # virt_manager_users:   # <- Existing users to be added to libvirt group
@@ -245,7 +245,7 @@ adguard_tailscale_auth_key:
 # Unlike most of services gets installed in the system (not container).
 # Only supported by Ubuntu-like systems.
 # -----
-# code_server_managed: "{{ factum_os_like in ['ubuntu'] }}"   # <- Only Ubuntu-like
+# code_server_managed: "{{ factum_os_family in ['debian'] }}"   # <- Only Debian family
 # -----
 # Versions (use without 'v' prefix):
 # * https://github.com/coder/code-server/releases

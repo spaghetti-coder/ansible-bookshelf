@@ -43,6 +43,9 @@
         current_version: "{{ code_server_current_version.stdout }}"
         # suffix: "{{ (factum_os_family in ['debian']) | ternary('_' + version + '_amd64.deb', '-' + version + '-amd64.rpm') }}"
         # pkg_url: https://github.com/coder/code-server/releases/download/v{{ version }}/code-server{{ suffix }}
+      environment:
+        # Fix for Debian (https://github.com/ansible/ansible/issues/45219#issuecomment-425073995)
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       when: version != current_version
       register: code_server_install_state
 
