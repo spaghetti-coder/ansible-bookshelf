@@ -1,0 +1,8 @@
+---
+teams_map:
+  flatpak:
+    start_cmd: /usr/bin/flatpak run --branch=stable --arch=x86_64 --command=teams-for-linux --file-forwarding com.github.IsmaelMartinez.teams_for_linux @@u %U @@ --minimized
+    icon: com.github.IsmaelMartinez.teams_for_linux
+  snap:
+    start_cmd: env BAMF_DESKTOP_FILE_HINT=/var/lib/snapd/desktop/applications/teams-for-linux_teams-for-linux.desktop /snap/bin/teams-for-linux %U --minimized
+    icon: /snap/teams-for-linux/current/meta/gui/icon.png

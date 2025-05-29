@@ -1,17 +1,12 @@
 ---
-- name: Install
+- name: Load install
+  ansible.builtin.include_tasks:
+    file: install.{{ method }}.yaml
   vars:
-    flatpak_remote: flathub
-  block:
-    - name: Flatpak
-      ansible.builtin.import_role: { name: flatpak }
-      vars: { flatpak_repos: ["{{ flatpak_remote }}"] }
-
-    - name: Install
-      community.general.flatpak:
-        name: org.gimp.GIMP
-        remote: "{{ flatpak_remote }}"
-      become: true
+    method_map:
+      _default: flatpak
+      ubuntu: "{{ gimp_install_method }}"
+    method: "{{ method_map[factum_os_like] | default(method_map['_default']) }}"
 
 - name: Mark done
   ansible.builtin.set_fact:

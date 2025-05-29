@@ -1,7 +1,7 @@
 ---
 - name: Load install method
   ansible.builtin.include_tasks:
-    file: install-{{ method }}-method.yaml
+    file: install.{{ method }}.yaml
   vars:
     method_map:
       _default: flatpak

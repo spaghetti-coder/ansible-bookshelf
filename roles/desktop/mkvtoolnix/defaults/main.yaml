@@ -3,3 +3,7 @@
 #   https://mkvtoolnix.org/
 # -----
 mkvtoolnix_managed: false
+# Supported values in prefered order (due to available CLI interface):
+# * pm
+# * flatpak   # <- Forced for non-Debian like
+mkvtoolnix_install_method: pm

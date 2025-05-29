@@ -5,3 +5,7 @@
 intellij_idea_managed: false
 # Ultimate edition, unless community
 intellij_idea_ultimate: false
+# Supported values in prefered order (due to available CLI interface):
+# * snap
+# * flatpak   # <- Forced for non-Ubuntu-like
+intellij_idea_install_method: snap

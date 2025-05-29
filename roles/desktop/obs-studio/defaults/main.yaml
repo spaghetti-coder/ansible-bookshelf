@@ -3,3 +3,8 @@
 #   https://obsproject.com/
 # -----
 obs_studio_managed: false
+# Supported values in prefered order (due to GUI oriented usage):
+# * pm
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+obs_studio_install_method: pm

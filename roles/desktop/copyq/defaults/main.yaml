@@ -5,6 +5,8 @@
 # copyq_users:  # <- Existing users to have copyq autostarted
 #   - "{{ ansible_user_id }}"
 copyq_managed: false
-# 'pm' or 'flatpak'. With non-ubuntu always forced to 'flatpak'
+# Supported values in prefered order (due to GUI oriented usage):
+# * pm
+# * flatpak   # <- Forced for non-Ubuntu-like
 copyq_install_method: pm
 copyq_users:

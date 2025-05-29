@@ -1,11 +1,12 @@
 ---
 - name: Load install
   ansible.builtin.include_tasks:
-    file: install.{{ type_map[factum_os_like] | default(type_map['_default']) }}.yaml
+    file: install.{{ method }}.yaml
   vars:
-    type_map:
+    method_map:
       _default: flatpak
-      ubuntu: ubuntu-like
+      ubuntu: "{{ obs_studio_install_method }}"
+    method: "{{ method_map[factum_os_like] | default(method_map['_default']) }}"
 
 - name: Mark done
   ansible.builtin.set_fact:

@@ -3,3 +3,7 @@
 #   https://www.jetbrains.com/phpstorm/
 # -----
 phpstorm_managed: false
+# Supported values in prefered order (due to available CLI interface):
+# * snap
+# * flatpak   # <- Forced for non-Ubuntu-like
+phpstorm_install_method: snap

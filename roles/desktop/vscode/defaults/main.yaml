@@ -1,2 +1,6 @@
 ---
 vscode_managed: false
+# Supported values in prefered order (due to available CLI interface):
+# * snap
+# * flatpak   # <- Forced for non-Ubuntu-like
+vscode_install_method: snap

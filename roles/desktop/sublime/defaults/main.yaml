@@ -3,5 +3,8 @@
 #   https://www.sublimetext.com/
 # -----
 sublime_managed: false
-sublime_merge: false
-sublime_install_method: pm # <- 'pm' or 'snap'
+sublime_merge: false    # <- Install sublime-merge tool
+# Supported values in prefered order (due to available CLI interface):
+# * pm    # <- Forced for non-Ubuntu-like
+# * snap
+sublime_install_method: pm

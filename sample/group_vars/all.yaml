@@ -106,9 +106,7 @@ ps1_git_users:
 # =================
 #       SNAPD
 # =================
-# Not supported by Alpine
-# -----
-# snapd_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- All hosts but Alpines
+# snapd_managed: "{{ factum_os_like in ['ubuntu'] }}"   # <- Only supported by Ubuntu like
 # -----
 snapd_managed: false
 
@@ -642,6 +640,10 @@ wg_easy_extra_envfile:
 #   https://www.audacityteam.org/
 # -----
 audacity_managed: false
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+audacity_install_method: flatpak
 
 # =================
 #       BRAVE
@@ -651,6 +653,10 @@ audacity_managed: false
 #   https://brave.com/
 # -----
 brave_managed: false
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+brave_install_method: flatpak
 
 # ==================
 #       CHROME
@@ -669,7 +675,9 @@ chrome_managed: false
 # copyq_users:  # <- Existing users to have copyq autostarted
 #   - "{{ ansible_user_id }}"
 copyq_managed: false
-# 'pm' or 'flatpak'. With non-ubuntu always forced to 'flatpak'
+# Supported values in prefered order (due to GUI oriented usage):
+# * pm
+# * flatpak   # <- Forced for non-Ubuntu-like
 copyq_install_method: pm
 copyq_users:
 
@@ -680,7 +688,9 @@ copyq_users:
 #   https://dbeaver.io/
 # -----
 dbeaver_managed: false
-# 'snap' or 'flatpak'. With non-ubuntu always forced to 'flatpak'
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
 dbeaver_install_method: flatpak
 
 # ===================
@@ -698,6 +708,10 @@ flatpak_repos:
 #   https://www.gimp.org/
 # -----
 gimp_managed: false
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+gimp_install_method: flatpak
 
 # ======================
 #       INPUT-LEAP
@@ -719,6 +733,10 @@ input_leap_users:
 intellij_idea_managed: false
 # Ultimate edition, unless community
 intellij_idea_ultimate: false
+# Supported values in prefered order (due to available CLI interface):
+# * snap
+# * flatpak   # <- Forced for non-Ubuntu-like
+intellij_idea_install_method: snap
 
 # ====================
 #       KDENLIVE
@@ -727,8 +745,10 @@ intellij_idea_ultimate: false
 #   https://kdenlive.org/
 # -----
 kdenlive_managed: false
-# 'snap' or 'flatpak'
-kdenlive_install_method: snap
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+kdenlive_install_method: flatpak
 
 # ======================
 #       MKVTOOLNIX
@@ -737,6 +757,10 @@ kdenlive_install_method: snap
 #   https://mkvtoolnix.org/
 # -----
 mkvtoolnix_managed: false
+# Supported values in prefered order (due to available CLI interface):
+# * pm
+# * flatpak   # <- Forced for non-Debian like
+mkvtoolnix_install_method: pm
 
 # ====================
 #       NXPLAYER
@@ -753,6 +777,11 @@ nxplayer_managed: false
 #   https://obsproject.com/
 # -----
 obs_studio_managed: false
+# Supported values in prefered order (due to GUI oriented usage):
+# * pm
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+obs_studio_install_method: pm
 
 # =================
 #       OPERA
@@ -761,6 +790,10 @@ obs_studio_managed: false
 #   https://www.opera.com/
 # -----
 opera_managed: false
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+opera_install_method: flatpak
 
 # ====================
 #       PHPSTORM
@@ -769,6 +802,10 @@ opera_managed: false
 #   https://www.jetbrains.com/phpstorm/
 # -----
 phpstorm_managed: false
+# Supported values in prefered order (due to available CLI interface):
+# * snap
+# * flatpak   # <- Forced for non-Ubuntu-like
+phpstorm_install_method: snap
 
 # =================
 #       PINTA
@@ -777,7 +814,9 @@ phpstorm_managed: false
 #   https://www.pinta-project.com/
 # -----
 pinta_managed: false
-# 'snap' or 'flatpak'
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
 pinta_install_method: flatpak
 
 # ===================
@@ -787,8 +826,11 @@ pinta_install_method: flatpak
 #   https://www.sublimetext.com/
 # -----
 sublime_managed: false
-sublime_merge: false
-sublime_install_method: pm # <- 'pm' or 'snap'
+sublime_merge: false    # <- Install sublime-merge tool
+# Supported values in prefered order (due to available CLI interface):
+# * pm    # <- Forced for non-Ubuntu-like
+# * snap
+sublime_install_method: pm
 
 # =================
 #       TEAMS
@@ -796,6 +838,10 @@ sublime_install_method: pm # <- 'pm' or 'snap'
 # teams_users:  # <- Existing users to have teams autostarted
 #   - "{{ ansible_user_id }}"
 teams_managed: false
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+teams_install_method: flatpak
 teams_users:
 
 # ======================
@@ -815,8 +861,16 @@ viber_users:
 #       VLC
 # ===============
 vlc_managed: false
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+vlc_install_method: flatpak
 
 # ==================
 #       VSCODE
 # ==================
 vscode_managed: false
+# Supported values in prefered order (due to available CLI interface):
+# * snap
+# * flatpak   # <- Forced for non-Ubuntu-like
+vscode_install_method: snap

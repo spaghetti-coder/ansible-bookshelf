@@ -3,5 +3,7 @@
 #   https://dbeaver.io/
 # -----
 dbeaver_managed: false
-# 'snap' or 'flatpak'. With non-ubuntu always forced to 'flatpak'
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
 dbeaver_install_method: flatpak

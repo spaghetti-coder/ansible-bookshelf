@@ -1,6 +1,4 @@
 ---
-# Not supported by Alpine
-# -----
-# snapd_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- All hosts but Alpines
+# snapd_managed: "{{ factum_os_like in ['ubuntu'] }}"   # <- Only supported by Ubuntu like
 # -----
 snapd_managed: false

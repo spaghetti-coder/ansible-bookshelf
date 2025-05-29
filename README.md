@@ -119,7 +119,11 @@ Tailscale is just my personal preference. I don't get payed from them (wouldn't 
 
 ## Limitations and specifics
 
-* `base/snapd` role is not supported by Alpine
+* `base/snapd` role is not supported by Alpine. In LXC context for non-Ubuntu-like systems installation of snaps fails with error:
+
+  > error: system does not fully support snapd: cannot mount squashfs image using "squashfs" ...
+
+  So I limited it in all contexts to Ubuntu-like only
 * `base/tmuxp` role is not supported by Alpine
 * `desktop/*` roles are mostly oriented to Debian-based (sometimes narrowed to Ubuntu-based) distros
 * `service/*` roles are primarely deployed with docker

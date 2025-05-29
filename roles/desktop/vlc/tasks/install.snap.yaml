@@ -1,0 +1,8 @@
+---
+- name: Snapd
+  ansible.builtin.import_role: { name: snapd }
+
+- name: Install
+  community.general.snap:
+    name: vlc
+  become: true

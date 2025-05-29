@@ -1,10 +1,17 @@
+{% set start_cmd = teams_map[teams_install_method].start_cmd %}
+{% set icon = teams_map[teams_install_method].icon %}
 [Desktop Entry]
 Name=Teams for Linux
-Exec=env BAMF_DESKTOP_FILE_HINT=/var/lib/snapd/desktop/applications/teams-for-linux_teams-for-linux.desktop /snap/bin/teams-for-linux %U --minimized
-Icon=/snap/teams-for-linux/current/meta/gui/icon.png
 Type=Application
 Terminal=false
 StartupWMClass=teams-for-linux
 MimeType=x-scheme-handler/msteams;
+Exec={{ start_cmd }}
+Icon={{ icon }}
+{% if teams_install_method == 'snap' %}
 X-SnapInstanceName=teams-for-linux
 X-SnapAppName=teams-for-linux
+{% elif teams_install_method == 'flatpak' %}
+X-Flatpak-RenamedFrom=teams-for-linux.desktop;
+X-Flatpak=com.github.IsmaelMartinez.teams_for_linux
+{% endif %}

@@ -1,11 +1,12 @@
 ---
-- name: Snapd
-  ansible.builtin.import_role: { name: snapd }
-
-- name: Install
-  community.general.snap:
-    name: teams-for-linux
-  become: true
+- name: Load install
+  ansible.builtin.include_tasks:
+    file: install.{{ method }}.yaml
+  vars:
+    method_map:
+      _default: flatpak
+      ubuntu: "{{ teams_install_method }}"
+    method: "{{ method_map[factum_os_like] | default(method_map['_default']) }}"
 
 - name: Mark install done
   ansible.builtin.set_fact:

@@ -1,9 +1,13 @@
 ---
 - name: Load install method
   ansible.builtin.include_tasks:
-    file: install.{{ sublime_install_method }}-method.yaml
+    file: install.{{ method }}.yaml
   vars:
     packages: "{{ ['sublime-text'] + (sublime_merge | ternary(['sublime-merge'], [])) }}"
+    method_map:
+      _default: pm
+      ubuntu: "{{ sublime_install_method }}"
+    method: "{{ method_map[factum_os_like] | default(method_map['_default']) }}"
 
 - name: Mark done
   ansible.builtin.set_fact:

@@ -4,3 +4,7 @@
 #   https://brave.com/
 # -----
 brave_managed: false
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+brave_install_method: flatpak

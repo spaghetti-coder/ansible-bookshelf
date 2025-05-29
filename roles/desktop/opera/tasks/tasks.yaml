@@ -1,11 +1,13 @@
 ---
 - name: Load install
   ansible.builtin.include_tasks:
-    file: install.{{ install_type_map[factum_os_family] | default(install_type_map['_default']) }}.yaml
+    file: install.{{ method }}.yaml
   vars:
-    install_type_map:
+    method_map:
       _default: flatpak
+      ubuntu: "{{ opera_install_method }}"
       # debian: debian-family   # <- Dropped, update installs its own list-file
+    method: "{{ method_map[factum_os_like] | default(method_map['_default']) }}"
 
 - name: Mark done
   ansible.builtin.set_fact:
