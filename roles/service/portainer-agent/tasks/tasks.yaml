@@ -32,6 +32,11 @@
         state: "{{ service_state }}"
         remove_orphans: true
 
+    - name: Create note
+      ansible.builtin.import_role: { name: bookshelf-note }
+      # noqa: var-naming[no-role-prefix]
+      vars: { src: notes.md, dest: portainer-agent-service.md }
+
 - name: Mark done
   ansible.builtin.set_fact:
     portainer_agent_done: true

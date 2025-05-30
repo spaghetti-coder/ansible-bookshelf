@@ -51,6 +51,11 @@
         state: "{{ service_state }}"
         remove_orphans: true
 
+    - name: Create note
+      ansible.builtin.import_role: { name: bookshelf-note }
+      # noqa: var-naming[no-role-prefix]
+      vars: { src: notes.md.j2, dest: twingate-service.md }
+
 - name: Mark done
   ansible.builtin.set_fact:
     twingate_done: true

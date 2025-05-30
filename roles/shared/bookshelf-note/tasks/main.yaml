@@ -1,0 +1,34 @@
+---
+# DEMO:
+# ====
+# - name: Create note
+#   ansible.builtin.import_role: { name: bookshelf-note }
+#   # noqa: var-naming[no-role-prefix]
+#   vars:
+#     src: notes.md.j2      # <- Source file in the parent templates/
+#     # src: notes.md       # <- Source file in the parent files/
+#     dest: qbittorrent.md  # <- Desination file name under bookshelf_note_dir directory
+
+- name: Create notes directory
+  ansible.builtin.file:
+    path: "{{ bookshelf_note_dir }}"
+    state: directory
+    mode: '0700'
+
+- name: Note
+  vars:
+    ext: "{{ src | splitext | last }}"
+  block:
+    - name: Deploy note template
+      ansible.builtin.template:
+        src: "{{ src }}"
+        dest: "{{ bookshelf_note_dir }}/{{ dest }}"
+        mode: '0600'
+      when: ext in ['.j2']
+
+    - name: Deploy note file
+      ansible.builtin.copy:
+        src: "{{ src }}"
+        dest: "{{ bookshelf_note_dir }}/{{ dest }}"
+        mode: '0600'
+      when: ext not in ['.j2']

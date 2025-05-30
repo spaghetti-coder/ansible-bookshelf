@@ -3,9 +3,9 @@
 #   https://coder.com/docs/code-server
 # -----
 # Unlike most of services gets installed in the system (not container).
-# Only supported by Ubuntu-like systems.
+# Not supported by Alpine.
 # -----
-# code_server_managed: "{{ factum_os_family in ['debian'] }}"   # <- Only Debian family
+# code_server_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- No Alpine support
 # -----
 # Versions (use without 'v' prefix):
 # * https://github.com/coder/code-server/releases
@@ -18,6 +18,6 @@ code_server_pass: changeme
 # Generate with (replace PASS with your value):
 #   printf -- '%s' 'PASS' | docker container run -i --rm alpine /bin/sh -c 'apk add --update --no-cache argon2 openssl && argon2 "$(openssl rand -base64 8)" -e'
 code_server_hashed_pass:
-# Custom config file template. See the default one in templates directory
+# Custom config file template. See the default one in templates/
 # code_server_custom_conf: "{{ playbook_dir }}/resources/code-server.config.yaml.j2"
 code_server_custom_conf:

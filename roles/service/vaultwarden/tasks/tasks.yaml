@@ -56,6 +56,11 @@
         state: "{{ service_state }}"
         remove_orphans: true
 
+    - name: Create note
+      ansible.builtin.import_role: { name: bookshelf-note }
+      # noqa: var-naming[no-role-prefix]
+      vars: { src: notes.md, dest: vaultwarden-service.md }
+
 - name: Mark done
   ansible.builtin.set_fact:
     vaultwarden_done: true

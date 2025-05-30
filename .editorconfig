@@ -10,5 +10,5 @@ charset = utf-8
 trim_trailing_whitespace = true
 
 # Markdown
-[*.{md,mdx}]
+[*.{md,mdx,md.j2}]
 trim_trailing_whitespace = false
