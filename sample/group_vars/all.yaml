@@ -820,6 +820,18 @@ pinta_managed: false
 pinta_install_method: flatpak
 
 # ===================
+#       POSTMAN
+# ===================
+# Platform for building and using APIs
+#   https://www.postman.com/
+# -----
+postman_managed: false
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+postman_install_method: flatpak
+
+# ===================
 #       SUBLIME
 # ===================
 # Text Editing, Done Right.

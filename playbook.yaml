@@ -192,6 +192,10 @@
       tags: [pinta]
       when: pinta_managed | default(false)
 
+    - role: postman
+      tags: [postman]
+      when: postman_managed | default(false)
+
     - role: sublime
       tags: [sublime]
       when: sublime_managed | default(false)

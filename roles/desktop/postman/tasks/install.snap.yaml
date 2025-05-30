@@ -1,0 +1,9 @@
+---
+- name: Snapd
+  ansible.builtin.import_role: { name: snapd }
+
+- name: Install
+  community.general.snap:
+    name: postman
+    classic: true
+  become: true
