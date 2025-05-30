@@ -1,0 +1,8 @@
+---
+- name: Install charm repo
+  ansible.builtin.copy:
+    src: charm.repo
+    dest: /etc/yum.repos.d/charm.repo
+    mode: '0644'
+  become: true
+  register: charm_repo_state

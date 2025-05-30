@@ -3,9 +3,18 @@
 # require any additional configuration. Some of the tools are categorized and
 # the categories can be used to install the whole set of underlying tools.
 # -----
-# * editors:      nano, neovim, vim
 # * downloaders:  curl, wget
-# * htop, jq, sensors, speedtest, tar
+# * editors:      nano, neovim, vim
+# * viewers:      bat, glow
+# * htop, jq, sensors, skate, speedtest, tar, wishlist
+# -----
+# * bat       : cat on steroids (https://github.com/sharkdp/bat)
+# * glow      : Markdown reader (https://github.com/charmbracelet/glow), for
+#               Alpine it's force excluded, as not supported yet.
+#               TODO: add it to Alpine when supported
+# * skate     : A personal key-value store (https://github.com/charmbracelet/skate)
+# * wishlist  : The SSH directory (https://github.com/charmbracelet/wishlist).
+#               Disabled for Alpine, as it's not available in its repo
 # -----
 # toolbelt_pick:    # <- Install only a fraction. Leave empty to install all
 #   - nano            # <- nano will be installed

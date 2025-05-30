@@ -8,11 +8,15 @@ toolbelt_sections:
     - nano
     - neovim
     - vim
+  viewers:
+    - bat
+    - glow
 
 toolbelt_all: "{{
-    ['htop', 'jq', 'sensors', 'speedtest', 'tar'] \
+    ['htop', 'jq', 'sensors', 'skate', 'speedtest', 'tar', 'wishlist'] \
     + toolbelt_sections['downloaders'] \
-    + toolbelt_sections['editors']
+    + toolbelt_sections['editors'] \
+    + toolbelt_sections['viewers']
   }}"
 
 _toolbelt_pick: "{{ toolbelt_pick | default([], true) }}"
@@ -24,7 +28,11 @@ toolbelt_packages_picked: "{{ (_toolbelt_pick | length < 1) | ternary(toolbelt_a
     | flatten
   }}"
 
-_toolbelt_exclude: "{{ toolbelt_exclude | default([], true) }}"
+# TODO: remove glow when Alpine supprts it
+_toolbelt_exclude: "{{
+    (toolbelt_exclude | default([], true)) \
+    + ((factum_os_family in ['alpine']) | ternary(['glow', 'wishlist'], []))
+  }}"
 
 # All excluded packages
 toolbelt_packages_excluded: "{{ (_toolbelt_exclude | intersect(toolbelt_all)) \

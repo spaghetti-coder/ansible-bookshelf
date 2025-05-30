@@ -1,13 +1,23 @@
 ---
 - name: Epel-release  # <- 'include' to reduce noise when no neovim
   ansible.builtin.import_role: { name: epel-release }
-  when: toolbelt_packages_todo | intersect(toolbelt_need_epel) | length > 0
+  when: toolbelt_packages_todo | intersect(need_epel) | length > 0
   vars:
     # noqa: var-naming[no-role-prefix]
-    toolbelt_need_epel:
+    need_epel:
+      - bat
+      - htop
       - neovim
       - speedtest-cli
-      - htop
+
+- name: Load charm repo
+  ansible.builtin.include_tasks:
+    file: charm-repo.{{ factum_os_family }}-family.yaml
+  when:
+    - toolbelt_packages_todo | intersect(charm_tools) | length > 0
+    - factum_os_family in ['debian', 'redhat']
+  vars:
+    charm_tools: ['glow', 'skate', 'wishlist']
 
 - name: Install
   ansible.builtin.package:

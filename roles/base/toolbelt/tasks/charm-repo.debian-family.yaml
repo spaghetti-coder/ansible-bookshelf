@@ -1,0 +1,22 @@
+---
+- name: Ppa-deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: ppa-deps }
+
+- name: Docker repo
+  become: true
+  vars:
+    keyfile: "{{ ppa_deps_keyrings_dir }}/charm.asc"
+  block:
+    - name: Install charm signing key
+      ansible.builtin.get_url:
+        url: https://repo.charm.sh/apt/gpg.key
+        dest: "{{ keyfile }}"
+        mode: "0644"
+
+    - name: Install charm repo
+      ansible.builtin.apt_repository:
+        repo: deb [signed-by={{ keyfile }}] https://repo.charm.sh/apt/ * *
+        state: present
+        filename: charm
+        update_cache: true
+      register: charm_repo_state
