@@ -1,0 +1,16 @@
+## Tailscale
+
+{% if tailscale_routes %}
+* Enable subnet routes:
+  1. `Machines > {{ tailscale_ts_hostname }} *** > Edit route settings`
+  2. Check subnet routes
+{% endif %}
+{% tailscale_exit_node %}
+* Enable exit node:
+  1. `Machines > {{ tailscale_ts_hostname }} *** > Edit route settings`
+  2. Check **Use as exit node**
+{% endif %}
+* If 
+  1. `DNS > Global nameservers`
+  2. Set **Global nameservers** to the desired DNS server IP. Can be one from subnet routes, from tailnet, or from the web.
+  3. (Optionally) Check **Override DNS servers**

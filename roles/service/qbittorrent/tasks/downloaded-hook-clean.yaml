@@ -1,0 +1,5 @@
+---
+- name: Remove obsolete scripts directory
+  ansible.builtin.file:
+    path: "{{ scripts_dir }}"
+    state: absent

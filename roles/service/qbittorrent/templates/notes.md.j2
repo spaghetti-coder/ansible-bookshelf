@@ -1,0 +1,12 @@
+## qBittorrent
+
+* Temporary password for the admin user will be printed to the container log on startup
+* Switch to alternative UI:
+  1. `Settings > WebUI`
+  2. Check **Use alternative WebUI**
+  3. **Files location**: `/vuetorrent`
+{% if qbittorrent_downloaded_script %}
+* Configure "downloaded" notification:
+  1. `qBittorrent UI > Settings > Downloads`
+  2. **External ... on finished**: `/scripts/downloaded.sh '%N'`
+{% endif %}

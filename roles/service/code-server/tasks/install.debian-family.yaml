@@ -1,0 +1,9 @@
+---
+- name: Install
+  ansible.builtin.apt:
+    deb: https://github.com/coder/code-server/releases/download/v{{ version }}/code-server_{{ version }}_amd64.deb
+  environment:
+    # Fix for Debian (https://github.com/ansible/ansible/issues/45219#issuecomment-425073995)
+    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  register: code_server_install_state
+  become: true

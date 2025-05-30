@@ -1,0 +1,22 @@
+---
+# DEMO:
+# ====
+# - name: Compose apply
+#   ansible.builtin.import_role: { name: bookshelf-compose-apply }
+#   # noqa: var-naming[no-role-prefix]
+#   vars:
+#     template: compose.yaml.j2     # <- Source file in the parent templates/
+#     dest_dir: ~/docker/wg-easy    # <- Compose destination directory
+#     state: present                # <- Compose services state (can be 'absent')
+
+- name: Create compose.yaml
+  ansible.builtin.template:
+    src: "{{ template }}"
+    dest: "{{ dest_dir }}/compose.yaml"
+    mode: '0600'
+
+- name: Apply service state
+  community.docker.docker_compose_v2:
+    project_src: "{{ dest_dir }}"
+    state: "{{ state }}"
+    remove_orphans: true

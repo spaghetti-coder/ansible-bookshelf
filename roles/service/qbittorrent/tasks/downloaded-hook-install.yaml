@@ -1,0 +1,19 @@
+---
+- name: Create scripts directory
+  ansible.builtin.file:
+    path: "{{ scripts_dir }}"
+    state: directory
+    mode: '0700'
+
+- name: Create downloaded.sh
+  ansible.builtin.template:
+    src: "{{ qbittorrent_downloaded_script }}"
+    dest: "{{ scripts_dir }}/downloaded.sh"
+    mode: '0700'
+
+- name: Create downloaded.secret.sh
+  ansible.builtin.template:
+    src: "{{ qbittorrent_downloaded_secret_file }}"
+    dest: "{{ scripts_dir }}/downloaded.secret.sh"
+    mode: '0600'
+  when: qbittorrent_downloaded_secret_file

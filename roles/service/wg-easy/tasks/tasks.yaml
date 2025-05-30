@@ -43,17 +43,10 @@
         mode: '0600'
       when: extra_envfile
 
-    - name: Create compose.yaml
-      ansible.builtin.template:
-        src: compose.yaml.j2
-        dest: "{{ compose_dir }}/compose.yaml"
-        mode: '0600'
-
-    - name: Apply service state
-      community.docker.docker_compose_v2:
-        project_src: "{{ compose_dir }}"
-        state: "{{ service_state }}"
-        remove_orphans: true
+    - name: Compose apply
+      ansible.builtin.import_role: { name: bookshelf-compose-apply }
+      # noqa: var-naming[no-role-prefix]
+      vars: { template: compose.yaml.j2, dest_dir: "{{ compose_dir }}", state: "{{ service_state }}" }
 
 - name: Mark done
   ansible.builtin.set_fact:

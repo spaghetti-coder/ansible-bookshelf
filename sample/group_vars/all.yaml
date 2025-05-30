@@ -137,7 +137,7 @@ tmux_sane_users:
 # tmuxp_conf:
 #   - owner: "{{ ansible_user_id }}"
 #     conf:
-#         # Also available: triple.yaml.j2, quad.yaml.j2
+#         # See all available in templates/
 #       - template: sensors.yaml.j2   # <- Required. No full path for the ones defined in the role
 #         name: my-sensors            # <- Required. Will land in ~/.tmuxp/my-sensors.yaml
 #         # Optional variables, can be addressed in the template via 'conf' map
@@ -250,9 +250,9 @@ adguard_tailscale_auth_key:
 #   https://coder.com/docs/code-server
 # -----
 # Unlike most of services gets installed in the system (not container).
-# Only supported by Ubuntu-like systems.
+# Not supported by Alpine.
 # -----
-# code_server_managed: "{{ factum_os_family in ['debian'] }}"   # <- Only Debian family
+# code_server_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- No Alpine support
 # -----
 # Versions (use without 'v' prefix):
 # * https://github.com/coder/code-server/releases
@@ -265,7 +265,7 @@ code_server_pass: changeme
 # Generate with (replace PASS with your value):
 #   printf -- '%s' 'PASS' | docker container run -i --rm alpine /bin/sh -c 'apk add --update --no-cache argon2 openssl && argon2 "$(openssl rand -base64 8)" -e'
 code_server_hashed_pass:
-# Custom config file template. See the default one in templates directory
+# Custom config file template. See the default one in templates/
 # code_server_custom_conf: "{{ playbook_dir }}/resources/code-server.config.yaml.j2"
 code_server_custom_conf:
 
@@ -378,6 +378,11 @@ nginx_proxy_manager_extra_envfile:
 # * https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
 # Exposes:
 # * nginx_proxy_net - proxy network name
+# * nginx_proxy_enabled - Used by other services
+# -----
+# # With nginx_proxy_manager_enabled == true ports 80 and 443 are busy
+# nginx_proxy_http_port:  "{{ (nginx_proxy_manager_enabled | default(false)) | ternary(9080, 80) }}"
+# nginx_proxy_https_port: "{{ (nginx_proxy_manager_enabled | default(false)) | ternary(9443, 443) }}"
 # -----
 nginx_proxy_managed: false
 nginx_proxy_enabled: false
@@ -386,7 +391,7 @@ nginx_proxy_compose_dir:    # Unless you know ..., leave blank to leverage books
 nginx_proxy_owner: "{{ ansible_user_id }}"
 nginx_proxy_service_name: nginx-proxy
 nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
-nginx_proxy_http_port:      # Ex.: '80', no HTTP when empty
+nginx_proxy_http_port:      # Ex.: '80', no HTTP when empty. In conjunction with NPM use '9080'
 nginx_proxy_https_port:     # Ex.: '443', no HTTPS when empty
 nginx_proxy_certs_dir:      # Path to certs on the managed machine. Works paired with HTTPS
 
