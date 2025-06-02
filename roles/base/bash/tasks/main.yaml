@@ -1,7 +1,9 @@
 ---
-- name: Install
-  ansible.builtin.package:
-    name: "{{ packages }}"
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
   vars:
-    packages: "{{ ['bash'] + (bash_completion | ternary(['bash-completion'], [])) }}"
-  become: true
+    bash_users_todo: "{{ bash_users | default([], true) | difference(bash_users_done | default([])) }}"
+  when: |
+    not (bash_install_done | default(false))
+    or (bash_users_todo | length) > 0

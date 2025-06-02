@@ -1,3 +1,6 @@
 ---
+# bash_users:   # <- Existing users to use bash by default
+#   - "{{ ansible_user_id }}"
 bash_managed: false
 bash_completion: false
+bash_users:
