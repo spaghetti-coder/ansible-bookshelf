@@ -19,6 +19,10 @@
       tags: [docker]
       when: docker_managed | default(false)
 
+    - role: docker-logrotate
+      tags: [docker-logrotate]
+      when: docker_logrotate_managed | default(false)
+
     - role: envar
       tags: [envar]
       when: envar_managed | default(false)

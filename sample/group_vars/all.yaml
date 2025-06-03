@@ -45,6 +45,16 @@ bash_managed: false
 bash_completion: false
 bash_users:
 
+# ============================
+#       DOCKER-LOGROTATE
+# ============================
+# -----
+# Unlike most of services gets installed in the system (not container).
+# -----
+# docker_logrotate_managed: "{{ docker_managed | default(false) }}"  # <- When docker installed
+docker_logrotate_managed: false
+docker_logrotate_keep_count: 7
+
 # ==================
 #       DOCKER
 # ==================

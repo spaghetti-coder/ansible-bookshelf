@@ -1,0 +1,12 @@
+# https://signoz.io/guides/docker-clear-logs/
+
+/var/lib/docker/containers/*/*.log {
+  rotate {{ docker_logrotate_keep_count }}
+  daily
+  # compress
+  missingok
+  # delaycompress
+  copytruncate
+  notifempty
+  create 0600 root root
+}
