@@ -55,6 +55,12 @@
       # noqa: var-naming[no-role-prefix]
       vars: { template: compose.yaml.j2, dest_dir: "{{ compose_dir }}", state: "{{ service_state }}" }
 
+    - name: Create note
+      ansible.builtin.import_role: { name: bookshelf-note }
+      # noqa: var-naming[no-role-prefix]
+      vars: { src: notes.md.j2, dest: twingate-service.md }
+      when: jellyfin_tailscaled
+
 - name: Mark done
   ansible.builtin.set_fact:
     jellyfin_done: true

@@ -74,9 +74,9 @@ bookshelf_const_port:
   wg_easy:
     web_ui: 8082
   # Reserved:
-  # * 80    # <- nginx-proxy or nginx-proxy manager HTTP
+  # * 80    # <- nginx-proxy or nginx-proxy-manager HTTP
   # * 81    # <- nginx-proxy-manager.web_ui
-  # * 443   # <- nginx-proxy or nginx-proxy manager HTTPS
+  # * 443   # <- nginx-proxy or nginx-proxy-manager HTTPS
   # * 9080  # <- nginx-proxy HTTP
   # * 9443  # <- nginx-proxy HTTP
 
