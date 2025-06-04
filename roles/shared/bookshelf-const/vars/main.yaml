@@ -1,4 +1,8 @@
 ---
+bookshelf_const_version_shared:
+  # https://hub.docker.com/_/postgres/tags?name=alpine
+  postgres: 16.9-alpine3.22
+
 bookshelf_const_version:
   #
   # BASE
@@ -18,6 +22,9 @@ bookshelf_const_version:
   gotify: 2.6.3
   # https://hub.docker.com/r/linuxserver/heimdall/tags
   heimdall: 2.6.3
+  # https://hub.docker.com/r/joplin/server/tags
+  joplin_server: 3.3.13
+  joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
@@ -57,6 +64,8 @@ bookshelf_const_port:
     web_ui: 8081
     service_discovery: 1900
     client_discovery: 7359
+  joplin_server:
+    web_ui: 8092        # <- Last (8081+)
   portainer:
     web_ui: 8086
     tunnel: 8000

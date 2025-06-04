@@ -89,6 +89,10 @@
       tags: [jellyfin, upgradable]
       when: jellyfin_managed | default(false)
 
+    - role: joplin-server
+      tags: [joplin-server, upgradable]
+      when: joplin_server_managed | default(false)
+
     - role: nginx-proxy
       tags: [nginx-proxy, upgradable]
       when: nginx_proxy_managed | default(false)

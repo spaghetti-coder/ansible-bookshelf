@@ -1,0 +1,54 @@
+{% set version = (joplin_server_version | default(bookshelf_const_version.joplin_server, true)) %}
+{% set postgres_version = (joplin_server_postgres_version | default(bookshelf_const_version.joplin_server_postgres, true)) %}
+{% set web_ui_port = (joplin_server_web_ui_port | default(bookshelf_const_port.joplin_server.web_ui, true)) %}
+{% set db_service_name = (joplin_server_service_name + '-db') %}
+---
+services:
+  {{ db_service_name }}:
+    # https://hub.docker.com/_/postgres/tags?name=alpine
+    image: postgres:{{ postgres_version }}
+    container_name: {{ db_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./secret.env
+      - ./static.env
+    volumes:
+      - {{ joplin_server_conf_dir }}/db:/var/lib/postgresql/data
+    networks:
+      - joplin
+
+  joplin-server:
+    # https://hub.docker.com/r/joplin/server/tags
+    image: joplin/server:{{ version }}
+    container_name: {{ joplin_server_service_name }}
+    restart: unless-stopped
+    hostname: {{ joplin_server_hostname }}
+    env_file:
+      - ./main.env
+      - ./secret.env
+      - ./static.env
+    depends_on:
+      - {{ db_service_name }}
+    ports:
+      - "{{ web_ui_port }}:22300"
+    environment:
+      - APP_PORT=22300
+      - POSTGRES_HOST={{ db_service_name }}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    networks:
+      - joplin
+{% else %}
+      - VIRTUAL_HOST={{ joplin_server_vhost }}
+      - VIRTUAL_PORT=22300
+    networks:
+      - joplin
+      - {{ nginx_proxy_net }}
+{% endif %}{# nginx_proxy_enabled #}
+
+networks:
+  joplin:
+    name: joplin
+{% if (nginx_proxy_enabled | default(false)) %}
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

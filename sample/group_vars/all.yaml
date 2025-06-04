@@ -359,6 +359,34 @@ jellyfin_tailscale_service_name: "{{ jellyfin_service_name }}-tailscale"
 jellyfin_tailscale_ts_hostname: "{{ jellyfin_tailscale_service_name }}"
 jellyfin_tailscale_auth_key:
 
+# =========================
+#       JOPLIN-SERVER
+# =========================
+# Open source note-taking app. Capture your thoughts and securely access them from any device.
+#   https://joplinapp.org/
+# -----
+# Versions:
+# * https://hub.docker.com/r/joplin/server/tags
+# * https://hub.docker.com/_/postgres/tags?name=alpine
+# -----
+joplin_server_managed: false
+joplin_server_enabled: false
+joplin_server_version:              # Leave blank to leverage bookshelf configuration
+joplin_server_postgres_version:     # Leave blank to leverage bookshelf configuration
+joplin_server_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
+joplin_server_owner: "{{ ansible_user_id }}"
+joplin_server_conf_dir: ~/conf/joplin-server
+joplin_server_service_name: joplin-server
+joplin_server_hostname: "{{ joplin_server_service_name }}"
+joplin_server_vhost: "{{ joplin_server_service_name }}.domain.local"
+joplin_server_web_ui_port:          # Leave blank to leverage bookshelf configuration
+# Joplin base url. Ex.:
+#   https://{{ joplin_server_vhost }}
+#   http://{{ ansible_default_ipv4.address }}:{{ joplin_server_web_ui_port | default(bookshelf_const_port.joplin_server.web_ui, true) }}
+joplin_server_base_url:             # (REQUIRED)
+joplin_server_db_pass:              # (REQUIRED)
+joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+
 # ===============================
 #       NGINX-PROXY-MANAGER
 # ===============================
