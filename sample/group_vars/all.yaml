@@ -792,6 +792,18 @@ intellij_idea_ultimate: false
 # * flatpak   # <- Forced for non-Ubuntu-like
 intellij_idea_install_method: snap
 
+# ==========================
+#       JOPLIN-DESKTOP
+# ==========================
+# Open source note-taking app. Capture your thoughts and securely access them from any device.
+#   https://joplinapp.org/
+# -----
+joplin_desktop_managed: false
+# Supported values in prefered order (due newer versions in snap):
+# * snap
+# * flatpak   # <- Forced for non-Ubuntu-like
+joplin_desktop_install_method: snap
+
 # ====================
 #       KDENLIVE
 # ====================

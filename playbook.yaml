@@ -172,6 +172,10 @@
       tags: [intellij-idea]
       when: intellij_idea_managed | default(false)
 
+    - role: joplin-desktop
+      tags: [joplin-desktop]
+      when: joplin_desktop_managed | default(false)
+
     - role: kdenlive
       tags: [kdenlive]
       when: kdenlive_managed | default(false)
