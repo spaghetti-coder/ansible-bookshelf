@@ -93,6 +93,10 @@
       tags: [joplin-server, upgradable]
       when: joplin_server_managed | default(false)
 
+    - role: metube
+      tags: [metube, upgradable]
+      when: metube_managed | default(false)
+
     - role: nginx-proxy
       tags: [nginx-proxy, upgradable]
       when: nginx_proxy_managed | default(false)
