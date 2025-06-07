@@ -58,7 +58,7 @@
     - name: Create note
       ansible.builtin.import_role: { name: bookshelf-note }
       # noqa: var-naming[no-role-prefix]
-      vars: { src: notes.md.j2, dest: twingate-service.md }
+      vars: { src: notes.md.j2, dest: jellyfin-service.md }
       when: jellyfin_tailscaled
 
 - name: Mark done
