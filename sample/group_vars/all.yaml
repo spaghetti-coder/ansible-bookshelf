@@ -387,6 +387,32 @@ joplin_server_base_url:             # (REQUIRED)
 joplin_server_db_pass:              # (REQUIRED)
 joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 
+# ==================
+#       METUBE
+# ==================
+# Self-hosted YouTube downloader (web UI for youtube-dl / yt-dlp)
+#   https://github.com/alexta69/metube
+# -----
+# Versions:
+# * https://github.com/alexta69/metube/pkgs/container/metube
+# -----
+metube_managed: false
+metube_enabled: false
+metube_version:       # Leave blank to leverage bookshelf configuration
+metube_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
+metube_owner: "{{ ansible_user_id }}"
+metube_conf_dir: ~/conf/metube
+metube_data_dir:      # (REQUIRED) Directory with media files
+metube_service_name: metube
+metube_hostname: "{{ metube_service_name }}"
+metube_vhost: "{{ metube_service_name }}.domain.local"
+metube_web_ui_port:   # Leave blank to leverage bookshelf configuration
+metube_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# https://github.com/alexta69/metube?tab=readme-ov-file#configuration-via-environment-variables
+# Optional path to extra configuration .env.j2 file
+# Ex.: "{{ playbook_dir }}/resources/metube/extra.env.j2"
+metube_extra_envfile:
+
 # ===============================
 #       NGINX-PROXY-MANAGER
 # ===============================
