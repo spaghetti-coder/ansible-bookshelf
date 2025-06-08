@@ -61,6 +61,8 @@ bookshelf_const_version:
   portainer_agent: 2.31.3-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
   qbittorrent: 5.1.2-r1-ls404
+  # https://hub.docker.com/r/crazymax/samba/tags
+  samba: 4.19.9
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
   syncthing: v1.30.0-ls186
   # => See tailscale versions in the top
