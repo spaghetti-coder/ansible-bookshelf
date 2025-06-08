@@ -84,6 +84,8 @@ bookshelf_const_version:    # <- Last update: 2025-09-06
   portainer_agent: 2.33.1-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
   qbittorrent: 5.1.2-r1-ls412
+  # https://hub.docker.com/r/crazymax/samba/tags
+  samba: 4.21.4
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: 2.0.0
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls

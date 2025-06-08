@@ -187,6 +187,10 @@
       tags: [syncthing, upgradable]
       when: syncthing_managed | default(false)
 
+    - role: samba
+      tags: [samba, upgradable]
+      when: samba_managed | default(false)
+
     - role: tailscale
       tags: [tailscale, upgradable]
       when: tailscale_managed | default(false)

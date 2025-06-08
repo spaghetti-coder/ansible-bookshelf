@@ -1,0 +1,37 @@
+---
+# More config demos:
+#   https://github.com/crazy-max/docker-samba/blob/master/examples/compose/data/config.yml
+
+group:        # <- Custom feature, handled by extra.sh
+  foo: 2000
+  bar: 2001
+
+auth:
+  - user: master
+    group: master
+    uid: 1000
+    gid: 1000
+    password: changeme
+    # password_file: /run/secrets/master.pass   # <- If both password and password_file, password wins
+  - user: foo
+    group: foo
+    uid: 1100
+    gid: 1200
+    password: ${FOO_PASS}     # <- Take password from FOO_PASS env variable
+    # password: $${FOO_PASS}    # <- Password will be '${FOO_PASS}'
+
+global:
+  - "force user = master"
+  - "force group = master"
+
+share:
+  - name: Share
+    path: /shares
+    browsable: true
+    readonly: false
+    guestok: false
+    validusers: master
+    writelist: master
+    veto: false
+    hidefiles: /_*/
+    recycle: false

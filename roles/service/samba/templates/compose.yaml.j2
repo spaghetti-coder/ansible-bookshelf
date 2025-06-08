@@ -1,0 +1,23 @@
+{% set version = (samba_version | default(bookshelf_const_version.samba, true)) %}
+---
+services:
+  samba:
+    # https://hub.docker.com/r/crazymax/samba/tags
+    image: crazymax/samba:{{ version }}
+    container_name: {{ samba_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./main.env
+      - ./extra.env
+    volumes:
+      - '{{ conf_dir }}:/data'
+      - '{{ samba_shares_dir }}:/shares'
+      - '{{ conf_dir }}/extra.sh:/etc/cont-init.d/07-extra.sh:ro'   # <- Create groups and assigns to users
+    hostname: {{ samba_hostname }}
+    network_mode: bridge    # <- Avoid creating default compose network
+    ports:
+      - 445:445
+      - 3702:3702/tcp
+      - 3702:3702/udp
+      - 5355:5355/tcp
+      - 5355:5355/udp

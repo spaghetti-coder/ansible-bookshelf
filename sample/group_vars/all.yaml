@@ -986,6 +986,27 @@ qbittorrent_notify_chat_id:   # (REQUIRED for telegram)
 # Optional extra env vars
 qbittorrent_extra_env:        # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"
 
+# =================
+#       SAMBA
+# =================
+# VERSIONS:
+# * https://hub.docker.com/r/crazymax/samba/tags
+# -----
+samba_managed: false
+samba_enabled: false
+samba_version:        # Leave blank to leverage bookshelf configuration
+samba_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+samba_owner: "{{ ansible_user_id }}"
+samba_shares_dir:     # (REQUIRED) Shares root directory, '/shares' in container
+# See demo in files
+samba_config:         # (REQUIRED) "{{ lookup('file', 'demo.config.yaml') }}"
+samba_service_name: samba
+samba_hostname: "{{ samba_service_name }}"
+samba_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional extra env vars
+#   https://github.com/crazy-max/docker-samba#environment-variables
+samba_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/samba.env.j2') }}"
+
 # ========================
 #       SILVERBULLET
 # ========================
