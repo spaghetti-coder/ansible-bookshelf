@@ -34,7 +34,6 @@ adguard_extra_envfile:
 # service with "advertised routes" (https://tailscale.com/kb/1019/subnets)
 adguard_tailscaled: false
 adguard_tailscale_version:    # Leave blank to leverage bookshelf configuration
-adguard_tailscale_service_name: "{{ adguard_service_name }}-tailscale"
 # Hostname within tailnet
-adguard_tailscale_ts_hostname: "{{ adguard_tailscale_service_name }}"
+adguard_tailscale_ts_hostname: "{{ adguard_service_name }}-tailscale"
 adguard_tailscale_auth_key:

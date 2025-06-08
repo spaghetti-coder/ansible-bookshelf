@@ -26,7 +26,6 @@ jellyfin_extra_envfile:
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 jellyfin_tailscaled: false
 jellyfin_tailscale_version:    # Leave blank to leverage bookshelf configuration
-jellyfin_tailscale_service_name: "{{ jellyfin_service_name }}-tailscale"
 # Hostname within tailnet
-jellyfin_tailscale_ts_hostname: "{{ jellyfin_tailscale_service_name }}"
+jellyfin_tailscale_ts_hostname: "{{ jellyfin_service_name }}-tailscale"
 jellyfin_tailscale_auth_key:

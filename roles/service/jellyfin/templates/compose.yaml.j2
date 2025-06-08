@@ -27,7 +27,7 @@ services:
   {{ tailscale_service }}:
     # https://hub.docker.com/r/tailscale/tailscale/tags
     image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ jellyfin_tailscale_service_name }}
+    container_name: {{ jellyfin_service_name }}-tailscale
     restart: unless-stopped
     env_file:
       - ./main.env
