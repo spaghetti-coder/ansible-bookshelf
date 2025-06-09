@@ -5,11 +5,15 @@ play() (
   local PROJ_DIR; PROJ_DIR="$(dirname -- "$(realpath -- "${BASH_SOURCE[0]}")")/.."
   local REQS_DIR=vendor
   local REQS_FILE=./requirements.yaml
+  # Configurable via BOOKSHELF_INVENTORY_FILE
+  # Relative to the PROJ_DIR or absolute path
+  local INVENTORY_FILE="${BOOKSHELF_INVENTORY_FILE-./hosts.yaml}"
+
   declare -a COLLECTIONS_CMD=(
     ansible-galaxy collection install -r "${REQS_FILE}" -p "${REQS_DIR}"
   )
   declare -a PLAYBOOK_CMD=(
-    ansible-playbook ./playbook.yaml -i ./hosts.yaml
+    ansible-playbook ./playbook.yaml -i "${INVENTORY_FILE}"
   )
 
   init() {
