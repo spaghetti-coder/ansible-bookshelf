@@ -1,0 +1,13 @@
+---
+- name: Load install
+  ansible.builtin.include_tasks:
+    file: install.{{ method }}.yaml
+  vars:
+    method_map:
+      _default: flatpak
+      ubuntu: "{{ whatsie_install_method }}"
+    method: "{{ method_map[factum_os_like] | default(method_map['_default']) }}"
+
+- name: Mark install done
+  ansible.builtin.set_fact:
+    whatsie_done: true

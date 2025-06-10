@@ -976,3 +976,15 @@ vscode_managed: false
 # * snap
 # * flatpak   # <- Forced for non-Ubuntu-like
 vscode_install_method: snap
+
+# ===================
+#       WHATSIE
+# ===================
+# Feature rich WhatsApp Client for Desktop Linux.
+#   https://github.com/keshavbhatt/whatsie
+# -----
+whatsie_managed: false
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+whatsie_install_method: flatpak

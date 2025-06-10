@@ -235,3 +235,7 @@
     - role: vscode
       tags: [vscode]
       when: vscode_managed | default(false)
+
+    - role: whatsie
+      tags: [whatsie]
+      when: whatsie_managed | default(false)
