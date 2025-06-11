@@ -2,6 +2,8 @@
 {% set web_ui_port = (syncthing_web_ui_port | default(bookshelf_const_port.syncthing.web_ui, true)) %}
 {% set file_transfers_port = bookshelf_const_port.syncthing.file_transfers %}
 {% set local_discovery_port = bookshelf_const_port.syncthing.local_discovery %}
+{% set tailscale_version = (syncthing_tailscale_version | default(bookshelf_const_version.syncthing_tailscale, true)) %}
+{% set tailscale_service = 'syncthing-tailscale' %}
 ---
 services:
   syncthing:
@@ -9,30 +11,49 @@ services:
     image: linuxserver/syncthing:{{ version }}
     container_name: {{ syncthing_service_name }}
     restart: unless-stopped
-    hostname: {{ syncthing_hostname }}
     env_file:
       - ./main.env
     volumes:
-      - '{{ syncthing_conf_dir }}:/config'
-      - '{{ syncthing_data_dir }}:/data'
-    ports:
-      - '{{ web_ui_port }}:8384'
-      - '{{ file_transfers_port }}:22000'       # <- TCP
-      - '{{ file_transfers_port }}:22000/udp'   # <- QUIC
-      - '{{ local_discovery_port }}:21027/udp'
+      - '{{ conf_dir }}/syncthing:/config'
+      - '{{ data_dir }}:/data'
     healthcheck:
       test: curl -fkLsS -m 2 127.0.0.1:8384/rest/noauth/health | grep -o --color=never OK || exit 1
       interval: 1m
       timeout: 10s
       retries: 3
+{% if syncthing_tailscaled %}
+    network_mode: service:{{ tailscale_service }}
+
+  {{ tailscale_service }}:
+    # https://hub.docker.com/r/tailscale/tailscale/tags
+    image: tailscale/tailscale:{{ tailscale_version }}
+    container_name: {{ syncthing_service_name }}-tailscale
+    restart: unless-stopped
+    env_file:
+      - ./main.env
+      - ./secret.env
+    volumes:
+      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+{% endif %}{# syncthing_tailscaled #}
+    hostname: {{ syncthing_hostname }}
+    ports:
+      - '{{ web_ui_port }}:8384'
+      - '{{ file_transfers_port }}:22000'       # <- TCP
+      - '{{ file_transfers_port }}:22000/udp'   # <- QUIC
+      - '{{ local_discovery_port }}:21027/udp'
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}
-    environment:
-      - VIRTUAL_HOST={{ syncthing_vhost }}
-      - VIRTUAL_PORT={{ web_ui_port }}
     networks:
       - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ syncthing_vhost }}
+      - VIRTUAL_PORT=8384
 
 networks:
   {{ nginx_proxy_net }}:

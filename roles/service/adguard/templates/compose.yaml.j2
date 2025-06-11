@@ -1,7 +1,7 @@
 {% set version = (adguard_version | default(bookshelf_const_version.adguard, true)) %}
 {% set web_ui_port = (adguard_web_ui_port | default(bookshelf_const_port.adguard.web_ui, true)) %}
 {% set init_ui_port = (adguard_init_ui_port | default(bookshelf_const_port.adguard.init_ui, true)) %}
-{% set tailscale_version = (adguard_tailscale_version | default(bookshelf_const_version.tailscale, true)) %}
+{% set tailscale_version = (adguard_tailscale_version | default(bookshelf_const_version.adguard_tailscale, true)) %}
 {% set tailscale_service = 'adguard-tailscale' %}
 ---
 services:

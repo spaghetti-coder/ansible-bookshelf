@@ -1,6 +1,6 @@
 {% set version = (jellyfin_version | default(bookshelf_const_version.jellyfin, true)) %}
 {% set web_ui_port = (jellyfin_web_ui_port | default(bookshelf_const_port.jellyfin.web_ui, true)) %}
-{% set tailscale_version = (jellyfin_tailscale_version | default(bookshelf_const_version.tailscale, true)) %}
+{% set tailscale_version = (jellyfin_tailscale_version | default(bookshelf_const_version.jellyfin_tailscale, true)) %}
 {% set tailscale_service = 'jellyfin-tailscale' %}
 ---
 services:

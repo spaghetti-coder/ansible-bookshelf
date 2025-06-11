@@ -9,7 +9,7 @@
   2. `{{ tailscale_ts_hostname }} *** > Edit route settings`
   3. Check subnet routes
 {% endif %}
-{% tailscale_exit_node %}
+{% if tailscale_exit_node %}
 * Enable exit node:
   1. Go to https://tailscale.com/admin/machines
   2. `{{ tailscale_ts_hostname }} *** > Edit route settings`

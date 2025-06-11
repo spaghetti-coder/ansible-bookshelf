@@ -2,6 +2,8 @@
 bookshelf_const_version_shared:
   # https://hub.docker.com/_/postgres/tags?name=alpine
   postgres: 16.9-alpine3.22
+  # https://hub.docker.com/r/tailscale/tailscale/tags
+  tailscale: v1.84.2
 
 bookshelf_const_version:
   #
@@ -16,6 +18,7 @@ bookshelf_const_version:
   #
   # https://hub.docker.com/r/adguard/adguardhome/tags
   adguard: v0.107.62
+  adguard_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
   code_server: 4.100.3
   # https://hub.docker.com/r/gotify/server/tags
@@ -27,6 +30,7 @@ bookshelf_const_version:
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
+  jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
   metube: 2025-06-10
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
@@ -41,8 +45,9 @@ bookshelf_const_version:
   qbittorrent: 5.1.0-r0-ls397
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
   syncthing: v1.29.7-ls184
+  syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/tailscale/tailscale/tags
-  tailscale: v1.84.2
+  tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/twingate/connector/tags
   twingate: 1.76.0
   # https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
