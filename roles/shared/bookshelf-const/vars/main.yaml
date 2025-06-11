@@ -28,7 +28,7 @@ bookshelf_const_version:
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
   # https://github.com/alexta69/metube/pkgs/container/metube
-  metube: 2025-06-06
+  metube: 2025-06-10
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
   nginx_proxy: 1.7.1-alpine
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
@@ -38,11 +38,11 @@ bookshelf_const_version:
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
   portainer_agent: 2.30.1-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.0-r0-ls396
+  qbittorrent: 5.1.0-r0-ls397
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
   syncthing: v1.29.7-ls184
   # https://hub.docker.com/r/tailscale/tailscale/tags
-  tailscale: v1.84.0
+  tailscale: v1.84.2
   # https://hub.docker.com/r/twingate/connector/tags
   twingate: 1.76.0
   # https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
