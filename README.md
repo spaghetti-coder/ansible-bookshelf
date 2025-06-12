@@ -199,6 +199,15 @@ To sync libraries and tools in the new project with the upstream issue:
 
 * [`envar`](./roles/base/envar)
 * [`ps1-git`](./roles/base/ps1-git)
+* [`tmux` sane config](./roles/base/tmux/files/default.conf)
+  <details><summary>Installation</summary>
+
+  ```sh
+  sudo mkdir -p /etc/tmux
+  sudo curl -o /etc/tmux/default.conf CONFI_FILE_URL
+  echo /etc/tmux/default.conf >> ~/.tmux.conf
+  ```
+  </details>
 
 [To top]
 
