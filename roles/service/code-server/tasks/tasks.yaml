@@ -1,51 +1,18 @@
 ---
-- name: Config file   # <- Before code-server installation
-  become: true
-  become_user: "{{ code_server_owner }}"
-  vars:
-    conf_dir: ~/.config/code-server
-  block:
-    - name: Create config directory
-      ansible.builtin.file:
-        path: "{{ conf_dir }}"
-        state: directory
-        mode: '0700'
-
-    - name: Create config file
-      ansible.builtin.template:
-        src: "{{ conffile }}"
-        dest: "{{ conf_dir }}/config.yaml"
-        mode: '0600'
-      vars:
-        conffile: "{{ code_server_custom_conf | default('config.yaml.j2', true) }}"
-      register: code_server_conf_state
-
-- name: Get installed version
-  # noqa: risky-shell-pipe
-  ansible.builtin.shell:
-    cmd: /usr/bin/code-server --version | grep -o '^[0-9\.]\+'
-  register: code_server_current_version
-  changed_when: false
-  failed_when: false
-
 - name: Load install
   ansible.builtin.include_tasks:
-    file: install.{{ factum_os_family }}-family.yaml
-  vars:
-    version: "{{ code_server_version | default(bookshelf_const_version.code_server, true) }}"
-  when: version != code_server_current_version.stdout
+    file: install.yaml
+  when: not (code_server_install_done | default(false))
 
-- name: Apply service state
-  ansible.builtin.service:
-    name: code-server@{{ code_server_owner }}
-    state: "{{ service_state }}"
-    enabled: true
-  vars:
-    conf_changed: "{{ code_server_conf_state.changed }}"
-    install_changed: "{{ code_server_install_state.changed | default(false) }}"
-    service_state: "{{ (conf_changed and not install_changed) | ternary('restarted', 'started') }}"
+- name: Install extensionsS
+  ansible.builtin.command:
+    argv: ['code-server', '--install-extension', "{{ item }}"]
+  register: code_server_extension_result
+  changed_when: "'already installed' not in (code_server_extension_result.stdout | lower)"
   become: true
+  become_user: "{{ code_server_owner }}"
+  loop: "{{ code_server_extensions_todo }}"
 
-- name: Mark done
+- name: Mark extension done
   ansible.builtin.set_fact:
-    code_server_done: true
+    code_server_extensions_done: "{{ code_server_extensions_todo + (code_server_extensions_done | default([])) }}"

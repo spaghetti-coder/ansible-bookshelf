@@ -2,4 +2,8 @@
 - name: Load tasks
   ansible.builtin.include_tasks:
     file: tasks.yaml
-  when: not (code_server_done | default(false))
+  vars:
+    code_server_extensions_todo: "{{ code_server_extensions | default([], true) | difference(code_server_extensions_done | default([])) }}"
+  when:
+    not (code_server_install_done | default(false))
+    or (code_server_extensions_todo | length) > 0
