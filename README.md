@@ -205,7 +205,7 @@ To sync libraries and tools in the new project with the upstream issue:
   ```sh
   sudo mkdir -p /etc/tmux
   sudo curl -o /etc/tmux/default.conf CONFI_FILE_URL
-  echo /etc/tmux/default.conf >> ~/.tmux.conf
+  echo 'source-file /etc/tmux/default.conf' >> ~/.tmux.conf
   ```
   </details>
 
