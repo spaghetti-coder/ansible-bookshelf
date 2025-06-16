@@ -15,10 +15,16 @@
         file: install.yaml
       when: not (fzf_install_done | default(false))
 
-    - name: Load setup users
-      ansible.builtin.include_tasks:
-        file: setup-user.yaml
-      when: (fzf_users_todo | length) > 0
+    - name: Setup users
+      ansible.builtin.file:
+        src: "{{ fzf_hook }}"
+        dest: "{{ fzf_hook_user_link }}"
+        state: link
+        force: true
+      become: true
+      become_user: "{{ item }}"
       loop: "{{ fzf_users_todo }}"
-      loop_control:
-        loop_var: user
+
+    - name: Mark setup done
+      ansible.builtin.set_fact:
+        fzf_users_done: "{{ (fzf_users_done | default([])) + fzf_users_todo }}"

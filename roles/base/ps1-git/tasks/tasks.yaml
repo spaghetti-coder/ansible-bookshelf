@@ -14,10 +14,16 @@
         file: install.yaml
       when: not (ps1_git_install_done | default(false))
 
-    - name: Load setup users
-      ansible.builtin.include_tasks:
-        file: setup-user.yaml
-      when: (ps1_git_users_todo | length) > 0
+    - name: Setup users
+      ansible.builtin.file:
+        src: "{{ ps1_git_path }}"
+        dest: "{{ ps1_git_user_link }}"
+        state: link
+        force: true
+      become: true
+      become_user: "{{ item }}"
       loop: "{{ ps1_git_users_todo }}"
-      loop_control:
-        loop_var: user
+
+    - name: Mark setup done
+      ansible.builtin.set_fact:
+        ps1_git_users_done: "{{ (ps1_git_users_done | default([])) + ps1_git_users_todo }}"

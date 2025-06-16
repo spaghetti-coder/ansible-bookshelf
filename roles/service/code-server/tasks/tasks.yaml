@@ -4,7 +4,7 @@
     file: install.yaml
   when: not (code_server_install_done | default(false))
 
-- name: Install extensionsS
+- name: Install extensions
   ansible.builtin.command:
     argv: ['code-server', '--install-extension', "{{ item }}"]
   register: code_server_extension_result
@@ -15,4 +15,4 @@
 
 - name: Mark extension done
   ansible.builtin.set_fact:
-    code_server_extensions_done: "{{ code_server_extensions_todo + (code_server_extensions_done | default([])) }}"
+    code_server_extensions_done: "{{ (code_server_extensions_done | default([])) + code_server_extensions_todo }}"

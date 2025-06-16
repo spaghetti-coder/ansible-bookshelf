@@ -16,7 +16,7 @@
 
     - name: Initial configuration
       ansible.builtin.command:
-        cmd: "{{ envar_path }} install"
+        argv: ["{{ envar_path }}", 'install']
       register: envar_conf_result
       changed_when:
         - envar_conf_result.rc == 0

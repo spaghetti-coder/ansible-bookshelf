@@ -1,6 +1,7 @@
 ---
 - name: Detect installation ({{ pm_tool }})
-  ansible.builtin.command: "{{ pm_tool }} --version"
+  ansible.builtin.command:
+    argv: ["{{ pm_tool }}", '--version']
   register: upgrade_alt_pm_detect_result
   failed_when: false
   changed_when: false

@@ -4,10 +4,15 @@
     file: install.yaml
   when: not (input_leap_install_done | default(false))
 
-- name: Load setup users
-  ansible.builtin.include_tasks:
-    file: setup-user.yaml
-  when: (input_leap_users_todo | length) > 0
+- name: Install autostart
+  ansible.builtin.copy:
+    src: input-leap.desktop
+    dest: ~/.config/autostart/input-leap.desktop
+    mode: '0600'
+  become: true
+  become_user: "{{ item }}"
   loop: "{{ input_leap_users_todo }}"
-  loop_control:
-    loop_var: user
+
+- name: Mark users done
+  ansible.builtin.set_fact:
+    input_leap_users_done: "{{ (input_leap_users_done | default([])) + input_leap_users_todo }}"

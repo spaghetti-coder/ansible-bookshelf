@@ -7,10 +7,17 @@
     file: install.yaml
   when: not (envar_install_done | default(false))
 
-- name: Load setup users
-  ansible.builtin.include_tasks:
-    file: setup-user.yaml
-  when: (envar_users_todo | length) > 0
+- name: Setup users
+  ansible.builtin.command:
+    argv: ["{{ envar_path }}", 'setup']
+  register: envar_setup_result
+  changed_when:
+    - envar_setup_result.rc == 0
+    - envar_setup_result.stdout | lower == 'done'
+  become: true
+  become_user: "{{ item }}"
   loop: "{{ envar_users_todo }}"
-  loop_control:
-    loop_var: user
+
+- name: Mark users done
+  ansible.builtin.set_fact:
+    envar_users_done: "{{ (envar_users_done | default([])) + envar_users_todo }}"
