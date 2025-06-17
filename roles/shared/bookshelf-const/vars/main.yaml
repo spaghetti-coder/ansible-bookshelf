@@ -21,6 +21,9 @@ bookshelf_const_version:
   adguard_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
   code_server: 4.100.3
+  # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
+  filebrowser: v2.32.3-s6
+  filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/gotify/server/tags
   gotify: 2.6.3
   # https://hub.docker.com/r/linuxserver/heimdall/tags
@@ -63,6 +66,8 @@ bookshelf_const_port:
     init_ui: 8084
   code_server:
     web_ui: 8090
+  filebrowser:
+    web_ui: 8094        # <- Last (8081+)
   gotify:
     web_ui: 8085
   heimdall:
@@ -74,7 +79,7 @@ bookshelf_const_port:
   joplin_server:
     web_ui: 8092
   metube:
-    web_ui: 8093        # <- Last (8081+)
+    web_ui: 8093
   portainer:
     web_ui: 8086
     tunnel: 8000
@@ -84,7 +89,7 @@ bookshelf_const_port:
     web_ui: 8088
     torrenting: 6881
   syncthing:
-    web_ui: 8091        # <- Last (8081+)
+    web_ui: 8091
     file_transfers: 22000
     local_discovery: 21027
   vaultwarden:

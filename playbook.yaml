@@ -77,6 +77,10 @@
       tags: [code-server, upgradable]
       when: code_server_managed | default(false)
 
+    - role: filebrowser
+      tags: [filebrowser, upgradable]
+      when: filebrowser_managed | default(false)
+
     - role: gotify
       tags: [gotify, upgradable]
       when: gotify_managed | default(false)

@@ -288,6 +288,44 @@ code_server_hashed_pass:
 # code_server_custom_conf: "{{ playbook_dir }}/resources/code-server.config.yaml.j2"
 code_server_custom_conf:
 
+# =======================
+#       FILEBROWSER
+# =======================
+# Web File Browser
+#   https://filebrowser.org/
+# -----
+# Versions:
+# * https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
+# * https://hub.docker.com/r/tailscale/tailscale/tags
+# -----
+# NOTE 1: Temporary password for the admin user will be printed to the container
+# log on startup
+# -----
+filebrowser_managed: false
+filebrowser_enabled: false
+filebrowser_version:        # Leave blank to leverage bookshelf configuration
+filebrowser_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+filebrowser_owner: "{{ ansible_user_id }}"
+filebrowser_conf_dir: ~/conf/filebrowser
+filebrowser_data_dir:       # (REQUIRED)
+filebrowser_service_name: filebrowser
+filebrowser_hostname: "{{ filebrowser_service_name }}"
+filebrowser_vhost: "{{ filebrowser_service_name }}.domain.local"
+filebrowser_web_ui_port:    # Leave blank to leverage bookshelf configuration
+filebrowser_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional path to extra configuration .env.j2 file, will affect both filebrowser
+# and tailscale. Ex.: "{{ playbook_dir }}/resources/filebrowser/extra.env.j2"
+filebrowser_extra_envfile:
+# ----------
+# The following settings configure FileBrowser to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+filebrowser_tailscaled: false
+filebrowser_tailscale_version:    # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+filebrowser_tailscale_ts_hostname: "{{ filebrowser_service_name }}-tailscale"
+filebrowser_tailscale_auth_key:
+
 # ==================
 #       GOTIFY
 # ==================
