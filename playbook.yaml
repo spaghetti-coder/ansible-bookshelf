@@ -73,6 +73,10 @@
       tags: [adguard, upgradable]
       when: adguard_managed | default(false)
 
+    - role: audiobookshelf
+      tags: [audiobookshelf, upgradable]
+      when: audiobookshelf_managed | default(false)
+
     - role: code-server
       tags: [code-server, upgradable]
       when: code_server_managed | default(false)
