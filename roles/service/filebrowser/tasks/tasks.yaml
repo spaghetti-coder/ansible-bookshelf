@@ -59,7 +59,6 @@
       ansible.builtin.import_role: { name: bookshelf-note }
       # noqa: var-naming[no-role-prefix]
       vars: { src: notes.md.j2, dest: filebrowser-service.md }
-      when: filebrowser_tailscaled
 
 - name: Mark done
   ansible.builtin.set_fact:

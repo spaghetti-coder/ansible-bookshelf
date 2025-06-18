@@ -1,5 +1,8 @@
 ## FileBrowser
 
+* Temporary password for the admin user will be printed to the container log on startup
+{% if filebrowser_tailscaled %}
 * Disable tailscale machine expiry:
   1. Go to https://tailscale.com/admin/machines
   2. `{{ filebrowser_tailscale_ts_hostname }} *** > Disable key expiry`
+{% endif %}
