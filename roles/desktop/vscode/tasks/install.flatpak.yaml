@@ -9,6 +9,6 @@
 
     - name: Install
       community.general.flatpak:
-        name: com.visualstudio.code
+        name: "{{ vscode_flatpak_name }}"
         remote: "{{ flatpak_remote }}"
       become: true

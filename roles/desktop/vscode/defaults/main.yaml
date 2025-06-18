@@ -1,6 +1,16 @@
 ---
+# vscode_extensions:  # <- Per user extensions
+#   - owner: "{{ ansible_user_id }}"
+#     extensions:
+#       - editorconfig.editorconfig
+#       - mads-hartmann.bash-ide-vscode
+#       - timonwong.shellcheck
+#       - foxundermoon.shell-format
+#       - redhat.ansible
+# -----
 vscode_managed: false
 # Supported values in prefered order (due to available CLI interface):
 # * snap
 # * flatpak   # <- Forced for non-Ubuntu-like
 vscode_install_method: snap
+vscode_extensions:

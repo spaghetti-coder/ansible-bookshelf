@@ -4,4 +4,14 @@
     file: install.yaml
   when: not (vscode_install_done | default(false))
 
-# TODO: install per-user extension
+- name: Load user extensions
+  ansible.builtin.include_tasks:
+    file: user-extensions.yaml
+  when: (vscode_extensions_todo | length) > 0
+  loop: "{{ vscode_extensions_todo }}"
+  vars:
+    user: "{{ extensions.owner }}"
+    ext_list: "{{ extensions.extensions | default([]) }}"
+  loop_control:
+    loop_var: extensions
+    label: "{{ user }}"

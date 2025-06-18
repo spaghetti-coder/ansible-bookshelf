@@ -1,0 +1,18 @@
+---
+- name: Install extensions
+  ansible.builtin.command:
+    argv: "{{ bin_cmd + ['--install-extension', item] }}"
+  vars:
+    bin_cmd_map:  # pkg_manager - cmd
+      flatpak: [flatpak, run, "{{ vscode_flatpak_name }}"]
+      snap: [code]
+    bin_cmd: "{{ bin_cmd_map[vscode_install_method] }}"
+  register: vscode_extension_result
+  changed_when: "'already installed' not in (vscode_extension_result.stdout | lower)"
+  become: true
+  become_user: "{{ user }}"
+  loop: "{{ ext_list }}"
+
+- name: Mark extensions done
+  ansible.builtin.set_fact:
+    vscode_extensions_done: "{{ (vscode_extensions_done | default([])) + [user] }}"
