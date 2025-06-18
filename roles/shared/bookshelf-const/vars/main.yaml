@@ -27,7 +27,7 @@ bookshelf_const_version:
   # https://hub.docker.com/r/gotify/server/tags
   gotify: 2.6.3
   # https://hub.docker.com/r/linuxserver/heimdall/tags
-  heimdall: 2.6.3
+  heimdall: v2.6.3-ls310
   # https://hub.docker.com/r/joplin/server/tags
   joplin_server: 3.3.13
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
@@ -41,13 +41,13 @@ bookshelf_const_version:
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
   nginx_proxy_manager: 2.12.3
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
-  portainer: 2.30.1-alpine
+  portainer: 2.31.0-alpine
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
-  portainer_agent: 2.30.1-alpine
+  portainer_agent: 2.31.0-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.0-r0-ls397
+  qbittorrent: 5.1.0-r0-ls398
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
-  syncthing: v1.29.7-ls184
+  syncthing: v1.29.7-ls185
   syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
@@ -56,7 +56,7 @@ bookshelf_const_version:
   # https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
   vaultwarden: 1.34.1-alpine
   # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
-  vuetorrent: 2.25.0
+  vuetorrent: 2.26.0
   # https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
   wg_easy: 14
 
