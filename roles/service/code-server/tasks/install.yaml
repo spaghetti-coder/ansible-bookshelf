@@ -32,7 +32,8 @@
   ansible.builtin.include_tasks:
     file: install.{{ factum_os_family }}-family.yaml
   vars:
-    version: "{{ code_server_version | default(bookshelf_const_version.code_server, true) }}"
+    # Strip 'v' prefix
+    version: "{{ code_server_version | default(bookshelf_const_version.code_server, true) | regex_replace('^v?(.*)$', '\\1') }}"
   when: version != code_server_current_version.stdout
 
 - name: Apply service state

@@ -13,7 +13,7 @@
 #   - foxundermoon.shell-format
 #   - redhat.ansible
 # -----
-# Versions (use without 'v' prefix):
+# Versions:
 # * https://github.com/coder/code-server/releases
 code_server_managed: false
 code_server_version:      # Leave blank to leverage bookshelf configuration

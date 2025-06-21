@@ -23,7 +23,7 @@ bookshelf_const_version:
   audiobookshelf: 2.25.1
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
-  code_server: 4.101.1
+  code_server: v4.101.1
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
   filebrowser: v2.33.2-s6
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
