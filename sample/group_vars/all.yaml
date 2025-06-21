@@ -321,6 +321,10 @@ code_server_hashed_pass:
 # Custom config file template. See the default one in templates/
 # code_server_custom_conf: "{{ playbook_dir }}/resources/code-server.config.yaml.j2"
 code_server_custom_conf:
+# Custom user config file template, applied only on the service initialization.
+# See the default one in templates/
+# code_server_custom_conf: "{{ playbook_dir }}/resources/code-server.user-conf.json.j2"
+code_server_user_conf:
 
 # =======================
 #       FILEBROWSER

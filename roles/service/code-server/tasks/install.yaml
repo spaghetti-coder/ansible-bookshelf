@@ -1,28 +1,47 @@
 ---
-- name: Config file   # <- Before code-server installation
+- name: Conf files
   become: true
   become_user: "{{ code_server_owner }}"
   vars:
-    conf_dir: ~/.config/code-server
+    server_conffile: ~/.config/code-server/config.yaml
+    user_conffile: ~/.local/share/code-server/User/settings.json
   block:
-    - name: Create config directory
+    - name: Create server config directory
       ansible.builtin.file:
-        path: "{{ conf_dir }}"
+        path: "{{ server_conffile | dirname }}"
         state: directory
         mode: '0700'
 
-    - name: Create config file
+    # Server conf file before code-server installation to
+    # apply ports before first start
+    - name: Deploy server config file
       ansible.builtin.template:
-        src: "{{ conffile }}"
-        dest: "{{ conf_dir }}/config.yaml"
+        src: "{{ template }}"
+        dest: "{{ server_conffile }}"
         mode: '0600'
       vars:
-        conffile: "{{ code_server_custom_conf | default('config.yaml.j2', true) }}"
-      register: code_server_conf_state
+        template: "{{ code_server_custom_conf | default('config.yaml.j2', true) }}"
+      register: code_server_server_conf_state
+
+    - name: Create user settings directory
+      ansible.builtin.file:
+        path: "{{ user_conffile | dirname }}"
+        state: directory
+        mode: "{{ omit }}"
+      register: code_server_user_settings_dir_state
+
+    - name: Deploy user settings file
+      ansible.builtin.template:   # noqa: no-handler
+        src: "{{ code_server_user_conf }}"
+        dest: "{{ user_conffile }}"
+        mode: "{{ omit }}"
+      vars:
+        template: "{{ code_server_user_conf | default('sane.json.j2', true) }}"
+      register: code_server_user_conf_state
+      when: code_server_user_settings_dir_state.changed   # <- Only for initial install
 
 - name: Get installed version
-  # noqa: risky-shell-pipe
-  ansible.builtin.shell:
+  ansible.builtin.shell:      # noqa: risky-shell-pipe
     cmd: /usr/bin/code-server --version | grep -o '^[0-9\.]\+'
   register: code_server_current_version
   changed_when: false
@@ -42,9 +61,9 @@
     state: "{{ service_state }}"
     enabled: true
   vars:
-    conf_changed: "{{ code_server_conf_state.changed }}"
-    install_changed: "{{ code_server_install_state.changed | default(false) }}"
-    service_state: "{{ (conf_changed and not install_changed) | ternary('restarted', 'started') }}"
+    server_conf_changed: "{{ code_server_server_conf_state.changed }}"
+    user_conf_changed: "{{ code_server_user_conf_state.changed | default(false) }}"
+    service_state: "{{ (server_conf_changed or user_conf_changed) | ternary('restarted', 'started') }}"
   become: true
 
 - name: Mark done
