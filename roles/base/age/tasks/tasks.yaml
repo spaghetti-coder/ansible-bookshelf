@@ -8,6 +8,11 @@
 - name: Privileged
   become: true
   block:
+    - name: Remove package installation # <- Avoid conflict with "manual" installation
+      ansible.builtin.package:
+        name: age
+        state: absent
+
     - name: Create directory
       ansible.builtin.file:
         path: "{{ age_dir }}"
