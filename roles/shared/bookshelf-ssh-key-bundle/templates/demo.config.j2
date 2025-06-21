@@ -1,0 +1,27 @@
+{# private_file contains path to the private key #}
+{# public_file contains path to the public key #}
+# ssh-copy-id -i {{ private_file }} HOST # <- Substitute HOST placeholder
+# Copy {{ public_file }} to VCs:
+# * https://github.com/settings/keys
+# * https://bitbucket.org/account/settings/ssh-keys/
+
+Host host1.home
+  HostName 10.0.0.50
+  Port 22
+  User user1
+  IdentityFile {{ private_file }}
+  IdentitiesOnly yes
+
+Host host2.home
+  HostName 10.0.0.69
+  Port 22
+  User user2
+  IdentityFile {{ private_file }}
+  IdentitiesOnly yes
+
+Host github.com bitbucket.org
+  HostName %h
+  Port 22
+  User git
+  IdentityFile {{ private_file }}
+  IdentitiesOnly yes

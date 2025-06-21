@@ -1,0 +1,69 @@
+---
+# DEMO:
+# ====
+# - name: SSH key bundle
+#   ansible.builtin.import_role: { name: bookshelf-ssh-key-bundle }
+#   # noqa: var-naming[no-role-prefix]
+#   vars:
+#     # Will store all key-related things to files:
+#     #   ~/.ssh/foo/bar, ~/.ssh/foo/bar.config, ~/.ssh/foo/bar.pub
+#     prefix: foo/bar
+#     # Private key text
+#     private_key: "{{ lookup('file', playbook_dir + '/resources/ssh/private') }}"
+#     # Optional public key text. If absent, will try to generate from the private key file
+#     public_key: "{{ lookup('file', playbook_dir + '/resources/ssh/public') }}"
+#     # The template file to be included to ~/.ssh/config. See demo in templates
+#     conffile:
+#   # Optionally ensure applied to a specific user
+#   become: true
+#   become_user: "{{ ansible_user_id }}"
+
+- name: SSH key bundle
+  vars:
+    ssh_dir: ~/.ssh
+    private_file: "{{ ssh_dir }}/{{ prefix }}"
+    public_file: "{{ private_file }}.pub"
+    config_file: "{{ private_file }}.config"
+  block:
+    - name: Create directory
+      ansible.builtin.file:
+        path: "{{ private_file | dirname }}"
+        state: directory
+        mode: '0700'
+
+    - name: Deploy private key
+      ansible.builtin.copy:
+        content: |  # <- To ensure a new line in the end of file
+          {{ private_key }}
+        dest: "{{ private_file }}"
+        mode: '0600'
+      register: bookshelf_ssh_key_bundle_private_state
+
+    - name: Deploy public key
+      ansible.builtin.copy:
+        content: |
+          {{ public_key }}
+        dest: "{{ public_file }}"
+        mode: '0644'
+      when: (public_key | default(''))
+
+    - name: Restore public key
+      ansible.builtin.shell:
+        cmd: ssh-keygen -y -f {{ private_file }} > {{ public_file }}
+      changed_when: omit
+      when:
+        - not (public_key | default(''))
+        - bookshelf_ssh_key_bundle_private_state.changed
+
+    - name: Deploy config file
+      ansible.builtin.template:
+        src: "{{ conffile }}"
+        dest: "{{ private_file }}.config"
+        mode: '0600'
+
+    - name: Include config to main SSH config
+      ansible.builtin.lineinfile:
+        path: "{{ ssh_dir }}/config"
+        line: "Include {{ config_file }}"
+        mode: '0600'
+        create: true
