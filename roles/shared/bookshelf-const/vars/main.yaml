@@ -23,9 +23,9 @@ bookshelf_const_version:
   audiobookshelf: 2.25.1
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
-  code_server: 4.100.3
+  code_server: 4.101.1
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-  filebrowser: v2.32.3-s6
+  filebrowser: v2.33.2-s6
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/gotify/server/tags
   gotify: 2.6.3
@@ -44,9 +44,9 @@ bookshelf_const_version:
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
   nginx_proxy_manager: 2.12.3
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
-  portainer: 2.31.0-alpine
+  portainer: 2.31.1-alpine
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
-  portainer_agent: 2.31.0-alpine
+  portainer_agent: 2.31.1-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
   qbittorrent: 5.1.0-r0-ls398
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
