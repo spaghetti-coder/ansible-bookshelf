@@ -32,7 +32,7 @@
 
     - name: Deploy user settings file
       ansible.builtin.template:   # noqa: no-handler
-        src: "{{ code_server_user_conf }}"
+        src: "{{ template }}"
         dest: "{{ user_conffile }}"
         mode: "{{ omit }}"
       vars:
