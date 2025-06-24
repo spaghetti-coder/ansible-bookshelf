@@ -34,6 +34,10 @@ gen_ssl_conf() {
   )
 }
 
+
+# ==================== END OF CONFIGURATION ZONE ====================
+
+
 # shellcheck disable=SC2317,SC2092,SC2031
 gen_ssl() (
   `# LINKS:`
