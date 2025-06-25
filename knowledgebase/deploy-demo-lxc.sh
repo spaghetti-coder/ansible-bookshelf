@@ -118,6 +118,9 @@ deploy_ve_core() (
   declare -a CREATE_FLAGS
   declare -i START_DELAY=15
 
+  local SELF_SCRIPT=pve-deploy-ve.sh
+  grep -q '.\+' -- "${0}" 2>/dev/null && SELF_SCRIPT="$(basename -- "${0}" 2>/dev/null)"
+
   # https://stackoverflow.com/a/42449998
   # shellcheck disable=SC2034
   local T_BOLD='\033[1m' \
@@ -125,9 +128,6 @@ deploy_ve_core() (
         T_ITALIC='\033[3m' \
         T_UNDER='\033[4m' \
         T_RESET='\033[0m'
-
-  local SELF_SCRIPT=pve-deploy-ve.sh
-  grep -q '.\+' -- "${0}" 2>/dev/null && SELF_SCRIPT="$(basename -- "${0}" 2>/dev/null)"
 
   main() {
     local command; command="$(get_command "${@:1:1}")" || return

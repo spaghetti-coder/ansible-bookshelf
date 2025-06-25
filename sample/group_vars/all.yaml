@@ -331,6 +331,8 @@ code_server_user_conf:
 # =======================
 # Web File Browser
 #   https://filebrowser.org/
+# ALTERNATIVE (when time comes);
+#   https://github.com/gtsteffaniak/filebrowser
 # -----
 # Versions:
 # * https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6

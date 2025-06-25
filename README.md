@@ -197,7 +197,9 @@ To sync libraries and tools in the new project with the upstream issue:
 
 ## Standalones
 
+* [`deploy-demo-lxc`](./knowledgebase/deploy-demo-lxc.sh)
 * [`envar`](./roles/base/envar)
+* [`gen-ssl`](./knowledgebase/gen-ssl.sh)
 * [`ps1-git`](./roles/base/ps1-git)
 * [`tmux` sane config](./roles/base/tmux/files/default.conf)
   <details><summary>Installation</summary>
