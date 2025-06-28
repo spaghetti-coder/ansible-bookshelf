@@ -349,10 +349,18 @@ _envar_lib() (
               exit
             }
           else
+            # https://stackoverflow.com/a/42449998
+            # shellcheck disable=SC2034
+            declare -r T_BOLD='\033[1m' \
+              T_DIM='\033[2m' \
+              T_ITALIC='\033[3m' \
+              T_UNDER='\033[4m' \
+              T_RESET='\033[0m'
+
             basename -- "${_envar_last_desk}" | rev | cut -d'.' -f2- | rev | {
               printf -- '%s' "${ENVAR_PS1_ORIGIN}"
               tail -n 1 <<< "${ENVAR_PS1_ORIGIN}" | grep -q '\s\+$' || printf -- ' '
-              printf -- '%s > ' "$(cat)"
+              printf -- '%s > ' "${T_BOLD}${T_DIM}${T_ITALIC}$(cat)${T_RESET}"
             }
 
             exit
@@ -500,8 +508,17 @@ _envar_lib() (
      ,
       MY_VAR="demo value"
      ,
-      envar_ps1_suffix() { echo "demo-desk > "; }   # <- Custom PS1 suffix
-      # envar_ps1_suffix() { return; }              # <- Don'\''t PS1 suffix the desk
+      # envar_ps1_suffix() { return; }  # <- Don'\''t PS1 suffix the desk
+      envar_ps1_suffix() {              # <- Custom PS1 suffix
+     ,  # https://stackoverflow.com/a/42449998
+     ,  # shellcheck disable=SC2034
+     ,  local -r  T_BOLD="\033[1m" \
+     ,            T_DIM="\033[2m" \
+     ,            T_ITALIC="\033[3m" \
+     ,            T_UNDER="\033[4m" \
+     ,            T_RESET="\033[0m"
+     ,  echo "${T_BOLD}${T_DIM}${T_ITALIC}demo-desk${T_RESET} > "
+      }
     '
   }
 
