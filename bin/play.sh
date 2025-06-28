@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+# USAGE:
+#   # If 'vaulted.txt' file presents in the project root, will
+#   # prompt for vault password
+#   SCRIPT [ANSIBLE_COMPATIBLE_ARGS]
+#
+#   # Will not prompt for password, will take it from BOOKSHELF_VAULT_PASS
+#   # variable, even when 'vaulted.txt' is not present
+#   BOOKSHELF_VAULT_PASS=VAULT_PASS SCRIPT [ANSIBLE_COMPATIBLE_ARGS]
+# DEMO:
+#   SCRIPT -l ubuntu-server -t docker
+#   BOOKSHELF_VAULT_PASS=changeme SCRIPT -l ubuntu-server -t docker
+
 # shellcheck disable=SC2317
 play() (
   local PROJ_DIR; PROJ_DIR="$(dirname -- "$(realpath -- "${BASH_SOURCE[0]}")")/.."
@@ -26,7 +38,6 @@ play() (
     fi
 
     cat -- "${PROJ_DIR}/${REQS_FILE}" &>/dev/null || COLLECTIONS_CMD=(true)
-    cat -- "${PROJ_DIR}/vaulted.txt" &>/dev/null && PLAYBOOK_CMD+=(-J)
   }
 
   main() {
@@ -34,10 +45,14 @@ play() (
 
     cd -- "${PROJ_DIR}" || return
 
-    ( set -x
-      "${COLLECTIONS_CMD[@]}" \
-      && "${PLAYBOOK_CMD[@]}" "${@}"
-    ) || return
+    (set -x; "${COLLECTIONS_CMD[@]}") || return
+
+    if [ -n "${BOOKSHELF_VAULT_PASS+x}" ]; then
+      (set -x; "${PLAYBOOK_CMD[@]}" --vault-pass-file <(printenv BOOKSHELF_VAULT_PASS) "${@}") || return
+    else
+      cat -- "${PROJ_DIR}/vaulted.txt" &>/dev/null && PLAYBOOK_CMD+=(-J)
+      (set -x; "${PLAYBOOK_CMD[@]}" "${@}") || return
+    fi
   }
 
   main "${@}"
