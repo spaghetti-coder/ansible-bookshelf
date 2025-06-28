@@ -545,6 +545,41 @@ nginx_proxy_http_port:      # Ex.: '80', no HTTP when empty. In conjunction with
 nginx_proxy_https_port:     # Ex.: '443', no HTTPS when empty
 nginx_proxy_certs_dir:      # Path to certs on the managed machine. Works paired with HTTPS
 
+# ====================
+#       OLIVETIN
+# ====================
+# Safe and simple access to predefined shell commands from a web interface.
+#   https://olivetin.app/
+#   https://docs.olivetin.app/
+# -----
+# Versions:
+# * https://hub.docker.com/r/jamesread/olivetin/tags
+# -----
+olivetin_managed: false
+olivetin_enabled: false
+olivetin_version:       # Leave blank to leverage bookshelf configuration
+olivetin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
+olivetin_owner: "{{ ansible_user_id }}"
+olivetin_conf_dir: ~/conf/olivetin
+olivetin_service_name: olivetin
+olivetin_hostname: "{{ olivetin_service_name }}"
+olivetin_vhost: "{{ olivetin_service_name }}.domain.local"
+olivetin_web_ui_port:   # Leave blank to leverage bookshelf configuration
+# Scripts to be uploaded to "{{ olivetin_compose_dir }}/scripts" directory
+# with the same filename (excluding '*.j2' templates extension). They'll
+# be '0755' and the scripts directory will be read only mounted to the
+# container '/app/scripts' directory
+# olivetin_scripts:
+#   - "{{ playbook_dir }}/resources/olivetin/script1.sh"    # <- Treated as normal file
+#   - "{{ playbook_dir }}/resources/olivetin/script2.sh.j2" # <- Treated as template
+olivetin_scripts:
+# Extra mounts, can be useful to access docker host resources
+# olivetin_volumes: ['~:/app/home:ro', '/etc:/app/etc:ro']
+olivetin_volumes:
+# Custom config file template. See the default one in templates/
+# olivetin_config: "{{ playbook_dir }}/resources/olivetin.yaml.j2"
+olivetin_config:
+
 # ===========================
 #       PORTAINER-AGENT
 # ===========================

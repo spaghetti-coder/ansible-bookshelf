@@ -1,0 +1,31 @@
+{% set version = (olivetin_version | default(bookshelf_const_version.olivetin, true)) %}
+---
+services:
+  olivetin:
+    # https://hub.docker.com/r/jamesread/olivetin/tags
+    image: jamesread/olivetin:{{ version }}
+    container_name: {{ olivetin_service_name }}
+    volumes:
+      - '{{ conf_dir_config }}:/config'
+      - '{{ conf_dir_etc }}:/etc/OliveTin'
+      - '{{ scripts_dir}}:/app/scripts:ro'
+{% for v in (olivetin_volumes | default([], true)) %}
+      - '{{ v }}'
+{% endfor %}
+    network_mode: host    # <- Explicitely give it access to the host net
+    # ports:              # <- Ignored with 'host' network
+    #   - "{{ web_ui_port }}:{{ web_ui_port }}"
+    restart: unless-stopped
+    user: "{{ getent_passwd[olivetin_owner].1 }}"
+{% if nginx_proxy_enabled | default(false) %}
+    # networks:           # <- Conflicts with 'host' network
+    #   - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ olivetin_vhost }}
+      - VIRTUAL_PORT={{ web_ui_port }}
+
+# * Due to 'host' network 'nginx-proxy' network is not required
+# networks:
+#   "{{ nginx_proxy_net }}":
+#     external: true
+{% endif %}

@@ -507,6 +507,25 @@ nginx_proxy_http_port: "{{ service_port.nginx_proxy_http }}"     # Ex.: '80', no
 nginx_proxy_https_port:     # Ex.: '443', no HTTPS when empty
 nginx_proxy_certs_dir:      # Path to certs on the managed machine. Works paired with HTTPS
 
+# ====================
+#       OLIVETIN
+# ====================
+olivetin_managed: true
+olivetin_enabled: true
+olivetin_version:       # Leave blank to leverage bookshelf configuration
+olivetin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
+olivetin_owner: "{{ ansible_user_id }}"
+olivetin_conf_dir: ~/conf/olivetin
+olivetin_service_name: olivetin
+olivetin_hostname: "{{ olivetin_service_name }}"
+olivetin_vhost: "{{ olivetin_service_name }}.domain.local"
+olivetin_web_ui_port:   # Leave blank to leverage bookshelf configuration
+olivetin_scripts:
+  - sample.sh.j2
+olivetin_volumes:
+  - '~:/app/home:ro'
+olivetin_config:
+
 # ===========================
 #       PORTAINER-AGENT
 # ===========================

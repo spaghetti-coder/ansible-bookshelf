@@ -43,6 +43,8 @@ bookshelf_const_version:
   nginx_proxy: 1.7.1-alpine
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
   nginx_proxy_manager: 2.12.3
+  # https://hub.docker.com/r/jamesread/olivetin/tags
+  olivetin: 2025.6.22
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
   portainer: 2.31.1-alpine
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
@@ -68,7 +70,7 @@ bookshelf_const_port:
     web_ui: 8083
     init_ui: 8084
   audiobookshelf:
-    web_ui: 8095        # <- Last (8081+)
+    web_ui: 8095
   code_server:
     web_ui: 8090
   filebrowser:
@@ -85,6 +87,8 @@ bookshelf_const_port:
     web_ui: 8092
   metube:
     web_ui: 8093
+  olivetin:
+    web_ui: 8096        # <- Last (8081+)
   portainer:
     web_ui: 8086
     tunnel: 8000

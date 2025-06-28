@@ -1,0 +1,15 @@
+# DEMO:
+#   https://github.com/OliveTin/OliveTin/blob/main/config.yaml
+---
+# Listen on all addresses available, port {{ web_ui_port }}
+listenAddressSingleHTTPFrontend: 0.0.0.0:{{ web_ui_port }}    # <- Must be included as is in custom override config
+
+actions:
+  - title: Echo
+{#  Avoid jinja variable expansion: https://stackoverflow.com/a/32283447 #}
+    shell: echo {{ '{{' }} suggestion {{ '}}' }}
+    icon: smile
+    arguments:    # <- https://docs.olivetin.app/args/intro.html
+      - name: suggestion
+        title: Your Suggestion
+        type: ascii_sentence
