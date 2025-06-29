@@ -18,6 +18,8 @@
 # IMPORTANT 3: With changed routes or exit node params service requires a valid
 # auth key, i.e. if it's one-timer new one must be provided
 #
+# IMPORTANT 4: With version update also update auth key (see IMPORTANT 1)
+#
 # NOTE 1: The service is useless unless it's configured for exit node or subnet
 # router. Both need to be confirmed in the machines admin
 tailscale_managed: false
