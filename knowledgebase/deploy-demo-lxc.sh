@@ -19,14 +19,15 @@ deploy_ve_config() {
   # Generate with:
   #   THE_SCRIPT gen-age  # <- Prompts for passphrase
   # Internally in the script decrypt encrypted by this AGE_KEY secrets with:
-  #   echo ENCRYPTED_SECRET | decrypt_secret
+  #   echo PLAIN_SECRET | THE_SCRIPT encrypt-secret `# => AGE_ENCRYPTED_SECRET` | decrypt_secret `# => PLAIN_SECRET`
   AGE_KEY='YWdlMWw4N2Y2NXRqcjM3ZGd2cTlhZzZxN3d6ZWF2MjhheXN0c2FkMGp4NmU0NnY2NjgybmVheHN1cHJ5dWMKWVdkbExXVnVZM0o1Y0hScGIyNHViM0puTDNZeENpMCtJSE5qY25sd2RDQXJUWGRIY2t4WFpIUlJSRGRFTlhaS05tRldNVE5CSURFNENsWlNaMVJIZFVZNU9HWlhaVnBTV2l0VWQyd3dXV0p5V0RsWVMwVktaMHRGV214Uk1URlphVlYwTVc4S0xTMHRJSFI1YjNsUVYxaDJiMU5vTUVsSWRrWlpabU00Y2sxRVMwMDBVRU5vUjA1MU9XVXhSQzgzUkhadWRUQUs2dDVJUE1KS1RKZWtidnVzS0VlVUF2QXhjd29oc3N0U05ramlaNEpKUWhLZTZ6blFiKzVPRVE0a3BJb09NeGlGOHBsNUlnUmplSDNJeERXRnlJNWIxVytwVlQ2b1ZVbkxyRm9McUhiZmwybHJaUEI5Y2h5TUlOUlE2SHQyRkpNTU1vV0ZrZFovTTh6YmFZRGl6eXIwUmVZSFhIRlFPVGJETk9aSEJmYTB6eGpteDFFMjE0YTBuOXkzbC9xbW9RYnczanlJamZZYk05ZGpMdVdiZkpHbmNxQ3Z0NzJlZlhhWEpuNWlHTzMybmMxd1NpZkExaG1RWndUMWFualBUV01MVDNPVm9JYVEvejZqam5xRnRnYkltSDdiaFhVS2dJNU5uWlBhc3lFPQo='
 
   PVE_HOST=pve.home           # <- Remote PVE ssh host for deploy-remote command
 
   # Best match from available templates: http://download.proxmox.com/images/system
   VE_TEMPLATE=alpine-3
-  VE_ID="$(pvesh get /cluster/nextid)" || return    # Or: VE_ID=1085  # <- Make sure the value is >= 100
+  VE_ID=1085                  # <- Make sure >= 100
+  # VE_ID="$(pvesh get /cluster/nextid 2>/dev/null)"  # <- Not recommended, not idempotent
 
   CREATE_FLAGS=(              # <- Create LXC flags, '--password' is autoappended with value from EXTRAS[root_pass]
     --unprivileged=1          # <- '0' if using bind mounts, or use boring workarounds for ownership
@@ -51,6 +52,8 @@ deploy_ve_config() {
     # Used by custom provisioners
     [user1_name]=user1
     [user1_uid]=1000
+    # Use chpasswd tool to set the password
+    #   echo "${EXTRAS[user1_name]}:${EXTRAS[user1_pass]}" | chpasswd -e
     [user1_pass]='YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBPMnRmQ3dPOFh2MUdlYVlBOXplUFUwc0R5Nm4vN1VIbmw5R1QwaXhJd0JNCjhad2JsNUlmZ0ZaQzZBWVBVV3ZSbHRsRTV3VHhhaDNKYWhET2pRcnp5d28KLS0tIHBDYllLVnhzVDJQQ1Q0dWZzd3VtcUFhMXpGcmZUMXAwbSt2SEd1VzhOY1EKJwl23NNALO0ilgEI42K442jOs92RykmDNCFwbc6QlEA0Kxsdy+L4e0S6t399dXs/596andORxAh9eCOVqEqeSOy5RNgrSYO27TNTWJeyF9nNOlvlyqoYrZOjF9SMEbIIZDqm/r1AzwOzgA6Df9vvMc+LdIwtv+B/pKc1ErQvNOTrA0i1IL3JIFfqYA=='
   )
 }
