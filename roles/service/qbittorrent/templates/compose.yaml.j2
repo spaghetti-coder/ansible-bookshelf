@@ -14,7 +14,7 @@ services:
     hostname: {{ qbittorrent_hostname }}
     env_file:
       - ./main.env
-{% if qbittorrent_extra_envfile %}
+{% if extra_env %}
       - ./extra.env
 {% endif %}
     volumes:

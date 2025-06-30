@@ -17,6 +17,5 @@ twingate_tenant_name:     # (REQUIRED) Your twingate network name
 #   -> 'Docker' -> 'Generate Tokens'
 twingate_access_token:    # (REQUIRED)
 twingate_refresh_token:   # (REQUIRED)
-# Optional path to extra configuration .env.j2 file
-# Ex.: "{{ playbook_dir }}/resources/twingate/extra.env.j2"
-twingate_extra_envfile:
+# Optional extra env vars
+twingate_extra_env:       # "{{ lookup('file', playbook_dir + '/resources/twingate.env') }}"

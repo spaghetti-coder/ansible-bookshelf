@@ -16,17 +16,17 @@ olivetin_service_name: olivetin
 olivetin_hostname: "{{ olivetin_service_name }}"
 olivetin_vhost: "{{ olivetin_service_name }}.domain.local"
 olivetin_web_ui_port:   # Leave blank to leverage bookshelf configuration
-# Scripts to be uploaded to "{{ olivetin_compose_dir }}/scripts" directory
-# with the same filename (excluding '*.j2' templates extension). They'll
-# be '0755' and the scripts directory will be read only mounted to the
-# container '/app/scripts' directory
-# olivetin_scripts:
-#   - "{{ playbook_dir }}/resources/olivetin/script1.sh"    # <- Treated as normal file
-#   - "{{ playbook_dir }}/resources/olivetin/script2.sh.j2" # <- Treated as template
+# Scripts to be uploaded to 'name' filename under "{{ olivetin_compose_dir }}/scripts"
+# directory, which is read only mounted mounted to the container '/app/scripts'.
+# See files/sample.sh for a demo.
 olivetin_scripts:
-# Extra mounts, can be useful to access docker host resources
-# olivetin_volumes: ['~:/app/home:ro', '/etc:/app/etc:ro']
-olivetin_volumes:
-# Custom config file template. See the default one in templates/
-# olivetin_config: "{{ playbook_dir }}/resources/olivetin.yaml.j2"
-olivetin_config:
+#   - text: "{{ lookup('file', 'sample.sh') }}"
+#     name: s1.sh   # /app/scripts/s1.sh in the container
+#     mode: '0755'  # <- Optional. Defaults to '0755'
+#   - text: "{{ lookup('template', playbook_dir + 'resources/olivetin/script2.sh.j2') }}"
+#     name: s2.sh
+# Extra mounts, can be used to access docker host resources
+olivetin_volumes:       # ['~:/app/home:ro', '/etc:/app/etc:ro']
+# Custom config. See the default one in files/config.yaml.
+# templates/config.base.yaml.j2 is always appended in the end.
+olivetin_config:        # "{{ lookup('file', 'config.yaml') }}"

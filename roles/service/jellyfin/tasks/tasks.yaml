@@ -8,7 +8,7 @@
   become_user: "{{ jellyfin_owner }}"
   vars:
     compose_dir: "{{ jellyfin_compose_dir | default(bookshelf_const_compose_dir + '/jellyfin', true) }}"
-    extra_envfile: "{{ jellyfin_extra_envfile }}"
+    extra_env: "{{ jellyfin_extra_env }}"
     conf_dir: "{{ jellyfin_conf_dir }}"
     data_dir: "{{ jellyfin_data_dir }}"
     service_state: "{{ jellyfin_enabled | ternary('present', 'absent') }}"
@@ -35,14 +35,15 @@
       ansible.builtin.file:
         path: "{{ compose_dir }}/extra.env"
         state: absent
-      when: not extra_envfile
+      when: not extra_env
 
     - name: Create extra.env
-      ansible.builtin.template:
-        src: "{{ extra_envfile }}"
+      ansible.builtin.copy:
+        content: |
+          {{ extra_env }}
         dest: "{{ compose_dir }}/extra.env"
         mode: '0600'
-      when: extra_envfile
+      when: extra_env
 
     - name: Create data directory
       ansible.builtin.file:

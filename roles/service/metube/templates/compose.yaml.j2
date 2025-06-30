@@ -10,7 +10,7 @@ services:
     hostname: {{ metube_hostname }}
     env_file:
       - ./main.env
-{% if metube_extra_envfile %}
+{% if extra_env %}
       - ./extra.env
 {% endif %}
     ports:

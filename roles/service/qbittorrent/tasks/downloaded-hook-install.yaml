@@ -6,14 +6,16 @@
     mode: '0700'
 
 - name: Create downloaded.sh
-  ansible.builtin.template:
-    src: "{{ qbittorrent_downloaded_script }}"
+  ansible.builtin.copy:
+    content: |
+      {{ qbittorrent_downloaded_script }}
     dest: "{{ scripts_dir }}/downloaded.sh"
     mode: '0700'
 
 - name: Create downloaded.secret.sh
-  ansible.builtin.template:
-    src: "{{ qbittorrent_downloaded_secret_file }}"
+  ansible.builtin.copy:
+    content: |
+      {{ qbittorrent_downloaded_secret }}
     dest: "{{ scripts_dir }}/downloaded.secret.sh"
     mode: '0600'
-  when: qbittorrent_downloaded_secret_file
+  when: qbittorrent_downloaded_secret

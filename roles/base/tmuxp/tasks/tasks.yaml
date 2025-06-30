@@ -11,7 +11,7 @@
   loop: "{{ tmuxp_conf_todo }}"
   vars:
     user: "{{ the_conf.owner }}"
-    user_confs: "{{ the_conf.conf | default([]) }}"
+    user_confs: "{{ the_conf.conf | default([], true) }}"
   loop_control:
     loop_var: the_conf
     label: "{{ user }}"

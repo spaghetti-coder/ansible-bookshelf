@@ -6,10 +6,12 @@
   become_user: "{{ conf.owner }}"
   block:
     - name: Install extraconf
-      ansible.builtin.template:
-        src: "{{ conf.template }}"
+      ansible.builtin.copy:
+        content: "{{ lookup(filetype, conf.source) }}"
         dest: "{{ extraconf_path }}"
         mode: '0600'
+      vars:
+        filetype: "{{ ((conf.source | splitext | last) == '.j2') | ternary('template', 'file') }}"
 
     - name: Include to gitconfig
       community.general.ini_file:

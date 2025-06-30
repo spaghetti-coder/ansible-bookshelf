@@ -19,7 +19,7 @@ services:
     #   # - '21:21' # FTP
     env_file:
       - ./main.env
-{% if extra_envfile %}
+{% if extra_env %}
       - ./extra.env
 {% endif %}
 {% if nginx_proxy_enabled | default(false) %}

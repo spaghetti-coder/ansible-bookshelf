@@ -9,7 +9,7 @@
   vars:
     compose_dir: "{{ tailscale_compose_dir | default(bookshelf_const_compose_dir + '/tailscale', true) }}"
     conf_dir: "{{ tailscale_conf_dir }}"
-    extra_envfile: "{{ tailscale_extra_envfile }}"
+    extra_env: "{{ tailscale_extra_env }}"
     service_state: "{{ tailscale_enabled | ternary('present', 'absent') }}"
   block:
     - name: Create directories
@@ -35,14 +35,15 @@
       ansible.builtin.file:
         path: "{{ compose_dir }}/extra.env"
         state: absent
-      when: not extra_envfile
+      when: not extra_env
 
     - name: Create extra.env
-      ansible.builtin.template:
-        src: "{{ extra_envfile }}"
+      ansible.builtin.copy:
+        content: |
+          {{ extra_envfile }}
         dest: "{{ compose_dir }}/extra.env"
         mode: '0600'
-      when: extra_envfile
+      when: extra_env
 
     - name: Compose apply
       ansible.builtin.import_role: { name: bookshelf-compose-apply }

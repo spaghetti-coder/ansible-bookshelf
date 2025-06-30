@@ -5,8 +5,6 @@
 # Versions:
 # * https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
 # -----
-# # Optional path to extra configuration .env.j2 file
-# nginx_proxy_manager_extra_envfile: "{{ playbook_dir }}/resources/npm/extra.env.j2"
 nginx_proxy_manager_managed: false
 nginx_proxy_manager_enabled: false
 nginx_proxy_manager_version:        # Leave blank to leverage bookshelf configuration
@@ -16,4 +14,5 @@ nginx_proxy_manager_conf_dir: ~/conf/nginx-proxy-manager
 nginx_proxy_manager_service_name: nginx-proxy-manager
 nginx_proxy_manager_hostname: "{{ nginx_proxy_manager_service_name }}"
 nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"
-nginx_proxy_manager_extra_envfile:
+# Optional extra env vars
+nginx_proxy_manager_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/nginx-proxy-manager.env.j2') }}"

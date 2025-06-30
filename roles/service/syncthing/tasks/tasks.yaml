@@ -10,6 +10,7 @@
     compose_dir: "{{ syncthing_compose_dir | default(bookshelf_const_compose_dir + '/syncthing', true) }}"
     conf_dir: "{{ syncthing_conf_dir }}"
     data_dir: "{{ syncthing_data_dir }}"
+    extra_env: "{{ syncthing_extra_env }}"
     service_state: "{{ syncthing_enabled | ternary('present', 'absent') }}"
     secret_envfile:
   block:
@@ -22,24 +23,28 @@
         - "{{ compose_dir }}"
         - "{{ conf_dir }}"
 
-    - name: Create main.env file
+    - name: Create .env files
       ansible.builtin.template:
-        src: main.env.j2
-        dest: "{{ compose_dir }}/main.env"
+        src: "{{ item }}.env.j2"
+        dest: "{{ compose_dir }}/{{ item }}.env"
         mode: '0600'
+      loop:
+        - main
+        - secret
 
-    - name: Remove obsolete secret.env
+    - name: Remove obsolete extra.env
       ansible.builtin.file:
-        path: "{{ compose_dir }}/secret.env"
+        path: "{{ compose_dir }}/extra.env"
         state: absent
-      when: not syncthing_tailscale_auth_key
+      when: not extra_env
 
-    - name: Create secret.env
-      ansible.builtin.template:
-        src: secret.env.j2
-        dest: "{{ compose_dir }}/secret.env"
+    - name: Create extra.env
+      ansible.builtin.copy:
+        content: |
+          {{ extra_env }}
+        dest: "{{ compose_dir }}/extra.env"
         mode: '0600'
-      when: syncthing_tailscale_auth_key
+      when: extra_env
 
     - name: Create data directory
       ansible.builtin.file:

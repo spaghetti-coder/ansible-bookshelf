@@ -10,15 +10,16 @@
         mode: '0700'
 
     - name: Install confs
-      ansible.builtin.template:
-        src: "{{ item.template }}"
+      ansible.builtin.copy:
+        content: "{{ lookup(filetype, item.source) }}"
         dest: "{{ tmuxp_conf_dir }}/{{ item.name }}.yaml"
         mode: '0600'
       loop: "{{ user_confs }}"
       vars:
         conf: "{{ item }}"
+        filetype: "{{ ((item.source | splitext | last) == '.j2') | ternary('template', 'file') }}"
       loop_control:
-        label: "{{ item.name }}"
+        label: "{{ item.source }} -> {{ item.name }}"
 
 - name: Mark conf done
   ansible.builtin.set_fact:

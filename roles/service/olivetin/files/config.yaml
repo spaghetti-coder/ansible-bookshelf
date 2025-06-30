@@ -1,0 +1,11 @@
+# DEMO:
+#   https://github.com/OliveTin/OliveTin/blob/main/config.yaml
+---
+actions:
+  - title: Echo
+    shell: echo {{ suggestion }}
+    icon: smile
+    arguments:    # <- https://docs.olivetin.app/args/intro.html
+      - name: suggestion
+        title: Your Suggestion
+        type: ascii_sentence

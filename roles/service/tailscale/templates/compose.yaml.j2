@@ -25,7 +25,7 @@ services:
     env_file:
       - ./main.env
       - ./secret.env
-{% if extra_envfile %}
+{% if extra_env %}
       - ./extra.env
 {% endif %}
       - ./ts-extra.env

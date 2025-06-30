@@ -18,9 +18,8 @@ adguard_vhost: "{{ adguard_service_name }}.domain.local"
 adguard_web_ui_port:    # Leave blank to leverage bookshelf configuration
 adguard_init_ui_port:   # Leave blank to leverage bookshelf configuration
 adguard_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Optional path to extra configuration .env.j2 file, will affect both adguard
-# and tailscale. Ex.: "{{ playbook_dir }}/resources/adguard/extra.env.j2"
-adguard_extra_envfile:
+# Optional extra env vars, will affect both adguard and tailscale.
+adguard_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/adguard.env.j2') }}"
 # ----------
 # The following settings configure Adguard to run as a part of tailnet. This
 # allows to configure adguard for a tailnet DNS server under

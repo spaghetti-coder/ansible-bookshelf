@@ -10,5 +10,5 @@
   loop: "{{ git_extraconf_todo.values() }}"
   loop_control:
     loop_var: conf
-    label: "{{ conf.owner }} ({{ conf.template }})"
+    label: "{{ conf.owner }} ({{ conf.source }})"
   when: (git_extraconf_todo.keys() | length) > 0

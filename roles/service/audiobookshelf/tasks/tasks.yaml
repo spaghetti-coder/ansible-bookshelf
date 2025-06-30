@@ -8,7 +8,7 @@
   become_user: "{{ audiobookshelf_owner }}"
   vars:
     compose_dir: "{{ audiobookshelf_compose_dir | default(bookshelf_const_compose_dir + '/audiobookshelf', true) }}"
-    extra_envfile: "{{ audiobookshelf_extra_envfile }}"
+    extra_env: "{{ audiobookshelf_extra_env }}"
     conf_dir: "{{ audiobookshelf_conf_dir }}"
     data_dir: "{{ audiobookshelf_data_dir }}"
     service_state: "{{ audiobookshelf_enabled | ternary('present', 'absent') }}"
@@ -35,14 +35,15 @@
       ansible.builtin.file:
         path: "{{ compose_dir }}/extra.env"
         state: absent
-      when: not extra_envfile
+      when: not extra_env
 
     - name: Create extra.env
-      ansible.builtin.template:
-        src: "{{ extra_envfile }}"
+      ansible.builtin.copy:
+        content: |
+          {{ extra_env }}
         dest: "{{ compose_dir }}/extra.env"
         mode: '0600'
-      when: extra_envfile
+      when: extra_env
 
     - name: Create data directory
       ansible.builtin.file:

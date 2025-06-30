@@ -12,7 +12,8 @@ services:
     restart: unless-stopped
     env_file:
       - ./main.env
-{% if extra_envfile %}
+      - ./secret.env
+{% if extra_env %}
       - ./extra.env
 {% endif %}
     volumes:
@@ -29,7 +30,7 @@ services:
     env_file:
       - ./main.env
       - ./secret.env
-{% if extra_envfile %}
+{% if extra_env %}
       - ./extra.env
 {% endif %}
     volumes:

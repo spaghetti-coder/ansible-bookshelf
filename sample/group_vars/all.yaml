@@ -92,16 +92,18 @@ fzf_users:
 # ===============
 #       GIT
 # ===============
+git_managed: false
 # git_extraconf:
-#   - owner: "{{ ansible_user_id }}"    # <- Required, must be unique
-#     template: gitconfig.extra.ini.j2  # <- Required. No full path for the ones defined in the role
-#     # Optional variables, can be addressed in the template via 'conf' map
-#     user_name: Foo            # <- 'conf.user_name' in the template
+#     # Required
+#   - owner: "{{ ansible_user_id }}"    # <- Must be unique
+#     source: gitconfig.extra.ini.j2    # <- In-role, handled as template due to '*.j2'
+#     # Optional variables, can be addressed in the template via 'conf' map in case of template source
+#     user_name: Foo                    # <- 'conf.user_name' in the template
 #     user_email: foo@bar.baz
 #   - owner: another-user
-#     template: "{{ playbook_dir }}/resources/git/extra.ini.j2" # <- Full path for ones out of the role directory
-#     # ...
-git_managed: false
+#     source: "{{ playbook_dir }}/resources/git/extra.ini"  # <- Handled as file due to not '*.j2'
+#     # No variables, as it's not a template
+#   # ...
 git_extraconf:
 
 # ===================
@@ -146,20 +148,21 @@ tmux_sane_users:
 # Not supported by Alpine
 # -----
 # tmuxp_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- All hosts but Alpines
-# -----
+# # See all available in templates/
 # tmuxp_conf:
-#   - owner: "{{ ansible_user_id }}"
+#   - owner: "{{ ansible_user_id }}"  # <- Must be unique
 #     conf:
-#         # See all available in templates/
-#       - template: sensors.yaml.j2   # <- Required. No full path for the ones defined in the role
-#         name: my-sensors            # <- Required. Will land in ~/.tmuxp/my-sensors.yaml
-#         # Optional variables, can be addressed in the template via 'conf' map
+#         # Required
+#       - source: sensors.yaml.j2     # <- In-role, handled as template due to '*.j2'
+#         name: my-sensors            # <- Will land in ~/.tmuxp/my-sensors.yaml
+#         # Optional variables, can be addressed in the template via 'conf' map in case of template source
 #         session_name: Foo           # <- 'conf.session_name' in the template
 #         window_name: bar
-#       - template: "{{ playbook_dir }}/resources/tmuxp/demo1.yaml.j2"  # <- Full path for ones out of the role directory
-#         ...
-#   - owner: ...
-#     ...
+#       - source: "{{ playbook_dir }}/resources/tmuxp/demo1.yaml"   # <- Handled as file due to not '*.j2'
+#         name: demo1
+#         # No variables, as it's not a template
+#   - owner: # ...
+#     # ...
 tmuxp_managed: false
 tmuxp_conf:
 
@@ -235,9 +238,8 @@ adguard_vhost: "{{ adguard_service_name }}.domain.local"
 adguard_web_ui_port:    # Leave blank to leverage bookshelf configuration
 adguard_init_ui_port:   # Leave blank to leverage bookshelf configuration
 adguard_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Optional path to extra configuration .env.j2 file, will affect both adguard
-# and tailscale. Ex.: "{{ playbook_dir }}/resources/adguard/extra.env.j2"
-adguard_extra_envfile:
+# Optional extra env vars, will affect both adguard and tailscale.
+adguard_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/adguard.env.j2') }}"
 # ----------
 # The following settings configure Adguard to run as a part of tailnet. This
 # allows to configure adguard for a tailnet DNS server under
@@ -270,15 +272,14 @@ audiobookshelf_version:       # Leave blank to leverage bookshelf configuration
 audiobookshelf_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
 audiobookshelf_owner: "{{ ansible_user_id }}"
 audiobookshelf_conf_dir: ~/conf/audiobookshelf
-audiobookshelf_data_dir:         # (REQUIRED)
+audiobookshelf_data_dir:      # (REQUIRED)
 audiobookshelf_service_name: audiobookshelf
 audiobookshelf_hostname: "{{ audiobookshelf_service_name }}"
 audiobookshelf_vhost: "{{ audiobookshelf_service_name }}.domain.local"
-audiobookshelf_web_ui_port:    # Leave blank to leverage bookshelf configuration
+audiobookshelf_web_ui_port:   # Leave blank to leverage bookshelf configuration
 audiobookshelf_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Optional path to extra configuration .env.j2 file, will affect both audiobookshelf
-# and tailscale. Ex.: "{{ playbook_dir }}/resources/audiobookshelf/extra.env.j2"
-audiobookshelf_extra_envfile:
+# Optional extra env vars, will affect both audiobookshelf and tailscale.
+audiobookshelf_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/audiobookshelf.env.j2') }}"
 # ----------
 # The following settings configure Audiobookshelf to run as a part of tailnet
 #
@@ -299,12 +300,6 @@ audiobookshelf_tailscale_auth_key:
 # Not supported by Alpine.
 # -----
 # code_server_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- No Alpine support
-# code_server_extensions:   # <- List of extension
-#   - editorconfig.editorconfig
-#   - mads-hartmann.bash-ide-vscode
-#   - timonwong.shellcheck
-#   - foxundermoon.shell-format
-#   - redhat.ansible
 # -----
 # Versions:
 # * https://github.com/coder/code-server/releases
@@ -312,19 +307,23 @@ code_server_managed: false
 code_server_version:      # Leave blank to leverage bookshelf configuration
 code_server_owner: "{{ ansible_user_id }}"
 code_server_web_ui_port:  # Leave blank to leverage bookshelf configuration
+code_server_extensions:   # <- List of extension
+#   - editorconfig.editorconfig
+#   - mads-hartmann.bash-ide-vscode
+#   - timonwong.shellcheck
+#   - foxundermoon.shell-format
+#   - redhat.ansible
 code_server_pass: changeme
-code_server_extensions:
 # If defined, takes precedence over 'code_server_pass'.
 # Generate with (replace PASS with your value):
 #   printf -- '%s' 'PASS' | docker container run -i --rm alpine /bin/sh -c 'apk add --update --no-cache argon2 openssl && argon2 "$(openssl rand -base64 8)" -e'
 code_server_hashed_pass:
-# Custom config file template. See the default one in templates/
-# code_server_custom_conf: "{{ playbook_dir }}/resources/code-server.config.yaml.j2"
-code_server_custom_conf:
-# Custom user config file template, applied only on the service initialization.
-# See the default one in templates/
-# code_server_user_conf: "{{ playbook_dir }}/resources/code-server.user-conf.json.j2"
-code_server_user_conf:
+# Custom config. See the default one in templates/config.yaml.j2.
+# templates/config.base.yaml.j2 is always appended in the end.
+code_server_custom_conf:    # "{{ lookup('template', playbook_dir + '/resources/code-server.config.yaml.j2') }}"
+# Custom user config, applied only on the service initialization.
+# See the default one in templates/sane.json.j2.
+code_server_user_conf:      # "{{ lookup('template', 'sane.json.j2') }}"
 
 # =======================
 #       FILEBROWSER
@@ -353,9 +352,8 @@ filebrowser_hostname: "{{ filebrowser_service_name }}"
 filebrowser_vhost: "{{ filebrowser_service_name }}.domain.local"
 filebrowser_web_ui_port:    # Leave blank to leverage bookshelf configuration
 filebrowser_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Optional path to extra configuration .env.j2 file, will affect both filebrowser
-# and tailscale. Ex.: "{{ playbook_dir }}/resources/filebrowser/extra.env.j2"
-filebrowser_extra_envfile:
+# Optional extra env vars, will affect both filebrowser and tailscale.
+filebrowser_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/filebrowser.env.j2') }}"
 # ----------
 # The following settings configure FileBrowser to run as a part of tailnet
 #
@@ -429,9 +427,8 @@ jellyfin_hostname: "{{ jellyfin_service_name }}"
 jellyfin_vhost: "{{ jellyfin_service_name }}.domain.local"
 jellyfin_web_ui_port:   # Leave blank to leverage bookshelf configuration
 jellyfin_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Optional path to extra configuration .env.j2 file
-# Ex.: "{{ playbook_dir }}/resources/jellyfin/extra.env.j2"
-jellyfin_extra_envfile:
+# Optional extra env vars, will affect both jellyfin and tailscale.
+jellyfin_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/jellyfin.env.j2') }}"
 # ----------
 # The following settings configure Jellyfin to run as a part of tailnet
 #
@@ -492,9 +489,8 @@ metube_vhost: "{{ metube_service_name }}.domain.local"
 metube_web_ui_port:   # Leave blank to leverage bookshelf configuration
 metube_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # https://github.com/alexta69/metube?tab=readme-ov-file#configuration-via-environment-variables
-# Optional path to extra configuration .env.j2 file
-# Ex.: "{{ playbook_dir }}/resources/metube/extra.env.j2"
-metube_extra_envfile:
+# Optional extra env vars
+metube_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/metube.env.j2') }}"
 
 # ===============================
 #       NGINX-PROXY-MANAGER
@@ -505,8 +501,6 @@ metube_extra_envfile:
 # Versions:
 # * https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
 # -----
-# # Optional path to extra configuration .env.j2 file
-# nginx_proxy_manager_extra_envfile: "{{ playbook_dir }}/resources/npm/extra.env.j2"
 nginx_proxy_manager_managed: false
 nginx_proxy_manager_enabled: false
 nginx_proxy_manager_version:        # Leave blank to leverage bookshelf configuration
@@ -516,7 +510,8 @@ nginx_proxy_manager_conf_dir: ~/conf/nginx-proxy-manager
 nginx_proxy_manager_service_name: nginx-proxy-manager
 nginx_proxy_manager_hostname: "{{ nginx_proxy_manager_service_name }}"
 nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"
-nginx_proxy_manager_extra_envfile:
+# Optional extra env vars
+nginx_proxy_manager_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/nginx-proxy-manager.env.j2') }}"
 
 # =======================
 #       NGINX-PROXY
@@ -565,20 +560,20 @@ olivetin_service_name: olivetin
 olivetin_hostname: "{{ olivetin_service_name }}"
 olivetin_vhost: "{{ olivetin_service_name }}.domain.local"
 olivetin_web_ui_port:   # Leave blank to leverage bookshelf configuration
-# Scripts to be uploaded to "{{ olivetin_compose_dir }}/scripts" directory
-# with the same filename (excluding '*.j2' templates extension). They'll
-# be '0755' and the scripts directory will be read only mounted to the
-# container '/app/scripts' directory
-# olivetin_scripts:
-#   - "{{ playbook_dir }}/resources/olivetin/script1.sh"    # <- Treated as normal file
-#   - "{{ playbook_dir }}/resources/olivetin/script2.sh.j2" # <- Treated as template
+# Scripts to be uploaded to 'name' filename under "{{ olivetin_compose_dir }}/scripts"
+# directory, which is read only mounted mounted to the container '/app/scripts'.
+# See files/sample.sh for a demo.
 olivetin_scripts:
-# Extra mounts, can be useful to access docker host resources
-# olivetin_volumes: ['~:/app/home:ro', '/etc:/app/etc:ro']
-olivetin_volumes:
-# Custom config file template. See the default one in templates/
-# olivetin_config: "{{ playbook_dir }}/resources/olivetin.yaml.j2"
-olivetin_config:
+#   - text: "{{ lookup('file', 'sample.sh') }}"
+#     name: s1.sh   # /app/scripts/s1.sh in the container
+#     mode: '0755'  # <- Optional. Defaults to '0755'
+#   - text: "{{ lookup('template', playbook_dir + 'resources/olivetin/script2.sh.j2') }}"
+#     name: s2.sh
+# Extra mounts, can be used to access docker host resources
+olivetin_volumes:       # ['~:/app/home:ro', '/etc:/app/etc:ro']
+# Custom config. See the default one in files/config.yaml.
+# templates/config.base.yaml.j2 is always appended in the end.
+olivetin_config:        # "{{ lookup('file', 'config.yaml') }}"
 
 # ===========================
 #       PORTAINER-AGENT
@@ -657,16 +652,13 @@ qbittorrent_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # For demo scripts see:
 #   templates/gotify-push.*
 #   templates/discord-push.*
-# Ex.: "{{ playbook_dir }}/resources/qbittorrent/downloaded.sh.j2"
-qbittorrent_downloaded_script:
+qbittorrent_downloaded_script:    # "{{ lookup('file', playbook_dir + '/resources/qbittorrent.downloaded.sh') }}"
 # Optional, can be used in conjunction with qbittorrent_downloaded_script to keep
-# secrets separately from .
+# secrets separately from the downloaded event script.
 # Will only be used when qbittorrent_downloaded_script is set
-# Ex.: "{{ playbook_dir }}/resources/qbittorrent/downloaded.secret.sh.j2"
-qbittorrent_downloaded_secret_file:
-# Optional path to extra configuration .env.j2 file
-# Ex.: "{{ playbook_dir }}/resources/qbittorrent/extra.env.j2"
-qbittorrent_extra_envfile:
+qbittorrent_downloaded_secret:    # "{{ lookup('file', playbook_dir + '/resources/qbittorrent.downloaded-secret.sh') }}"
+# Optional extra env vars
+qbittorrent_extra_env:            # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"
 
 # =====================
 #       SYNCTHING
@@ -689,6 +681,8 @@ syncthing_hostname: "{{ syncthing_service_name }}"
 syncthing_vhost: "{{ syncthing_service_name }}.domain.local"
 syncthing_web_ui_port:          # Leave blank to leverage bookshelf configuration
 syncthing_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional extra env vars, will affect both syncthing and tailscale.
+syncthing_extra_env:            # "{{ lookup('template', playbook_dir + '/resources/syncthing.env.j2') }}"
 # ----------
 # The following settings configure Syncthing to run as a part of tailnet
 #
@@ -739,9 +733,8 @@ tailscale_auth_key:         # (REQUIRED)
 # Ex.: '192.168.0.0/24,192.168.2.0/24'
 tailscale_routes:
 tailscale_exit_node: false  # Advertise exit node
-# Optional path to extra configuration .env.j2 file
-# Ex.: "{{ playbook_dir }}/resources/tailscale/extra.env.j2"
-tailscale_extra_envfile:
+# Optional extra env vars
+tailscale_extra_env:        # "{{ lookup('file', playbook_dir + '/resources/tailscale.env') }}"
 
 # ====================
 #       TWINGATE
@@ -764,9 +757,8 @@ twingate_tenant_name:     # (REQUIRED) Your twingate network name
 #   -> 'Docker' -> 'Generate Tokens'
 twingate_access_token:    # (REQUIRED)
 twingate_refresh_token:   # (REQUIRED)
-# Optional path to extra configuration .env.j2 file
-# Ex.: "{{ playbook_dir }}/resources/twingate/extra.env.j2"
-twingate_extra_envfile:
+# Optional extra env vars
+twingate_extra_env:       # "{{ lookup('file', playbook_dir + '/resources/twingate.env') }}"
 
 # =======================
 #       VAULTWARDEN
@@ -799,9 +791,8 @@ vaultwarden_vdomain:
 vaultwarden_admin_token_hash:
 vaultwarden_web_ui_port:    # Leave blank to leverage bookshelf configuration
 vaultwarden_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Optional path to extra configuration .env.j2 file
-# Ex.: "{{ playbook_dir }}/resources/vaultwarden/extra.env.j2"
-vaultwarden_extra_envfile:
+# Optional extra env vars
+vaultwarden_extra_env:      # "{{ lookup('file', playbook_dir + '/resources/vaultwarden.env') }}"
 
 # ===================
 #       WG-EASY

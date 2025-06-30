@@ -36,6 +36,5 @@ tailscale_auth_key:         # (REQUIRED)
 # Ex.: '192.168.0.0/24,192.168.2.0/24'
 tailscale_routes:
 tailscale_exit_node: false  # Advertise exit node
-# Optional path to extra configuration .env.j2 file
-# Ex.: "{{ playbook_dir }}/resources/tailscale/extra.env.j2"
-tailscale_extra_envfile:
+# Optional extra env vars
+tailscale_extra_env:        # "{{ lookup('file', playbook_dir + '/resources/tailscale.env') }}"

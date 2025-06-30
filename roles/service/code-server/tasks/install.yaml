@@ -15,12 +15,14 @@
     # Server conf file before code-server installation to
     # apply ports before first start
     - name: Deploy server config file
-      ansible.builtin.template:
-        src: "{{ template }}"
+      ansible.builtin.copy:
+        content: |
+          {{ main_config }}
+          {{ lookup('template', 'config.base.yaml.j2') }}
         dest: "{{ server_conffile }}"
         mode: '0600'
       vars:
-        template: "{{ code_server_custom_conf | default('config.yaml.j2', true) }}"
+        main_config: "{{ code_server_custom_conf | default(lookup('template', 'config.yaml.j2'), true) }}"
       register: code_server_server_conf_state
 
     - name: Create user settings directory
@@ -31,12 +33,13 @@
       register: code_server_user_settings_dir_state
 
     - name: Deploy user settings file
-      ansible.builtin.template:   # noqa: no-handler
-        src: "{{ template }}"
+      ansible.builtin.copy:   # noqa: no-handler
+        content: |
+          {{ config }}
         dest: "{{ user_conffile }}"
         mode: "{{ omit }}"
       vars:
-        template: "{{ code_server_user_conf | default('sane.json.j2', true) }}"
+        config: "{{ code_server_user_conf | default(lookup('template', 'sane.json.j2'), true) }}"
       register: code_server_user_conf_state
       when: code_server_user_settings_dir_state.changed   # <- Only for initial install
 

@@ -27,6 +27,5 @@ vaultwarden_vdomain:
 vaultwarden_admin_token_hash:
 vaultwarden_web_ui_port:    # Leave blank to leverage bookshelf configuration
 vaultwarden_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Optional path to extra configuration .env.j2 file
-# Ex.: "{{ playbook_dir }}/resources/vaultwarden/extra.env.j2"
-vaultwarden_extra_envfile:
+# Optional extra env vars
+vaultwarden_extra_env:      # "{{ lookup('file', playbook_dir + '/resources/vaultwarden.env') }}"

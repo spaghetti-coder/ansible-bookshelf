@@ -1,0 +1,2 @@
+{% set web_ui_port = (code_server_web_ui_port | default(bookshelf_const_port.code_server.web_ui, true)) %}
+bind-addr: 0.0.0.0:{{ web_ui_port }}

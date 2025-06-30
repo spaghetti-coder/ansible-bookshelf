@@ -12,7 +12,7 @@
     conf_dir_config: "{{ olivetin_conf_dir }}/config"
     conf_dir_etc: "{{ olivetin_conf_dir }}/etc"
     service_state: "{{ olivetin_enabled | ternary('present', 'absent') }}"
-    conffile_template: "{{ olivetin_config | default('config.yaml.j2', true) }}"
+    main_config: "{{ olivetin_config | default(lookup('file', 'config.yaml'), true) }}"
     scripts_dir: "{{ compose_dir }}/scripts"
     # Required in both config.yaml and compose.yaml
     web_ui_port: "{{ olivetin_web_ui_port | default(bookshelf_const_port.olivetin.web_ui, true) }}"
@@ -28,25 +28,22 @@
         - "{{ conf_dir_config }}"
         - "{{ conf_dir_etc }}"
 
-    - name: Deploy script files
+    - name: Deploy scripts
       ansible.builtin.copy:
-        src: "{{ item }}"
-        dest: "{{ scripts_dir }}/{{ item | basename }}"
-        mode: '0755'
+        content: |
+          {{ item.text }}
+        dest: "{{ scripts_dir }}/{{ item.name }}"
+        mode: "{{ item.mode | default('0755', true) }}"
       loop: "{{ olivetin_scripts | default([], true) }}"
-      when: not (item | splitext | last) in ['.j2']
-
-    - name: Deploy script templates
-      ansible.builtin.template:
-        src: "{{ item }}"
-        dest: "{{ scripts_dir }}/{{ (item | basename | splitext)[:-1] | join('.') }}"
-        mode: '0755'
-      loop: "{{ olivetin_scripts | default([], true) }}"
-      when: (item | splitext | last) in ['.j2']
+      loop_control:
+        label: "{{ item.name }}"
 
     - name: Deploy config file
-      ansible.builtin.template:
-        src: "{{ conffile_template }}"
+      ansible.builtin.copy:
+        content: |
+          {{ main_config }}
+
+          {{ lookup('template', 'config.base.yaml.j2') }}
         dest: "{{ conf_dir_etc }}/config.yaml"
         mode: '0600'
 
