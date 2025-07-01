@@ -2,10 +2,7 @@
 # The community driven password manager.
 #   https://www.vaultwarden.net/
 # -----
-# Versions:
-# * https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
-# Options description:
-# * https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
+# VERSIONS: https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
 # -----
 vaultwarden_managed: false
 vaultwarden_enabled: false
@@ -27,5 +24,6 @@ vaultwarden_vdomain:
 vaultwarden_admin_token_hash:
 vaultwarden_web_ui_port:    # Leave blank to leverage bookshelf configuration
 vaultwarden_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
 # Optional extra env vars
 vaultwarden_extra_env:      # "{{ lookup('file', playbook_dir + '/resources/vaultwarden.env') }}"

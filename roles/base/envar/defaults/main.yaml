@@ -1,8 +1,11 @@
 ---
 # Installs envar for bash
 # -----
-# envar_users:  # <- Existing users to have access to envar
+# Exposes:
+#   * envar_etc_dir - Used by other tools
+#   * envar_user_dir - Used by other tools
+# -----
+envar_managed: false
+envar_users:    # <- Existing users to have access to envar
 #   - "{{ ansible_user_id }}"
 #   - root
-envar_managed: false
-envar_users:

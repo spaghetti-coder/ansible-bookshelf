@@ -2,11 +2,10 @@
 # General-purpose command-line fuzzy finder.
 #   https://github.com/junegunn/fzf
 # -----
-# Versions: https://github.com/junegunn/fzf/releases
+# VERSIONS: https://github.com/junegunn/fzf/releases
 # -----
-# fzf_users:  # <- Existing users to have access to fzf
-#   - "{{ ansible_user_id }}"
-#   - root
 fzf_managed: false
 fzf_version:    # Leave blank to leverage bookshelf configuration
-fzf_users:
+fzf_users:      # <- Existing users to have access to fzf
+  # - "{{ ansible_user_id }}"
+  # - root

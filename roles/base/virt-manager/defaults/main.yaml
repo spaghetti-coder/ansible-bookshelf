@@ -1,10 +1,6 @@
 ---
 # Virtual Machine Manager
 # -----
-# Only supports Debian family hosts
-# -----
-# virt_manager_managed: "{{ factum_os_family in ['debian'] }}"
-# virt_manager_users:   # <- Existing users to be added to libvirt group
-#   - "{{ ansible_user_id }}"
-virt_manager_managed: false
-virt_manager_users:
+virt_manager_managed: false   # "{{ factum_os_family in ['debian'] }}"  # <- Only Debian family is supported
+virt_manager_users:   # <- Existing users to be added to libvirt group
+  # - "{{ ansible_user_id }}"

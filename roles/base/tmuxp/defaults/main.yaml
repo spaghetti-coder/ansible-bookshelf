@@ -1,21 +1,17 @@
 ---
-# Not supported by Alpine
-# -----
-# tmuxp_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- All hosts but Alpines
-# # See all available in templates/
-# tmuxp_conf:
-#   - owner: "{{ ansible_user_id }}"  # <- Must be unique
-#     conf:
-#         # Required
-#       - source: sensors.yaml.j2     # <- In-role, handled as template due to '*.j2'
-#         name: my-sensors            # <- Will land in ~/.tmuxp/my-sensors.yaml
-#         # Optional variables, can be addressed in the template via 'conf' map in case of template source
-#         session_name: Foo           # <- 'conf.session_name' in the template
-#         window_name: bar
-#       - source: "{{ playbook_dir }}/resources/tmuxp/demo1.yaml"   # <- Handled as file due to not '*.j2'
-#         name: demo1
-#         # No variables, as it's not a template
-#   - owner: # ...
-#     # ...
-tmuxp_managed: false
+tmuxp_managed: false  #  "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
+# See all available in templates/
 tmuxp_conf:
+  # - owner: "{{ ansible_user_id }}"  # <- Existing user. Must be unique
+  #   conf:
+  #       # Required
+  #     - source: sensors.yaml.j2     # <- In-role, handled as template due to '*.j2'
+  #       name: my-sensors            # <- Will land in ~/.tmuxp/my-sensors.yaml
+  #       # Optional variables, can be addressed in the template via 'conf' map in case of template source
+  #       session_name: Foo           # <- 'conf.session_name' in the template
+  #       window_name: bar
+  #     - source: "{{ playbook_dir }}/resources/tmuxp/demo1.yaml"   # <- Handled as file due to not '*.j2'
+  #       name: demo1
+  #       # No variables, as it's not a template
+  # - owner: # ...
+  #   # ...

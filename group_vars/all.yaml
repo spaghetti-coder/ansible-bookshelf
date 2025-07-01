@@ -32,7 +32,7 @@ ansible_become_password: "{{ lookup('env', 'ANSIBLE_USER_PASS') }}"
 # ===============
 #       AGE
 # ===============
-# Versions: https://github.com/FiloSottile/age/releases
+# VERSIONS: https://github.com/FiloSottile/age/releases
 # -----
 age_managed: true
 age_version:    # Leave blank to leverage bookshelf configuration
@@ -44,6 +44,12 @@ bash_managed: true
 bash_completion: true
 bash_users:   # <- Existing users to use bash by default
   - "{{ ansible_user_id }}"
+
+# ============================
+#       DOCKER-LOGROTATE
+# ============================
+docker_logrotate_managed: "{{ docker_managed | default(false) }}"   # <- When docker installed
+docker_logrotate_keep_count: 7
 
 # ==========
 #   DOCKER
@@ -63,7 +69,7 @@ envar_users:  # <- Existing users to have access to envar
 # ===============
 #       FZF
 # ===============
-# Versions: https://github.com/junegunn/fzf/releases
+# VERSIONS: https://github.com/junegunn/fzf/releases
 # -----
 fzf_managed: true
 fzf_version:    # Leave blank to leverage bookshelf configuration
@@ -75,21 +81,16 @@ fzf_users:  # <- Existing users to have access to fzf
 #   GIT
 # =======
 git_managed: true
-#     # Required
-#   - owner: "{{ ansible_user_id }}"    # <- Must be unique
-#     source: gitconfig.extra.ini.j2    # <- In-role, handled as template due to '*.j2'
-#     # Optional variables, can be addressed in the template via 'conf' map in case of template source
-#     user_name: Foo                    # <- 'conf.user_name' in the template
-#     user_email: foo@bar.baz
-#   - owner: another-user
-#     source: "{{ playbook_dir }}/resources/git/extra.ini"  # <- Handled as file due to not '*.j2'
-#     # No variables, as it's not a template
-#   # ...
 git_extraconf:
   - owner: "{{ ansible_user_id }}"
     source: gitconfig.extra.ini.j2
+    # Optional variables, can be addressed in the template via 'conf' map in case of template source
     user_name: Foo
     user_email: foo@bar.baz
+  # - owner: another-user
+  #   source: "{{ playbook_dir }}/resources/git/extra.ini"  # <- Handled as file due to not '*.j2'
+  #   # No variables, as it's not a template
+  # # ...
 
 # ===========
 #   PS1-GIT
@@ -102,11 +103,7 @@ ps1_git_users:  # <- Existing users to have this PS1
 # =========
 #   SNAPD
 # =========
-# Not supported by Alpine
-# -----
-# snapd_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- All hosts but Alpines
-# -----
-snapd_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- All hosts but Alpines
+snapd_managed: "{{ factum_os_like in ['ubuntu'] }}"  # <- Only supported by Ubuntu like
 
 # ============================
 #       TAILSCALE-CLIENT
@@ -123,36 +120,23 @@ tmux_sane_users:   # <- Existing users to source my preferred configuration
 # ===============
 #      TMUXP
 # ===============
-# Not supported by Alpine
-# -----
-# tmuxp_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- All hosts but Alpines
-# # See all available in templates/
-# tmuxp_conf:
-#   - owner: "{{ ansible_user_id }}"  # <- Must be unique
-#     conf:
-#         # Required
-#       - source: sensors.yaml.j2     # <- In-role, handled as template due to '*.j2'
-#         name: my-sensors            # <- Will land in ~/.tmuxp/my-sensors.yaml
-#         # Optional variables, can be addressed in the template via 'conf' map in case of template source
-#         session_name: Foo           # <- 'conf.session_name' in the template
-#         window_name: bar
-#       - source: "{{ playbook_dir }}/resources/tmuxp/demo1.yaml"   # <- Handled as file due to not '*.j2'
-#         name: demo1
-#         # No variables, as it's not a template
-#   - owner: # ...
-#     # ...
-tmuxp_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- All hosts but Alpines
+tmuxp_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
 tmuxp_conf:
   - owner: "{{ ansible_user_id }}"
     conf:
       - source: sensors.yaml.j2
         name: sensors
-        # Vars
+        # Optional variables, can be addressed in the template via 'conf' map in case of template source
         session_name: Sensors
         window_name: sensors
       - source: triple.yaml.j2
         name: triple
         pane3_start_dir: ~/tmp
+  #     - source: "{{ playbook_dir }}/resources/tmuxp/demo1.yaml"   # <- Handled as file due to not '*.j2'
+  #       name: demo1
+  #       # No variables, as it's not a template
+  # - owner: # ...
+  #   # ...
 
 # ====================
 #       TOOLBELT
@@ -166,28 +150,19 @@ tmuxp_conf:
 # * viewers:      bat, glow
 # * htop, jq, sensors, skate, speedtest, tar, wishlist
 # -----
-# toolbelt_pick:    # <- Install only a fraction. Leave empty to install all
-#   - nano            # <- nano will be installed
-#   - downloaders     # <- All downloaders will be installed
-#   - tar             # <- tar will be installed
-# toolbelt_exclude: # <- Opposed to toolbelt_pick, higher priority than toolbelt_pick
-#   - wget            # <- In conjunction with toolbelt_pick above, only curl will be installed
-#   - editors         # <- Dispite toolbelt_pick above, nano will not be installed
 toolbelt_managed: true
-toolbelt_pick:
-toolbelt_exclude:
+toolbelt_pick:      # <- Install only a fraction. Leave empty to install all
+  # - nano            # <- nano will be installed
+  # - downloaders     # <- All downloaders will be installed
+  # - tar             # <- tar will be installed
+toolbelt_exclude:   # <- Opposed to toolbelt_pick, higher priority than toolbelt_pick
+  # - wget            # <- In conjunction with toolbelt_pick above, only curl will be installed
+  # - editors         # <- Dispite toolbelt_pick above, nano will not be installed
 
 # ========================
 #       VIRT-MANAGER
 # ========================
-# Virtual Machine Manager
-# -----
-# Only supports Debian-like hosts
-# -----
-# virt_manager_managed: "{{ factum_os_family not in ['debian'] }}"
-# virt_manager_users:   # <- Existing users to be added to libvirt group
-#   - "{{ ansible_user_id }}"
-virt_manager_managed: "{{ factum_os_family in ['debian'] }}"
+virt_manager_managed: "{{ factum_os_family in ['debian'] }}"  # <- Only Debian family is supported
 virt_manager_users:   # <- Existing users to be added to libvirt group
   - "{{ ansible_user_id }}"
 
@@ -200,9 +175,9 @@ virt_manager_users:   # <- Existing users to be added to libvirt group
 # ===================
 #       ADGUARD
 # ===================
-# Versions:
-# * https://hub.docker.com/r/adguard/adguardhome/tags
-# * https://hub.docker.com/r/tailscale/tailscale/tags
+# VERSIONS:
+#   * https://hub.docker.com/r/adguard/adguardhome/tags
+#   * => See tailscale role versions
 # -----
 adguard_managed: "{{ factum_os_like not in ['ubuntu'] }}"   # <- All hosts but Ubuntu
 adguard_enabled: true
@@ -217,7 +192,6 @@ adguard_web_ui_port:    # Leave blank to leverage bookshelf configuration
 adguard_init_ui_port:   # Leave blank to leverage bookshelf configuration
 adguard_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # Optional extra env vars, will affect both adguard and tailscale.
-# Ex.: "{{ lookup('template', playbook_dir + '/resources/adguard/extra.env.j2') }}"
 adguard_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/adguard.env.j2') }}"
   # Useless test data
   FOO1=bar1
@@ -241,6 +215,10 @@ adguard_tailscale_auth_key:
 # ==========================
 #       AUDIOBOOKSHELF
 # ==========================
+# VERSIONS:
+#   * https://hub.docker.com/r/advplyr/audiobookshelf/tags
+#   * => See tailscale role versions
+# -----
 audiobookshelf_managed: true
 audiobookshelf_enabled: true
 audiobookshelf_version:       # Leave blank to leverage bookshelf configuration
@@ -254,7 +232,6 @@ audiobookshelf_vhost: "{{ audiobookshelf_service_name }}.domain.local"
 audiobookshelf_web_ui_port:   # Leave blank to leverage bookshelf configuration
 audiobookshelf_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # Optional extra env vars, will affect both audiobookshelf and tailscale.
-# Ex.: "{{ lookup('template', playbook_dir + '/resources/audiobookshelf/extra.env.j2') }}"
 audiobookshelf_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/audiobookshelf.env.j2') }}"
   # Useless test data
   FOO1=bar1
@@ -272,6 +249,8 @@ audiobookshelf_tailscale_auth_key:
 # =======================
 #       CODE-SERVER
 # =======================
+# VERSIONS: https://github.com/coder/code-server/releases
+# -----
 code_server_managed: "{{ factum_os_family not in ['alpine'] }}"
 code_server_version:      # Leave blank to leverage bookshelf configuration
 code_server_owner: "{{ ansible_user_id }}"
@@ -291,21 +270,12 @@ code_server_hashed_pass: "$argon2i$v=19$m=4096,t=3,p=1$WDlYSWhzL2RTUWc9$+KWVsLyU
 code_server_custom_conf:    # "{{ lookup('template', playbook_dir + '/resources/code-server.config.yaml.j2') }}"
 code_server_user_conf:      # "{{ lookup('template', 'sane.json.j2') }}"
 
-# ============================
-#       DOCKER-LOGROTATE
-# ============================
-docker_logrotate_managed: "{{ docker_managed | default(false) }}"
-docker_logrotate_keep_count: 7
-
 # =======================
 #       FILEBROWSER
 # =======================
-# Web File Browser
-#   https://filebrowser.org/
-# -----
-# Versions:
-# * https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-# * https://hub.docker.com/r/tailscale/tailscale/tags
+# VERSIONS:
+#   * https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
+#   * => See tailscale role versions
 # -----
 filebrowser_managed: true
 filebrowser_enabled: true
@@ -335,8 +305,7 @@ filebrowser_tailscale_auth_key:
 # ==================
 #       GOTIFY
 # ==================
-# Versions:
-# * https://hub.docker.com/r/gotify/server/tags
+# VERSIONS: https://hub.docker.com/r/gotify/server/tags
 # -----
 gotify_managed: true
 gotify_enabled: true
@@ -353,8 +322,7 @@ gotify_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # ====================
 #       HEIMDALL
 # ====================
-# Versions:
-# * https://hub.docker.com/r/linuxserver/heimdall/tags
+# VERSIONS: https://hub.docker.com/r/linuxserver/heimdall/tags
 # -----
 heimdall_managed: true
 heimdall_enabled: true
@@ -371,8 +339,9 @@ heimdall_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # ====================
 #       JELLYFIN
 # ====================
-# Versions:
-# * https://hub.docker.com/r/linuxserver/jellyfin/tags
+# VERSIONS:
+#   * https://hub.docker.com/r/linuxserver/jellyfin/tags
+#   * => See tailscale role versions
 # -----
 jellyfin_managed: true
 jellyfin_enabled: true
@@ -402,6 +371,10 @@ jellyfin_tailscale_auth_key:
 # =========================
 #       JOPLIN-SERVER
 # =========================
+# VERSIONS:
+#   * https://hub.docker.com/r/joplin/server/tags
+#   * https://hub.docker.com/_/postgres/tags?name=alpine
+# -----
 joplin_server_managed: true
 joplin_server_enabled: true
 joplin_server_version:              # Leave blank to leverage bookshelf configuration
@@ -420,37 +393,10 @@ joplin_server_base_url: http://{{ ansible_default_ipv4.address }}:{{ joplin_serv
 joplin_server_db_pass: changeme
 joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 
-# =====================
-#       MARIADB11
-# =====================
-# Versions (use 11.* LTS):
-# * https://hub.docker.com/_/mariadb
-# Exposes:
-# * mariadb11_net - mariadb network name
-# -----
-mariadb11_managed: true
-mariadb11_enabled: true
-mariadb11_version:      # Leave blank to leverage bookshelf configuration
-mariadb11_compose_dir:  # Unless you know ..., leave blank to leverage bookshelf configuration
-mariadb11_owner: "{{ ansible_user_id }}"
-mariadb11_conf_dir: ~/conf/mariadb11
-mariadb11_service_name: mariadb11
-mariadb11_hostname: "{{ mariadb11_service_name }}"
-mariadb11_tcp_port:   # Leave blank to leverage bookshelf configuration
-mariadb11_root_pass: changeme
-# mariadb11_users:
-#   - name: test-user   # <- Required
-#     pass: changeme    # <- Required
-mariadb11_users:
-
 # ==================
 #       METUBE
 # ==================
-# Self-hosted YouTube downloader (web UI for youtube-dl / yt-dlp)
-#   https://github.com/alexta69/metube
-# -----
-# Versions:
-# * https://github.com/alexta69/metube/pkgs/container/metube
+# VERSIONS: https://github.com/alexta69/metube/pkgs/container/metube
 # -----
 metube_managed: true
 metube_enabled: true
@@ -472,11 +418,8 @@ metube_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/metube
 # =======================
 #   NGINX-PROXY-MANAGER
 # =======================
-# Versions:
-# * https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
+# VERSIONS: https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
 # -----
-# # Optional path to extra configuration .env.j2 file
-# nginx_proxy_manager_extra_envfile: "{{ playbook_dir }}/resources/npm/extra.env.j2"
 nginx_proxy_manager_managed: true
 nginx_proxy_manager_enabled: true
 nginx_proxy_manager_version:        # Leave blank to leverage bookshelf configuration
@@ -802,20 +745,16 @@ brave_managed: false
 # ==================
 #       CHROME
 # ==================
-# Official web browser from Google, built to be fast, secure, and customizable.
-#   https://www.google.com/chrome/
-# -----
 chrome_managed: false
 
 # =================
 #       COPYQ
 # =================
-# copyq_users:  # <- Existing users to have copyq autostarted
-#   - "{{ ansible_user | default(ansible_user_id) }}"
 copyq_managed: false
 # 'pm' or 'flatpak'. With non-ubuntu always forced to 'flatpak'
 copyq_install_method: pm
-copyq_users:
+copyq_users:            # <- Existing users to have copyq autostarted
+  # - "{{ ansible_user_id }}"
 
 # ===================
 #       DBEAVER
@@ -827,34 +766,29 @@ dbeaver_install_method: flatpak
 # ===========
 #   FLATPAK
 # ===========
-# flatpak_repos:  # <- These are all supported repos
-#   - flathub
 flatpak_managed: false
-flatpak_repos:
-  - flathub
+flatpak_repos:    # <- Currently only the ones in the example are supported
+  # - flathub
 
 # ================
 #       GIMP
 # ================
 gimp_managed: false
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+gimp_install_method: flatpak
 
 # ======================
 #       INPUT-LEAP
 # ======================
-# Open-source KVM software (Barrier fork)
-#   https://github.com/input-leap/input-leap
-# -----
-# input_leap_users:  # <- Existing users to have InputLeap autostarted
-#   - "{{ ansible_user_id }}"
 input_leap_managed: false
-input_leap_users:
+input_leap_users:     # <- Existing users to have InputLeap autostarted
+  # - "{{ ansible_user_id }}"
 
 # =========================
 #       INTELLIJ-IDEA
 # =========================
-# The IDE for Java and Kotlin
-#   https://www.jetbrains.com/idea/
-# -----
 intellij_idea_managed: false
 # Ultimate edition, unless community
 intellij_idea_ultimate: false
@@ -929,10 +863,9 @@ sublime_install_method: pm
 # =========
 #   TEAMS
 # =========
-# teams_users:  # <- Existing users to have teams autostarted
-#   - "{{ ansible_user | default(ansible_user_id) }}"
 teams_managed: false
-teams_users:
+teams_users:            # <- Existing users to have teams autostarted
+  # - "{{ ansible_user_id }}"
 
 # ======================
 #       TERMINATOR
@@ -942,12 +875,9 @@ terminator_managed: false
 # =========
 #   VIBER
 # =========
-# Currently only Debian-based platforms supported
-# -----
-# viber_users:  # <- Existing users to have viber autostarted
-#   - "{{ ansible_user | default(ansible_user_id) }}"
 viber_managed: false
-viber_users:
+viber_users:    # <- Existing users to have viber autostarted
+  # - "{{ ansible_user_id }}"
 
 # =======
 #   VLC
@@ -962,7 +892,14 @@ vscode_managed: false
 # * snap
 # * flatpak   # <- Forced for non-Ubuntu-like
 vscode_install_method: snap
-vscode_extensions:
+vscode_extensions:      # <- Per user extensions
+  # - owner: "{{ ansible_user_id }}"  # <- Existing user. Must be unique
+  #   extensions:
+  #     - editorconfig.editorconfig
+  #     - mads-hartmann.bash-ide-vscode
+  #     - timonwong.shellcheck
+  #     - foxundermoon.shell-format
+  #     - redhat.ansible
 
 # ===================
 #       WHATSIE

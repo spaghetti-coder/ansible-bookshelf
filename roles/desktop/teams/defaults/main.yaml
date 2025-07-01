@@ -1,9 +1,8 @@
 ---
-# teams_users:  # <- Existing users to have teams autostarted
-#   - "{{ ansible_user_id }}"
 teams_managed: false
 # Supported values in prefered order (due to GUI oriented usage):
 # * flatpak   # <- Forced for non-Ubuntu-like
 # * snap
 teams_install_method: flatpak
-teams_users:
+teams_users:            # <- Existing users to have teams autostarted
+  # - "{{ ansible_user_id }}"

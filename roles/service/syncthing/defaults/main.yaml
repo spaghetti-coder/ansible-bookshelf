@@ -2,8 +2,9 @@
 # Open Source Continuous File Synchronization
 #   https://syncthing.net/
 # -----
-# Versions:
-# * https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
+# VERSIONS:
+#   * https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
+#   * => See tailscale role versions
 # -----
 syncthing_managed: false
 syncthing_enabled: false

@@ -2,8 +2,7 @@
 # Application Dashboard
 #   https://heimdall.site/
 # -----
-# Versions:
-# * https://hub.docker.com/r/linuxserver/heimdall/tags
+# VERSIONS: https://hub.docker.com/r/linuxserver/heimdall/tags
 # -----
 heimdall_managed: false
 heimdall_enabled: false

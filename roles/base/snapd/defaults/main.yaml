@@ -1,4 +1,2 @@
 ---
-# snapd_managed: "{{ factum_os_like in ['ubuntu'] }}"   # <- Only supported by Ubuntu like
-# -----
-snapd_managed: false
+snapd_managed: false  # "{{ factum_os_like in ['ubuntu'] }}"  # <- Only supported by Ubuntu like

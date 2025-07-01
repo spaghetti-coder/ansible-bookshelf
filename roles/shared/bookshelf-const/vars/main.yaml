@@ -2,9 +2,8 @@
 bookshelf_const_version_shared:
   # https://hub.docker.com/_/postgres/tags?name=alpine
   postgres: 16.9-alpine3.22
+  # NOTE: With version update also update auth key: https://tailscale.com/admin/settings/keys
   # https://hub.docker.com/r/tailscale/tailscale/tags
-  # NOTE: With version update also update auth key:
-  #   https://tailscale.com/admin/settings/keys
   tailscale: v1.84.3
 
 bookshelf_const_version:
@@ -20,25 +19,30 @@ bookshelf_const_version:
   #
   # https://hub.docker.com/r/adguard/adguardhome/tags
   adguard: v0.107.63
+  # => See tailscale versions in the top
   adguard_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/advplyr/audiobookshelf/tags
   audiobookshelf: 2.25.1
+  # => See tailscale versions in the top
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
   code_server: v4.101.2
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
   filebrowser: v2.33.2-s6
+  # => See tailscale versions in the top
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/gotify/server/tags
   gotify: 2.6.3
   # https://hub.docker.com/r/linuxserver/heimdall/tags
   heimdall: v2.6.3-ls310
-  # https://hub.docker.com/r/joplin/server/tags
-  joplin_server: 3.3.13
-  joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
+  # => See tailscale versions in the top
   jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://hub.docker.com/r/joplin/server/tags
+  joplin_server: 3.3.13
+  # => See postgres versions in the top
+  joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
   metube: 2025-06-28
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
@@ -55,8 +59,9 @@ bookshelf_const_version:
   qbittorrent: 5.1.1-r0-ls401
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
   syncthing: v1.29.7-ls185
+  # => See tailscale versions in the top
   syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
-  # https://hub.docker.com/r/tailscale/tailscale/tags
+  # => See tailscale versions in the top
   tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/twingate/connector/tags
   twingate: 1.77.0

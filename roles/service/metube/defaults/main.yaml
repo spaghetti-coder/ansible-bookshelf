@@ -2,8 +2,7 @@
 # Self-hosted YouTube downloader (web UI for youtube-dl / yt-dlp)
 #   https://github.com/alexta69/metube
 # -----
-# Versions:
-# * https://github.com/alexta69/metube/pkgs/container/metube
+# VERSIONS: https://github.com/alexta69/metube/pkgs/container/metube
 # -----
 metube_managed: false
 metube_enabled: false

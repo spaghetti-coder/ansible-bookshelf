@@ -2,8 +2,7 @@
 # The Portainer agent.
 #   https://www.portainer.io/
 # -----
-# Versions:
-# * https://hub.docker.com/r/portainer/agent/tags?name=alpine
+# VERSIONS: https://hub.docker.com/r/portainer/agent/tags?name=alpine
 # -----
 portainer_agent_managed: false
 portainer_agent_enabled: false

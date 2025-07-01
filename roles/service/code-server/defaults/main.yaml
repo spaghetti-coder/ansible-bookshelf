@@ -1,24 +1,23 @@
 ---
 # VS Code in the browser
 #   https://coder.com/docs/code-server
+#
+# Unlike most of services gets installed in the system (not docker). The reason
+# is that it's simpler to manage runtime (add extensions and install their
+# dependency packages) on a bare metal setup.
 # -----
-# Unlike most of services gets installed in the system (not container).
-# Not supported by Alpine.
+# VERSIONS: https://github.com/coder/code-server/releases
 # -----
-# code_server_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- No Alpine support
-# -----
-# Versions:
-# * https://github.com/coder/code-server/releases
-code_server_managed: false
+code_server_managed: false  # "{{ factum_os_family not in ['alpine'] }}"  # <- Not supported by Alpine
 code_server_version:      # Leave blank to leverage bookshelf configuration
 code_server_owner: "{{ ansible_user_id }}"
 code_server_web_ui_port:  # Leave blank to leverage bookshelf configuration
 code_server_extensions:   # <- List of extension
-#   - editorconfig.editorconfig
-#   - mads-hartmann.bash-ide-vscode
-#   - timonwong.shellcheck
-#   - foxundermoon.shell-format
-#   - redhat.ansible
+  # - editorconfig.editorconfig
+  # - mads-hartmann.bash-ide-vscode
+  # - timonwong.shellcheck
+  # - foxundermoon.shell-format
+  # - redhat.ansible
 code_server_pass: changeme
 # If defined, takes precedence over 'code_server_pass'.
 # Generate with (replace PASS with your value):

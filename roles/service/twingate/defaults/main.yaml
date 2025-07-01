@@ -2,8 +2,7 @@
 # It's time to ditch your VPN
 #   https://www.twingate.com/
 # -----
-# Versions:
-# * https://hub.docker.com/r/twingate/connector/tags
+# VERSIONS: https://hub.docker.com/r/twingate/connector/tags
 # -----
 twingate_managed: false
 twingate_enabled: false

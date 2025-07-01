@@ -3,15 +3,16 @@
 #   https://www.qbittorrent.org/
 #   https://hub.docker.com/r/linuxserver/qbittorrent
 # -----
-# Versions:
-# * https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-# * https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
+# VERSIONS:
+#   * https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
+#   * https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
 # -----
 # NOTE 1: Temporary password for the admin user will be printed to the container
 # log on startup
 #
 # NOTE 2: Switch to alternative UI
 #   Settings > WebUI > check Use alternative WebUI, Files location: /vuetorrent
+# -----
 qbittorrent_managed: false
 qbittorrent_enabled: false
 qbittorrent_version:              # Leave blank to leverage bookshelf configuration

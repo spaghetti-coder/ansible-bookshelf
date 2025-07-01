@@ -2,8 +2,7 @@
 # A simple server for sending and receiving messages
 #   https://gotify.net/
 # -----
-# Versions:
-# * https://hub.docker.com/r/gotify/server/tags
+# VERSIONS: https://hub.docker.com/r/gotify/server/tags
 # -----
 gotify_managed: false
 gotify_enabled: false

@@ -2,11 +2,10 @@
 # Advanced clipboard manager with editing and scripting features.
 #   https://hluk.github.io/CopyQ/
 # -----
-# copyq_users:  # <- Existing users to have copyq autostarted
-#   - "{{ ansible_user_id }}"
 copyq_managed: false
 # Supported values in prefered order (due to GUI oriented usage):
 # * pm
 # * flatpak   # <- Forced for non-Ubuntu-like
 copyq_install_method: pm
-copyq_users:
+copyq_users:            # <- Existing users to have copyq autostarted
+  # - "{{ ansible_user_id }}"

@@ -2,9 +2,9 @@
 # Open source note-taking app. Capture your thoughts and securely access them from any device.
 #   https://joplinapp.org/
 # -----
-# Versions:
-# * https://hub.docker.com/r/joplin/server/tags
-# * https://hub.docker.com/_/postgres/tags?name=alpine
+# VERSIONS:
+#   * https://hub.docker.com/r/joplin/server/tags
+#   * https://hub.docker.com/_/postgres/tags?name=alpine
 # -----
 joplin_server_managed: false
 joplin_server_enabled: false

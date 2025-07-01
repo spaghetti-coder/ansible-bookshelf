@@ -39,40 +39,37 @@ age_version:    # Leave blank to leverage bookshelf configuration
 # ================
 #       BASH
 # ================
-# bash_users:   # <- Existing users to use bash by default
-#   - "{{ ansible_user_id }}"
 bash_managed: false
 bash_completion: false
-bash_users:
+bash_users:       # <- Existing users to use bash by default
+  # - "{{ ansible_user_id }}"
 
 # ============================
 #       DOCKER-LOGROTATE
 # ============================
-# -----
-# Unlike most of services gets installed in the system (not container).
-# -----
-# docker_logrotate_managed: "{{ docker_managed | default(false) }}"  # <- When docker installed
-docker_logrotate_managed: false
+docker_logrotate_managed: "{{ docker_managed | default(false) }}"   # <- When docker installed
 docker_logrotate_keep_count: 7
 
 # ==================
 #       DOCKER
 # ==================
-# docker_users:   # <- Existing users to be added to docker group
-#   - "{{ ansible_user_id }}"
 docker_managed: false
-docker_users:
+docker_users:     # <- Existing users to be added to docker group
+  # - "{{ ansible_user_id }}"
 
 # =================
 #       ENVAR
 # =================
 # Installs envar for bash
 # -----
-# envar_users:  # <- Existing users to have access to envar
+# Exposes:
+#   * envar_etc_dir - Used by other tools
+#   * envar_user_dir - Used by other tools
+# -----
+envar_managed: false
+envar_users:    # <- Existing users to have access to envar
 #   - "{{ ansible_user_id }}"
 #   - root
-envar_managed: false
-envar_users:
 
 # ===============
 #       FZF
@@ -80,31 +77,29 @@ envar_users:
 # General-purpose command-line fuzzy finder.
 #   https://github.com/junegunn/fzf
 # -----
-# Versions: https://github.com/junegunn/fzf/releases
+# VERSIONS: https://github.com/junegunn/fzf/releases
 # -----
-# fzf_users:  # <- Existing users to have access to fzf
-#   - "{{ ansible_user_id }}"
-#   - root
 fzf_managed: false
 fzf_version:    # Leave blank to leverage bookshelf configuration
-fzf_users:
+fzf_users:      # <- Existing users to have access to fzf
+  # - "{{ ansible_user_id }}"
+  # - root
 
 # ===============
 #       GIT
 # ===============
 git_managed: false
-# git_extraconf:
-#     # Required
-#   - owner: "{{ ansible_user_id }}"    # <- Must be unique
-#     source: gitconfig.extra.ini.j2    # <- In-role, handled as template due to '*.j2'
-#     # Optional variables, can be addressed in the template via 'conf' map in case of template source
-#     user_name: Foo                    # <- 'conf.user_name' in the template
-#     user_email: foo@bar.baz
-#   - owner: another-user
-#     source: "{{ playbook_dir }}/resources/git/extra.ini"  # <- Handled as file due to not '*.j2'
-#     # No variables, as it's not a template
-#   # ...
 git_extraconf:
+  #   # Required
+  # - owner: "{{ ansible_user_id }}"    # <- Existing user. Must be unique
+  #   source: gitconfig.extra.ini.j2    # <- In-role, handled as template due to '*.j2'
+  #   # Optional variables, can be addressed in the template via 'conf' map in case of template source
+  #   user_name: Foo                    # <- 'conf.user_name' in the template
+  #   user_email: foo@bar.baz
+  # - owner: another-user
+  #   source: "{{ playbook_dir }}/resources/git/extra.ini"  # <- Handled as file due to not '*.j2'
+  #   # No variables, as it's not a template
+  # # ...
 
 # ===================
 #       PS1-GIT
@@ -112,18 +107,15 @@ git_extraconf:
 # Installs fancy PS1 with git PS1 suffix support. Loaded with envar.
 # Doesn't require git
 # -----
-# ps1_git_users:  # <- Existing users to have this PS1
-#   - "{{ ansible_user_id }}"
-#   - root
 ps1_git_managed: false
-ps1_git_users:
+ps1_git_users:    # <- Existing users to have this PS1
+  # - "{{ ansible_user_id }}"
+  # - root
 
 # =================
 #       SNAPD
 # =================
-# snapd_managed: "{{ factum_os_like in ['ubuntu'] }}"   # <- Only supported by Ubuntu like
-# -----
-snapd_managed: false
+snapd_managed: false  # "{{ factum_os_like in ['ubuntu'] }}"  # <- Only supported by Ubuntu like
 
 # ============================
 #       TAILSCALE-CLIENT
@@ -137,34 +129,29 @@ tailscale_client_managed: false
 # ================
 #       TMUX
 # ================
-# tmux_sane_users:   # <- Existing users to source my preferred configuration
-#   - "{{ ansible_user_id }}"
 tmux_managed: false
-tmux_sane_users:
+tmux_sane_users:  # <- Existing users to source my preferred configuration
+  # - "{{ ansible_user_id }}"
 
 # =================
 #       TMUXP
 # =================
-# Not supported by Alpine
-# -----
-# tmuxp_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- All hosts but Alpines
-# # See all available in templates/
-# tmuxp_conf:
-#   - owner: "{{ ansible_user_id }}"  # <- Must be unique
-#     conf:
-#         # Required
-#       - source: sensors.yaml.j2     # <- In-role, handled as template due to '*.j2'
-#         name: my-sensors            # <- Will land in ~/.tmuxp/my-sensors.yaml
-#         # Optional variables, can be addressed in the template via 'conf' map in case of template source
-#         session_name: Foo           # <- 'conf.session_name' in the template
-#         window_name: bar
-#       - source: "{{ playbook_dir }}/resources/tmuxp/demo1.yaml"   # <- Handled as file due to not '*.j2'
-#         name: demo1
-#         # No variables, as it's not a template
-#   - owner: # ...
-#     # ...
-tmuxp_managed: false
+tmuxp_managed: false  #  "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
+# See all available in templates/
 tmuxp_conf:
+  # - owner: "{{ ansible_user_id }}"  # <- Existing user. Must be unique
+  #   conf:
+  #       # Required
+  #     - source: sensors.yaml.j2     # <- In-role, handled as template due to '*.j2'
+  #       name: my-sensors            # <- Will land in ~/.tmuxp/my-sensors.yaml
+  #       # Optional variables, can be addressed in the template via 'conf' map in case of template source
+  #       session_name: Foo           # <- 'conf.session_name' in the template
+  #       window_name: bar
+  #     - source: "{{ playbook_dir }}/resources/tmuxp/demo1.yaml"   # <- Handled as file due to not '*.j2'
+  #       name: demo1
+  #       # No variables, as it's not a template
+  # - owner: # ...
+  #   # ...
 
 # ====================
 #       TOOLBELT
@@ -186,29 +173,23 @@ tmuxp_conf:
 # * wishlist  : The SSH directory (https://github.com/charmbracelet/wishlist).
 #               Disabled for Alpine, as it's not available in its repo
 # -----
-# toolbelt_pick:    # <- Install only a fraction. Leave empty to install all
-#   - nano            # <- nano will be installed
-#   - downloaders     # <- All downloaders will be installed
-#   - tar             # <- tar will be installed
-# toolbelt_exclude: # <- Opposed to toolbelt_pick, higher priority than toolbelt_pick
-#   - wget            # <- In conjunction with toolbelt_pick above, only curl will be installed
-#   - editors         # <- Dispite toolbelt_pick above, nano will not be installed
 toolbelt_managed: false
-toolbelt_pick:
-toolbelt_exclude:
+toolbelt_pick:      # <- Install only a fraction. Leave empty to install all
+  # - nano            # <- nano will be installed
+  # - downloaders     # <- All downloaders will be installed
+  # - tar             # <- tar will be installed
+toolbelt_exclude:   # <- Opposed to toolbelt_pick, higher priority than toolbelt_pick
+  # - wget            # <- In conjunction with toolbelt_pick above, only curl will be installed
+  # - editors         # <- Dispite toolbelt_pick above, nano will not be installed
 
 # ========================
 #       VIRT-MANAGER
 # ========================
 # Virtual Machine Manager
 # -----
-# Only supports Debian family hosts
-# -----
-# virt_manager_managed: "{{ factum_os_family in ['debian'] }}"
-# virt_manager_users:   # <- Existing users to be added to libvirt group
-#   - "{{ ansible_user_id }}"
-virt_manager_managed: false
-virt_manager_users:
+virt_manager_managed: false   # "{{ factum_os_family in ['debian'] }}"  # <- Only Debian family is supported
+virt_manager_users:   # <- Existing users to be added to libvirt group
+  # - "{{ ansible_user_id }}"
 
 
 
@@ -222,9 +203,9 @@ virt_manager_users:
 # The world’s most advanced ad blocker!
 #   https://adguard.com/en/adguard-home/overview.html
 # -----
-# Versions:
-# * https://hub.docker.com/r/adguard/adguardhome/tags
-# * https://hub.docker.com/r/tailscale/tailscale/tags
+# VERSIONS:
+#   * https://hub.docker.com/r/adguard/adguardhome/tags
+#   * => See tailscale role versions
 # -----
 adguard_managed: false
 adguard_enabled: false
@@ -263,8 +244,9 @@ adguard_tailscale_auth_key:
 # Self-hosted audiobook and podcast server
 #   https://www.audiobookshelf.org/
 # -----
-# Versions:
-# * https://hub.docker.com/r/advplyr/audiobookshelf/tags
+# VERSIONS:
+#   * https://hub.docker.com/r/advplyr/audiobookshelf/tags
+#   * => See tailscale role versions
 # -----
 audiobookshelf_managed: false
 audiobookshelf_enabled: false
@@ -295,24 +277,23 @@ audiobookshelf_tailscale_auth_key:
 # =======================
 # VS Code in the browser
 #   https://coder.com/docs/code-server
+#
+# Unlike most of services gets installed in the system (not docker). The reason
+# is that it's simpler to manage runtime (add extensions and install their
+# dependency packages) on a bare metal setup.
 # -----
-# Unlike most of services gets installed in the system (not container).
-# Not supported by Alpine.
+# VERSIONS: https://github.com/coder/code-server/releases
 # -----
-# code_server_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- No Alpine support
-# -----
-# Versions:
-# * https://github.com/coder/code-server/releases
-code_server_managed: false
+code_server_managed: false  # "{{ factum_os_family not in ['alpine'] }}"  # <- Not supported by Alpine
 code_server_version:      # Leave blank to leverage bookshelf configuration
 code_server_owner: "{{ ansible_user_id }}"
 code_server_web_ui_port:  # Leave blank to leverage bookshelf configuration
 code_server_extensions:   # <- List of extension
-#   - editorconfig.editorconfig
-#   - mads-hartmann.bash-ide-vscode
-#   - timonwong.shellcheck
-#   - foxundermoon.shell-format
-#   - redhat.ansible
+  # - editorconfig.editorconfig
+  # - mads-hartmann.bash-ide-vscode
+  # - timonwong.shellcheck
+  # - foxundermoon.shell-format
+  # - redhat.ansible
 code_server_pass: changeme
 # If defined, takes precedence over 'code_server_pass'.
 # Generate with (replace PASS with your value):
@@ -333,9 +314,9 @@ code_server_user_conf:      # "{{ lookup('template', 'sane.json.j2') }}"
 # ALTERNATIVE (when time comes);
 #   https://github.com/gtsteffaniak/filebrowser
 # -----
-# Versions:
-# * https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-# * https://hub.docker.com/r/tailscale/tailscale/tags
+# VERSIONS:
+#   * https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
+#   * => See tailscale role versions
 # -----
 # NOTE 1: Temporary password for the admin user will be printed to the container
 # log on startup
@@ -370,8 +351,7 @@ filebrowser_tailscale_auth_key:
 # A simple server for sending and receiving messages
 #   https://gotify.net/
 # -----
-# Versions:
-# * https://hub.docker.com/r/gotify/server/tags
+# VERSIONS: https://hub.docker.com/r/gotify/server/tags
 # -----
 gotify_managed: false
 gotify_enabled: false
@@ -391,8 +371,7 @@ gotify_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # Application Dashboard
 #   https://heimdall.site/
 # -----
-# Versions:
-# * https://hub.docker.com/r/linuxserver/heimdall/tags
+# VERSIONS: https://hub.docker.com/r/linuxserver/heimdall/tags
 # -----
 heimdall_managed: false
 heimdall_enabled: false
@@ -412,8 +391,9 @@ heimdall_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # The Free Software Media System
 #   https://jellyfin.org/
 # -----
-# Versions:
-# * https://hub.docker.com/r/linuxserver/jellyfin/tags
+# VERSIONS:
+#   * https://hub.docker.com/r/linuxserver/jellyfin/tags
+#   * => See tailscale role versions
 # -----
 jellyfin_managed: false
 jellyfin_enabled: false
@@ -445,9 +425,9 @@ jellyfin_tailscale_auth_key:
 # Open source note-taking app. Capture your thoughts and securely access them from any device.
 #   https://joplinapp.org/
 # -----
-# Versions:
-# * https://hub.docker.com/r/joplin/server/tags
-# * https://hub.docker.com/_/postgres/tags?name=alpine
+# VERSIONS:
+#   * https://hub.docker.com/r/joplin/server/tags
+#   * https://hub.docker.com/_/postgres/tags?name=alpine
 # -----
 joplin_server_managed: false
 joplin_server_enabled: false
@@ -473,8 +453,7 @@ joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # Self-hosted YouTube downloader (web UI for youtube-dl / yt-dlp)
 #   https://github.com/alexta69/metube
 # -----
-# Versions:
-# * https://github.com/alexta69/metube/pkgs/container/metube
+# VERSIONS: https://github.com/alexta69/metube/pkgs/container/metube
 # -----
 metube_managed: false
 metube_enabled: false
@@ -498,8 +477,7 @@ metube_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/metube
 # Docker container for managing Nginx proxy hosts with a simple, powerful interface
 #   https://nginxproxymanager.com/
 # -----
-# Versions:
-# * https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
+# VERSIONS: https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
 # -----
 nginx_proxy_manager_managed: false
 nginx_proxy_manager_enabled: false
@@ -519,11 +497,11 @@ nginx_proxy_manager_extra_env:      # "{{ lookup('template', playbook_dir + '/re
 # Automated nginx proxy for Docker containers using docker-gen
 #   https://github.com/nginx-proxy/nginx-proxy
 # -----
-# Versions:
-# * https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
+# VERSIONS: https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
+# -----
 # Exposes:
-# * nginx_proxy_net - proxy network name
-# * nginx_proxy_enabled - Used by other services
+#   * nginx_proxy_net - proxy network name
+#   * nginx_proxy_enabled - Used by other services
 # -----
 # # With nginx_proxy_manager_enabled == true ports 80 and 443 are busy
 # nginx_proxy_http_port:  "{{ (nginx_proxy_manager_enabled | default(false)) | ternary(9080, 80) }}"
@@ -547,8 +525,7 @@ nginx_proxy_certs_dir:      # Path to certs on the managed machine. Works paired
 #   https://olivetin.app/
 #   https://docs.olivetin.app/
 # -----
-# Versions:
-# * https://hub.docker.com/r/jamesread/olivetin/tags
+# VERSIONS: https://hub.docker.com/r/jamesread/olivetin/tags
 # -----
 olivetin_managed: false
 olivetin_enabled: false
@@ -581,8 +558,7 @@ olivetin_config:        # "{{ lookup('file', 'config.yaml') }}"
 # The Portainer agent.
 #   https://www.portainer.io/
 # -----
-# Versions:
-# * https://hub.docker.com/r/portainer/agent/tags?name=alpine
+# VERSIONS: https://hub.docker.com/r/portainer/agent/tags?name=alpine
 # -----
 portainer_agent_managed: false
 portainer_agent_enabled: false
@@ -600,8 +576,7 @@ portainer_agent_tcp_port:       # Leave blank to leverage bookshelf configuratio
 # A universal container management platform.
 #   https://www.portainer.io/
 # -----
-# Versions:
-# * https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
+# VERSIONS: https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
 # -----
 portainer_managed: false
 portainer_enabled: false
@@ -623,15 +598,16 @@ portainer_agent_ready: false
 #   https://www.qbittorrent.org/
 #   https://hub.docker.com/r/linuxserver/qbittorrent
 # -----
-# Versions:
-# * https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-# * https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
+# VERSIONS:
+#   * https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
+#   * https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
 # -----
 # NOTE 1: Temporary password for the admin user will be printed to the container
 # log on startup
 #
 # NOTE 2: Switch to alternative UI
 #   Settings > WebUI > check Use alternative WebUI, Files location: /vuetorrent
+# -----
 qbittorrent_managed: false
 qbittorrent_enabled: false
 qbittorrent_version:              # Leave blank to leverage bookshelf configuration
@@ -666,8 +642,9 @@ qbittorrent_extra_env:            # "{{ lookup('template', playbook_dir + '/reso
 # Open Source Continuous File Synchronization
 #   https://syncthing.net/
 # -----
-# Versions:
-# * https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
+# VERSIONS:
+#   * https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
+#   * => See tailscale role versions
 # -----
 syncthing_managed: false
 syncthing_enabled: false
@@ -700,8 +677,7 @@ syncthing_tailscale_auth_key:
 # users, services, and devices.
 #   https://tailscale.com/
 # -----
-# Versions:
-# * https://hub.docker.com/r/tailscale/tailscale/tags
+# VERSIONS: https://hub.docker.com/r/tailscale/tailscale/tags
 # -----
 # Meant for tailscale server configuration: https://tailscale.com/kb/1352/servers
 #
@@ -719,6 +695,7 @@ syncthing_tailscale_auth_key:
 #
 # NOTE 1: The service is useless unless it's configured for exit node or subnet
 # router. Both need to be confirmed in the machines admin
+# -----
 tailscale_managed: false
 tailscale_enabled: false
 tailscale_version:          # Leave blank to leverage bookshelf configuration
@@ -730,8 +707,7 @@ tailscale_hostname: "{{ tailscale_service_name }}"
 # Hostname within tailnet
 tailscale_ts_hostname: "{{ tailscale_service_name }}"
 tailscale_auth_key:         # (REQUIRED)
-# Ex.: '192.168.0.0/24,192.168.2.0/24'
-tailscale_routes:
+tailscale_routes:           # '192.168.0.0/24,192.168.2.0/24'
 tailscale_exit_node: false  # Advertise exit node
 # Optional extra env vars
 tailscale_extra_env:        # "{{ lookup('file', playbook_dir + '/resources/tailscale.env') }}"
@@ -742,8 +718,7 @@ tailscale_extra_env:        # "{{ lookup('file', playbook_dir + '/resources/tail
 # It's time to ditch your VPN
 #   https://www.twingate.com/
 # -----
-# Versions:
-# * https://hub.docker.com/r/twingate/connector/tags
+# VERSIONS: https://hub.docker.com/r/twingate/connector/tags
 # -----
 twingate_managed: false
 twingate_enabled: false
@@ -766,10 +741,7 @@ twingate_extra_env:       # "{{ lookup('file', playbook_dir + '/resources/twinga
 # The community driven password manager.
 #   https://www.vaultwarden.net/
 # -----
-# Versions:
-# * https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
-# Options description:
-# * https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
+# VERSIONS: https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
 # -----
 vaultwarden_managed: false
 vaultwarden_enabled: false
@@ -791,6 +763,7 @@ vaultwarden_vdomain:
 vaultwarden_admin_token_hash:
 vaultwarden_web_ui_port:    # Leave blank to leverage bookshelf configuration
 vaultwarden_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
 # Optional extra env vars
 vaultwarden_extra_env:      # "{{ lookup('file', playbook_dir + '/resources/vaultwarden.env') }}"
 
@@ -872,14 +845,13 @@ chrome_managed: false
 # Advanced clipboard manager with editing and scripting features.
 #   https://hluk.github.io/CopyQ/
 # -----
-# copyq_users:  # <- Existing users to have copyq autostarted
-#   - "{{ ansible_user_id }}"
 copyq_managed: false
 # Supported values in prefered order (due to GUI oriented usage):
 # * pm
 # * flatpak   # <- Forced for non-Ubuntu-like
 copyq_install_method: pm
-copyq_users:
+copyq_users:            # <- Existing users to have copyq autostarted
+  # - "{{ ansible_user_id }}"
 
 # ===================
 #       DBEAVER
@@ -896,10 +868,9 @@ dbeaver_install_method: flatpak
 # ===================
 #       FLATPAK
 # ===================
-# flatpak_repos:  # <- These are all supported repos
-#   - flathub
 flatpak_managed: false
-flatpak_repos:
+flatpak_repos:    # <- Currently only the ones in the example are supported
+  # - flathub
 
 # ================
 #       GIMP
@@ -919,10 +890,9 @@ gimp_install_method: flatpak
 # Open-source KVM software (Barrier fork)
 #   https://github.com/input-leap/input-leap
 # -----
-# input_leap_users:  # <- Existing users to have InputLeap autostarted
-#   - "{{ ansible_user_id }}"
 input_leap_managed: false
-input_leap_users:
+input_leap_users:     # <- Existing users to have InputLeap autostarted
+  # - "{{ ansible_user_id }}"
 
 # =========================
 #       INTELLIJ-IDEA
@@ -1059,14 +1029,13 @@ sublime_install_method: pm
 # =================
 #       TEAMS
 # =================
-# teams_users:  # <- Existing users to have teams autostarted
-#   - "{{ ansible_user_id }}"
 teams_managed: false
 # Supported values in prefered order (due to GUI oriented usage):
 # * flatpak   # <- Forced for non-Ubuntu-like
 # * snap
 teams_install_method: flatpak
-teams_users:
+teams_users:            # <- Existing users to have teams autostarted
+  # - "{{ ansible_user_id }}"
 
 # ======================
 #       TERMINATOR
@@ -1076,10 +1045,9 @@ terminator_managed: false
 # =================
 #       VIBER
 # =================
-# viber_users:  # <- Existing users to have viber autostarted
-#   - "{{ ansible_user_id }}"
 viber_managed: false
-viber_users:
+viber_users:    # <- Existing users to have viber autostarted
+  # - "{{ ansible_user_id }}"
 
 # ===============
 #       VLC
@@ -1093,21 +1061,19 @@ vlc_install_method: flatpak
 # ==================
 #       VSCODE
 # ==================
-# vscode_extensions:  # <- Per user extensions
-#   - owner: "{{ ansible_user_id }}"
-#     extensions:
-#       - editorconfig.editorconfig
-#       - mads-hartmann.bash-ide-vscode
-#       - timonwong.shellcheck
-#       - foxundermoon.shell-format
-#       - redhat.ansible
-# -----
 vscode_managed: false
 # Supported values in prefered order (due to available CLI interface):
 # * snap
 # * flatpak   # <- Forced for non-Ubuntu-like
 vscode_install_method: snap
-vscode_extensions:
+vscode_extensions:      # <- Per user extensions
+  # - owner: "{{ ansible_user_id }}"  # <- Existing user. Must be unique
+  #   extensions:
+  #     - editorconfig.editorconfig
+  #     - mads-hartmann.bash-ide-vscode
+  #     - timonwong.shellcheck
+  #     - foxundermoon.shell-format
+  #     - redhat.ansible
 
 # ===================
 #       WHATSIE

@@ -1,5 +1,4 @@
 ---
-# docker_users:   # <- Existing users to be added to docker group
-#   - "{{ ansible_user_id }}"
 docker_managed: false
-docker_users:
+docker_users:     # <- Existing users to be added to docker group
+  # - "{{ ansible_user_id }}"

@@ -2,8 +2,9 @@
 # The Free Software Media System
 #   https://jellyfin.org/
 # -----
-# Versions:
-# * https://hub.docker.com/r/linuxserver/jellyfin/tags
+# VERSIONS:
+#   * https://hub.docker.com/r/linuxserver/jellyfin/tags
+#   * => See tailscale role versions
 # -----
 jellyfin_managed: false
 jellyfin_enabled: false

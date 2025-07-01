@@ -1,5 +1,4 @@
 ---
-# viber_users:  # <- Existing users to have viber autostarted
-#   - "{{ ansible_user_id }}"
 viber_managed: false
-viber_users:
+viber_users:    # <- Existing users to have viber autostarted
+  # - "{{ ansible_user_id }}"

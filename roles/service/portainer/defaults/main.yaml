@@ -2,8 +2,7 @@
 # A universal container management platform.
 #   https://www.portainer.io/
 # -----
-# Versions:
-# * https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
+# VERSIONS: https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
 # -----
 portainer_managed: false
 portainer_enabled: false

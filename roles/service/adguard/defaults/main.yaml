@@ -2,9 +2,9 @@
 # The world’s most advanced ad blocker!
 #   https://adguard.com/en/adguard-home/overview.html
 # -----
-# Versions:
-# * https://hub.docker.com/r/adguard/adguardhome/tags
-# * https://hub.docker.com/r/tailscale/tailscale/tags
+# VERSIONS:
+#   * https://hub.docker.com/r/adguard/adguardhome/tags
+#   * => See tailscale role versions
 # -----
 adguard_managed: false
 adguard_enabled: false

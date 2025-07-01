@@ -2,8 +2,9 @@
 # Self-hosted audiobook and podcast server
 #   https://www.audiobookshelf.org/
 # -----
-# Versions:
-# * https://hub.docker.com/r/advplyr/audiobookshelf/tags
+# VERSIONS:
+#   * https://hub.docker.com/r/advplyr/audiobookshelf/tags
+#   * => See tailscale role versions
 # -----
 audiobookshelf_managed: false
 audiobookshelf_enabled: false

@@ -2,11 +2,11 @@
 # Automated nginx proxy for Docker containers using docker-gen
 #   https://github.com/nginx-proxy/nginx-proxy
 # -----
-# Versions:
-# * https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
+# VERSIONS: https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
+# -----
 # Exposes:
-# * nginx_proxy_net - proxy network name
-# * nginx_proxy_enabled - Used by other services
+#   * nginx_proxy_net - proxy network name
+#   * nginx_proxy_enabled - Used by other services
 # -----
 # # With nginx_proxy_manager_enabled == true ports 80 and 443 are busy
 # nginx_proxy_http_port:  "{{ (nginx_proxy_manager_enabled | default(false)) | ternary(9080, 80) }}"

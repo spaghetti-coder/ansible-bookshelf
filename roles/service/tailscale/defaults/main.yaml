@@ -3,8 +3,7 @@
 # users, services, and devices.
 #   https://tailscale.com/
 # -----
-# Versions:
-# * https://hub.docker.com/r/tailscale/tailscale/tags
+# VERSIONS: https://hub.docker.com/r/tailscale/tailscale/tags
 # -----
 # Meant for tailscale server configuration: https://tailscale.com/kb/1352/servers
 #
@@ -22,6 +21,7 @@
 #
 # NOTE 1: The service is useless unless it's configured for exit node or subnet
 # router. Both need to be confirmed in the machines admin
+# -----
 tailscale_managed: false
 tailscale_enabled: false
 tailscale_version:          # Leave blank to leverage bookshelf configuration
@@ -33,8 +33,7 @@ tailscale_hostname: "{{ tailscale_service_name }}"
 # Hostname within tailnet
 tailscale_ts_hostname: "{{ tailscale_service_name }}"
 tailscale_auth_key:         # (REQUIRED)
-# Ex.: '192.168.0.0/24,192.168.2.0/24'
-tailscale_routes:
+tailscale_routes:           # '192.168.0.0/24,192.168.2.0/24'
 tailscale_exit_node: false  # Advertise exit node
 # Optional extra env vars
 tailscale_extra_env:        # "{{ lookup('file', playbook_dir + '/resources/tailscale.env') }}"

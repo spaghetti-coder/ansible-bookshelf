@@ -3,8 +3,7 @@
 #   https://olivetin.app/
 #   https://docs.olivetin.app/
 # -----
-# Versions:
-# * https://hub.docker.com/r/jamesread/olivetin/tags
+# VERSIONS: https://hub.docker.com/r/jamesread/olivetin/tags
 # -----
 olivetin_managed: false
 olivetin_enabled: false
