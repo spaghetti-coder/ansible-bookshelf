@@ -17,8 +17,14 @@ wg_easy_conf_dir: ~/conf/wg-easy
 wg_easy_service_name: wg-easy
 wg_easy_hostname: "{{ wg_easy_service_name }}"
 wg_easy_vhost: "{{ wg_easy_service_name }}.domain.local"
+# Defaults to defined in WG-Easy. Ex.: '8.4.4.8,10.0.0.1'
+wg_easy_dns:
+# Defaults to no-pass login. See options description for how to generate
+wg_easy_pass_hash:
+# Ex.: 'my-vpn-server.public-domain.com' or '112.2.84.234'
+wg_easy_host:           # (REQUIRED)
 wg_easy_web_ui_port:    # Leave blank to leverage bookshelf configuration
-wg_easy_udp_port: 51820   # Must match the UDP port configured in Admin panel -> Config
-wg_easy_insecure: 'false' # Allow login via plain http
-# Optional extra env vars
-wg_easy_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/wg-easy.env.j2') }}"
+wg_easy_udp_port: 51820
+# Optional path to extra configuration .env.j2 file
+# Ex.: "{{ playbook_dir }}/resources/wg-easy/extra.env.j2"
+wg_easy_extra_envfile:

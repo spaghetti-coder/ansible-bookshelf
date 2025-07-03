@@ -10,29 +10,27 @@ services:
     hostname: {{ wg_easy_hostname }}
     env_file:
       - ./main.env
-{% if extra_env %}
+      - ./secret.env
+{% if extra_envfile %}
       - ./extra.env
 {% endif %}
     volumes:
       - '{{ conf_dir }}:/etc/wireguard'
-      # - /lib/modules:/lib/modules:ro    # <- Don't know what it's for
     ports:
-      - "{{ wg_easy_udp_port }}:51820/udp"
-      - "{{ web_ui_port }}:51821/tcp"     # <- Web-UI
+      - '{{ wg_easy_udp_port }}:{{ wg_easy_udp_port }}/udp'   # <- WG UDP port
+      - '{{ web_ui_port }}:51821/tcp'    # <- Web-UI port
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
-      # - NET_RAW                           # <- Uncomment for Podman
+      # - NET_RAW             # <- Uncomment if using Podman
     sysctls:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
-      - net.ipv6.conf.all.disable_ipv6=0
-      - net.ipv6.conf.all.forwarding=1
-      - net.ipv6.conf.default.forwarding=1
+    environment:
+      - WG_PORT={{ wg_easy_udp_port }}       # <- The port exposed to the wild
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}
-    environment:
       - VIRTUAL_HOST={{ wg_easy_vhost }}
       - VIRTUAL_PORT=51821
     networks:

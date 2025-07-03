@@ -8,7 +8,7 @@
   become_user: "{{ wg_easy_owner }}"
   vars:
     compose_dir: "{{ wg_easy_compose_dir | default(bookshelf_const_compose_dir + '/wg-easy', true) }}"
-    extra_env: "{{ wg_easy_extra_env }}"
+    extra_envfile: "{{ wg_easy_extra_envfile }}"
     conf_dir: "{{ wg_easy_conf_dir }}"
     service_state: "{{ wg_easy_enabled | ternary('present', 'absent') }}"
   block:
@@ -28,20 +28,20 @@
         mode: '0600'
       loop:
         - main
+        - secret
 
     - name: Remove obsolete extra.env
       ansible.builtin.file:
         path: "{{ compose_dir }}/extra.env"
         state: absent
-      when: not extra_env
+      when: not extra_envfile
 
     - name: Create extra.env
-      ansible.builtin.copy:
-        content: |
-          {{ extra_env }}
+      ansible.builtin.template:
+        src: "{{ extra_envfile }}"
         dest: "{{ compose_dir }}/extra.env"
         mode: '0600'
-      when: extra_env
+      when: extra_envfile
 
     - name: Compose apply
       ansible.builtin.import_role: { name: bookshelf-compose-apply }

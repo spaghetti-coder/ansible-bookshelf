@@ -699,6 +699,9 @@ vaultwarden_extra_env: |    # "{{ lookup('file', playbook_dir + '/resources/vaul
 # ===================
 #       WG-EASY
 # ===================
+# The easiest way to run WireGuard VPN + Web-based Admin UI.
+#   https://github.com/wg-easy/wg-easy
+# -----
 # Versions:
 # * https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
 # Options description:
@@ -714,17 +717,11 @@ wg_easy_conf_dir: ~/conf/wg-easy
 wg_easy_service_name: wg-easy
 wg_easy_hostname: "{{ wg_easy_service_name }}"
 wg_easy_vhost: "{{ wg_easy_service_name }}.domain.local"
-# Defaults to defined in WG-Easy. Ex.: '8.4.4.8,10.0.0.1'
-wg_easy_dns: 8.4.4.8
-# Defaults to no-pass login. See options description for how to generate
-wg_easy_pass_hash:
-# Required. Ex.: 'my-vpn-server.public-domain.com' or '112.2.84.234'
-wg_easy_host: foo.bar   # Required. Ex.: 'my.domain.com' or '8.8.8.8'
 wg_easy_web_ui_port:    # Leave blank to leverage bookshelf configuration
-wg_easy_udp_port: 51820
-# Optional path to extra configuration .env.j2 file
-# Ex.: "{{ playbook_dir }}/resources/wg-easy/extra.env.j2"
-wg_easy_extra_envfile:
+wg_easy_udp_port: 51820 # Must match the UDP port configured in UI
+wg_easy_insecure: 'true'  # Allow login via plain http
+# Optional extra env vars
+wg_easy_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/wg-easy.env.j2') }}"
 
 
 
