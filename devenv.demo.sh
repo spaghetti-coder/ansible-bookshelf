@@ -10,7 +10,8 @@ _devenv_config() {
   export ANSIBLE_HOST_ALMA=192.168.1.11
   export ANSIBLE_HOST_ALPINE=192.168.1.12
   export ANSIBLE_HOST_DEBIAN=192.168.1.13
-  export ANSIBLE_HOST_UBUNTU=192.168.1.14
+  export ANSIBLE_HOST_ROCKY=192.168.1.14
+  export ANSIBLE_HOST_UBUNTU=192.168.1.15
   # To keep it simple, test env user and password to be the same for all envs,
   export ANSIBLE_USER=demo-ssh-user
   export ANSIBLE_USER_PASS=demo-ssh-user-pass
@@ -23,9 +24,10 @@ _devenv_config() {
   declare -ag PVE_ENV_SNAPSHOTS=(
     # [VE_HOST_ALIAS]='VE_ID=SNAPSHOT'  # <- Alias is not related with the defined for ansible
     [alma]='100=Ansible1'   # <- Given 'Ansible1' is an existing snapshot on VE #100
-    [debian]='101=Ansible1'
-    [ubuntu]='102=Ansible1'
-    [alpine]='103=Ansible1'
+    [alpine]='101=Ansible1'
+    [debian]='102=Ansible1'
+    [rocky]='103=Ansible1'
+    [ubuntu]='104=Ansible1'
   )
 
   # Alias to 'devenv' command. Leave blank to not have an alias
@@ -41,16 +43,23 @@ devenv() (
   local SELF="${FUNCNAME[0]}"
   declare -A CMD_MAP=(
     [reset]=do_reset
-    [reset-all]=do_reset_all
     [ssh]=do_ssh
     [gen-init]=do_gen_init    # <- Removed from completion list
   )
 
-  _devenv_config
+  # https://stackoverflow.com/a/42449998
+  # shellcheck disable=SC2034
+  local T_BOLD='\033[1m' \
+        T_DIM='\033[2m' \
+        T_ITALIC='\033[3m' \
+        T_UNDER='\033[4m' \
+        T_RESET='\033[0m'
+
+  _devenv_config || return
 
   # shellcheck disable=SC2234
   do_ssh() {
-    [ ${#} -gt 0 ] || { echo "Host required" >&2; return 1; }
+    [ ${#} -gt 0 ] || { echo -e "${T_BOLD}ERR${T_RESET}: Host required" >&2; return 1; }
 
     local host="${1}"
     local -a ssh_args=("${@:2}")
@@ -61,7 +70,7 @@ devenv() (
 
     local rex_file; rex_file="$(sed -e 's/^/^/' -e 's/$/$/' <<< "${hosts}")"
     grep -qf <(cat <<< "${rex_file}") <<< "${host}" || {
-      echo "Invalid host: ${host}" >&2; return 1
+      echo -e "${T_BOLD}ERR${T_RESET}: Invalid host: ${host}" >&2; return 1
     }
 
     local ssh_host
@@ -77,26 +86,29 @@ devenv() (
   }
 
   do_reset() {
-    [ ${#} -gt 0 ] || { echo "Host required" >&2; return 1; }
+    [ ${#} -gt 0 ] || { echo -e "${T_BOLD}ERR${T_RESET}: Host required" >&2; return 1; }
 
-    local host="${1}"
+    local -a hosts=("${@}")
+    if [[ " ${hosts[*]} " == *' --all '* ]] && [ ${#PVE_ENV_SNAPSHOTS[@]} -gt 0 ]; then
+      hosts=("${!PVE_ENV_SNAPSHOTS[@]}")
+    fi
 
-    local rex_file; rex_file="$(_reset_hosts | sed -e 's/^/^/' -e 's/$/$/')"
-    grep -qf <(cat <<< "${rex_file}") <<< "${host}" || {
-      echo "Invalid host: ${host}" >&2; return 1
-    }
+    local tmp; tmp="$(printf -- '%s\n' "${hosts[@]}" | sort -n | uniq)"
+    mapfile -t hosts <<< "${tmp}"
 
-    local settings="${PVE_ENV_SNAPSHOTS[${host}]}"
-    local ve_id="${settings%%=*}"
-    local snapshot="${settings#*=}"
-    local -a reset_cmd=(pct rollback "${ve_id}" "${snapshot}" --start)
-    # shellcheck disable=SC2029
-    (set -x; ssh "${PVE_HOST}" "${reset_cmd[*]} >/dev/null") || return
-  }
+    local host
+    for host in "${hosts[@]}"; do
+      local rex_file; rex_file="$(_reset_hosts | sed -e 's/^/^/' -e 's/$/$/')"
+      grep -qf <(cat <<< "${rex_file}") <<< "${host}" || {
+        echo -e "${T_BOLD}ERR${T_RESET}: Invalid host: ${host}" >&2; return 1
+      }
 
-  do_reset_all() {
-    local alias; for alias in "${!PVE_ENV_SNAPSHOTS[@]}"; do
-      do_reset "${alias}"
+      local settings="${PVE_ENV_SNAPSHOTS[${host}]}"
+      local ve_id="${settings%%=*}"
+      local snapshot="${settings#*=}"
+      local -a reset_cmd=(pct rollback "${ve_id}" "${snapshot}" --start)
+      # shellcheck disable=SC2029
+      (set -x; ssh "${PVE_HOST}" "${reset_cmd[*]} >/dev/null") || return
     done
   }
 
@@ -154,7 +166,7 @@ devenv() (
     }; `# {{ GEN_END }}`
 
     local current="${COMP_WORDS[COMP_CWORD]}"
-    local previous="${COMP_WORDS[COMP_CWORD-1]}"
+    # local previous="${COMP_WORDS[COMP_CWORD-1]}"
 
     `# Completion hints:`
     `# {{ COMMANDS_LIST }}`     # <- Will expand to 'commands' variable
@@ -164,12 +176,27 @@ devenv() (
     # shellcheck disable=SC2207
     if [ "${COMP_CWORD}" -eq 1 ]; then
       COMPREPLY=($(compgen -W "${commands[*]}" -- "${current}"))
-    elif [ "${COMP_CWORD}" -eq 2 ]; then
-      if [ "${previous}" == 'ssh' ]; then
-        COMPREPLY=($(compgen -W "${ssh_hosts[*]}" -- "${current}"))
-      elif [ "${previous}" == 'reset' ]; then
-        COMPREPLY=($(compgen -W "${reset_hosts[*]}" -- "${current}"))
+    elif [ "${COMP_CWORD}" -eq 2 ] && [ "${COMP_WORDS[1]}" == 'ssh' ]; then
+      COMPREPLY=($(compgen -W "${ssh_hosts[*]}" -- "${current}"))
+    elif [ "${COMP_WORDS[1]}" == 'reset' ]; then
+      local -a left_hosts=("${reset_hosts[@]}")
+      local -a present_hosts=("${COMP_WORDS[@]:2}")
+
+      if [ ${#present_hosts[@]} -gt 1 ] && [ ${#left_hosts[@]} -gt 0 ]; then
+        local rex_file; rex_file="$(printf -- '^%s$\n' "${present_hosts[@]}")"
+
+        if [[ " ${present_hosts[*]} " == *' --all '* ]]; then
+          left_hosts=()
+        elif temp="$(grep -vf <(echo "${rex_file}") <<< "$(printf -- '%s\n' "${reset_hosts[@]}")")"; then
+          mapfile -t left_hosts <<< "${temp}"
+        else
+          left_hosts=()
+        fi
       fi
+
+      [ ${#left_hosts[@]} -gt 0 ] && left_hosts+=('--all')
+
+      COMPREPLY=($(compgen -W "${left_hosts[*]}" -- "${current}"))
     fi
   }
 
@@ -177,9 +204,8 @@ devenv() (
     print_nice "
       COMMANDS:
       ========
-      ${SELF} reset       # Reset an environment to configured snapshot
-      ${SELF} reset-all   # Reset all environments
-      ${SELF} ssh         # SSH to environment (passwordless with sshpass installed)
+      ${SELF} reset       # Reset environment(s) to configured snapshot
+      ${SELF} ssh         # SSH to environment (will not ask for pass with sshpass)
      ,
       DEMO:
       ====
@@ -188,11 +214,10 @@ devenv() (
       ${SELF} ssh alpine                  # <- SSH to VE
       ${SELF} ssh alma 'hostname -f'      # <- Command over SSH
      ,
-      # Reset environment configured with PVE_ENV_SNAPSHOTS[alma]
-      ${SELF} reset alma
-     ,
-      # Reset all environments configured in PVE_ENV_SNAPSHOTS
-      ${SELF} reset-all
+      # Reset environment
+      ${SELF} reset alma          # <- From PVE_ENV_SNAPSHOTS[alma]
+      ${SELF} reset alma alpine   # <- From PVE_ENV_SNAPSHOTS[alma], PVE_ENV_SNAPSHOTS[alpine]
+      ${SELF} reset --all         # <- All from PVE_ENV_SNAPSHOTS
      ,
       # Geven hosts.yaml and group_vars/all.yaml are using environment variables
       # configured in the config zone, run playbook
@@ -201,11 +226,11 @@ devenv() (
   }
 
   main() {
-    [ ${#} -gt 0 ] || { echo "Command required" >&2; return 1; }
+    [ ${#} -gt 0 ] || { echo -e "${T_BOLD}ERR${T_RESET}: Command required" >&2; return 1; }
 
     [[ "${1}" =~ ^(-\?|-h|--help)$ ]] && { print_help; return; }
 
-    [ -n "${CMD_MAP["${1}"]+x}" ] || { echo "Invalid command" >&2; return 1; }
+    [ -n "${CMD_MAP["${1}"]+x}" ] || { echo -e "${T_BOLD}ERR${T_RESET}: Invalid command: ${1}" >&2; return 1; }
     "${CMD_MAP["${1}"]}" "${@:2}" || return
   }
 
@@ -221,7 +246,7 @@ devenv() (
 
   # shellcheck disable=SC2234
   _ssh() {
-    local -a _ssh_cmd=(ssh -o StrictHostKeyChecking=no "${@}")
+    local -a _ssh_cmd=(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "${@}")
 
     local pass_var="ANSIBLE_USER_PASS_${HOST_ALIAS^^}"
     ( [ -n "${!pass_var}" ] ) 2>/dev/null || pass_var="ANSIBLE_USER_PASS"

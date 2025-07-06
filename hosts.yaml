@@ -3,7 +3,9 @@ all:
   vars:
     ansible_become_method: ansible.builtin.su
     ansible_python_interpreter: /usr/bin/python3
-    ansible_ssh_common_args: -o StrictHostKeyChecking=no  # <- Disable host key ckeck for test env
+    ansible_ssh_common_args: | # <- Disable host key ckeck for test env
+      -o StrictHostKeyChecking=no \
+      -o UserKnownHostsFile=/dev/null
   hosts:
     alma:
       ansible_host: "{{ lookup('env', 'ANSIBLE_HOST_ALMA') }}"
@@ -11,5 +13,7 @@ all:
       ansible_host: "{{ lookup('env', 'ANSIBLE_HOST_ALPINE') }}"
     debian:
       ansible_host: "{{ lookup('env', 'ANSIBLE_HOST_DEBIAN') }}"
+    rocky:
+      ansible_host: "{{ lookup('env', 'ANSIBLE_HOST_ROCKY') }}"
     ubuntu:
       ansible_host: "{{ lookup('env', 'ANSIBLE_HOST_UBUNTU') }}"

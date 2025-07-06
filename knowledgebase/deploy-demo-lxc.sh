@@ -56,6 +56,11 @@ deploy_ve_config() {
     #   echo "${EXTRAS[user1_name]}:${EXTRAS[user1_pass]}" | chpasswd -e
     [user1_pass]='YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBPMnRmQ3dPOFh2MUdlYVlBOXplUFUwc0R5Nm4vN1VIbmw5R1QwaXhJd0JNCjhad2JsNUlmZ0ZaQzZBWVBVV3ZSbHRsRTV3VHhhaDNKYWhET2pRcnp5d28KLS0tIHBDYllLVnhzVDJQQ1Q0dWZzd3VtcUFhMXpGcmZUMXAwbSt2SEd1VzhOY1EKJwl23NNALO0ilgEI42K442jOs92RykmDNCFwbc6QlEA0Kxsdy+L4e0S6t399dXs/596andORxAh9eCOVqEqeSOy5RNgrSYO27TNTWJeyF9nNOlvlyqoYrZOjF9SMEbIIZDqm/r1AzwOzgA6Df9vvMc+LdIwtv+B/pKc1ErQvNOTrA0i1IL3JIFfqYA=='
   )
+
+  # In case of remote deployment, the script copies only functions from the
+  # current script to PVE_HOST and executes them. In case you need to export
+  # more functions to use them here, add them to this array
+  PVE_COPY_FUNC=()
 }
 
 deploy_ve() (
@@ -80,7 +85,7 @@ deploy_ve() (
       install_ansible_prereqs || return
 
       # Custom provisioning
-      create_lxc_user
+      create_lxc_user || return
     stop_ve || return   # <- To ensure changes applied on the next start
 
     # To start VE immediately
@@ -118,8 +123,9 @@ deploy_ve() (
 deploy_ve_core() (
   local PVE_HOST VE_ID VE_TEMPLATE AGE_KEY
   declare -A EXTRAS
-  declare -a CREATE_FLAGS
+  declare -a CREATE_FLAGS PVE_COPY_FUNC
   declare -i START_DELAY=15
+  local AGE_SECRET
 
   local SELF_SCRIPT=pve-deploy-ve.sh
   grep -q '.\+' -- "${0}" 2>/dev/null && SELF_SCRIPT="$(basename -- "${0}" 2>/dev/null)"
@@ -135,7 +141,8 @@ deploy_ve_core() (
   main() {
     local command; command="$(get_command "${@:1:1}")" || return
 
-    deploy_ve_config  # <- Populate configuration
+    deploy_ve_config || return    # <- Populate configuration
+
     "${command}" "${@:2}"
   }
 
@@ -156,7 +163,8 @@ deploy_ve_core() (
 
     # Check if one of map commands
     declare -A commands_map=(
-      [deploy]=deploy_local
+      [deploy]=deploy_any
+      [deploy-local]=deploy_local
       [deploy-remote]=deploy_remote
       [gen-age]=gen_age
       [encrypt-secret]=encrypt_secret
@@ -182,7 +190,8 @@ deploy_ve_core() (
       ========
       gen-age         # Generate passphrase protected age key to stdout
       encrypt-secret  # Encrypt something with age key
-      deploy          # Deploy VE. If run on non-PVE host, attempt to do deploy-remote
+      deploy          # deploy-local if current machine is PVE, otherwise deploy-remote
+      deploy-local    # Deploy VE on the current machine assuming it's PVE
       deploy-remote   # Deploy to host configured in PVE_HOST
       # For private and development needs mostly:
       age-pub         # Print age public key
@@ -229,34 +238,47 @@ deploy_ve_core() (
     print_help_usage
   }
 
+  deploy_any() {
+    pveversion &>/dev/null && { deploy_local; return; }
+
+    echo -e "${T_BOLD}INFO${T_RESET}: Not PVE host, attempting remote" >&2
+    deploy_remote
+  }
+
   deploy_local() {
-    ! pveversion &>/dev/null && [ -n "${PVE_HOST:+x}" ] && {
-      # It's not a PVE machine and can deploy to PVE_HOST
-      deploy_remote; return
+    pveversion &>/dev/null || {
+      echo -e "${T_BOLD}ERR${T_RESET}: Not PVE host" >&2
+      return 1
     }
 
-    [ -z "${AGE_KEY}" ] && { echo -e "${T_BOLD}WARN${T_RESET}: AGE_KEY not set. Insecure deployment" >&2; }
-
-    propagate_age_secret || return
     pct config "${VE_ID}" --current &>/dev/null && {
       echo -e "${T_BOLD}INFO${T_RESET}: VE #${VE_ID} exists. Skipping" >&2
       return
     }
 
+    [ -z "${AGE_KEY}" ] && { echo -e "${T_BOLD}WARN${T_RESET}: AGE_KEY not set. Insecure deployment" >&2; }
+    propagate_age_secret || return
+
     deploy_ve || return
   }
 
   deploy_remote() {
-    propagate_age_secret || return
+    [ -n "${PVE_HOST:+x}" ] || {
+      echo -e "${T_BOLD}ERR${T_RESET}: PVE_HOST is not configured" >&2
+      return 1
+    }
 
-    echo -e "${T_BOLD}INFO${T_RESET}: Remote deployment: ${PVE_HOST}" >&2
-    # shellcheck disable=SC2029
-    declare -f deploy_ve_core deploy_ve deploy_ve_config \
-    | sed '/^\s*PVE_HOST[=]/d' `# <- Remove PVE_HOST marker` | ssh -- "${PVE_HOST}" "
-      $(declare -p DEPLOY_VE_AGE_SECRET)
-      export DEPLOY_VE_AGE_SECRET   # <- Promote it to the deploy script
-      /bin/bash <(cat; echo 'deploy_ve_core deploy')
-    "
+    echo -e "${T_BOLD}INFO${T_RESET}: Remote deployment to ${PVE_HOST}" >&2
+
+    local -a copy_func=(deploy_ve_core deploy_ve deploy_ve_config)
+    if declare -p PVE_COPY_FUNC 2>/dev/null | grep -q '^declare -a'; then
+      copy_func+=("${PVE_COPY_FUNC[@]}")
+    fi
+
+    ssh -t -t -- "${PVE_HOST}" "/bin/bash -c '
+      $(declare -f "${copy_func[@]}" | sed '/^\s*PVE_HOST[=]/d' | escape_single_quote)
+      deploy_ve_core deploy
+    '"
   }
 
   gen_age() {
@@ -286,7 +308,7 @@ deploy_ve_core() (
   get_age_pub() (set -o pipefail; get_age_lines | sed -n '1p')
 
   get_age_secret() {
-    [ -n "${DEPLOY_VE_AGE_SECRET}" ] && { cat <<< "${DEPLOY_VE_AGE_SECRET}"; return; }
+    [ -n "${AGE_SECRET}" ] && { cat <<< "${AGE_SECRET}"; return; }
     local line; line="$(set -o pipefail; get_age_lines | sed -n '2p')" || return
     [ -z "${line}" ] && return
     (set -o pipefail; base64 -d <<< "${line}" | age -d) || return
@@ -346,8 +368,8 @@ deploy_ve_core() (
   }
 
   propagate_age_secret() {
-    [ -n "${DEPLOY_VE_AGE_SECRET}" ] && return
-    declare -g DEPLOY_VE_AGE_SECRET; DEPLOY_VE_AGE_SECRET="$(get_age_secret)" || return
+    [ -n "${AGE_SECRET+x}" ] && return
+    AGE_SECRET="$(get_age_secret)" || return
   }
 
   get_template_file() {
@@ -370,6 +392,11 @@ deploy_ve_core() (
   }
 
   print_nice() { sed -e 's/^\s*$//' -e '/^$/d' -e 's/^\s*//' -e 's/^,//' <<< "${1-$(cat)}"; }
+
+  # shellcheck disable=SC2001,SC2120
+  escape_single_quote() { sed 's/'\''/'\''\\&'\''/g' <<< "${1-$(cat)}"; }
+  # shellcheck disable=SC2001,SC2120
+  escape_double_quote() { sed 's/"/"\\&"/g' <<< "${1-$(cat)}"; }
 
   #
   # PROFILES
@@ -551,8 +578,8 @@ deploy_ve_core() (
       "
     elif get_ve_option ostype | grep -qix 'centos'; then
       cmds="
-        dnf install -qy openssh-server python3 sudo >/dev/null
-        && systemctl enable -q --now ssh
+        dnf install -qy openssh-server python3 sudo >/dev/null \
+        && systemctl enable -q --now sshd
       "
     fi
 
@@ -590,4 +617,5 @@ deploy_ve_core() (
   main "${@}"   # <- Passthrough all input params
 )
 
-(return 2>/dev/null) || deploy_ve_core "${@}"
+(return 2>/dev/null) || { deploy_ve_core "${@}"; exit; }
+return    # <- If this line is hit, the file is sourced. Makes code that follows unreachable

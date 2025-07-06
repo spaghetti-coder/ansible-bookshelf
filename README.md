@@ -176,6 +176,10 @@ Performs all necessary initialization tasks (`factum` included), so it basically
     # ... more roles
 ```
 
+### Testing environment
+
+Testing environment LXC containers in PVE deployment scripts is available in `./tools/test-env`. It works in conjunction with `devenv.sh` script.
+
 [To top]
 
 ## Skeleton
@@ -194,6 +198,8 @@ To sync libraries and tools in the new project with the upstream issue:
 # Alway `git commit` before this action
 .dev/remote-proj.sh pull-upstream
 ```
+
+[To top]
 
 ## Standalones
 
