@@ -679,7 +679,7 @@ syncthing_tailscale_auth_key:
 # -----
 # VERSIONS: https://hub.docker.com/r/tailscale/tailscale/tags
 # -----
-# Meant for tailscale server configuration: https://tailscale.com/kb/1352/servers
+# Meant primarily for tailscale as a VPN gateway to a local network
 #
 # IMPORTANT 1: Auth key is required for initial container run:
 # https://tailscale.com/admin/settings/keys -> 'Generate auth key...'
