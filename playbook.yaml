@@ -8,7 +8,7 @@
   hosts: all
   roles:
     - role: age
-      tags: [age, upgradable]
+      tags: [age, upgradable, upgradable-pkg]
       when: age_managed | default(false)
 
     - role: bash
@@ -28,7 +28,7 @@
       when: envar_managed | default(false)
 
     - role: fzf
-      tags: [fzf, upgradable]
+      tags: [fzf, upgradable, upgradable-pkg]
       when: fzf_managed | default(false)
 
     - role: git
@@ -60,7 +60,7 @@
       when: toolbelt_managed | default(false)
 
     - role: upgrade
-      tags: [upgrade, upgradable, never]
+      tags: [upgrade, upgradable, upgradable-pkg, never]
 
     - role: virt-manager
       tags: [virt-manager]
