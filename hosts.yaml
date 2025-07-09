@@ -13,7 +13,7 @@ all:
       ansible_host: "{{ lookup('env', 'ANSIBLE_HOST_ALPINE') }}"
     debian:
       ansible_host: "{{ lookup('env', 'ANSIBLE_HOST_DEBIAN') }}"
-    rocky:
-      ansible_host: "{{ lookup('env', 'ANSIBLE_HOST_ROCKY') }}"
+    # rocky:
+    #   ansible_host: "{{ lookup('env', 'ANSIBLE_HOST_ROCKY') }}"
     ubuntu:
       ansible_host: "{{ lookup('env', 'ANSIBLE_HOST_UBUNTU') }}"

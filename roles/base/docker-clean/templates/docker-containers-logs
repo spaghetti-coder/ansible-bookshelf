@@ -1,7 +1,7 @@
 # https://signoz.io/guides/docker-clear-logs/
 
 /var/lib/docker/containers/*/*.log {
-  rotate {{ docker_logrotate_keep_count }}
+  rotate {{ docker_clean_logrotate_keep_count }}
   daily
   # compress
   missingok

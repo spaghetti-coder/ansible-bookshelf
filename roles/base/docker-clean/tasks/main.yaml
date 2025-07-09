@@ -1,0 +1,18 @@
+---
+- name: Privileged
+  become: true
+  block:
+    - name: Logrotate
+      ansible.builtin.template:
+        src: docker-containers-logs
+        dest: /etc/logrotate.d/docker-containers-logs
+        mode: '0644'
+
+    - name: Images pruner
+      ansible.builtin.cron:
+        name: docker-clean-prune-images
+        weekday: "0,1"  # <- Sunday, Monday
+        minute: "0"
+        hour: "3"     # <- 3 AM
+        job: docker image prune --force --all
+        disabled: "{{ not docker_clean_prune_images }}"

@@ -1,7 +1,0 @@
----
-- name: Install
-  ansible.builtin.template:
-    src: docker-containers-logs
-    dest: /etc/logrotate.d/docker-containers-logs
-    mode: '0644'
-  become: true

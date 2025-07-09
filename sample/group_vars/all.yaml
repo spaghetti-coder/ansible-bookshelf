@@ -44,11 +44,12 @@ bash_completion: false
 bash_users:       # <- Existing users to use bash by default
   # - "{{ ansible_user_id }}"
 
-# ============================
-#       DOCKER-LOGROTATE
-# ============================
-docker_logrotate_managed: "{{ docker_managed | default(false) }}"   # <- When docker installed
-docker_logrotate_keep_count: 7
+# ========================
+#       DOCKER-CLEAN
+# ========================
+docker_clean_managed: false   # "{{ docker_managed | default(false) }}"   # <- When docker installed
+docker_clean_logrotate_keep_count: 7
+docker_clean_prune_images: false    # <- Weekly prune unused images
 
 # ==================
 #       DOCKER

@@ -1,3 +1,0 @@
----
-docker_logrotate_managed: "{{ docker_managed | default(false) }}"   # <- When docker installed
-docker_logrotate_keep_count: 7
