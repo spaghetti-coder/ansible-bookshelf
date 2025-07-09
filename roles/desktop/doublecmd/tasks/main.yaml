@@ -1,0 +1,9 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  vars:
+    doublecmd_starters_todo: "{{ doublecmd_starters | default([], true) | difference(doublecmd_starters_done | default([])) }}"
+  when: |
+    not (doublecmd_install_done | default(false))
+    or (doublecmd_starters_todo | length) > 0

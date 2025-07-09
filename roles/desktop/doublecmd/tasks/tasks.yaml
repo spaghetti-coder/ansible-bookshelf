@@ -1,0 +1,19 @@
+---
+- name: Install
+  ansible.builtin.package:
+    name: doublecmd-{{ doublecmd_ui_lib }}
+  become: true
+
+- name: Install autostart
+  ansible.builtin.file:
+    src: /usr/share/applications/doublecmd.desktop
+    dest: ~/.config/autostart/doublecmd.desktop
+    state: link
+  become: true
+  become_user: "{{ item }}"
+  loop: "{{ doublecmd_starters_todo }}"
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    doublecmd_install_done: true
+    doublecmd_starters_done: "{{ (doublecmd_starters_done | default([])) + doublecmd_starters_todo }}"
