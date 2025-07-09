@@ -369,6 +369,16 @@ jellyfin_tailscale_version:    # Leave blank to leverage bookshelf configuration
 jellyfin_tailscale_ts_hostname: "{{ jellyfin_service_name }}-tailscale"
 jellyfin_tailscale_auth_key:
 
+# ===========================
+#       JELLYFIN-PLAYER
+# ===========================
+# Desktop client for Jellyfin media server.
+#   https://github.com/jellyfin/jellyfin-media-player
+# -----
+jellyfin_player_managed: false
+jellyfin_player_users:            # <- Existing users to have jellyfin player autostarted
+  # - "{{ ansible_user_id }}"
+
 # =========================
 #       JOPLIN-SERVER
 # =========================

@@ -188,6 +188,10 @@
       tags: [intellij-idea]
       when: intellij_idea_managed | default(false)
 
+    - role: jellyfin-player
+      tags: [jellyfin-player]
+      when: jellyfin_player_managed | default(false)
+
     - role: joplin-desktop
       tags: [joplin-desktop]
       when: joplin_desktop_managed | default(false)
