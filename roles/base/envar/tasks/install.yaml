@@ -21,7 +21,3 @@
       changed_when:
         - envar_conf_result.rc == 0
         - envar_conf_result.stdout | lower == 'done'
-
-- name: Mark install done
-  ansible.builtin.set_fact:
-    envar_install_done: true

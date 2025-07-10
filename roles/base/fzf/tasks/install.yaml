@@ -27,7 +27,3 @@
         src: fzf.bash.sh.j2
         dest: "{{ fzf_hook }}"
         mode: '0644'
-
-- name: Mark install done
-  ansible.builtin.set_fact:
-    fzf_install_done: true

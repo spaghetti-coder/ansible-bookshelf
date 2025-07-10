@@ -3,7 +3,9 @@
   ansible.builtin.include_tasks:
     file: tasks.yaml
   vars:
+    bash_requested_packages: "{{ ['bash'] + (bash_completion | ternary(['bash-completion'], [])) }}"
+    bash_packages_todo: "{{ bash_requested_packages | difference(bash_packages_done | default([])) }}"
     bash_users_todo: "{{ bash_users | default([], true) | difference(bash_users_done | default([])) }}"
   when: |
-    not (bash_install_done | default(false))
+    (bash_packages_todo | length) > 0
     or (bash_users_todo | length) > 0

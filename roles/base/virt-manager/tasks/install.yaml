@@ -18,7 +18,3 @@
         state: started
         enabled: true
       when: virt_manager_installation_state.changed
-
-- name: Mark install done
-  ansible.builtin.set_fact:
-    virt_manager_install_done: true

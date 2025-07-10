@@ -11,7 +11,3 @@
   ansible.builtin.getent:
     database: passwd
   when: bash_user_state.changed
-
-- name: Mark user done
-  ansible.builtin.set_fact:
-    bash_users_done: "{{ (bash_users_done | default([])) + [user] }}"

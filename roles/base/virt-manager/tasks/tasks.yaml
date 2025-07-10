@@ -11,3 +11,8 @@
   loop: "{{ virt_manager_users_todo }}"
   loop_control:
     loop_var: user
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    virt_manager_install_done: true
+    virt_manager_users_done: "{{ (virt_manager_users_done | default([])) + virt_manager_users_todo }}"

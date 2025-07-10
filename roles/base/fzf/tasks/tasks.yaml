@@ -25,6 +25,7 @@
       become_user: "{{ item }}"
       loop: "{{ fzf_users_todo }}"
 
-    - name: Mark setup done
-      ansible.builtin.set_fact:
-        fzf_users_done: "{{ (fzf_users_done | default([])) + fzf_users_todo }}"
+- name: Mark dones
+  ansible.builtin.set_fact:
+    fzf_install_done: true
+    fzf_users_done: "{{ (fzf_users_done | default([])) + fzf_users_todo }}"

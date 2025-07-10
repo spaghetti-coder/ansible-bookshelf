@@ -1,8 +1,10 @@
 ---
-- name: Load install
-  ansible.builtin.include_tasks:
-    file: install.yaml
-  when: not (bash_install_done | default(false))
+- name: Install
+  ansible.builtin.package:
+    name: "{{ packages }}"
+  vars:
+    packages: "{{ bash_packages_todo }}"
+  become: true
 
 - name: Install chsh
   ansible.builtin.package:
@@ -23,3 +25,8 @@
   loop: "{{ bash_users_todo }}"
   loop_control:
     loop_var: user
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    bash_packages_done: "{{ (bash_packages_done | default([])) + bash_packages_todo }}"
+    bash_users_done: "{{ (bash_users_done | default([])) + bash_users_todo }}"

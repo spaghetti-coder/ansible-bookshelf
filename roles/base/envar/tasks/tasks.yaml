@@ -18,6 +18,7 @@
   become_user: "{{ item }}"
   loop: "{{ envar_users_todo }}"
 
-- name: Mark users done
+- name: Mark dones
   ansible.builtin.set_fact:
+    envar_install_done: true
     envar_users_done: "{{ (envar_users_done | default([])) + envar_users_todo }}"

@@ -11,3 +11,8 @@
   loop: "{{ docker_users_todo }}"
   loop_control:
     loop_var: user
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    docker_install_done: true
+    docker_users_done: "{{ (docker_users_done | default([])) + docker_users_todo }}"
