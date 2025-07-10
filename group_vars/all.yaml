@@ -224,9 +224,10 @@ audiobookshelf_managed: true
 audiobookshelf_enabled: true
 audiobookshelf_version:       # Leave blank to leverage bookshelf configuration
 audiobookshelf_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-audiobookshelf_owner: "{{ ansible_user_id }}"
-audiobookshelf_conf_dir: ~/conf/audiobookshelf
-audiobookshelf_data_dir: ~/Audiobookshelf        # (REQUIRED)
+audiobookshelf_owner: root    # <- Who runs the container
+audiobookshelf_user: "{{ ansible_user_id }}"    # <- The in-container user and data filesystem owner
+audiobookshelf_conf_dir: "{{ audiobookshelf_owner_home }}/conf/audiobookshelf"
+audiobookshelf_data_dir: "{{ audiobookshelf_user_home }}/share/Audiobooks"   # (REQUIRED)
 audiobookshelf_service_name: audiobookshelf
 audiobookshelf_hostname: "{{ audiobookshelf_service_name }}"
 audiobookshelf_vhost: "{{ audiobookshelf_service_name }}.domain.local"
@@ -282,9 +283,10 @@ filebrowser_managed: true
 filebrowser_enabled: true
 filebrowser_version:        # Leave blank to leverage bookshelf configuration
 filebrowser_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-filebrowser_owner: "{{ ansible_user_id }}"
-filebrowser_conf_dir: ~/conf/filebrowser
-filebrowser_data_dir: ~/Filebrowser      # (REQUIRED)
+filebrowser_owner: root    # <- Who runs the container
+filebrowser_user: "{{ ansible_user_id }}"   # <- The in-container user and data filesystem owner
+filebrowser_conf_dir: "{{ filebrowser_owner_home }}/conf/filebrowser"
+filebrowser_data_dir: "{{ filebrowser_user_home }}"   # (REQUIRED). Ex.: "{{ filebrowser_user_home }}/Filebrowser"
 filebrowser_service_name: filebrowser
 filebrowser_hostname: "{{ filebrowser_service_name }}"
 filebrowser_vhost: "{{ filebrowser_service_name }}.domain.local"
@@ -348,9 +350,10 @@ jellyfin_managed: true
 jellyfin_enabled: true
 jellyfin_version:       # Leave blank to leverage bookshelf configuration
 jellyfin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-jellyfin_owner: "{{ ansible_user_id }}"
-jellyfin_conf_dir: ~/conf/jellyfin
-jellyfin_data_dir: ~/media     # Directory with media files. Required
+jellyfin_owner: root                    # <- Who runs the container
+jellyfin_user: "{{ ansible_user_id }}"  # <- The in-container user and data filesystem owner
+jellyfin_conf_dir: "{{ jellyfin_owner_home }}/conf/jellyfin"
+jellyfin_data_dir: "{{ jellyfin_user_home }}/share/Media"   # (REQUIRED). Ex.: "{{ jellyfin_user_home }}/share/Media"
 jellyfin_service_name: jellyfin
 jellyfin_hostname: "{{ jellyfin_service_name }}"
 jellyfin_vhost: "{{ jellyfin_service_name }}.domain.local"
@@ -403,9 +406,10 @@ metube_managed: true
 metube_enabled: true
 metube_version:       # Leave blank to leverage bookshelf configuration
 metube_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-metube_owner: "{{ ansible_user_id }}"
-metube_conf_dir: ~/conf/metube
-metube_data_dir: ~/Metube     # (REQUIRED) Directory with media files
+metube_owner: root       # <- Who runs the container
+metube_user: "{{ ansible_user_id }}"   # <- The in-container user and data filesystem owner
+metube_conf_dir: "{{ metube_owner_home }}/conf/metube"
+metube_data_dir: "{{ metube_user_home }}/share/Metube"     # (REQUIRED). Ex.: "{{ metube_user_home }}/share/Metube"
 metube_service_name: metube
 metube_hostname: "{{ metube_service_name }}"
 metube_vhost: "{{ metube_service_name }}.domain.local"
@@ -529,9 +533,10 @@ qbittorrent_enabled: true
 qbittorrent_version:              # Leave blank to leverage bookshelf configuration
 qbittorrent_vuetorrent_version:   # Leave blank to leverage bookshelf configuration
 qbittorrent_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
-qbittorrent_owner: "{{ ansible_user_id }}"
-qbittorrent_conf_dir: ~/conf/qbittorrent
-qbittorrent_data_dir: ~/Torrent
+qbittorrent_owner: root       # <- Who runs the container
+qbittorrent_user: "{{ ansible_user_id }}"   # <- The in-container user and data filesystem owner
+qbittorrent_conf_dir: "{{ qbittorrent_owner_home }}/conf/qbittorrent"
+qbittorrent_data_dir: "{{ qbittorrent_user_home }}/share/Torrent"     # (REQUIRED). Ex.: "{{ qbittorrent_user_home }}/share/Torrent"
 qbittorrent_service_name: qbittorrent
 qbittorrent_hostname: "{{ qbittorrent_service_name }}"
 qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"
@@ -545,7 +550,7 @@ qbittorrent_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 #   templates/gotify-push.*
 #   templates/discord-push.*
 qbittorrent_downloaded_script: "{{ lookup('template', 'gotify-push.sh.j2') }}"
-qbittorrent_push_server: https://gotify.net.kos.giize.com
+qbittorrent_push_server: https://gotify.home
 # Optional, can be used in conjunction with qbittorrent_downloaded_script to keep
 # secrets separately from the downloaded event script.
 # Will only be used when qbittorrent_downloaded_script is set
@@ -585,9 +590,10 @@ syncthing_managed: true
 syncthing_enabled: true
 syncthing_version:              # Leave blank to leverage bookshelf configuration
 syncthing_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
-syncthing_owner: "{{ ansible_user_id }}"
-syncthing_conf_dir: ~/conf/syncthing
-syncthing_data_dir: ~/Syncthing
+syncthing_owner: root  # <- Who runs the container
+syncthing_user: "{{ ansible_user_id }}"   # <- The in-container user and data filesystem owner
+syncthing_conf_dir: "{{ syncthing_owner_home }}/conf/syncthing"
+syncthing_data_dir: "{{ syncthing_user_home }}/share"   # (REQUIRED). Ex.: "{{ syncthing_user_home }}/share"
 syncthing_service_name: syncthing
 syncthing_hostname: "{{ syncthing_service_name }}"
 syncthing_vhost: "{{ syncthing_service_name }}.domain.local"

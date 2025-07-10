@@ -249,13 +249,19 @@ adguard_tailscale_auth_key:
 #   * https://hub.docker.com/r/advplyr/audiobookshelf/tags
 #   * => See tailscale role versions
 # -----
+# NOTE 1: Due to switching users in the role don't use shortcuts in the paths
+# (like '~'), use absolute paths. For HOMEs available:
+#   "{{ audiobookshelf_owner_home }}"
+#   "{{ audiobookshelf_user_home }}"
+# -----
 audiobookshelf_managed: false
 audiobookshelf_enabled: false
 audiobookshelf_version:       # Leave blank to leverage bookshelf configuration
 audiobookshelf_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-audiobookshelf_owner: "{{ ansible_user_id }}"
-audiobookshelf_conf_dir: ~/conf/audiobookshelf
-audiobookshelf_data_dir:      # (REQUIRED)
+audiobookshelf_owner: "{{ ansible_user_id }}"       # <- Who runs the container
+audiobookshelf_user: "{{ audiobookshelf_owner }}"   # <- The in-container user and data filesystem owner
+audiobookshelf_conf_dir: "{{ audiobookshelf_owner_home }}/conf/audiobookshelf"
+audiobookshelf_data_dir:      # (REQUIRED). Ex.: "{{ audiobookshelf_user_home }}/share/Audiobooks"
 audiobookshelf_service_name: audiobookshelf
 audiobookshelf_hostname: "{{ audiobookshelf_service_name }}"
 audiobookshelf_vhost: "{{ audiobookshelf_service_name }}.domain.local"
@@ -319,16 +325,21 @@ code_server_user_conf:      # "{{ lookup('template', 'sane.json.j2') }}"
 #   * https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
 #   * => See tailscale role versions
 # -----
-# NOTE 1: Temporary password for the admin user will be printed to the container
+# NOTE 1: Due to switching users in the role don't use shortcuts in the paths
+# (like '~'), use absolute paths. For HOMEs available:
+#   "{{ filebrowser_owner_home }}"
+#   "{{ filebrowser_user_home }}"
+# NOTE 2: Temporary password for the admin user will be printed to the container
 # log on startup
 # -----
 filebrowser_managed: false
 filebrowser_enabled: false
 filebrowser_version:        # Leave blank to leverage bookshelf configuration
 filebrowser_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-filebrowser_owner: "{{ ansible_user_id }}"
-filebrowser_conf_dir: ~/conf/filebrowser
-filebrowser_data_dir:       # (REQUIRED)
+filebrowser_owner: "{{ ansible_user_id }}"    # <- Who runs the container
+filebrowser_user: "{{ filebrowser_owner }}"   # <- The in-container user and data filesystem owner
+filebrowser_conf_dir: "{{ filebrowser_owner_home }}/conf/filebrowser"
+filebrowser_data_dir:       # (REQUIRED). Ex.: "{{ filebrowser_user_home }}/Filebrowser"
 filebrowser_service_name: filebrowser
 filebrowser_hostname: "{{ filebrowser_service_name }}"
 filebrowser_vhost: "{{ filebrowser_service_name }}.domain.local"
@@ -396,13 +407,19 @@ heimdall_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 #   * https://hub.docker.com/r/linuxserver/jellyfin/tags
 #   * => See tailscale role versions
 # -----
+# NOTE 1: Due to switching users in the role don't use shortcuts in the paths
+# (like '~'), use absolute paths. For HOMEs available:
+#   "{{ jellyfin_owner_home }}"
+#   "{{ jellyfin_user_home }}"
+# -----
 jellyfin_managed: false
 jellyfin_enabled: false
 jellyfin_version:       # Leave blank to leverage bookshelf configuration
 jellyfin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-jellyfin_owner: "{{ ansible_user_id }}"
-jellyfin_conf_dir: ~/conf/jellyfin
-jellyfin_data_dir:      # (REQUIRED) Directory with media files
+jellyfin_owner: "{{ ansible_user_id }}"       # <- Who runs the container
+jellyfin_user: "{{ jellyfin_owner }}"   # <- The in-container user and data filesystem owner
+jellyfin_conf_dir: "{{ jellyfin_owner_home }}/conf/jellyfin"
+jellyfin_data_dir:      # (REQUIRED). Ex.: "{{ jellyfin_user_home }}/share/Media"
 jellyfin_service_name: jellyfin
 jellyfin_hostname: "{{ jellyfin_service_name }}"
 jellyfin_vhost: "{{ jellyfin_service_name }}.domain.local"
@@ -456,13 +473,19 @@ joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # -----
 # VERSIONS: https://github.com/alexta69/metube/pkgs/container/metube
 # -----
+# NOTE 1: Due to switching users in the role don't use shortcuts in the paths
+# (like '~'), use absolute paths. For HOMEs available:
+#   "{{ metube_owner_home }}"
+#   "{{ metube_user_home }}"
+# -----
 metube_managed: false
 metube_enabled: false
 metube_version:       # Leave blank to leverage bookshelf configuration
 metube_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-metube_owner: "{{ ansible_user_id }}"
-metube_conf_dir: ~/conf/metube
-metube_data_dir:      # (REQUIRED) Directory with media files
+metube_owner: "{{ ansible_user_id }}"       # <- Who runs the container
+metube_user: "{{ metube_owner }}"           # <- The in-container user and data filesystem owner
+metube_conf_dir: "{{ metube_owner_home }}/conf/metube"
+metube_data_dir:      # (REQUIRED). Ex.: "{{ metube_user_home }}/share/Metube"
 metube_service_name: metube
 metube_hostname: "{{ metube_service_name }}"
 metube_vhost: "{{ metube_service_name }}.domain.local"
@@ -603,10 +626,15 @@ portainer_agent_ready: false
 #   * https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
 #   * https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
 # -----
-# NOTE 1: Temporary password for the admin user will be printed to the container
+# NOTE 1: Due to switching users in the role don't use shortcuts in the paths
+# (like '~'), use absolute paths. For HOMEs available:
+#   "{{ qbittorrent_owner_home }}"
+#   "{{ qbittorrent_user_home }}"
+#
+# NOTE 2: Temporary password for the admin user will be printed to the container
 # log on startup
 #
-# NOTE 2: Switch to alternative UI
+# NOTE 3: Switch to alternative UI
 #   Settings > WebUI > check Use alternative WebUI, Files location: /vuetorrent
 # -----
 qbittorrent_managed: false
@@ -614,9 +642,10 @@ qbittorrent_enabled: false
 qbittorrent_version:              # Leave blank to leverage bookshelf configuration
 qbittorrent_vuetorrent_version:   # Leave blank to leverage bookshelf configuration
 qbittorrent_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
-qbittorrent_owner: "{{ ansible_user_id }}"
-qbittorrent_conf_dir: ~/conf/qbittorrent
-qbittorrent_data_dir:             # (REQUIRED) Torrent downloads directory
+qbittorrent_owner: "{{ ansible_user_id }}"    # <- Who runs the container
+qbittorrent_user: "{{ qbittorrent_owner }}"   # <- The in-container user and data filesystem owner
+qbittorrent_conf_dir: "{{ qbittorrent_owner_home }}/conf/qbittorrent"
+qbittorrent_data_dir:      # (REQUIRED). Ex.: "{{ qbittorrent_user_home }}/share/Torrent"
 qbittorrent_service_name: qbittorrent
 qbittorrent_hostname: "{{ qbittorrent_service_name }}"
 qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"
@@ -647,13 +676,19 @@ qbittorrent_extra_env:            # "{{ lookup('template', playbook_dir + '/reso
 #   * https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
 #   * => See tailscale role versions
 # -----
+# NOTE 1: Due to switching users in the role don't use shortcuts in the paths
+# (like '~'), use absolute paths. For HOMEs available:
+#   "{{ syncthing_owner_home }}"
+#   "{{ syncthing_user_home }}"
+# -----
 syncthing_managed: false
 syncthing_enabled: false
 syncthing_version:              # Leave blank to leverage bookshelf configuration
 syncthing_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
-syncthing_owner: "{{ ansible_user_id }}"
-syncthing_conf_dir: ~/conf/syncthing
-syncthing_data_dir:             # (REQUIRED)
+syncthing_owner: "{{ ansible_user_id }}"  # <- Who runs the container
+syncthing_user: "{{ syncthing_owner }}"   # <- The in-container user and data filesystem owner
+syncthing_conf_dir: "{{ syncthing_owner_home }}/conf/syncthing"
+syncthing_data_dir:      # (REQUIRED). Ex.: "{{ syncthing_user_home }}/share"
 syncthing_service_name: syncthing
 syncthing_hostname: "{{ syncthing_service_name }}"
 syncthing_vhost: "{{ syncthing_service_name }}.domain.local"

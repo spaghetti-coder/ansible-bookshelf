@@ -1,0 +1,3 @@
+---
+syncthing_owner_home: "{{ getent_passwd[syncthing_owner].4 }}"
+syncthing_user_home: "{{ getent_passwd[syncthing_user].4 }}"

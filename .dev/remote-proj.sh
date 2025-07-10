@@ -169,8 +169,11 @@ remote_proj() (
     # Install updates
     (
       cd -- "${tmp_dir}" || exit
+      local -a sample_files=(playbook.yaml requirements.yaml ansible.cfg)
+      [ -f changelog.md ] && sample_files+=(changelog.md)
+
       set -x
-      cp playbook.yaml requirements.yaml ansible.cfg "${PROJ_DIR}/sample"
+      cp "${sample_files[@]}" "${PROJ_DIR}/sample"
       cp -rf .dev .lock bin roles "${PROJ_DIR}"
     ) || return
 

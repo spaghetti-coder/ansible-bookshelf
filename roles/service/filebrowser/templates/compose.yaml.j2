@@ -17,8 +17,8 @@ services:
 {% endif %}
     volumes:
       - '{{ data_dir }}:/srv'
-      - '{{ conf_dir }}/filebrowser/database:/database'
-      - '{{ conf_dir }}/filebrowser/config:/config'
+      - '{{ conf_dir }}/config:/config'
+      - '{{ conf_dir }}/database:/database'
 {% if filebrowser_tailscaled %}
     network_mode: "service:{{ tailscale_service }}"
 

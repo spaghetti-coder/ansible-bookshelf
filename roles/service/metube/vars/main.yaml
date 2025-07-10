@@ -1,0 +1,3 @@
+---
+metube_owner_home: "{{ getent_passwd[metube_owner].4 }}"
+metube_user_home: "{{ getent_passwd[metube_user].4 }}"

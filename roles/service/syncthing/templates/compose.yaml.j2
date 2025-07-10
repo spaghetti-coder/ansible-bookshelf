@@ -18,7 +18,7 @@ services:
       - ./extra.env
 {% endif %}
     volumes:
-      - '{{ conf_dir }}/syncthing:/config'
+      - '{{ conf_dir }}/config:/config'
       - '{{ data_dir }}:/data'
     healthcheck:
       test: curl -fkLsS -m 2 127.0.0.1:8384/rest/noauth/health | grep -o --color=never OK || exit 1

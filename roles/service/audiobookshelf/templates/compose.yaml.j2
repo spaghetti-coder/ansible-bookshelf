@@ -19,6 +19,7 @@ services:
       - '{{ data_dir }}:/data'
       - '{{ conf_dir }}/config:/config'
       - '{{ conf_dir }}/metadata:/metadata'
+    user: "{{ user_uid }}:{{ user_gid }}"
 {% if audiobookshelf_tailscaled %}
     network_mode: "service:{{ tailscale_service }}"
 

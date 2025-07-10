@@ -18,12 +18,12 @@ services:
       - ./extra.env
 {% endif %}
     volumes:
-      - '{{ qbittorrent_conf_dir }}:/config'
-      - '{{ qbittorrent_data_dir }}:/downloads'
+      - '{{ conf_dir }}/config:/config'
+      - '{{ data_dir }}:/downloads'
 {% if qbittorrent_downloaded_script %}
       # Usage:
       #   qBittorrent UI -> Settings -> Downloads -> External ... on finished -> "/scripts/downloaded.sh '%N'"
-      - ./scripts:/scripts:ro
+      - '{{ conf_dir }}/scripts:/scripts:ro'
 {% endif %}{# qbittorrent_downloaded_script #}
     ports:
       - '{{ web_ui_port }}:{{ web_ui_port }}'

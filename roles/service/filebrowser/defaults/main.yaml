@@ -8,16 +8,21 @@
 #   * https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
 #   * => See tailscale role versions
 # -----
-# NOTE 1: Temporary password for the admin user will be printed to the container
+# NOTE 1: Due to switching users in the role don't use shortcuts in the paths
+# (like '~'), use absolute paths. For HOMEs available:
+#   "{{ filebrowser_owner_home }}"
+#   "{{ filebrowser_user_home }}"
+# NOTE 2: Temporary password for the admin user will be printed to the container
 # log on startup
 # -----
 filebrowser_managed: false
 filebrowser_enabled: false
 filebrowser_version:        # Leave blank to leverage bookshelf configuration
 filebrowser_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-filebrowser_owner: "{{ ansible_user_id }}"
-filebrowser_conf_dir: ~/conf/filebrowser
-filebrowser_data_dir:       # (REQUIRED)
+filebrowser_owner: "{{ ansible_user_id }}"    # <- Who runs the container
+filebrowser_user: "{{ filebrowser_owner }}"   # <- The in-container user and data filesystem owner
+filebrowser_conf_dir: "{{ filebrowser_owner_home }}/conf/filebrowser"
+filebrowser_data_dir:       # (REQUIRED). Ex.: "{{ filebrowser_user_home }}/Filebrowser"
 filebrowser_service_name: filebrowser
 filebrowser_hostname: "{{ filebrowser_service_name }}"
 filebrowser_vhost: "{{ filebrowser_service_name }}.domain.local"

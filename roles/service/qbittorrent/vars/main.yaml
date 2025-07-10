@@ -1,0 +1,3 @@
+---
+qbittorrent_owner_home: "{{ getent_passwd[qbittorrent_owner].4 }}"
+qbittorrent_user_home: "{{ getent_passwd[qbittorrent_user].4 }}"

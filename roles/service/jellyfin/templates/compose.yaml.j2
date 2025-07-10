@@ -16,7 +16,7 @@ services:
       - ./extra.env
 {% endif %}
     volumes:
-      - '{{ conf_dir }}/jellyfin:/config'
+      - '{{ conf_dir }}/config:/config'
       - '{{ data_dir }}:/data'
     devices:
       # https://github.com/linuxserver/docker-jellyfin#intelatiamd

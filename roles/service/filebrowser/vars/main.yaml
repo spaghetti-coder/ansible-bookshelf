@@ -1,0 +1,3 @@
+---
+filebrowser_owner_home: "{{ getent_passwd[filebrowser_owner].4 }}"
+filebrowser_user_home: "{{ getent_passwd[filebrowser_user].4 }}"

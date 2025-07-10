@@ -4,6 +4,8 @@
     path: "{{ scripts_dir }}"
     state: directory
     mode: '0700'
+    owner: "{{ user_uid }}"
+    group: "{{ user_gid }}"
 
 - name: Create downloaded.sh
   ansible.builtin.copy:
@@ -11,6 +13,8 @@
       {{ qbittorrent_downloaded_script }}
     dest: "{{ scripts_dir }}/downloaded.sh"
     mode: '0700'
+    owner: "{{ user_uid }}"
+    group: "{{ user_gid }}"
 
 - name: Create downloaded.secret.sh
   ansible.builtin.copy:
@@ -18,4 +22,6 @@
       {{ qbittorrent_downloaded_secret }}
     dest: "{{ scripts_dir }}/downloaded.secret.sh"
     mode: '0600'
+    owner: "{{ user_uid }}"
+    group: "{{ user_gid }}"
   when: qbittorrent_downloaded_secret
