@@ -14,7 +14,3 @@
         path: ~/Documents/ViberDownloads
         state: directory
         mode: '0700'
-
-- name: Mark user done
-  ansible.builtin.set_fact:
-    viber_users_done: "{{ (viber_users_done | default([])) + [user] }}"

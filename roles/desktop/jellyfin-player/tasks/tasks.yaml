@@ -11,8 +11,9 @@
     mode: '0600'
   become: true
   become_user: "{{ item }}"
-  loop: "{{ jellyfin_player_users_todo }}"
+  loop: "{{ jellyfin_player_starters_todo }}"
 
-- name: Mark users done
+- name: Mark dones
   ansible.builtin.set_fact:
-    jellyfin_player_users_done: "{{ (jellyfin_player_users_done | default([])) + jellyfin_player_users_todo }}"
+    jellyfin_player_install_done: true
+    jellyfin_player_starters_done: "{{ (jellyfin_player_starters_done | default([])) + jellyfin_player_starters_todo }}"

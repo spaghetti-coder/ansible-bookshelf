@@ -1,7 +1,12 @@
 ---
 - name: Load install
   ansible.builtin.include_tasks:
-    file: install.yaml
+    file: install.{{ method }}.yaml
+  vars:
+    method_map:
+      _default: flatpak
+      ubuntu: "{{ copyq_install_method }}"
+    method: "{{ method_map[factum_os_like] | default(method_map['_default']) }}"
   when: not (copyq_install_done | default(false))
 
 - name: Install autostart
@@ -11,8 +16,9 @@
     mode: '0600'
   become: true
   become_user: "{{ item }}"
-  loop: "{{ copyq_users_todo }}"
+  loop: "{{ copyq_starters_todo }}"
 
-- name: Mark users done
+- name: Mark dones
   ansible.builtin.set_fact:
-    copyq_users_done: "{{ (copyq_users_done | default([])) + copyq_users_todo }}"
+    copyq_install_done: true
+    copyq_starters_done: "{{ (copyq_starters_done | default([])) + copyq_starters_todo }}"

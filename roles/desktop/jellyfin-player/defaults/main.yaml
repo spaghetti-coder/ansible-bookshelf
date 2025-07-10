@@ -3,5 +3,5 @@
 #   https://github.com/jellyfin/jellyfin-media-player
 # -----
 jellyfin_player_managed: false
-jellyfin_player_users:            # <- Existing users to have jellyfin player autostarted
+jellyfin_player_starters:   # <- Existing users to have jellyfin player autostarted
   # - "{{ ansible_user_id }}"

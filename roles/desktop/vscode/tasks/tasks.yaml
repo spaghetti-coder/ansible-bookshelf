@@ -1,7 +1,12 @@
 ---
 - name: Load install
   ansible.builtin.include_tasks:
-    file: install.yaml
+    file: install.{{ method }}.yaml
+  vars:
+    method_map:
+      _default: flatpak
+      ubuntu: "{{ vscode_install_method }}"
+    method: "{{ method_map[factum_os_like] | default(method_map['_default']) }}"
   when: not (vscode_install_done | default(false))
 
 - name: Load user extensions
@@ -15,3 +20,7 @@
   loop_control:
     loop_var: extensions
     label: "{{ user }}"
+
+- name: Mark install done
+  ansible.builtin.set_fact:
+    vscode_install_done: true

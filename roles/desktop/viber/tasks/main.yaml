@@ -3,7 +3,7 @@
   ansible.builtin.include_tasks:
     file: tasks.yaml
   vars:
-    viber_users_todo: "{{ viber_users | default([], true) | difference(viber_users_done | default([])) }}"
+    viber_starters_todo: "{{ viber_starters | default([], true) | difference(viber_starters_done | default([])) }}"
   when: |
     not (viber_install_done | default(false))
-    or (viber_users_todo | length) > 0
+    or (viber_starters_todo | length) > 0

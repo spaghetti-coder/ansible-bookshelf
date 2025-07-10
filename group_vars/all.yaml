@@ -369,16 +369,6 @@ jellyfin_tailscale_version:    # Leave blank to leverage bookshelf configuration
 jellyfin_tailscale_ts_hostname: "{{ jellyfin_service_name }}-tailscale"
 jellyfin_tailscale_auth_key:
 
-# ===========================
-#       JELLYFIN-PLAYER
-# ===========================
-# Desktop client for Jellyfin media server.
-#   https://github.com/jellyfin/jellyfin-media-player
-# -----
-jellyfin_player_managed: false
-jellyfin_player_users:            # <- Existing users to have jellyfin player autostarted
-  # - "{{ ansible_user_id }}"
-
 # =========================
 #       JOPLIN-SERVER
 # =========================
@@ -761,7 +751,7 @@ chrome_managed: false
 copyq_managed: false
 # 'pm' or 'flatpak'. With non-ubuntu always forced to 'flatpak'
 copyq_install_method: pm
-copyq_users:            # <- Existing users to have copyq autostarted
+copyq_starters:         # <- Existing users to have copyq autostarted
   # - "{{ ansible_user_id }}"
 
 # ===================
@@ -802,7 +792,7 @@ gimp_install_method: flatpak
 #       INPUT-LEAP
 # ======================
 input_leap_managed: false
-input_leap_users:     # <- Existing users to have InputLeap autostarted
+input_leap_starters:  # <- Existing users to have InputLeap autostarted
   # - "{{ ansible_user_id }}"
 
 # =========================
@@ -811,6 +801,16 @@ input_leap_users:     # <- Existing users to have InputLeap autostarted
 intellij_idea_managed: false
 # Ultimate edition, unless community
 intellij_idea_ultimate: false
+
+# ===========================
+#       JELLYFIN-PLAYER
+# ===========================
+# Desktop client for Jellyfin media server.
+#   https://github.com/jellyfin/jellyfin-media-player
+# -----
+jellyfin_player_managed: false
+jellyfin_player_starters:   # <- Existing users to have jellyfin player autostarted
+  # - "{{ ansible_user_id }}"
 
 # ==========================
 #       JOPLIN-DESKTOP
@@ -883,7 +883,7 @@ sublime_install_method: pm
 #   TEAMS
 # =========
 teams_managed: false
-teams_users:            # <- Existing users to have teams autostarted
+teams_starters:   # <- Existing users to have teams autostarted
   # - "{{ ansible_user_id }}"
 
 # ======================
@@ -895,7 +895,7 @@ terminator_managed: false
 #   VIBER
 # =========
 viber_managed: false
-viber_users:    # <- Existing users to have viber autostarted
+viber_starters:   # <- Existing users to have viber autostarted
   # - "{{ ansible_user_id }}"
 
 # =======

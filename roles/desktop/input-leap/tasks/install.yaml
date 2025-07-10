@@ -12,7 +12,3 @@
         name: io.github.input_leap.input-leap
         remote: "{{ flatpak_remote }}"
       become: true
-
-- name: Mark install done
-  ansible.builtin.set_fact:
-    input_leap_install_done: true

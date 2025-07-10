@@ -3,7 +3,7 @@
   ansible.builtin.include_tasks:
     file: tasks.yaml
   vars:
-    copyq_users_todo: "{{ copyq_users | default([], true) | difference(copyq_users_done | default([])) }}"
+    copyq_starters_todo: "{{ copyq_starters | default([], true) | difference(copyq_starters_done | default([])) }}"
   when: |
     not (copyq_install_done | default(false))
-    or (copyq_users_todo | length) > 0
+    or (copyq_starters_todo | length) > 0

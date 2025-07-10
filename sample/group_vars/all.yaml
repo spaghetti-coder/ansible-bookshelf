@@ -845,7 +845,7 @@ copyq_managed: false
 # * pm
 # * flatpak   # <- Forced for non-Ubuntu-like
 copyq_install_method: pm
-copyq_users:            # <- Existing users to have copyq autostarted
+copyq_starters:         # <- Existing users to have copyq autostarted
   # - "{{ ansible_user_id }}"
 
 # ===================
@@ -897,7 +897,7 @@ gimp_install_method: flatpak
 #   https://github.com/input-leap/input-leap
 # -----
 input_leap_managed: false
-input_leap_users:     # <- Existing users to have InputLeap autostarted
+input_leap_starters:  # <- Existing users to have InputLeap autostarted
   # - "{{ ansible_user_id }}"
 
 # =========================
@@ -921,7 +921,7 @@ intellij_idea_install_method: snap
 #   https://github.com/jellyfin/jellyfin-media-player
 # -----
 jellyfin_player_managed: false
-jellyfin_player_users:            # <- Existing users to have jellyfin player autostarted
+jellyfin_player_starters:   # <- Existing users to have jellyfin player autostarted
   # - "{{ ansible_user_id }}"
 
 # ==========================
@@ -1050,7 +1050,7 @@ teams_managed: false
 # * flatpak   # <- Forced for non-Ubuntu-like
 # * snap
 teams_install_method: flatpak
-teams_users:            # <- Existing users to have teams autostarted
+teams_starters:   # <- Existing users to have teams autostarted
   # - "{{ ansible_user_id }}"
 
 # ======================
@@ -1062,7 +1062,7 @@ terminator_managed: false
 #       VIBER
 # =================
 viber_managed: false
-viber_users:    # <- Existing users to have viber autostarted
+viber_starters:   # <- Existing users to have viber autostarted
   # - "{{ ansible_user_id }}"
 
 # ===============

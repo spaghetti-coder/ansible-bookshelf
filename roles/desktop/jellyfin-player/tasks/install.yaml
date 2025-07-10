@@ -12,7 +12,3 @@
         name: com.github.iwalton3.jellyfin-media-player
         remote: "{{ flatpak_remote }}"
       become: true
-
-- name: Mark install done
-  ansible.builtin.set_fact:
-    jellyfin_player_done: true

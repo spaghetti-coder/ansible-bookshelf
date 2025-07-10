@@ -12,7 +12,3 @@
         name: com.viber.Viber
         remote: "{{ flatpak_remote }}"
       become: true
-
-- name: Mark install done
-  ansible.builtin.set_fact:
-    viber_install_done: true

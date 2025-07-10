@@ -3,7 +3,7 @@
   ansible.builtin.include_tasks:
     file: tasks.yaml
   vars:
-    jellyfin_player_users_todo: "{{ jellyfin_player_users | default([], true) | difference(jellyfin_player_users_done | default([])) }}"
+    jellyfin_player_starters_todo: "{{ jellyfin_player_starters | default([], true) | difference(jellyfin_player_starters_done | default([])) }}"
   when: |
     not (jellyfin_player_install_done | default(false))
-    or (jellyfin_player_users_todo | length) > 0
+    or (jellyfin_player_starters_todo | length) > 0

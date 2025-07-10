@@ -8,6 +8,6 @@
       ubuntu: "{{ vlc_install_method }}"
     method: "{{ method_map[factum_os_like] | default(method_map['_default']) }}"
 
-- name: Mark install done
+- name: Mark done
   ansible.builtin.set_fact:
     vlc_done: true

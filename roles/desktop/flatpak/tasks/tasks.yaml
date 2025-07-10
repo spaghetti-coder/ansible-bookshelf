@@ -1,13 +1,20 @@
 ---
-- name: Load install
-  ansible.builtin.include_tasks:
-    file: install.yaml
+- name: Install
+  ansible.builtin.package:
+    name: flatpak
+  become: true
   when: not (flatpak_install_done | default(false))
 
-- name: Load add repo
-  ansible.builtin.include_tasks:
-    file: repo.yaml
-  when: (flatpak_repos_todo | length) > 0
+- name: Install repo
+  community.general.flatpak_remote:
+    name: "{{ item }}"
+    state: present
+    flatpakrepo_url: "{{ flatpak_repos_map[item] }}"
+    enabled: true
+  become: true
   loop: "{{ flatpak_repos_todo }}"
-  loop_control:
-    loop_var: repo
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    flatpak_install_done: true
+    flatpak_repos_done: "{{ (flatpak_repos_done | default([])) + flatpak_repos_todo }}"

@@ -3,7 +3,7 @@
   ansible.builtin.include_tasks:
     file: tasks.yaml
   vars:
-    teams_users_todo: "{{ teams_users | default([], true) | difference(teams_users_done | default([])) }}"
+    teams_starters_todo: "{{ teams_starters | default([], true) | difference(teams_starters_done | default([])) }}"
   when: |
     not (teams_install_done | default(false))
-    or (teams_users_todo | length) > 0
+    or (teams_starters_todo | length) > 0

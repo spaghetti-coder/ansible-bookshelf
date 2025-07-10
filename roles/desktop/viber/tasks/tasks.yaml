@@ -7,7 +7,12 @@
 - name: Load setup users
   ansible.builtin.include_tasks:
     file: setup-user.yaml
-  when: (viber_users_todo | length) > 0
-  loop: "{{ viber_users_todo }}"
+  when: (viber_starters_todo | length) > 0
+  loop: "{{ viber_starters_todo }}"
   loop_control:
     loop_var: user
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    viber_install_done: true
+    viber_starters_done: "{{ (viber_starters_done | default([])) + viber_starters_todo }}"
