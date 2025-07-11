@@ -13,7 +13,7 @@ bookshelf_const_version:
   # https://github.com/FiloSottile/age/releases
   age: v1.2.1
   # https://github.com/junegunn/fzf/releases
-  fzf: '0.63.0'
+  fzf: '0.64.0'
   #
   # SERVICE
   #
@@ -28,13 +28,13 @@ bookshelf_const_version:
   # https://github.com/coder/code-server/releases
   code_server: v4.101.2
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-  filebrowser: v2.36.1-s6
+  filebrowser: v2.37.0-s6
   # => See tailscale versions in the top
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/gotify/server/tags
   gotify: 2.6.3
   # https://hub.docker.com/r/linuxserver/heimdall/tags
-  heimdall: v2.6.3-ls310
+  heimdall: v2.6.3-ls312
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
   # => See tailscale versions in the top
@@ -48,7 +48,7 @@ bookshelf_const_version:
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
   nginx_proxy: 1.7.1-alpine
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
-  nginx_proxy_manager: 2.12.4
+  nginx_proxy_manager: 2.12.6
   # https://hub.docker.com/r/jamesread/olivetin/tags
   olivetin: 2025.6.22
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
@@ -56,9 +56,9 @@ bookshelf_const_version:
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
   portainer_agent: 2.31.3-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.2-r0-ls402
+  qbittorrent: 5.1.2-r1-ls404
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
-  syncthing: v1.30.0-ls185
+  syncthing: v1.30.0-ls186
   # => See tailscale versions in the top
   syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # => See tailscale versions in the top
