@@ -1,0 +1,55 @@
+{% set version = (navidrome_version | default(bookshelf_const_version.navidrome, true)) %}
+{% set web_ui_port = (navidrome_web_ui_port | default(bookshelf_const_port.navidrome.web_ui, true)) %}
+{% set tailscale_version = (navidrome_tailscale_version | default(bookshelf_const_version.navidrome_tailscale, true)) %}
+{% set tailscale_service = 'navidrome-tailscale' %}
+---
+services:
+  navidrome:
+    # https://hub.docker.com/r/deluan/navidrome/tags
+    image: deluan/navidrome:{{ version }}
+    container_name: {{ navidrome_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./main.env
+      - ./secret.env
+      - ./extra.env
+    volumes:
+      - '{{ data_dir }}:/music:ro'
+      - '{{ conf_dir }}/config:/data'
+    user: "{{ user_uid }}:{{ user_gid }}"
+{% if navidrome_tailscaled %}
+    network_mode: "service:{{ tailscale_service }}"
+
+  {{ tailscale_service }}:
+    # https://hub.docker.com/r/tailscale/tailscale/tags
+    image: tailscale/tailscale:{{ tailscale_version }}
+    container_name: {{ navidrome_service_name }}-tailscale
+    restart: unless-stopped
+    env_file:
+      - ./main.env
+      - ./secret.env
+      - ./extra.env
+    volumes:
+      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+{% endif %}{# navidrome_tailscaled #}
+    hostname: {{ navidrome_hostname }}
+    ports:
+      - '{{ web_ui_port }}:{{ int_web_ui_port }}'
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge    # <- Avoid creating default compose network
+{% else %}
+    environment:
+      - VIRTUAL_HOST={{ navidrome_vhost }}
+      - VIRTUAL_PORT={{ int_web_ui_port }}
+    networks:
+      - {{ nginx_proxy_net }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

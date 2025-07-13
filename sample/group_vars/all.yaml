@@ -254,6 +254,12 @@ adguard_tailscale_auth_key:
 #   "{{ audiobookshelf_owner_home }}"
 #   "{{ audiobookshelf_user_home }}"
 # -----
+# iOS clients:
+#   * plappa - payed audiobooks download
+#   * ShelfPlayer - payed app
+#   * SoundLeaf
+#   * https://www.audiobookshelf.org/faq/app/ - 3d party list
+# -----
 audiobookshelf_managed: false
 audiobookshelf_enabled: false
 audiobookshelf_version:       # Leave blank to leverage bookshelf configuration
@@ -416,8 +422,8 @@ jellyfin_managed: false
 jellyfin_enabled: false
 jellyfin_version:       # Leave blank to leverage bookshelf configuration
 jellyfin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-jellyfin_owner: "{{ ansible_user_id }}"       # <- Who runs the container
-jellyfin_user: "{{ jellyfin_owner }}"   # <- The in-container user and data filesystem owner
+jellyfin_owner: "{{ ansible_user_id }}"   # <- Who runs the container
+jellyfin_user: "{{ jellyfin_owner }}"     # <- The in-container user and data filesystem owner
 jellyfin_conf_dir: "{{ jellyfin_owner_home }}/conf/jellyfin"
 jellyfin_data_dir:      # (REQUIRED). Ex.: "{{ jellyfin_user_home }}/share/Media"
 jellyfin_service_name: jellyfin
@@ -494,6 +500,48 @@ metube_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # https://github.com/alexta69/metube?tab=readme-ov-file#configuration-via-environment-variables
 # Optional extra env vars
 metube_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/metube.env.j2') }}"
+
+# =====================
+#       NAVIDROME
+# =====================
+# Open source music server and streamer. It gives you freedom to listen to your
+# music collection from any browser or mobile device.
+#   https://navidrome.org/
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/deluan/navidrome/tags
+#   * => See tailscale role versions
+# -----
+# NOTE 1: Due to switching users in the role don't use shortcuts in the paths
+# (like '~'), use absolute paths. For HOMEs available:
+#   "{{ navidrome_owner_home }}"
+#   "{{ navidrome_user_home }}"
+# -----
+navidrome_managed: false
+navidrome_enabled: false
+navidrome_version:        # Leave blank to leverage bookshelf configuration
+navidrome_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+navidrome_owner: "{{ ansible_user_id }}"    # <- Who runs the container
+navidrome_user: "{{ navidrome_owner }}"     # <- The in-container user and data filesystem owner
+navidrome_conf_dir: "{{ navidrome_owner_home }}/conf/navidrome"
+navidrome_data_dir:       # (REQUIRED). Ex.: "{{ navidrome_user_home }}/Music"
+navidrome_service_name: navidrome
+navidrome_hostname: "{{ navidrome_service_name }}"
+navidrome_vhost: "{{ navidrome_service_name }}.domain.local"
+navidrome_web_ui_port:    # Leave blank to leverage bookshelf configuration
+navidrome_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional extra env vars, will affect both navidrome and tailscale.
+# https://www.navidrome.org/docs/usage/configuration-options/#available-options
+navidrome_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/navidrome.env.j2') }}"
+# ----------
+# The following settings configure Navidrome to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+navidrome_tailscaled: false
+navidrome_tailscale_version:    # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+navidrome_tailscale_ts_hostname: "{{ navidrome_service_name }}-tailscale"
+navidrome_tailscale_auth_key:
 
 # ===============================
 #       NGINX-PROXY-MANAGER

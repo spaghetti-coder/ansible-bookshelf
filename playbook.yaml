@@ -105,6 +105,10 @@
       tags: [metube, upgradable]
       when: metube_managed | default(false)
 
+    - role: navidrome
+      tags: [navidrome, upgradable]
+      when: navidrome_managed | default(false)
+
     - role: nginx-proxy
       tags: [nginx-proxy, upgradable]
       when: nginx_proxy_managed | default(false)

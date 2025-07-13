@@ -397,6 +397,39 @@ joplin_server_base_url: http://{{ ansible_default_ipv4.address }}:{{ joplin_serv
 joplin_server_db_pass: changeme
 joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 
+# =====================
+#       NAVIDROME
+# =====================
+# VERSIONS: https://hub.docker.com/r/deluan/navidrome/tags
+# -----
+navidrome_managed: true
+navidrome_enabled: true
+navidrome_version:        # Leave blank to leverage bookshelf configuration
+navidrome_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+navidrome_owner: root                       # <- Who runs the container
+navidrome_user: "{{ ansible_user_id }}"     # <- The in-container user and data filesystem owner
+navidrome_conf_dir: "{{ navidrome_owner_home }}/conf/navidrome"
+navidrome_data_dir: "{{ navidrome_user_home }}/Music"   # (REQUIRED). Ex.: "{{ navidrome_user_home }}/Music"
+navidrome_service_name: navidrome
+navidrome_hostname: "{{ navidrome_service_name }}"
+navidrome_vhost: "{{ navidrome_service_name }}.domain.local"
+navidrome_web_ui_port:    # Leave blank to leverage bookshelf configuration
+navidrome_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional extra env vars, will affect both navidrome and tailscale.
+# https://www.navidrome.org/docs/usage/configuration-options/#available-options
+navidrome_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/navidrome.env.j2') }}"
+  FOO1=bar1
+  FOO2=bar2
+# ----------
+# The following settings configure Navidrome to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+navidrome_tailscaled: false
+navidrome_tailscale_version:    # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+navidrome_tailscale_ts_hostname: "{{ navidrome_service_name }}-tailscale"
+navidrome_tailscale_auth_key:
+
 # ==================
 #       METUBE
 # ==================

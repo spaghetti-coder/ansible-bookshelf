@@ -45,6 +45,10 @@ bookshelf_const_version:
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
   metube: 2025-07-01
+  # https://hub.docker.com/r/deluan/navidrome/tags
+  navidrome: 0.57.0
+  # => See tailscale versions in the top
+  navidrome_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
   nginx_proxy: 1.7.1-alpine
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
@@ -94,8 +98,10 @@ bookshelf_const_port:
     web_ui: 8092
   metube:
     web_ui: 8093
+  navidrome:
+    web_ui: 8097        # <- Last (8081+)
   olivetin:
-    web_ui: 8096        # <- Last (8081+)
+    web_ui: 8096
   portainer:
     web_ui: 8086
     tunnel: 8000

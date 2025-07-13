@@ -11,6 +11,12 @@
 #   "{{ audiobookshelf_owner_home }}"
 #   "{{ audiobookshelf_user_home }}"
 # -----
+# iOS clients:
+#   * plappa - payed audiobooks download
+#   * ShelfPlayer - payed app
+#   * SoundLeaf
+#   * https://www.audiobookshelf.org/faq/app/ - 3d party list
+# -----
 audiobookshelf_managed: false
 audiobookshelf_enabled: false
 audiobookshelf_version:       # Leave blank to leverage bookshelf configuration

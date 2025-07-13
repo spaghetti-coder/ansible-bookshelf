@@ -15,8 +15,8 @@ jellyfin_managed: false
 jellyfin_enabled: false
 jellyfin_version:       # Leave blank to leverage bookshelf configuration
 jellyfin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-jellyfin_owner: "{{ ansible_user_id }}"       # <- Who runs the container
-jellyfin_user: "{{ jellyfin_owner }}"   # <- The in-container user and data filesystem owner
+jellyfin_owner: "{{ ansible_user_id }}"   # <- Who runs the container
+jellyfin_user: "{{ jellyfin_owner }}"     # <- The in-container user and data filesystem owner
 jellyfin_conf_dir: "{{ jellyfin_owner_home }}/conf/jellyfin"
 jellyfin_data_dir:      # (REQUIRED). Ex.: "{{ jellyfin_user_home }}/share/Media"
 jellyfin_service_name: jellyfin
