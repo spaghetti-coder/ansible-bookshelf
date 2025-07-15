@@ -62,7 +62,7 @@ bookshelf_const_version:
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
   qbittorrent: 5.1.2-r1-ls404
   # https://hub.docker.com/r/crazymax/samba/tags
-  samba: 4.19.9
+  samba: 4.21.4
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
   syncthing: v1.30.0-ls186
   # => See tailscale versions in the top
