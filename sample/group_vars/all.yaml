@@ -729,9 +729,9 @@ samba_shares_dir:     # (REQUIRED) Shares root directory
 samba_service_name: samba
 samba_hostname: "{{ samba_service_name }}"
 samba_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Optional path to extra configuration .env.j2 file
-# Ex.: "{{ playbook_dir }}/resources/samba/extra.env.j2"
-samba_extra_envfile:
+# Optional extra env vars
+# https://github.com/crazy-max/docker-samba?tab=readme-ov-file#environment-variables
+samba_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/samba.env.j2') }}"
 
 # =====================
 #       SYNCTHING

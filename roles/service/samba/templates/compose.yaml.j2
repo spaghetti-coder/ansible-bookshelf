@@ -8,9 +8,7 @@ services:
     restart: unless-stopped
     env_file:
       - ./main.env
-{% if samba_extra_envfile %}
       - ./extra.env
-{% endif %}
     volumes:
       - '{{ data_dir }}:/data:ro'
       - '{{ samba_shares_dir }}:/shares'
