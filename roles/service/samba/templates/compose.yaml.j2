@@ -10,7 +10,7 @@ services:
       - ./main.env
       - ./extra.env
     volumes:
-      - '{{ conf_dir }}:/data:ro'
+      - '{{ conf_dir }}:/data'
       - '{{ samba_shares_dir }}:/shares'
       # Fix groups creation and assigns them to users
       - '{{ conf_dir }}/extra.sh:/etc/cont-init.d/07-extra.sh:ro'

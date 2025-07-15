@@ -36,11 +36,24 @@
         dest: "{{ compose_dir }}/extra.env"
         mode: '0600'
 
+    - name: Create config.yml
+      ansible.builtin.copy:
+        content: |
+          {{ samba_config | default('# No config', true) }}
+        dest: "{{ conf_dir }}/config.yml"
+        mode: '0600'
+
     - name: Create extra.sh
       ansible.builtin.copy:
         src: extra.sh
         dest: "{{ conf_dir }}/extra.sh"
         mode: '0755'
+
+    - name: Create shares directory
+      ansible.builtin.file:
+        path: "{{ samba_shares_dir }}"
+        state: directory
+        mode: "{{ omit }}"
 
     - name: Compose apply
       ansible.builtin.import_role: { name: bookshelf-compose-apply }
