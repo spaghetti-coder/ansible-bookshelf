@@ -10,10 +10,10 @@ services:
       - ./main.env
       - ./extra.env
     volumes:
-      - '{{ data_dir }}:/data:ro'
+      - '{{ conf_dir }}:/data:ro'
       - '{{ samba_shares_dir }}:/shares'
       # Fix groups creation and assigns them to users
-      - '{{ data_dir }}/extra.sh:/etc/cont-init.d/07-extra.sh:ro'
+      - '{{ conf_dir }}/extra.sh:/etc/cont-init.d/07-extra.sh:ro'
     hostname: {{ samba_hostname }}
     network_mode: bridge    # <- Avoid creating default compose network
     ports:

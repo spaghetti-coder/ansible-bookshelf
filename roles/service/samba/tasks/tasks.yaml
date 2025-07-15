@@ -8,7 +8,7 @@
   become_user: "{{ samba_owner }}"
   vars:
     compose_dir: "{{ samba_compose_dir | default(bookshelf_const_compose_dir + '/samba', true) }}"
-    data_dir: "{{ compose_dir }}/data"
+    conf_dir: "{{ compose_dir }}/data"
     extra_envfile: "{{ samba_extra_envfile }}"
     service_state: "{{ samba_enabled | ternary('present', 'absent') }}"
   block:
@@ -19,7 +19,7 @@
         mode: '0700'
       loop:
         - "{{ compose_dir }}"
-        - "{{ data_dir }}"
+        - "{{ conf_dir }}"
 
     - name: Create .env files
       ansible.builtin.template:
