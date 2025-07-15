@@ -8,7 +8,7 @@
   become_user: "{{ samba_owner }}"
   vars:
     compose_dir: "{{ samba_compose_dir | default(bookshelf_const_compose_dir + '/samba', true) }}"
-    data_dir: "{{ compose_dir }}/data"
+    conf_dir: "{{ compose_dir }}/data"
     extra_envfile: "{{ samba_extra_envfile }}"
     service_state: "{{ samba_enabled | ternary('present', 'absent') }}"
   block:
@@ -19,7 +19,7 @@
         mode: '0700'
       loop:
         - "{{ compose_dir }}"
-        - "{{ data_dir }}"
+        - "{{ conf_dir }}"
 
     - name: Create .env files
       ansible.builtin.template:
@@ -29,18 +29,31 @@
       loop:
         - main
 
-    - name: Remove obsolete extra.env
-      ansible.builtin.file:
-        path: "{{ compose_dir }}/extra.env"
-        state: absent
-      when: not extra_envfile
-
     - name: Create extra.env
-      ansible.builtin.template:
-        src: "{{ extra_envfile }}"
+      ansible.builtin.copy:
+        content: |
+          {{ samba_extra_env | default('# No extra env', true) }}
         dest: "{{ compose_dir }}/extra.env"
         mode: '0600'
-      when: extra_envfile
+
+    - name: Create config.yml
+      ansible.builtin.copy:
+        content: |
+          {{ samba_config | default('# No config', true) }}
+        dest: "{{ conf_dir }}/config.yml"
+        mode: '0600'
+
+    - name: Create extra.sh
+      ansible.builtin.copy:
+        src: extra.sh
+        dest: "{{ conf_dir }}/extra.sh"
+        mode: '0755'
+
+    - name: Create shares directory
+      ansible.builtin.file:
+        path: "{{ samba_shares_dir }}"
+        state: directory
+        mode: "{{ omit }}"
 
     - name: Compose apply
       ansible.builtin.import_role: { name: bookshelf-compose-apply }

@@ -717,7 +717,7 @@ qbittorrent_extra_env:            # "{{ lookup('template', playbook_dir + '/reso
 # =================
 #       SAMBA
 # =================
-# Versions:
+# VERSIONS:
 # * https://hub.docker.com/r/crazymax/samba/tags
 # -----
 samba_managed: false
@@ -725,13 +725,15 @@ samba_enabled: false
 samba_version:        # Leave blank to leverage bookshelf configuration
 samba_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
 samba_owner: "{{ ansible_user_id }}"
-samba_shares_dir:     # (REQUIRED) Shares root directory
+samba_shares_dir:     # (REQUIRED) Shares root directory, '/shares' in container
+# See demo in templates
+samba_config:         # "{{ lookup('template', 'samba.yaml.j2') }}"
 samba_service_name: samba
 samba_hostname: "{{ samba_service_name }}"
 samba_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Optional path to extra configuration .env.j2 file
-# Ex.: "{{ playbook_dir }}/resources/samba/extra.env.j2"
-samba_extra_envfile:
+# Optional extra env vars
+# https://github.com/crazy-max/docker-samba?tab=readme-ov-file#environment-variables
+samba_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/samba.env.j2') }}"
 
 # =====================
 #       SYNCTHING
