@@ -6,7 +6,7 @@ bookshelf_const_version_shared:
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.84.3
 
-bookshelf_const_version:
+bookshelf_const_version:    # <- Last update: 2025-07-18
   #
   # BASE
   #
@@ -22,25 +22,25 @@ bookshelf_const_version:
   # => See tailscale versions in the top
   adguard_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/advplyr/audiobookshelf/tags
-  audiobookshelf: 2.25.1
+  audiobookshelf: 2.26.1
   # => See tailscale versions in the top
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
-  code_server: v4.101.2
+  code_server: v4.102.1
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-  filebrowser: v2.37.0-s6
+  filebrowser: v2.40.2-s6
   # => See tailscale versions in the top
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/gotify/server/tags
   gotify: 2.6.3
   # https://hub.docker.com/r/linuxserver/heimdall/tags
-  heimdall: v2.6.3-ls312
+  heimdall: v2.7.0-ls313
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
   # => See tailscale versions in the top
   jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/joplin/server/tags
-  joplin_server: 3.3.13
+  joplin_server: 3.4.1
   # => See postgres versions in the top
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
@@ -54,13 +54,13 @@ bookshelf_const_version:
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
   nginx_proxy_manager: 2.12.6
   # https://hub.docker.com/r/jamesread/olivetin/tags
-  olivetin: 2025.6.22
+  olivetin: 2025.7.13
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
   portainer: 2.31.3-alpine
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
   portainer_agent: 2.31.3-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.2-r1-ls404
+  qbittorrent: 5.1.2-r1-ls405
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
   syncthing: v1.30.0-ls186
   # => See tailscale versions in the top
