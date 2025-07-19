@@ -5,9 +5,21 @@
     toolbelt_pick: ['tar']  # <- 'unarchive' module requirement
     toolbelt_exclude: []    # <- Ensure it's not excluded somewhere else
 
-- name: Privileged
+- name: Get currently installed version
+  ansible.builtin.command:
+    argv: ["{{ fzf_bin_file }}", '--version']
+  register: fzf_version_result
+  failed_when: false
+  changed_when: false
+
+- name: Install
   become: true
   block:
+    - name: Remove package installation # <- Avoid conflict with "manual" installation
+      ansible.builtin.package:
+        name: fzf
+        state: absent
+
     - name: Create directories
       ansible.builtin.file:
         path: "{{ fzf_dir }}"
@@ -21,6 +33,16 @@
         owner: root
         group: root
         remote_src: true
+      vars:
+        stdout_version: " {{ fzf_version_result.stdout_lines | first | default('') }} " # <- Embrace with spaces
+        desired_version: " {{ _fzf_version }} "
+      when: 'desired_version not in stdout_version'
+
+    - name: Create symlink
+      ansible.builtin.file:
+        path: /usr/bin/fzf
+        src: "{{ fzf_bin_file }}"
+        state: link
 
     - name: Install hook
       ansible.builtin.template:

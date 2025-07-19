@@ -74,7 +74,7 @@ envar_users:  # <- Existing users to have access to envar
 # -----
 fzf_managed: true
 fzf_version:    # Leave blank to leverage bookshelf configuration
-fzf_users:  # <- Existing users to have access to fzf
+fzf_users:      # <- Existing users to have fzf integrated
   - "{{ ansible_user | default(ansible_user_id) }}"
   - root
 

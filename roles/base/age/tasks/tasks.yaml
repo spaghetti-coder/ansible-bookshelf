@@ -5,7 +5,14 @@
     toolbelt_pick: ['tar']  # <- 'unarchive' module requirement
     toolbelt_exclude: []    # <- Ensure it's not excluded somewhere else
 
-- name: Privileged
+- name: Get currently installed version
+  ansible.builtin.command:
+    argv: ["{{ age_dir }}/age", '--version']
+  register: age_version_result
+  failed_when: false
+  changed_when: false
+
+- name: Install
   become: true
   block:
     - name: Remove package installation # <- Avoid conflict with "manual" installation
@@ -28,6 +35,10 @@
         extra_opts:
           - --strip-components=1
         remote_src: true
+      vars:
+        stdout_version: " {{ age_version_result.stdout_lines | first | default('') }} " # <- Embrace with spaces
+        desired_version: " {{ _age_version }} "
+      when: 'desired_version not in stdout_version'
 
     - name: Create symlinks
       ansible.builtin.file:
