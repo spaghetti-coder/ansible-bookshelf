@@ -276,8 +276,8 @@ deploy_ve_core() (
     fi
 
     ssh -t -t -- "${PVE_HOST}" "/bin/bash -c '
-      $(declare -f "${copy_func[@]}" | sed '/^\s*PVE_HOST[=]/d' | escape_single_quote)
-      deploy_ve_core deploy
+      $(declare -f "${copy_func[@]}" | escape_single_quote)
+      deploy_ve_core deploy-local
     '"
   }
 
