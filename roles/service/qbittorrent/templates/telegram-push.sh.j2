@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+# USAGE:
+# qBittorrent UI -> Settings -> Downloads -> External ... on finished
+#   /scripts/downloaded.sh "%N" "Downloaded" # <- "Downloaded" for message title
+#
+# NOTE: The script takes advantage of the linuxserver/qbittorrent image tools
+#   * bash
+#   * curl
+#   * python3
+# It may not work in other environments that don't have those
+#
+# Telegram setup instructions:
+#   https://gist.github.com/spaghetti-coder/2b4befe34f8b4af56080a2c4744a1efb
+
+telegram_push_config() {
+  TELEGRAM_CHAT_ID='{{ qbittorrent_telegram_chat_id }}'
+
+  `# Must contain:`
+  `#   TELEGRAM_TOKEN='...' # <- From BotFather`
+  . "$(dirname -- "${0}")/downloaded.secret.sh"
+}
+
+# USAGE:
+#   telegram_push MESSAGE [TITLE]
+# DEMO:
+#   telegram_push "Hello world" "Message title header"
+telegram_push() (
+  # Obtain connection settings
+  local TELEGRAM_CHAT_ID TELEGRAM_TOKEN
+  telegram_push_config
+
+  main() {
+    local message="${1}"
+    local title="${2}"
+    local endpoint=https://api.telegram.org; endpoint+="/bot$(urlencode "${TELEGRAM_TOKEN}")/sendMessage" || return
+
+    local text="$(html_escape "${message}")"
+    [ -n "${title}" ] && { text="<b>$(html_escape "${title}")</b>"'\n'"${text}" || return; }
+
+    local payload='{'
+    payload+="\"chat_id\": \"${TELEGRAM_CHAT_ID}\""
+    payload+=", \"text\": \"${text}\""
+    payload+=', "disable_notification": false, "parse_mode": "html"'
+    payload+='}'
+
+    curl -sSL -X POST -H 'Content-Type: application/json' \
+      --data "${payload}" -- "${endpoint}"
+  }
+
+  # USAGE:
+  #   urlencode STRING          # <- Wirh argument
+  #   echo STRING | urlencode   # <- Wirh stdin
+  # DEMO:
+  #   echo "https://sample.com/?q=$(urlencode "foo bar")"
+  # Requires python3 or jq. https://stackoverflow.com/a/34407620, https://stackoverflow.com/a/62788692
+  urlencode() {
+    local -a encode_cmd=(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.stdin.read()))')
+    python3 --version >/dev/null 2>&1 || encode_cmd=(jq -sRr '@uri')
+    jq --version >/dev/null 2>&1 || { echo "Required python3 or jq" >&2; return 1; }
+    printf -- '%s' "${1-$(cat)}" | "${encode_cmd[@]}"
+  }
+
+  html_escape() { printf -- '%s' "${1-$(cat)}" | python3 -c 'import html,sys; print(html.escape(sys.stdin.read()))'; }
+
+  main "${@}"
+)
+
+(return 2>/dev/null) || telegram_push "${@}"

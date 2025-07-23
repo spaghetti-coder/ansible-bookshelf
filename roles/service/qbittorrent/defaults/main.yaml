@@ -32,13 +32,12 @@ qbittorrent_hostname: "{{ qbittorrent_service_name }}"
 qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"
 qbittorrent_web_ui_port:          # Leave blank to leverage bookshelf configuration
 qbittorrent_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Optional. Will be available in the container in
+# Optional. May require additional setting variables. Will be available in the container in
 #   /scripts/downloaded.sh (0700)
 #   /scripts/downloaded.secret.sh (0600)
 # Configure in qBittorrent UI -> Settings -> Downloads -> External ... on finished
 # For demo scripts see:
-#   templates/gotify-push.*
-#   templates/discord-push.*
+#   templates/*-push.*
 qbittorrent_downloaded_script:    # "{{ lookup('file', playbook_dir + '/resources/qbittorrent.downloaded.sh') }}"
 # Optional, can be used in conjunction with qbittorrent_downloaded_script to keep
 # secrets separately from the downloaded event script.

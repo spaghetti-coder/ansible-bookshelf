@@ -2,44 +2,68 @@
 
 # USAGE:
 # qBittorrent UI -> Settings -> Downloads -> External ... on finished
-#   /scripts/downloaded.sh '%N'
+#   /scripts/downloaded.sh "%N" "Downloaded" # <- "Downloaded" for message title
 #
 # NOTE: The script takes advantage of the linuxserver/qbittorrent image tools
 #   * bash
 #   * curl
-#   * jq
+#   * python3 / jq
 # It may not work in other environments that don't have those
 
-discord_push_conf() {
+discord_push_config() {
   `# Must contain:`
   `#   DISCORD_TOKEN='...' # <- <HOOK_ID>/<HOOK_TOKEN> from discord channel`
   . "$(dirname -- "${0}")/downloaded.secret.sh"
 }
 
+# USAGE:
+#   discord_push MESSAGE [TITLE]
+# DEMO:
+#   discord_push "Hello world" "Message title header"
 discord_push() (
-  json_quote() { printf -- '%s' "${1}" | jq -Rsa .; }
-
   # Obtain connection settings
   local DISCORD_TOKEN
-  discord_push_conf
+  discord_push_config
 
-  local message="${1}" \
-        title="Filibuster downloaded"
+  main() {
+    local message="${1}"; message="$(json_quote "${message}")"  || return
+    local title="${2}"
+    local endpoint=https://discord.com/api/webhooks; endpoint+="/$(urlencode "${DISCORD_TOKEN}")" || return
 
-  local endpoint="https://discord.com/api/webhooks/${DISCORD_TOKEN}"
+    local embeds='"description": '"${message}"
+    [ -n "${title}" ] && { embeds+=', "title": '"$(json_quote "${title}")" || return; }
 
-  local offset=2  # <- Space offset of the current line
-  local payload; payload="$(sed -e 's/^\s\{'"${offset}"'\}//' <<< '{
-    "embeds": [{
-      "title": '"$(json_quote "${title}")"',
-      "description": '"$(json_quote "${message}")"'
-    }]
-  }')"
+    # https://birdie0.github.io/discord-webhooks-guide/, https://wchesley.dev/posts/discord_curl_notifications/
+    curl -sSL -X POST -H 'Content-Type: application/json' \
+      --data '{ "embeds": [{ '"${embeds}"' }] }' \
+      -- "${endpoint}"
+  }
 
-  # * https://wchesley.dev/posts/discord_curl_notifications/
-  # * https://birdie0.github.io/discord-webhooks-guide/
-  curl -sSL -X POST -H 'Content-Type: application/json' \
-    --data "${payload}" -- "${endpoint}"
+  # USAGE:
+  #   json_quote STRING         # <- Wirh argument
+  #   echo STRING | json_quote  # <- Wirh stdin
+  # Requires python3 or jq. https://stackoverflow.com/a/50380697, https://stackoverflow.com/a/13466143
+  json_quote() {
+    local -a quote_cmd=(python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')
+    python3 --version >/dev/null 2>&1 || quote_cmd=(jq -Rsa .)
+    jq --version >/dev/null 2>&1 || { echo "Required python3 or jq" >&2; return 1; }
+    printf -- '%s' "${1-$(cat)}" | "${quote_cmd[@]}"
+  }
+
+  # USAGE:
+  #   urlencode STRING          # <- Wirh argument
+  #   echo STRING | urlencode   # <- Wirh stdin
+  # DEMO:
+  #   echo "https://sample.com/?q=$(urlencode "foo bar")"
+  # Requires python3 or jq. https://stackoverflow.com/a/34407620, https://stackoverflow.com/a/62788692
+  urlencode() {
+    local -a encode_cmd=(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.stdin.read()))')
+    python3 --version >/dev/null 2>&1 || encode_cmd=(jq -sRr '@uri')
+    jq --version >/dev/null 2>&1 || { echo "Required python3 or jq" >&2; return 1; }
+    printf -- '%s' "${1-$(cat)}" | "${encode_cmd[@]}"
+  }
+
+  main "${@}"
 )
 
 (return 2>/dev/null) || discord_push "${@}"
