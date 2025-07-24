@@ -1,0 +1,11 @@
+---
+# A new era of messaging.
+#   https://telegram.org/
+# -----
+telegram_managed: false
+# Supported values in prefered order (due to GUI oriented usage):
+# * flatpak   # <- Forced for non-Ubuntu-like
+# * snap
+telegram_install_method: flatpak
+telegram_starters:         # <- Existing users to have telegram autostarted
+  # - "{{ ansible_user_id }}"

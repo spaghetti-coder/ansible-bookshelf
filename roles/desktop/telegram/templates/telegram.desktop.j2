@@ -1,0 +1,20 @@
+{% set start_cmd = telegram_map[telegram_install_method].start_cmd %}
+{% set icon = telegram_map[telegram_install_method].icon %}
+[Desktop Entry]
+Name=Telegram
+Type=Application
+Terminal=false
+StartupWMClass=TelegramDesktop
+MimeType=x-scheme-handler/tg;x-scheme-handler/tonsite;
+Exec={{ start_cmd }}
+Icon={{ icon }}
+Actions=quit;
+SingleMainWindow=true
+X-GNOME-SingleWindow=true
+X-GNOME-UsesNotifications=true
+{% if telegram_install_method == 'flatpak' %}
+X-Flatpak=org.telegram.desktop
+{% elif telegram_install_method == 'snap' %}
+X-SnapInstanceName=telegram-desktop
+X-SnapAppName=telegram-desktop
+{% endif %}

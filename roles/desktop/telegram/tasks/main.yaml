@@ -1,0 +1,9 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  vars:
+    telegram_starters_todo: "{{ telegram_starters | default([], true) | difference(telegram_starters_done | default([])) }}"
+  when: |
+    not (telegram_install_done | default(false))
+    or (telegram_starters_todo | length) > 0

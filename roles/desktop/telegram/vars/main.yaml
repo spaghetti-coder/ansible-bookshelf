@@ -1,0 +1,8 @@
+---
+telegram_map:
+  flatpak:
+    start_cmd: /usr/bin/flatpak run --branch=stable --arch=x86_64 --command=Telegram --file-forwarding org.telegram.desktop -startintray -- @@u %u @@
+    icon: org.telegram.desktop
+  snap:
+    start_cmd: env BAMF_DESKTOP_FILE_HINT=/var/lib/snapd/desktop/applications/telegram-desktop_telegram-desktop.desktop /snap/bin/telegram-desktop -startintray -- %u
+    icon: snap.telegram-desktop.

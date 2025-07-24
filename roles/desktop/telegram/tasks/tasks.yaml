@@ -1,0 +1,24 @@
+---
+- name: Load install
+  ansible.builtin.include_tasks:
+    file: install.{{ method }}.yaml
+  vars:
+    method_map:
+      _default: flatpak
+      ubuntu: "{{ telegram_install_method }}"
+    method: "{{ method_map[factum_os_like] | default(method_map['_default']) }}"
+  when: not (telegram_install_done | default(false))
+
+- name: Install autostart
+  ansible.builtin.template:
+    src: telegram.desktop.j2
+    dest: ~/.config/autostart/telegram.desktop
+    mode: '0600'
+  become: true
+  become_user: "{{ item }}"
+  loop: "{{ telegram_starters_todo }}"
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    telegram_install_done: true
+    telegram_starters_done: "{{ (telegram_starters_done | default([])) + telegram_starters_todo }}"
