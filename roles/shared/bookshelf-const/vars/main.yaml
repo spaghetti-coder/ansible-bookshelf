@@ -6,7 +6,7 @@ bookshelf_const_version_shared:
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.84.3
 
-bookshelf_const_version:    # <- Last update: 2025-07-22
+bookshelf_const_version:    # <- Last update: 2025-07-24
   #
   # BASE
   #
@@ -22,19 +22,19 @@ bookshelf_const_version:    # <- Last update: 2025-07-22
   # => See tailscale versions in the top
   adguard_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/advplyr/audiobookshelf/tags
-  audiobookshelf: 2.26.2
+  audiobookshelf: 2.26.3
   # => See tailscale versions in the top
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
   code_server: v4.102.1
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-  filebrowser: v2.40.2-s6
+  filebrowser: v2.41.0-s6
   # => See tailscale versions in the top
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/gotify/server/tags
   gotify: 2.6.3
   # https://hub.docker.com/r/linuxserver/heimdall/tags
-  heimdall: v2.7.1-ls314
+  heimdall: v2.7.2-ls314
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
   # => See tailscale versions in the top
@@ -56,9 +56,9 @@ bookshelf_const_version:    # <- Last update: 2025-07-22
   # https://hub.docker.com/r/jamesread/olivetin/tags
   olivetin: 2025.7.19
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
-  portainer: 2.31.3-alpine
+  portainer: 2.32.0-alpine
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
-  portainer_agent: 2.31.3-alpine
+  portainer_agent: 2.32.0-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
   qbittorrent: 5.1.2-r1-ls406
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
@@ -68,7 +68,7 @@ bookshelf_const_version:    # <- Last update: 2025-07-22
   # => See tailscale versions in the top
   tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/twingate/connector/tags
-  twingate: 1.77.0
+  twingate: 1.78.0
   # https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
   vaultwarden: 1.34.1-alpine
   # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
