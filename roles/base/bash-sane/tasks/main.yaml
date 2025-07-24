@@ -1,0 +1,9 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  vars:
+    bash_sane_users_todo: "{{ bash_sane_users | default([], true) | difference(bash_sane_users_done | default([])) }}"
+  when: |
+    not (bash_sane_install_done | default(false))
+    or (bash_sane_users_todo | length) > 0

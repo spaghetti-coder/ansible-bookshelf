@@ -15,6 +15,10 @@
       tags: [bash]
       when: bash_managed | default(false)
 
+    - role: bash-sane
+      tags: [bash-sane]
+      when: bash_sane_managed | default(false)
+
     - role: docker
       tags: [docker]
       when: docker_managed | default(false)

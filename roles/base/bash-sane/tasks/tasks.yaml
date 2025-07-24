@@ -1,0 +1,32 @@
+---
+- name: Envar
+  ansible.builtin.import_role: { name: envar }
+  vars:
+    envar_users: "{{ bash_sane_users_todo }}"
+
+- name: Bash sane
+  vars:
+    bash_sane_path: "{{ envar_etc_dir }}/bash-sane.skip.sh"
+    bash_sane_user_link: "{{ envar_user_dir }}/500-bash-sane.sh"
+  block:
+    - name: Install
+      ansible.builtin.template:
+        src: bash-sane.sh.j2
+        dest: "{{ bash_sane_path }}"
+        mode: '0644'
+      become: true
+
+    - name: Setup users
+      ansible.builtin.file:
+        src: "{{ bash_sane_path }}"
+        dest: "{{ bash_sane_user_link }}"
+        state: link
+        force: true
+      become: true
+      become_user: "{{ item }}"
+      loop: "{{ bash_sane_users_todo }}"
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    bash_sane_install_done: true
+    bash_sane_users_done: "{{ (bash_sane_users_done | default([])) + bash_sane_users_todo }}"

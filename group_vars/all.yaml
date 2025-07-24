@@ -37,6 +37,13 @@ ansible_become_password: "{{ lookup('env', 'ANSIBLE_USER_PASS') }}"
 age_managed: true
 age_version:    # Leave blank to leverage bookshelf configuration
 
+# =====================
+#       BASH-SANE
+# =====================
+bash_sane_managed: true
+bash_sane_users:    # <- Existing users to use bash set settings
+  - "{{ ansible_user_id }}"
+
 # ================
 #       BASH
 # ================
