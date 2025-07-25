@@ -11,8 +11,8 @@
 # It may not work in other environments that don't have those
 
 discord_push_config() {
-  `# Must contain:`
-  `#   DISCORD_TOKEN='...' # <- <HOOK_ID>/<HOOK_TOKEN> from discord channel`
+  `# Expected content:`
+  `#   DISCORD_TOKEN='<HOOK_ID>/<HOOK_TOKEN>' # <- (REQUIRED) From discord channel`
   . "$(dirname -- "${0}")/downloaded.secret.sh"
 }
 
@@ -21,9 +21,9 @@ discord_push_config() {
 # DEMO:
 #   discord_push "Hello world" "Message title header"
 discord_push() (
-  # Obtain connection settings
-  local DISCORD_TOKEN
-  discord_push_config
+  # Obtain connection settings from config callback or from env vars
+  local DISCORD_TOKEN="${DISCORD_TOKEN}"
+  declare -F discord_push_config &>/dev/null && discord_push_config
 
   main() {
     local message="${1}"; message="$(json_quote "${message}")"  || return

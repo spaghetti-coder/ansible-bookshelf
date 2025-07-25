@@ -13,6 +13,7 @@
   become_user: "{{ code_server_owner }}"
   loop: "{{ code_server_extensions_todo }}"
 
-- name: Mark extension done
+- name: Mark dones
   ansible.builtin.set_fact:
+    code_server_install_done: true
     code_server_extensions_done: "{{ (code_server_extensions_done | default([])) + code_server_extensions_todo }}"

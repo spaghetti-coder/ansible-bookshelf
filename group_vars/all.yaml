@@ -589,7 +589,7 @@ qbittorrent_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # For demo scripts see:
 #   templates/*-push.*
 qbittorrent_downloaded_script: "{{ lookup('template', 'gotify-push.sh.j2') }}"
-qbittorrent_gotify_push_server: https://gotify.home
+qbittorrent_gotify_server: https://gotify.home
 # Optional, can be used in conjunction with qbittorrent_downloaded_script to keep
 # secrets separately from the downloaded event script.
 # Will only be used when qbittorrent_downloaded_script is set

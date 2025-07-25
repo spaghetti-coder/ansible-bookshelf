@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Telegram setup instructions:
+#   https://gist.github.com/spaghetti-coder/2b4befe34f8b4af56080a2c4744a1efb
+#
 # USAGE:
 # qBittorrent UI -> Settings -> Downloads -> External ... on finished
 #   /scripts/downloaded.sh "%N" "Downloaded" # <- "Downloaded" for message title
@@ -9,15 +12,13 @@
 #   * curl
 #   * python3
 # It may not work in other environments that don't have those
-#
-# Telegram setup instructions:
-#   https://gist.github.com/spaghetti-coder/2b4befe34f8b4af56080a2c4744a1efb
 
 telegram_push_config() {
-  TELEGRAM_CHAT_ID='{{ qbittorrent_telegram_chat_id }}'
+  TELEGRAM_CHAT_ID='{{ qbittorrent_telegram_chat_id }}'                     `# <- REQUIRED`
+  TELEGRAM_THREAD_ID='{{ qbittorrent_telegram_thread_id | default("") }}'   `# <- OPTIONAL`
 
-  `# Must contain:`
-  `#   TELEGRAM_TOKEN='...' # <- From BotFather`
+  `# Expected content:`
+  `#   TELEGRAM_TOKEN='<TELEGRAM_BOT_TOKEN>' # <- (REQUIRED) From BotFather`
   . "$(dirname -- "${0}")/downloaded.secret.sh"
 }
 
@@ -26,26 +27,27 @@ telegram_push_config() {
 # DEMO:
 #   telegram_push "Hello world" "Message title header"
 telegram_push() (
-  # Obtain connection settings
-  local TELEGRAM_CHAT_ID TELEGRAM_TOKEN
-  telegram_push_config
+  # Obtain connection settings from config callback or from env vars
+  local TELEGRAM_TOKEN="${TELEGRAM_TOKEN}" \
+        TELEGRAM_CHAT_ID="${TELEGRAM_CHAT_ID}" \
+        TELEGRAM_THREAD_ID="${TELEGRAM_THREAD_ID}"
+  declare -F telegram_push_config &>/dev/null && telegram_push_config
 
   main() {
     local message="${1}"
     local title="${2}"
     local endpoint=https://api.telegram.org; endpoint+="/bot$(urlencode "${TELEGRAM_TOKEN}")/sendMessage" || return
 
+    endpoint+="?chat_id=$(urlencode "${TELEGRAM_CHAT_ID}")" || return
+    [ -n "${TELEGRAM_THREAD_ID}" ] && { endpoint+="?message_thread_id=$(urlencode "${TELEGRAM_THREAD_ID}")" || return; }
+
     local text="$(html_escape "${message}")"
     [ -n "${title}" ] && { text="<b>$(html_escape "${title}")</b>"'\n'"${text}" || return; }
 
-    local payload='{'
-    payload+="\"chat_id\": \"${TELEGRAM_CHAT_ID}\""
-    payload+=", \"text\": \"${text}\""
-    payload+=', "disable_notification": false, "parse_mode": "html"'
-    payload+='}'
-
+    # https://core.telegram.org/bots/api#sendmessage
     curl -sSL -X POST -H 'Content-Type: application/json' \
-      --data "${payload}" -- "${endpoint}"
+      --data '{"text": "'"${text}"'", "parse_mode": "html", "disable_notification": false}' \
+      -- "${endpoint}"
   }
 
   # USAGE:

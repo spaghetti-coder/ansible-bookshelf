@@ -68,7 +68,3 @@
     user_conf_changed: "{{ code_server_user_conf_state.changed | default(false) }}"
     service_state: "{{ (server_conf_changed or user_conf_changed) | ternary('restarted', 'started') }}"
   become: true
-
-- name: Mark done
-  ansible.builtin.set_fact:
-    code_server_install_done: true

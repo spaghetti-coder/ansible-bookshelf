@@ -12,10 +12,10 @@
 
 gotify_push_config() {
   `# Example: https://gotify.lab.home`
-  PUSH_SERVER='{{ qbittorrent_gotify_push_server }}'
+  GOTIFY_SERVER='{{ qbittorrent_gotify_server }}'   `# <- REQUIRED`
 
-  `# Must contain:`
-  `#   GOTIFY_TOKEN='...' # <- Token from gotify server`
+  `# Expected content:`
+  `#   GOTIFY_TOKEN='<GOTIFY_APPLICATION_TOKEN>' # <- (REQUIRED) From https://${GOTIFY_SERVER}/#/applications`
   . "$(dirname -- "${0}")/downloaded.secret.sh"
 }
 
@@ -24,16 +24,17 @@ gotify_push_config() {
 # DEMO:
 #   gotify_push "Hello world" "Message title header"
 gotify_push() (
-  # Obtain connection settings
-  local PUSH_SERVER GOTIFY_TOKEN
-  gotify_push_config
+  # Obtain connection settings from config callback or from env vars
+  local GOTIFY_SERVER="${GOTIFY_SERVER}" \
+        GOTIFY_TOKEN="${GOTIFY_TOKEN}"
+  declare -F gotify_push_config &>/dev/null && gotify_push_config
 
   main() {
     local message="${1}"; message="$(json_quote "${message}")"  || return
     local title="${2}"
     local content_type='text/plain'; content_type="$(json_quote "${content_type}")" `# <- Can be 'text/markdown', risky` || return
     local priority=5
-    local endpoint="${PUSH_SERVER%*/}/message"; endpoint+="?token=$(urlencode "${GOTIFY_TOKEN}")" || return
+    local endpoint="${GOTIFY_SERVER%*/}/message"; endpoint+="?token=$(urlencode "${GOTIFY_TOKEN}")" || return
 
     local full_msg='"message": '"${message}"
     [ -n "${title}" ] && { full_msg+=', "title": '"$(json_quote "${title}")" || return; }
