@@ -1,0 +1,291 @@
+#!/usr/bin/env bash
+
+notify_config() {
+  `# Configure NOTIFY_* variables.`
+
+  NOTIFY_PROVIDER='{{ qbittorrent_notify_provider }}'   `# <- discord|gotify|telegram`
+
+  `# Expected content:`
+  `#   NOTIFY_TOKEN='<HOOK_ID>/<HOOK_TOKEN>'      # <- (REQUIRED) From discord channel`
+  `#   NOTIFY_TOKEN='<GOTIFY_APPLICATION_TOKEN>'  # <- (REQUIRED) From https://${NOTIFY_SERVER}/#/applications`
+  `#   NOTIFY_TOKEN='<TELEGRAM_BOT_TOKEN>'        # <- (REQUIRED) From BotFather`
+  . "$(dirname -- "${0}")/notify.secret.sh"      `# <- Can be replaced by NOTIFY_TOKEN='...'`
+}
+
+#{% if qbittorrent_notify_provider in ['gotify'] +%}
+notify_config_gotify() {
+  NOTIFY_SERVER='{{ qbittorrent_notify_server }}'       # <- REQUIRED
+} #{% endif +%}
+
+#{% if qbittorrent_notify_provider in ['telegram'] +%}
+notify_config_telegram() {
+  # Setup instructions: https://gist.github.com/spaghetti-coder/2b4befe34f8b4af56080a2c4744a1efb
+  NOTIFY_CHAT_ID='{{ qbittorrent_notify_chat_id }}'                     # <- REQUIRED
+  NOTIFY_THREAD_ID='{{ qbittorrent_notify_thread_id | default("") }}'   # <- OPTIONAL
+} #{% endif +%}
+
+
+
+# ==================== END OF CONFIGURATION ZONE ====================
+
+
+
+# USAGE:
+#   notify_core [-p|--provider PROVIDER] [--] MESSAGE [TITLE]
+#   notify_core [-p|--provider PROVIDER] --test   # <- Test the provider specific configs are set
+# DEMO:
+#   notify_core "Hello world" "Message title header"
+#
+# * notify_config_PROVIDER function where PROVIDER suffix is chosen provider
+#   will be loaded if exists, so that the script can be configured to use
+#   multiple providers and manipulated provider with '-p' on run
+# * Non-empty vars in notify_config weight more than env vars
+# * Non-empty vars (excluding NOTIFY_PROVIDER) in notify_config_PROVIDER weight
+#   more than vars in notify_config
+# * -p PROVIDER weights more then any NOTIFY_PROVIDER env var or var in notify_config
+notify_core() {
+  local PROVIDER \
+        SERVER \
+        TOKEN \
+        CHAT_ID \
+        THREAD_ID
+
+  local ACTION=perform_push
+
+  local MESSAGE \
+        TITLE
+
+  declare -a SUPPORTED_PROVIDERS=(
+    discord
+    gotify
+    telegram
+  )
+
+  local SELF_SCRIPT=notify.sh
+  head -n 1 -- "${0}" | grep -q '^#!' && SELF_SCRIPT="$(basename -- "${0}")"
+
+  main() {
+    init "${@}" || return
+    ${ACTION} || return
+  }
+
+  init() {
+    # Load from env vars
+    [ -n "${NOTIFY_PROVIDER+x}" ] && PROVIDER="${NOTIFY_PROVIDER}"
+    [ -n "${NOTIFY_SERVER+x}" ] && SERVER="${NOTIFY_SERVER}"
+    [ -n "${NOTIFY_TOKEN+x}" ] && TOKEN="${NOTIFY_TOKEN}"
+    [ -n "${NOTIFY_CHAT_ID+x}" ] && CHAT_ID="${NOTIFY_CHAT_ID}"
+    [ -n "${NOTIFY_THREAD_ID+x}" ] && THREAD_ID="${NOTIFY_THREAD_ID}"
+
+    # Override settings with non-empty from notify_config
+    local NOTIFY_PROVIDER \
+          NOTIFY_SERVER \
+          NOTIFY_TOKEN \
+          NOTIFY_CHAT_ID \
+          NOTIFY_THREAD_ID
+    declare -F notify_config &>/dev/null && notify_config
+    [ -n "${NOTIFY_PROVIDER}" ] && PROVIDER="${NOTIFY_PROVIDER}"
+    [ -n "${NOTIFY_SERVER}" ] && SERVER="${NOTIFY_SERVER}"
+    [ -n "${NOTIFY_TOKEN}" ] && TOKEN="${NOTIFY_TOKEN}"
+    [ -n "${NOTIFY_CHAT_ID}" ] && CHAT_ID="${NOTIFY_CHAT_ID}"
+    [ -n "${NOTIFY_THREAD_ID}" ] && THREAD_ID="${NOTIFY_THREAD_ID}"
+
+    # Parse arguments
+    parse_args "${@}" || return
+
+    # Override settings with non-empty from notify_config_PROVIDER
+    NOTIFY_SERVER=""
+    NOTIFY_TOKEN=""
+    NOTIFY_CHAT_ID=""
+    NOTIFY_THREAD_ID=""
+    declare -F "notify_config_${PROVIDER}" &>/dev/null && "notify_config_${PROVIDER}"
+    [ -z "${NOTIFY_SERVER}" ] || SERVER="${NOTIFY_SERVER}"
+    [ -z "${NOTIFY_TOKEN}" ] || TOKEN="${NOTIFY_TOKEN}"
+    [ -z "${NOTIFY_CHAT_ID}" ] || CHAT_ID="${NOTIFY_CHAT_ID}"
+    [ -z "${NOTIFY_THREAD_ID}" ] || THREAD_ID="${NOTIFY_THREAD_ID}"
+  }
+
+  parse_args() {
+    local endparams=false
+    local arg
+
+    while [ $# -gt 0 ]; do
+      ${endparams} && arg='*' || arg="${1}"
+
+      case "${arg}" in
+        -\?|-h|--help ) print_help; exit ;;
+        -p|--provider )
+          [ -n "${2}" ] || { echo "${1} option requires non-empty PROVIDER" >&2; return 1; }
+          PROVIDER="${2}"
+          shift
+          ;;
+        --provider=*  )
+          local provider="${1#*=}"
+          [ -n "${provider}" ] || { echo "${1} option requires non-empty PROVIDER" >&2; return 1; }
+          PROVIDER="${provider}"
+          ;;
+        --test        ) ACTION=perform_test ;;
+        --            ) endparams=true ;;
+        *             )
+          [ -n "${TITLE+x}" ] && { echo "Unsupported argument ${1}" >&2; return 1; }
+          [ -z "${MESSAGE+x}" ] && MESSAGE="${1}" || TITLE="${1}"
+          ;;
+      esac
+
+      shift
+    done
+  }
+
+  print_help() {
+    echo "
+      Push message to one of supported providers:
+      $(printf -- ',  * %s\n' "${SUPPORTED_PROVIDERS[@]}")
+      Configuration via notify_config and notify_config_PROVIDER functions inside the
+      script. Also can be configured with env vars.
+     ,
+      * notify_config_PROVIDER function where PROVIDER suffix is chosen provider will
+     ,  be loaded if exists, so that the script can be configured to use multiple
+     ,  providers and manipulated provider with '-p' on run
+      * Non-empty vars in notify_config weight more than env vars
+      * Non-empty vars (excluding NOTIFY_PROVIDER) in notify_config_PROVIDER weight
+     ,  more than vars in notify_config
+      * -p PROVIDER weights more then any NOTIFY_PROVIDER env var or var in
+     ,  notify_config
+     ,
+      USAGE:
+     ,  ${SELF_SCRIPT} [-p|--provider PROVIDER] [--] MESSAGE [TITLE]
+     ,
+     ,  # Test the provider specific configs are set
+     ,  ${SELF_SCRIPT} [-p|--provider PROVIDER] --test
+     ,
+      DEMO:
+     ,  # Given NOTIFY_PROVIDER=gotify and NOTIFY_SERVER configured
+     ,  ${SELF_SCRIPT} 'My message' 'My Title'    # <- With optional TITLE
+     ,
+     ,  # Given NOTIFY_SERVER configured, push to gotify provider
+     ,  ${SELF_SCRIPT} -p gotify 'My message'     # <- Without optional TITLE
+     ,
+     ,  # Given NOTIFY_SERVER is not configured, push to gotify provider.
+     ,  # NOTIFY_PROVIDER is ignored due to inline '--provider'
+     ,  export NOTIFY_SERVER=https://gotify.home
+     ,  ${SELF_SCRIPT} --provider gotify 'My message' 'My title'
+    " | sed -e 's/^\s\+//' -e 's/\s\+$//' -e '/^\s*$/d' -e 's/^,//'
+  }
+
+  perform_push() {
+    perform_test || return
+
+    local endpoint \
+          payload
+    local params_maker="make_params_${PROVIDER}"
+
+    [ -n "${MESSAGE}" ] || { echo "MESSAGE required" >&2; return 1; }
+
+    "${params_maker}" endpoint payload || return
+
+    curl -sSL -X POST -H 'Content-Type: application/json' \
+      --data "${payload}" -- "${endpoint}"
+  }
+
+  make_params_discord() {
+    local -n _endpoint="${1}"
+    local -n _payload="${2}"
+
+    local embeds; embeds='"description": '"$(json_quote "${MESSAGE}")" || return
+    [ -n "${TITLE}" ] && { embeds+=', "title": '"$(json_quote "${TITLE}")" || return; }
+
+    _endpoint=https://discord.com/api/webhooks; _endpoint+="/$(urlencode "${TOKEN}")" || return
+    _payload='{ "embeds": [{ '"${embeds}"' }] }'
+  }
+
+  make_params_gotify() {
+    local -n _endpoint="${1}"
+    local -n _payload="${2}"
+
+    local content_type='text/plain'; content_type="$(json_quote "${content_type}")" `# <- Can be 'text/markdown', risky` || return
+    local priority=5
+
+    local full_msg; full_msg='"message": '"$(json_quote "${MESSAGE}")" || return
+    [ -n "${TITLE}" ] && { full_msg+=', "title": '"$(json_quote "${TITLE}")" || return; }
+
+    _endpoint="${SERVER%*/}/message"; _endpoint+="?token=$(urlencode "${TOKEN}")" || return
+    _payload='{
+        '"${full_msg}"', "priority": '"${priority}"',
+        "extras": { "client::display": { "contentType": '"${content_type}"' } }
+      }'
+  }
+
+  make_params_telegram() {
+    local -n _endpoint="${1}"
+    local -n _payload="${2}"
+
+    local text="$(html_escape "${MESSAGE}")"
+    [ -n "${TITLE}" ] && { text="<b>$(html_escape "${TITLE}")</b>"'\n'"${text}" || return; }
+
+    _endpoint=https://api.telegram.org
+    _endpoint+="/bot$(urlencode "${TOKEN}")/sendMessage" || return
+    _endpoint+="?chat_id=$(urlencode "${CHAT_ID}")" || return
+    [ -n "${THREAD_ID}" ] && { _endpoint+="?message_thread_id=$(urlencode "${THREAD_ID}")" || return; }
+
+    _payload='{"text": "'"${text}"'", "parse_mode": "html", "disable_notification": false}'
+  }
+
+  perform_test() {
+    local rc=0
+
+    [ -n "${PROVIDER}" ] || { echo "PROVIDER not specified" >&2; return 1; }
+
+    printf -- '%s\n' "${SUPPORTED_PROVIDERS[@]}" | grep -qFx -- "${PROVIDER}" || {
+      echo "Unsupported provider: '${PROVIDER}'" >&2
+      return 1
+    }
+
+    [ -n "${TOKEN}" ] || { rc=1; echo "TOKEN required" >&2; }
+
+    case "${PROVIDER}" in
+      gotify    )
+          [ -n "${SERVER}" ] || { rc=1; echo "SERVER required" >&2; }
+        ;;
+      telegram  )
+          [ -n "${CHAT_ID}" ] || { rc=1; echo "CHAT_ID required" >&2; }
+          # [ -n "${THREAD_ID}" ] || { rc=1; echo "THREAD_ID required" >&2; }
+        ;;
+    esac
+
+    return ${rc}
+  }
+
+  #
+  # HELPERS
+  #
+
+  # USAGE:
+  #   json_quote STRING         # <- Wirh argument
+  #   echo STRING | json_quote  # <- Wirh stdin
+  # Requires python3 or jq. https://stackoverflow.com/a/50380697, https://stackoverflow.com/a/13466143
+  json_quote() {
+    local -a quote_cmd=(python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')
+    python3 --version >/dev/null 2>&1 || quote_cmd=(jq -Rsa .)
+    jq --version >/dev/null 2>&1 || { echo "Required python3 or jq" >&2; return 1; }
+    printf -- '%s' "${1-$(cat)}" | "${quote_cmd[@]}"
+  }
+
+  # USAGE:
+  #   urlencode STRING          # <- Wirh argument
+  #   echo STRING | urlencode   # <- Wirh stdin
+  # DEMO:
+  #   echo "https://sample.com/?q=$(urlencode "foo bar")"
+  # Requires python3 or jq. https://stackoverflow.com/a/34407620, https://stackoverflow.com/a/62788692
+  urlencode() {
+    local -a encode_cmd=(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.stdin.read()))')
+    python3 --version >/dev/null 2>&1 || encode_cmd=(jq -sRr '@uri')
+    jq --version >/dev/null 2>&1 || { echo "Required python3 or jq" >&2; return 1; }
+    printf -- '%s' "${1-$(cat)}" | "${encode_cmd[@]}"
+  }
+
+  html_escape() { printf -- '%s' "${1-$(cat)}" | python3 -c 'import html,sys; print(html.escape(sys.stdin.read()))'; }
+
+  main "${@}"
+}
+
+(return 2>/dev/null) || notify_core "${@}"

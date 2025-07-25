@@ -63,7 +63,7 @@
         - name: Load downloaded hook apply state
           ansible.builtin.include_tasks: downloaded-hook-{{ state }}.yaml
           vars:
-            state: "{{ qbittorrent_downloaded_script | ternary('install', 'clean') }}"
+            state: "{{ qbittorrent_notify_script | ternary('install', 'clean') }}"
             scripts_dir: "{{ conf_dir }}/scripts"
 
     - name: Create data directory
