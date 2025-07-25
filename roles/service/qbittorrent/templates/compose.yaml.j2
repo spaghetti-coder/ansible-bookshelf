@@ -20,11 +20,11 @@ services:
     volumes:
       - '{{ conf_dir }}/config:/config'
       - '{{ data_dir }}:/downloads'
-{% if qbittorrent_downloaded_script %}
+{% if qbittorrent_notify_script %}
       # Usage:
-      #   qBittorrent UI -> Settings -> Downloads -> External ... on finished -> "/scripts/downloaded.sh '%N'"
+      #   qBittorrent UI -> Settings -> Downloads -> External ... on finished -> "/scripts/notify.sh '%N'"
       - '{{ conf_dir }}/scripts:/scripts:ro'
-{% endif %}{# qbittorrent_downloaded_script #}
+{% endif %}{# qbittorrent_notify_script #}
     ports:
       - '{{ web_ui_port }}:{{ web_ui_port }}'
       - '{{ torrenting_port }}:{{ torrenting_port }}'

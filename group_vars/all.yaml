@@ -583,17 +583,19 @@ qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"
 qbittorrent_web_ui_port:          # Leave blank to leverage bookshelf configuration
 qbittorrent_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # Optional. May require additional setting variables. Will be available in the container in
-#   /scripts/downloaded.sh (0700)
-#   /scripts/downloaded.secret.sh (0600)
+#   /scripts/notify.sh (0700)
+#   /scripts/notify.secret.sh (0600)
 # Configure in qBittorrent UI -> Settings -> Downloads -> External ... on finished
 # For demo scripts see:
-#   templates/*-push.*
-qbittorrent_downloaded_script: "{{ lookup('template', 'gotify-push.sh.j2') }}"
-qbittorrent_gotify_server: https://gotify.home
-# Optional, can be used in conjunction with qbittorrent_downloaded_script to keep
-# secrets separately from the downloaded event script.
-# Will only be used when qbittorrent_downloaded_script is set
-qbittorrent_downloaded_secret: "{{ lookup('template', 'gotify-push.secret.sh.j2') }}"
+#   templates/notify.*
+qbittorrent_notify_script: "{{ lookup('template', 'notify.sh.j2') }}"
+qbittorrent_notify_provider: gotify
+qbittorrent_notify_server: https://gotify.home
+qbittorrent_notify_token: changeme
+# Optional, can be used in conjunction with qbittorrent_notify_script to keep
+# secrets separately from the notify script.
+# Will only be used when qbittorrent_notify_script is set
+qbittorrent_notify_secret: "{{ lookup('template', 'notify.secret.sh.j2') }}"
 qbittorrent_gotify_token: changeme
 # Optional extra env vars
 qbittorrent_extra_env: |          # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"

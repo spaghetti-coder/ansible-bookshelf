@@ -7,21 +7,21 @@
     owner: "{{ user_uid }}"
     group: "{{ user_gid }}"
 
-- name: Create downloaded.sh
+- name: Create notify.sh
   ansible.builtin.copy:
     content: |
-      {{ qbittorrent_downloaded_script }}
-    dest: "{{ scripts_dir }}/downloaded.sh"
+      {{ qbittorrent_notify_script }}
+    dest: "{{ scripts_dir }}/notify.sh"
     mode: '0700'
     owner: "{{ user_uid }}"
     group: "{{ user_gid }}"
 
-- name: Create downloaded.secret.sh
+- name: Create notify.secret.sh
   ansible.builtin.copy:
     content: |
-      {{ qbittorrent_downloaded_secret }}
-    dest: "{{ scripts_dir }}/downloaded.secret.sh"
+      {{ qbittorrent_notify_secret }}
+    dest: "{{ scripts_dir }}/notify.secret.sh"
     mode: '0600'
     owner: "{{ user_uid }}"
     group: "{{ user_gid }}"
-  when: qbittorrent_downloaded_secret
+  when: qbittorrent_notify_secret
