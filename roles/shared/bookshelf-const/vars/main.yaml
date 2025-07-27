@@ -6,14 +6,14 @@ bookshelf_const_version_shared:
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.84.3
 
-bookshelf_const_version:    # <- Last update: 2025-07-24
+bookshelf_const_version:    # <- Last update: 2025-07-27
   #
   # BASE
   #
   # https://github.com/FiloSottile/age/releases
   age: v1.2.1
   # https://github.com/junegunn/fzf/releases
-  fzf: '0.64.0'
+  fzf: '0.65.0'
   #
   # SERVICE
   #
@@ -26,7 +26,7 @@ bookshelf_const_version:    # <- Last update: 2025-07-24
   # => See tailscale versions in the top
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
-  code_server: v4.102.1
+  code_server: v4.102.2
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
   filebrowser: v2.41.0-s6
   # => See tailscale versions in the top
@@ -34,7 +34,7 @@ bookshelf_const_version:    # <- Last update: 2025-07-24
   # https://hub.docker.com/r/gotify/server/tags
   gotify: 2.6.3
   # https://hub.docker.com/r/linuxserver/heimdall/tags
-  heimdall: v2.7.2-ls314
+  heimdall: v2.7.3-ls315
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
   # => See tailscale versions in the top
@@ -50,7 +50,7 @@ bookshelf_const_version:    # <- Last update: 2025-07-24
   # => See tailscale versions in the top
   navidrome_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
-  nginx_proxy: 1.7.1-alpine
+  nginx_proxy: 1.8.0-alpine
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
   nginx_proxy_manager: 2.12.6
   # https://hub.docker.com/r/jamesread/olivetin/tags
@@ -62,7 +62,7 @@ bookshelf_const_version:    # <- Last update: 2025-07-24
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
   qbittorrent: 5.1.2-r1-ls406
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
-  syncthing: v1.30.0-ls187
+  syncthing: v1.30.0-ls188
   # => See tailscale versions in the top
   syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # => See tailscale versions in the top
