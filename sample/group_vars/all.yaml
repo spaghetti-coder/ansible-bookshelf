@@ -828,6 +828,38 @@ twingate_refresh_token:   # (REQUIRED)
 twingate_extra_env:       # "{{ lookup('file', playbook_dir + '/resources/twingate.env') }}"
 
 # =======================
+#       UPTIME-KUMA
+# =======================
+# A fancy self-hosted monitoring tool
+#   https://github.com/louislam/uptime-kuma
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/louislam/uptime-kuma/tags?name=alpine
+#   * => See tailscale role versions
+# -----
+uptime_kuma_managed: false
+uptime_kuma_enabled: false
+uptime_kuma_version:        # Leave blank to leverage bookshelf configuration
+uptime_kuma_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+uptime_kuma_owner: "{{ ansible_user_id }}"
+uptime_kuma_conf_dir: ~/conf/uptime-kuma
+uptime_kuma_service_name: uptime-kuma
+uptime_kuma_hostname: "{{ uptime_kuma_service_name }}"
+uptime_kuma_vhost: "{{ uptime_kuma_service_name }}.domain.local"
+uptime_kuma_web_ui_port:    # Leave blank to leverage bookshelf configuration
+# Optional extra env vars, will affect both Uptime Kuma and tailscale.
+uptime_kuma_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/uptime-kuma.env.j2') }}"
+# ----------
+# The following settings configure Uptime Kuma to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+uptime_kuma_tailscaled: false
+uptime_kuma_tailscale_version:    # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+uptime_kuma_tailscale_ts_hostname: "{{ uptime_kuma_service_name }}-tailscale"
+uptime_kuma_tailscale_auth_key:
+
+# =======================
 #       VAULTWARDEN
 # =======================
 # The community driven password manager.

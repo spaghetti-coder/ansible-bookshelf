@@ -1,0 +1,52 @@
+{% set version = (uptime_kuma_version | default(bookshelf_const_version.uptime_kuma, true)) %}
+{% set web_ui_port = (uptime_kuma_web_ui_port | default(bookshelf_const_port.uptime_kuma.web_ui, true)) %}
+{% set tailscale_version = (uptime_kuma_tailscale_version | default(bookshelf_const_version.uptime_kuma_tailscale, true)) %}
+{% set tailscale_service = 'uptime-kuma-tailscale' %}
+---
+services:
+  uptime-kuma:
+    # https://hub.docker.com/r/louislam/uptime-kuma/tags?name=alpine
+    image: louislam/uptime-kuma:{{ version }}
+    container_name: {{ uptime_kuma_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./extra.env
+    volumes:
+      - '{{ conf_dir }}/config:/app/data'
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+{% if uptime_kuma_tailscaled %}
+    network_mode: service:{{ tailscale_service }}
+
+  {{ tailscale_service }}:
+    # https://hub.docker.com/r/tailscale/tailscale/tags
+    image: tailscale/tailscale:{{ tailscale_version }}
+    container_name: {{ uptime_kuma_service_name }}-tailscale
+    restart: unless-stopped
+    env_file:
+      - ./main.env
+      - ./secret.env
+      - ./extra.env
+    volumes:
+      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+{% endif %}{# uptime_kuma_tailscaled #}
+    hostname: {{ uptime_kuma_hostname }}
+    ports:
+      - "{{ web_ui_port }}:3001"
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge    # <- Avoid creating default compose network
+{% else %}
+    environment:
+      - VIRTUAL_HOST={{ uptime_kuma_vhost }}
+      - VIRTUAL_PORT=3001
+    networks:
+      - {{ nginx_proxy_net }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

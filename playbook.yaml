@@ -149,6 +149,10 @@
       tags: [twingate, upgradable]
       when: twingate_managed | default(false)
 
+    - role: uptime-kuma
+      tags: [uptime-kuma, upgradable]
+      when: uptime_kuma_managed | default(false)
+
     - role: vaultwarden
       tags: [vaultwarden, upgradable]
       when: vaultwarden_managed | default(false)
