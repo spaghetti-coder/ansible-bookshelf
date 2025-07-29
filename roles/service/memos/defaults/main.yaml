@@ -1,0 +1,30 @@
+---
+# A modern, open-source, self-hosted knowledge management and note-taking
+# platform designed for privacy-conscious users and organizations.
+#   https://www.usememos.com/
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/neosmemo/memos/tags
+#   * => See tailscale role versions
+# -----
+memos_managed: false
+memos_enabled: false
+memos_version:        # Leave blank to leverage bookshelf configuration
+memos_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+memos_owner: "{{ ansible_user_id }}"
+memos_conf_dir: ~/conf/memos
+memos_service_name: memos
+memos_hostname: "{{ memos_service_name }}"
+memos_vhost: "{{ memos_service_name }}.domain.local"
+memos_web_ui_port:    # Leave blank to leverage bookshelf configuration
+# Optional extra env vars, will affect both Memos and tailscale.
+memos_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/memos.env.j2') }}"
+# ----------
+# The following settings configure Memos to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+memos_tailscaled: false
+memos_tailscale_version:    # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+memos_tailscale_ts_hostname: "{{ memos_service_name }}-tailscale"
+memos_tailscale_auth_key:

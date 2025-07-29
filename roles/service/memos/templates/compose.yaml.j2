@@ -1,0 +1,52 @@
+{% set version = (memos_version | default(bookshelf_const_version.memos, true)) %}
+{% set web_ui_port = (memos_web_ui_port | default(bookshelf_const_port.memos.web_ui, true)) %}
+{% set tailscale_version = (memos_tailscale_version | default(bookshelf_const_version.memos_tailscale, true)) %}
+{% set tailscale_service = 'memos-tailscale' %}
+---
+services:
+  memos:
+    # https://hub.docker.com/r/neosmemo/memos/tags
+    image: neosmemo/memos:{{ version }}
+    container_name: {{ memos_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./main.env
+      - ./extra.env
+    volumes:
+      - '{{ conf_dir }}/config:/var/opt/memos'
+{% if memos_tailscaled %}
+    network_mode: service:{{ tailscale_service }}
+
+  {{ tailscale_service }}:
+    # https://hub.docker.com/r/tailscale/tailscale/tags
+    image: tailscale/tailscale:{{ tailscale_version }}
+    container_name: {{ memos_service_name }}-tailscale
+    restart: unless-stopped
+    env_file:
+      - ./main.env
+      - ./secret.env
+      - ./extra.env
+    volumes:
+      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+{% endif %}{# memos_tailscaled #}
+    hostname: {{ memos_hostname }}
+    ports:
+      - '{{ web_ui_port }}:80'
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge    # <- Avoid creating default compose network
+{% else %}
+    environment:
+      - VIRTUAL_HOST={{ memos_vhost }}
+      - VIRTUAL_PORT=80
+    networks:
+      - {{ nginx_proxy_net }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

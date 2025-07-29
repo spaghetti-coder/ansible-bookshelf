@@ -105,6 +105,10 @@
       tags: [joplin-server, upgradable]
       when: joplin_server_managed | default(false)
 
+    - role: memos
+      tags: [memos, upgradable]
+      when: memos_managed | default(false)
+
     - role: metube
       tags: [metube, upgradable]
       when: metube_managed | default(false)

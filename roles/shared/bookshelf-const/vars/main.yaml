@@ -43,6 +43,13 @@ bookshelf_const_version:    # <- Last update: 2025-07-27
   joplin_server: 3.4.1
   # => See postgres versions in the top
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
+  # https://hub.docker.com/r/neosmemo/memos/tags
+  # IMPORTANT:
+  #   - Check release notes before update: https://github.com/usememos/memos/releases
+  #   - Consider backup before upgrade: https://www.usememos.com/docs/install/upgrade
+  memos: 0.25.0
+  # => See tailscale versions in the top
+  memos_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
   metube: 2025-07-22
   # https://hub.docker.com/r/deluan/navidrome/tags
@@ -100,6 +107,8 @@ bookshelf_const_port:
     client_discovery: 7359
   joplin_server:
     web_ui: 8092
+  memos:
+    web_ui: 8099        # <- Last (8081+)
   metube:
     web_ui: 8093
   navidrome:
@@ -119,7 +128,7 @@ bookshelf_const_port:
     file_transfers: 22000
     local_discovery: 21027
   uptime_kuma:
-    web_ui: 8098        # <- Last (8081+)
+    web_ui: 8098
   vaultwarden:
     web_ui: 8089
   wg_easy:
