@@ -12,11 +12,11 @@ windows:
 {% if conf.pane1_start_dir | default('', true) %}
         start_directory: "{{ conf.pane1_start_dir }}"
 {% endif %}
-      - shell_command: ['htop']
-{% if conf.pane2_start_dir | default('', true) %}
-        start_directory: "{{ conf.pane2_start_dir }}"
-{% endif %}
       - shell_command: ['watch sensors']
 {% if conf.pane3_start_dir | default('', true) %}
         start_directory: "{{ conf.pane3_start_dir }}"
+{% endif %}
+      - shell_command: ['htop']
+{% if conf.pane2_start_dir | default('', true) %}
+        start_directory: "{{ conf.pane2_start_dir }}"
 {% endif %}
