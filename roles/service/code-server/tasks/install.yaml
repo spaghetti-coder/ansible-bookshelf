@@ -59,12 +59,20 @@
   when: version != code_server_current_version.stdout
 
 - name: Apply service state
-  ansible.builtin.service:
+  ansible.builtin.systemd_service:
     name: code-server@{{ code_server_owner }}
+    daemon_reload: true
     state: "{{ service_state }}"
     enabled: true
   vars:
+    # Strip 'v' prefix
+    version: "{{ code_server_version | default(bookshelf_const_version.code_server, true) | regex_replace('^v?(.*)$', '\\1') }}"
     server_conf_changed: "{{ code_server_server_conf_state.changed }}"
     user_conf_changed: "{{ code_server_user_conf_state.changed | default(false) }}"
-    service_state: "{{ (server_conf_changed or user_conf_changed) | ternary('restarted', 'started') }}"
+    # noqa: jinja[spacing]
+    service_state: "{{ (
+        server_conf_changed
+        or user_conf_changed
+        or version != code_server_current_version.stdout
+      ) | ternary('restarted', 'started') }}"
   become: true
