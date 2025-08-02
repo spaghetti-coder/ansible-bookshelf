@@ -43,6 +43,10 @@ bookshelf_const_version:    # <- Last update: 2025-08-01
   joplin_server: 3.4.1
   # => See postgres versions in the top
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
+  # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
+  mealie: v3.0.2
+  # => See tailscale versions in the top
+  mealie_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/neosmemo/memos/tags
   # IMPORTANT:
   #   - Check release notes before update: https://github.com/usememos/memos/releases
@@ -107,8 +111,10 @@ bookshelf_const_port:
     client_discovery: 7359
   joplin_server:
     web_ui: 8092
+  mealie:
+    web_ui: 8100        # <- Last (8081+)
   memos:
-    web_ui: 8099        # <- Last (8081+)
+    web_ui: 8099
   metube:
     web_ui: 8093
   navidrome:

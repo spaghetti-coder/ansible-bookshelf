@@ -480,6 +480,43 @@ joplin_server_base_url:             # (REQUIRED)
 joplin_server_db_pass:              # (REQUIRED)
 joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 
+# ==================
+#       MEALIE
+# ==================
+# Mealie is a self hosted recipe manager and meal planner with a RestAPI backend
+# and a reactive frontend application built in Vue for a pleasant user
+# experience for the whole family. Easily add recipes into your database by
+# providing the url and mealie will automatically import the relevant data or
+# add a family recipe with the UI editor
+#   https://mealie.io/
+# -----
+# VERSIONS:
+#   * https://github.com/mealie-recipes/mealie/pkgs/container/mealie
+#   * => See tailscale role versions
+# -----
+mealie_managed: false
+mealie_enabled: false
+mealie_version:       # Leave blank to leverage bookshelf configuration
+mealie_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
+mealie_owner: "{{ ansible_user_id }}"
+mealie_conf_dir: ~/conf/mealie
+mealie_service_name: mealie
+mealie_hostname: "{{ mealie_service_name }}"
+mealie_vhost: "{{ mealie_service_name }}.domain.local"
+mealie_web_ui_port:   # Leave blank to leverage bookshelf configuration
+mealie_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional extra env vars, will affect both Mealie and tailscale.
+mealie_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/mealie.env.j2') }}"
+# ----------
+# The following settings configure Mealie to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+mealie_tailscaled: false
+mealie_tailscale_version:    # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+mealie_tailscale_ts_hostname: "{{ mealie_service_name }}-tailscale"
+mealie_tailscale_auth_key:
+
 # =================
 #       MEMOS
 # =================
