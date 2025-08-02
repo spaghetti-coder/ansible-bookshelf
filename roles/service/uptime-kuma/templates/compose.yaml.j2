@@ -28,6 +28,8 @@ services:
       - ./extra.env
     volumes:
       - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+      # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
+      - ./serve.json:/config/serve.json
     devices:
       - /dev/net/tun:/dev/net/tun
     cap_add:
@@ -36,13 +38,13 @@ services:
 {% endif %}{# uptime_kuma_tailscaled #}
     hostname: {{ uptime_kuma_hostname }}
     ports:
-      - "{{ web_ui_port }}:3001"
+      - "{{ web_ui_port }}:{{ uptime_kuma_web_ui_port_int }}"
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}
     environment:
       - VIRTUAL_HOST={{ uptime_kuma_vhost }}
-      - VIRTUAL_PORT=3001
+      - VIRTUAL_PORT={{ uptime_kuma_web_ui_port_int }}
     networks:
       - {{ nginx_proxy_net }}
 

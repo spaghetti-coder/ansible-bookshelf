@@ -12,9 +12,7 @@ services:
     env_file:
       - ./main.env
       - ./secret.env
-{% if extra_env %}
       - ./extra.env
-{% endif %}
     volumes:
       - '{{ conf_dir }}/config:/config'
       - '{{ data_dir }}:/data'
@@ -32,11 +30,11 @@ services:
     env_file:
       - ./main.env
       - ./secret.env
-{% if extra_env %}
       - ./extra.env
-{% endif %}
     volumes:
       - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+      # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
+      - ./serve.json:/config/serve.json
     devices:
       - /dev/net/tun:/dev/net/tun
     cap_add:
@@ -46,7 +44,7 @@ services:
     hostname: {{ jellyfin_hostname }}
     # https://jellyfin.org/docs/general/networking/#port-bindings
     ports:
-      - '{{ web_ui_port }}:8096'
+      - '{{ web_ui_port }}:{{ jellyfin_web_ui_port_int }}'
       # - 8920:8920     # HTTPS traffic, optional
       - '{{ bookshelf_const_port.jellyfin.service_discovery }}:1900/udp' # <- Service discovery, optional
       - '{{ bookshelf_const_port.jellyfin.client_discovery }}:7359/udp' # <- Client discovery, optional
@@ -57,7 +55,7 @@ services:
       - {{ nginx_proxy_net }}
     environment:
       - VIRTUAL_HOST={{ jellyfin_vhost }}
-      - VIRTUAL_PORT=8096
+      - VIRTUAL_PORT={{ jellyfin_web_ui_port_int }}
 
 networks:
   {{ nginx_proxy_net }}:

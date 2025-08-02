@@ -12,7 +12,6 @@
     the_user: "{{ getent_passwd[navidrome_user] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
-    int_web_ui_port: '80'
   block:
     - name: Owner
       become: true
@@ -39,9 +38,16 @@
         - name: Create extra.env
           ansible.builtin.copy:
             content: |
-              {{ navidrome_extra_env | default('# No extra env') }}
+              {{ navidrome_extra_env | default('', true) }}
             dest: "{{ compose_dir }}/extra.env"
             mode: '0600'
+
+        - name: Create serve.json
+          ansible.builtin.template:
+            src: "serve.json.j2"
+            dest: "{{ compose_dir }}/serve.json"
+            mode: '0600'
+          when: navidrome_tailscaled
 
     - name: Create config directories   # <- Must belong to the 'user'
       ansible.builtin.file:

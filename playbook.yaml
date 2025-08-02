@@ -5,6 +5,7 @@
     - { role: init, tags: [always] }  # <- Required for most roles
 
 - name: BaseBook
+  tags: [base]
   hosts: all
   roles:
     - role: age
@@ -71,6 +72,7 @@
       when: virt_manager_managed | default(false)
 
 - name: ServiceBook
+  tags: [services]
   hosts: all
   roles:
     - role: adguard
@@ -166,6 +168,7 @@
       when: wg_easy_managed | default(false)
 
 - name: DesktopBook
+  tags: [desktops]
   hosts: all
   roles:
     - role: audacity

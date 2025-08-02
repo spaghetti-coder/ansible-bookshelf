@@ -34,19 +34,19 @@
         - main
         - secret
 
-    - name: Remove obsolete extra.env
-      ansible.builtin.file:
-        path: "{{ compose_dir }}/extra.env"
-        state: absent
-      when: not extra_env
-
     - name: Create extra.env
       ansible.builtin.copy:
         content: |
-          {{ extra_env }}
+          {{ extra_env | default('', true) }}
         dest: "{{ compose_dir }}/extra.env"
         mode: '0600'
-      when: extra_env
+
+    - name: Create serve.json
+      ansible.builtin.template:
+        src: "serve.json.j2"
+        dest: "{{ compose_dir }}/serve.json"
+        mode: '0600'
+      when: adguard_tailscaled
 
     - name: Compose apply
       ansible.builtin.import_role: { name: bookshelf-compose-apply }

@@ -1,3 +1,4 @@
 ---
+jellyfin_web_ui_port_int: 8096
 jellyfin_owner_home: "{{ getent_passwd[jellyfin_owner].4 }}"
 jellyfin_user_home: "{{ getent_passwd[jellyfin_user].4 }}"

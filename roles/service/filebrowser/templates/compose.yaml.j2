@@ -12,9 +12,7 @@ services:
     env_file:
       - ./main.env
       - ./secret.env
-{% if extra_env %}
       - ./extra.env
-{% endif %}
     volumes:
       - '{{ data_dir }}:/srv'
       - '{{ conf_dir }}/config:/config'
@@ -30,11 +28,11 @@ services:
     env_file:
       - ./main.env
       - ./secret.env
-{% if extra_env %}
       - ./extra.env
-{% endif %}
     volumes:
       - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+      # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
+      - ./serve.json:/config/serve.json
     devices:
       - /dev/net/tun:/dev/net/tun
     cap_add:
@@ -43,7 +41,7 @@ services:
 {% endif %}{# filebrowser_tailscaled #}
     hostname: {{ filebrowser_hostname }}
     ports:
-      - {{ web_ui_port }}:80
+      - {{ web_ui_port }}:{{ filebrowser_web_ui_port_int }}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge
 {% else %}
@@ -51,7 +49,7 @@ services:
       - {{ nginx_proxy_net }}
     environment:
       - VIRTUAL_HOST={{ filebrowser_vhost }}
-      - VIRTUAL_PORT=80
+      - VIRTUAL_PORT={{ filebrowser_web_ui_port_int }}
 
 networks:
   {{ nginx_proxy_net }}:

@@ -1,3 +1,4 @@
 ---
+audiobookshelf_web_ui_port_int: 80
 audiobookshelf_owner_home: "{{ getent_passwd[audiobookshelf_owner].4 }}"
 audiobookshelf_user_home: "{{ getent_passwd[audiobookshelf_user].4 }}"
