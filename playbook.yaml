@@ -107,6 +107,10 @@
       tags: [joplin-server, upgradable]
       when: joplin_server_managed | default(false)
 
+    - role: mealie
+      tags: [mealie, upgradable]
+      when: mealie_managed | default(false)
+
     - role: memos
       tags: [memos, upgradable]
       when: memos_managed | default(false)
