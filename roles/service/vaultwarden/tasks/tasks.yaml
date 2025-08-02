@@ -29,7 +29,6 @@
       loop:
         - main
         - secret
-        - static
 
     - name: Remove obsolete extra.env
       ansible.builtin.file:
