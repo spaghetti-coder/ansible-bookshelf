@@ -48,6 +48,10 @@
       tags: [snapd]
       when: snapd_managed | default(false)
 
+    - role: ssh-alert
+      tags: [ssh-alert]
+      when: ssh_alert_managed | default(false)
+
     - role: tailscale-client
       tags: [tailscale-client]
       when: tailscale_client_managed | default(false)

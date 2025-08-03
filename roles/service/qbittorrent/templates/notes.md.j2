@@ -5,8 +5,8 @@
   1. `Settings > WebUI`
   2. Check **Use alternative WebUI**
   3. **Files location**: `/vuetorrent`
-{% if qbittorrent_notify_script %}
+{% if qbittorrent_notify_provider %}
 * Configure "downloaded" notification:
   1. `qBittorrent UI > Settings > Downloads`
-  2. **External ... on finished**: `/scripts/notify.sh -- "%N" "Downloaded"`
+  2. **External ... on finished**: `/scripts/notify.sh "Downloaded" "%N"`
 {% endif %}

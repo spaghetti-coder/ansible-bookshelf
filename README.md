@@ -206,6 +206,7 @@ To sync libraries and tools in the new project with the upstream issue:
 * [`deploy-demo-lxc`](./knowledgebase/deploy-demo-lxc.sh)
 * [`envar`](./roles/base/envar)
 * [`gen-ssl`](./knowledgebase/gen-ssl.sh)
+* [`notify.sh`](./roles/shared/bookshelf-notify-sh/files/notify.sh)
 * [`ps1-git`](./roles/base/ps1-git)
 * [`tmux` sane config](./roles/base/tmux/files/default.conf)
   <details><summary>Installation</summary>

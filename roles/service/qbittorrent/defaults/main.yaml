@@ -32,16 +32,14 @@ qbittorrent_hostname: "{{ qbittorrent_service_name }}"
 qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"
 qbittorrent_web_ui_port:          # Leave blank to leverage bookshelf configuration
 qbittorrent_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Optional. May require additional setting variables. Will be available in the container in
-#   /scripts/notify.sh (0700)
-#   /scripts/notify.secret.sh (0600)
+# Optional. Configure notifications script, that will be available in the container
+#   /scripts/notify.sh
 # Configure in qBittorrent UI -> Settings -> Downloads -> External ... on finished
-# For demo scripts see:
-#   templates/notify.*
-qbittorrent_notify_script:    # "{{ lookup('file', playbook_dir + '/resources/qbittorrent.notify.sh') }}"
-# Optional, can be used in conjunction with qbittorrent_notify_script to keep
-# secrets separately from the notify script.
-# Will only be used when qbittorrent_notify_script is set
-qbittorrent_notify_secret:    # "{{ lookup('file', playbook_dir + '/resources/qbittorrent.notify-secret.sh') }}"
+# Leave blank to skip configuration. If not blank, rest notify_* should be
+# configured accordingly
+qbittorrent_notify_provider:  # discord|gotify|telegram
+qbittorrent_notify_token:     # "{{ lookup('file', playbook_dir + '/resources/qbittorrent.secret.sh') }}"
+qbittorrent_notify_server:    # (REQUIRED for gotify)
+qbittorrent_notify_chat_id:   # (REQUIRED for telegram)
 # Optional extra env vars
-qbittorrent_extra_env:            # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"
+qbittorrent_extra_env:        # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"

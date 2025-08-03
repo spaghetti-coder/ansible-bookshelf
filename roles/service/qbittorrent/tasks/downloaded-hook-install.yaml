@@ -8,20 +8,17 @@
     group: "{{ user_gid }}"
 
 - name: Create notify.sh
-  ansible.builtin.copy:
-    content: |
-      {{ qbittorrent_notify_script }}
+  ansible.builtin.template:
+    src: notify.sh.j2
     dest: "{{ scripts_dir }}/notify.sh"
     mode: '0700'
     owner: "{{ user_uid }}"
     group: "{{ user_gid }}"
 
 - name: Create notify.secret.sh
-  ansible.builtin.copy:
-    content: |
-      {{ qbittorrent_notify_secret }}
-    dest: "{{ scripts_dir }}/notify.secret.sh"
+  ansible.builtin.template:
+    src: notify._secret_.sh.j2
+    dest: "{{ scripts_dir }}/notify._secret_.sh"
     mode: '0600'
     owner: "{{ user_uid }}"
     group: "{{ user_gid }}"
-  when: qbittorrent_notify_secret

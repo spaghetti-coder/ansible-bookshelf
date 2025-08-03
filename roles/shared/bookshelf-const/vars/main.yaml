@@ -150,4 +150,4 @@ bookshelf_const_compose_dir: ~/docker
 # Not used within bookshelf space, but can be used to keep envar desks.
 # Also compatible with desk tool (https://github.com/jamesob/desk)
 bookshelf_const_desks_dir: ~/.desks
-bookshelf_const_notes_dir: ~/bookshelf/notes
+bookshelf_const_bookshelf_home: ~/bookshelf

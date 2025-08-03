@@ -6,7 +6,6 @@
 - name: Compose
   vars:
     compose_dir: "{{ qbittorrent_compose_dir | default(bookshelf_const_compose_dir + '/qbittorrent', true) }}"
-    extra_env: "{{ qbittorrent_extra_env }}"
     conf_dir: "{{ qbittorrent_conf_dir }}"
     data_dir: "{{ qbittorrent_data_dir }}"
     service_state: "{{ qbittorrent_enabled | ternary('present', 'absent') }}"
@@ -33,19 +32,12 @@
             dest: "{{ compose_dir }}/main.env"
             mode: '0600'
 
-        - name: Remove obsolete extra.env
-          ansible.builtin.file:
-            path: "{{ compose_dir }}/extra.env"
-            state: absent
-          when: not extra_env
-
         - name: Create extra.env
           ansible.builtin.copy:
             content: |
-              {{ extra_env }}
+              {{ qbittorrent_extra_env | default('', true) }}
             dest: "{{ compose_dir }}/extra.env"
             mode: '0600'
-          when: extra_env
 
     - name: Root
       become: true
@@ -60,10 +52,17 @@
           loop:
             - config
 
+        - name: Install notify.sh
+          ansible.builtin.import_role: { name: bookshelf-notify-sh }
+          # noqa: var-naming[no-role-prefix]
+          vars:
+            bookshelf_notify_prereqs:   # <- (OPTIONAL) Install prereqs, defaults to false
+            bookshelf_notify_sh_dest:   # <- (OPTIONAL) Defaults to bookshelf_notify_sh_path value
+
         - name: Load downloaded hook apply state
           ansible.builtin.include_tasks: downloaded-hook-{{ state }}.yaml
           vars:
-            state: "{{ qbittorrent_notify_script | ternary('install', 'clean') }}"
+            state: "{{ qbittorrent_notify_provider | ternary('install', 'clean') }}"
             scripts_dir: "{{ conf_dir }}/scripts"
 
     - name: Create data directory

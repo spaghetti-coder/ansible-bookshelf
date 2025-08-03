@@ -14,17 +14,16 @@ services:
     hostname: {{ qbittorrent_hostname }}
     env_file:
       - ./main.env
-{% if extra_env %}
       - ./extra.env
-{% endif %}
     volumes:
       - '{{ conf_dir }}/config:/config'
       - '{{ data_dir }}:/downloads'
-{% if qbittorrent_notify_script %}
+      - '{{ bookshelf_notify_sh_path}}:{{ bookshelf_notify_sh_path }}:ro'
+{% if qbittorrent_notify_provider %}
       # Usage:
-      #   qBittorrent UI -> Settings -> Downloads -> External ... on finished -> "/scripts/notify.sh '%N'"
+      #   qBittorrent UI -> Settings -> Downloads -> External ... on finished -> '/scripts/notify.sh "Downloaded" "%N"'
       - '{{ conf_dir }}/scripts:/scripts:ro'
-{% endif %}{# qbittorrent_notify_script #}
+{% endif %}{# qbittorrent_notify_provider #}
     ports:
       - '{{ web_ui_port }}:{{ web_ui_port }}'
       - '{{ torrenting_port }}:{{ torrenting_port }}'

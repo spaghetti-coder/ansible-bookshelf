@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2092
+
+`# Configure NOTIFY_* variables`;
+NOTIFY_PROVIDER='{{ ssh_alert_provider }}' `#   <- (REQUIRED) One of: discord, gotify, telegram`;
+`# NOTIFY_TOKEN='<HOOK_ID>/<HOOK_TOKEN>'      # <- From discord channel`;
+`# NOTIFY_TOKEN='<GOTIFY_APPLICATION_TOKEN>'  # <- From https://${NOTIFY_SERVER}/#/applications`;
+`# NOTIFY_TOKEN='<TELEGRAM_BOT_TOKEN>'        # <- From BotFather`;
+NOTIFY_TOKEN='' `#      <- (REQUIRED)`
+
+`# ===== PROVIDER SPECIFIC OPTIONS =====`
+
+#{% if ssh_alert_provider in ['gotify'] +%}
+NOTIFY_SERVER='{{ ssh_alert_server }}' `#     <- (REQUIRED for gotify)`
+#{% endif +%}
+
+#{% if ssh_alert_provider in ['telegram'] +%}
+`# Telegram setup instructions:`;
+`#   https://gist.github.com/spaghetti-coder/2b4befe34f8b4af56080a2c4744a1efb`;
+NOTIFY_CHAT_ID='{{ ssh_alert_chat_id }}' `#    <- (REQUIRED for telegram) '<CHAT_ID>' or '<CHAT_ID>/<THREAD_ID>'`
+#{% endif +%}
+
+(return 2>/dev/null) || {   # <- File executed
+  . '{{ bookshelf_notify_sh_path }}'
+
+  if [ "${1}" = '{{ ssh_alert_test_flag }}' ]; then   # <- To test it works fine
+    notify_core "${@:2}"; exit
+  fi
+
+  notify_core -t "SSH ${PAM_TYPE:-<unknown-action>}" -- \
+    "$(hostname -f)" \
+    "USER: ${PAM_USER:-<unknown>}" \
+    "FROM: ${PAM_RHOST:-<unknown>}" \
+    "TIME: $(date +'%Y-%m-%d %H:%M')" \
+  &>/dev/null
+
+  exit 0    # <- Must exit green, otherwise ssh login may become blocked
+}

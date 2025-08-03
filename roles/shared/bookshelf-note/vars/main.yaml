@@ -1,2 +1,2 @@
 ---
-bookshelf_note_dir: ~/bookshelf/note
+bookshelf_note_home: "{{ bookshelf_const_bookshelf_home }}/note"

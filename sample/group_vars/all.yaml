@@ -127,6 +127,18 @@ ps1_git_users:    # <- Existing users to have this PS1
 # =================
 snapd_managed: false  # "{{ factum_os_like in ['ubuntu'] }}"  # <- Only supported by Ubuntu like
 
+# =====================
+#       SSH-ALERT
+# =====================
+# SSH login notificator.
+# Inspired by https://www.youtube.com/watch?v=VzH4NfJMiQc
+# -----
+ssh_alert_managed: false   #  "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
+ssh_alert_provider:        # (REQUIRED) See supported in bookshelf-notify-sh role
+ssh_alert_token:           # (REQUIRED)
+ssh_alert_server:          # (REQUIRED for gotify)
+ssh_alert_chat_id:         # (REQUIRED for telegram)
+
 # ============================
 #       TAILSCALE-CLIENT
 # ============================
@@ -778,19 +790,17 @@ qbittorrent_hostname: "{{ qbittorrent_service_name }}"
 qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"
 qbittorrent_web_ui_port:          # Leave blank to leverage bookshelf configuration
 qbittorrent_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Optional. May require additional setting variables. Will be available in the container in
-#   /scripts/notify.sh (0700)
-#   /scripts/notify.secret.sh (0600)
+# Optional. Configure notifications script, that will be available in the container
+#   /scripts/notify.sh
 # Configure in qBittorrent UI -> Settings -> Downloads -> External ... on finished
-# For demo scripts see:
-#   templates/notify.*
-qbittorrent_notify_script:    # "{{ lookup('file', playbook_dir + '/resources/qbittorrent.notify.sh') }}"
-# Optional, can be used in conjunction with qbittorrent_notify_script to keep
-# secrets separately from the notify script.
-# Will only be used when qbittorrent_notify_script is set
-qbittorrent_notify_secret:    # "{{ lookup('file', playbook_dir + '/resources/qbittorrent.notify-secret.sh') }}"
+# Leave blank to skip configuration. If not blank, rest notify_* should be
+# configured accordingly
+qbittorrent_notify_provider:  # discord|gotify|telegram
+qbittorrent_notify_token:     # "{{ lookup('file', playbook_dir + '/resources/qbittorrent.secret.sh') }}"
+qbittorrent_notify_server:    # (REQUIRED for gotify)
+qbittorrent_notify_chat_id:   # (REQUIRED for telegram)
 # Optional extra env vars
-qbittorrent_extra_env:            # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"
+qbittorrent_extra_env:        # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"
 
 # =====================
 #       SYNCTHING

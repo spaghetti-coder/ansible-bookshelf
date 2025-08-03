@@ -1,0 +1,9 @@
+---
+- name: Bash
+  ansible.builtin.import_role: { name: bash }
+
+- name: Toolbelt
+  ansible.builtin.import_role: { name: toolbelt }
+  vars:
+    toolbelt_pick: [curl]
+    toolbelt_exclude: []      # <- Ensure it's not excluded somewhere else
