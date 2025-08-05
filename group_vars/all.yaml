@@ -342,6 +342,33 @@ gotify_web_ui_port:   # Leave blank to leverage bookshelf configuration
 gotify_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 
 # ====================
+#       HEDGEDOC
+# ====================
+# VERSIONS: https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
+# -----
+# NOTES:
+#   * container is quite restricted. See restrictions in the main.env.j2 tempate.
+#     They can be overriden with extra_env
+#   * with restrictions in place users registration with ./bin/manage_users tool.
+# -----
+hedgedoc_managed: true
+hedgedoc_enabled: true
+hedgedoc_version:       # Leave blank to leverage bookshelf configuration
+hedgedoc_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
+hedgedoc_owner: "{{ ansible_user_id }}"
+hedgedoc_conf_dir: ~/conf/hedgedoc
+hedgedoc_service_name: hedgedoc
+hedgedoc_hostname: "{{ hedgedoc_service_name }}"
+hedgedoc_vhost: "{{ hedgedoc_service_name }}.domain.local"
+hedgedoc_web_ui_port:   # Leave blank to leverage bookshelf configuration
+hedgedoc_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# HedgeDoc domain. Ex.: {{ hedgedoc_vhost }} or {{ ansible_default_ipv4.address }}
+hedgedoc_domain: "{{ ansible_default_ipv4.address }}"       # (REQUIRED)
+# Optional extra env vars. For reverse proxy configuration see:
+#   https://docs.hedgedoc.org/guides/reverse-proxy/#reverse-proxy-config
+hedgedoc_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/hedgedoc.env.j2') }}"
+
+# ====================
 #       HEIMDALL
 # ====================
 # VERSIONS: https://hub.docker.com/r/linuxserver/heimdall/tags

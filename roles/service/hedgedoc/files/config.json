@@ -1,0 +1,5 @@
+{
+  "production": {
+    "db": { "dialect": "sqlite", "storage": "/hedgedoc/config/db.sqlite" }
+  }
+}

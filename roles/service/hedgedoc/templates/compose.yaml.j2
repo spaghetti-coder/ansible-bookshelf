@@ -1,0 +1,33 @@
+{% set version = (hedgedoc_version | default(bookshelf_const_version.hedgedoc, true)) %}
+{% set web_ui_port = (hedgedoc_web_ui_port | default(bookshelf_const_port.hedgedoc.web_ui, true)) %}
+---
+services:
+  hedgedoc:
+    # https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
+    image: quay.io/hedgedoc/hedgedoc:{{ version }}
+    container_name: {{ hedgedoc_service_name }}
+    restart: unless-stopped
+    hostname: {{ hedgedoc_hostname }}
+    env_file:
+      - main.env
+      - extra.env
+    volumes:
+      - '{{ conf_dir }}/config:/hedgedoc/config'           # Must be owned by user_uid:user_gid
+      - '{{ conf_dir }}/uploads:/hedgedoc/public/uploads'  # Must be owned by user_uid:user_gid
+    ports:
+      - "{{ web_ui_port }}:{{ web_ui_port }}"
+    user: '{{ user_uid }}:{{ user_gid }}'
+    environment:
+      - CMD_PORT={{ web_ui_port }}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge    # <- Avoid creating default compose network
+{% else %}
+      - VIRTUAL_HOST={{ hedgedoc_vhost }}
+      - VIRTUAL_PORT={{ web_ui_port }}
+    networks:
+      - {{ nginx_proxy_net }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

@@ -33,6 +33,8 @@ bookshelf_const_version:    # <- Last update: 2025-08-01
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/gotify/server/tags
   gotify: 2.6.3
+  # https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
+  hedgedoc: 1.10.3
   # https://hub.docker.com/r/linuxserver/heimdall/tags
   heimdall: v2.7.3-ls316
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
@@ -103,6 +105,8 @@ bookshelf_const_port:
     web_ui: 8094
   gotify:
     web_ui: 8085
+  hedgedoc:
+    web_ui: 8101        # <- Last (8081+)
   heimdall:
     web_ui: 8087
   jellyfin:
@@ -112,7 +116,7 @@ bookshelf_const_port:
   joplin_server:
     web_ui: 8092
   mealie:
-    web_ui: 8100        # <- Last (8081+)
+    web_ui: 8100
   memos:
     web_ui: 8099
   metube:

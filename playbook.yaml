@@ -99,6 +99,10 @@
       tags: [gotify, upgradable]
       when: gotify_managed | default(false)
 
+    - role: hedgedoc
+      tags: [hedgedoc, upgradable]
+      when: hedgedoc_managed | default(false)
+
     - role: heimdall
       tags: [heimdall, upgradable]
       when: heimdall_managed | default(false)
