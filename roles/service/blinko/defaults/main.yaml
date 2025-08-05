@@ -1,0 +1,34 @@
+---
+# An open-source, self-hosted personal AI note tool prioritizing privacy,
+# built using TypeScript.
+#   https://blinko.space/en
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/blinkospace/blinko/tags
+#   * https://hub.docker.com/_/postgres/tags?name=alpine
+#   * => See tailscale role versions
+# -----
+blinko_managed: false
+blinko_enabled: false
+blinko_version:             # Leave blank to leverage bookshelf configuration
+blinko_postgres_version:    # Leave blank to leverage bookshelf configuration
+blinko_compose_dir:         # Unless you know ..., leave blank to leverage bookshelf configuration
+blinko_owner: "{{ ansible_user_id }}"
+blinko_conf_dir: ~/conf/blinko
+blinko_service_name: blinko
+blinko_hostname: "{{ blinko_service_name }}"
+blinko_vhost: "{{ blinko_service_name }}.domain.local"
+blinko_web_ui_port:         # Leave blank to leverage bookshelf configuration
+blinko_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+blinko_nextauth_secret:     # (REQUIRED)
+# Optional extra env vars, will affect both Blinko and Tailscale.
+blinko_extra_env:           # "{{ lookup('template', playbook_dir + '/resources/blinko.env.j2') }}"
+# ----------
+# The following settings configure Blinko to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+blinko_tailscaled: false
+blinko_tailscale_version:   # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+blinko_tailscale_ts_hostname: "{{ blinko_service_name }}-tailscale"
+blinko_tailscale_auth_key:

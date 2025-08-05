@@ -25,6 +25,12 @@ bookshelf_const_version:    # <- Last update: 2025-08-01
   audiobookshelf: 2.26.3
   # => See tailscale versions in the top
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://hub.docker.com/r/blinkospace/blinko/tags
+  blinko: 1.2.3
+  # => See postgres versions in the top
+  blinko_postgres: "{{ bookshelf_const_version_shared.postgres }}"
+  # => See tailscale versions in the top
+  blinko_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
   code_server: v4.102.3
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
@@ -99,6 +105,8 @@ bookshelf_const_port:
     init_ui: 8084
   audiobookshelf:
     web_ui: 8095
+  blinko:
+    web_ui: 8102        # <- Last (8081+)
   code_server:
     web_ui: 8090
   filebrowser:
@@ -106,7 +114,7 @@ bookshelf_const_port:
   gotify:
     web_ui: 8085
   hedgedoc:
-    web_ui: 8101        # <- Last (8081+)
+    web_ui: 8101
   heimdall:
     web_ui: 8087
   jellyfin:

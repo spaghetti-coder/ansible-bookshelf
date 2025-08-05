@@ -1,0 +1,92 @@
+{% set version = (blinko_version | default(bookshelf_const_version.blinko, true)) %}
+{% set postgres_version = (blinko_postgres_version | default(bookshelf_const_version.blinko_postgres, true)) %}
+{% set web_ui_port = (blinko_web_ui_port | default(bookshelf_const_port.blinko.web_ui, true)) %}
+{% set db_service_name = (blinko_service_name + '-db') %}
+{% set tailscale_version = (blinko_tailscale_version | default(bookshelf_const_version.blinko_tailscale, true)) %}
+{% set tailscale_service = 'blinko-tailscale' %}
+{% set network_name = 'blinko' %}
+---
+services:
+  {{ db_service_name }}:
+    # https://hub.docker.com/_/postgres/tags?name=alpine
+    image: postgres:{{ postgres_version }}
+    container_name: {{ db_service_name }}
+    restart: unless-stopped
+    env_file:
+      - main.env
+    volumes:
+      - '{{ conf_dir }}/db:/var/lib/postgresql/data'
+    healthcheck:
+      test:
+        # User and dbname must me same as in .env file
+        ["CMD", "pg_isready", "-U", "blinko", "-d", "blinko"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    networks:
+      - {{ network_name }}
+
+  blinko:
+    # https://hub.docker.com/r/blinkospace/blinko/tags
+    image: blinkospace/blinko:{{ version }}
+    container_name: {{ blinko_service_name }}
+    restart: unless-stopped
+    env_file:
+      - main.env
+      - secret.env
+    depends_on:
+      {{ db_service_name }}:
+        condition: service_healthy
+    volumes:
+      - '{{ conf_dir }}/config:/app/.blinko'
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # healthcheck: # <- Doesn't work due to curl absence
+    #   test: ["CMD", "curl", "-f", "http://blinko:1111/"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+    #   start_period: 30s
+{% if blinko_tailscaled %}
+    network_mode: "service:{{ tailscale_service }}"
+
+  {{ tailscale_service }}:
+    # https://hub.docker.com/r/tailscale/tailscale/tags
+    image: tailscale/tailscale:{{ tailscale_version }}
+    container_name: {{ blinko_service_name }}-tailscale
+    restart: unless-stopped
+    env_file:
+      - ./main.env
+      - ./secret.env
+      - ./extra.env
+    volumes:
+      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+      # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
+      - ./serve.json:/config/serve.json
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+{% endif %}{# blinko_tailscaled #}
+    hostname: {{ blinko_hostname }}
+    ports:
+      - "{{ web_ui_port }}:{{ blinko_web_ui_port_int }}"
+    networks:
+      - {{ network_name }}
+{% if (nginx_proxy_enabled | default(false)) %}
+      - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ blinko_vhost }}
+      - VIRTUAL_PORT={{ blinko_web_ui_port_int }}
+{% endif %}
+
+networks:
+  {{ network_name }}:
+    driver: bridge
+{% if (nginx_proxy_enabled | default(false)) %}
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

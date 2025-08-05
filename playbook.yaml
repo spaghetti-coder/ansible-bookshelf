@@ -87,6 +87,10 @@
       tags: [audiobookshelf, upgradable]
       when: audiobookshelf_managed | default(false)
 
+    - role: blinko
+      tags: [blinko, upgradable]
+      when: blinko_managed | default(false)
+
     - role: code-server
       tags: [code-server, upgradable]
       when: code_server_managed | default(false)
