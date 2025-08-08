@@ -8,6 +8,7 @@
     compose_dir: "{{ navidrome_compose_dir | default(bookshelf_const_compose_dir + '/navidrome', true) }}"
     conf_dir: "{{ navidrome_conf_dir }}"
     data_dir: "{{ navidrome_data_dir }}"
+    extra_dir: "{{ navidrome_extra_dir }}"
     service_state: "{{ navidrome_enabled | ternary('present', 'absent') }}"
     the_user: "{{ getent_passwd[navidrome_user] }}"
     user_uid: "{{ the_user.1 }}"
@@ -60,13 +61,22 @@
         - config
       become: true
 
-    - name: Create data directory
-      ansible.builtin.file:
-        path: "{{ data_dir }}"
-        state: directory
-        mode: "{{ omit }}"
+    - name: Data directories
       become: true
       become_user: "{{ navidrome_user }}"
+      block:
+        - name: Create data directory
+          ansible.builtin.file:
+            path: "{{ data_dir }}"
+            state: directory
+            mode: "{{ omit }}"
+
+        - name: Create extra directory
+          ansible.builtin.file:
+            path: "{{ extra_dir }}"
+            state: directory
+            mode: "{{ omit }}"
+          when: extra_dir
 
     - name: Owner
       become: true

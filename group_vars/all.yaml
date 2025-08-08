@@ -493,6 +493,7 @@ navidrome_owner: root                       # <- Who runs the container
 navidrome_user: "{{ ansible_user_id }}"     # <- The in-container user and data filesystem owner
 navidrome_conf_dir: "{{ navidrome_owner_home }}/conf/navidrome"
 navidrome_data_dir: "{{ navidrome_user_home }}/Music"   # (REQUIRED). Ex.: "{{ navidrome_user_home }}/Music"
+navidrome_extra_dir: "{{ navidrome_user_home }}/Music2" # (OPTIONAL). Gets mounted to '/extra'. Ex.: "{{ navidrome_user_home }}/More/Music"
 navidrome_service_name: navidrome
 navidrome_hostname: "{{ navidrome_service_name }}"
 navidrome_vhost: "{{ navidrome_service_name }}.domain.local"

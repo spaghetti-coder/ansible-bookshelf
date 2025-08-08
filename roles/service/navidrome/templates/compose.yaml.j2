@@ -14,8 +14,11 @@ services:
       - ./secret.env
       - ./extra.env
     volumes:
-      - '{{ data_dir }}:/music:ro'
       - '{{ conf_dir }}/config:/data'
+      - '{{ data_dir }}:/music:ro'
+{% if extra_dir %}
+      - '{{ extra_dir }}:/extra:ro'
+{% endif %}
     user: "{{ user_uid }}:{{ user_gid }}"
 {% if navidrome_tailscaled %}
     network_mode: "service:{{ tailscale_service }}"
