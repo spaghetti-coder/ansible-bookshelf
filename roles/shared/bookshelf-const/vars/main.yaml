@@ -80,6 +80,8 @@ bookshelf_const_version:    # <- Last update: 2025-08-09
   portainer_agent: 2.32.0-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
   qbittorrent: 5.1.2-r1-ls408
+  # https://hub.docker.com/r/zefhemel/silverbullet/tags
+  silverbullet: v2
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
   syncthing: v1.30.0-ls188
   # => See tailscale versions in the top
@@ -106,7 +108,7 @@ bookshelf_const_port:
   audiobookshelf:
     web_ui: 8095
   blinko:
-    web_ui: 8102        # <- Last (8081+)
+    web_ui: 8102
   code_server:
     web_ui: 8090
   filebrowser:
@@ -141,6 +143,8 @@ bookshelf_const_port:
   qbittorrent:
     web_ui: 8088
     torrenting: 6881
+  silverbullet:
+    web_ui: 8103        # <- Last (8081+)
   syncthing:
     web_ui: 8091
     file_transfers: 22000

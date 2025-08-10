@@ -159,6 +159,10 @@
       tags: [qbittorrent, upgradable]
       when: qbittorrent_managed | default(false)
 
+    - role: silverbullet
+      tags: [silverbullet, upgradable]
+      when: silverbullet_managed | default(false)
+
     - role: syncthing
       tags: [syncthing, upgradable]
       when: syncthing_managed | default(false)

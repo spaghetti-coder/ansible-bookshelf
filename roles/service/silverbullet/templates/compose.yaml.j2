@@ -1,0 +1,32 @@
+{% set version = (silverbullet_version | default(bookshelf_const_version.silverbullet, true)) %}
+{% set web_ui_port = (silverbullet_web_ui_port | default(bookshelf_const_port.silverbullet.web_ui, true)) %}
+---
+services:
+  silverbullet:
+    # https://hub.docker.com/r/zefhemel/silverbullet/tags
+    image: zefhemel/silverbullet:{{ version }}
+    container_name: {{ silverbullet_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./main.env
+      - ./secret.env
+      - ./extra.env
+    volumes:
+      - '{{ conf_dir }}/space:/space'
+    # user: "{{ user_uid }}:{{ user_gid }}"
+    hostname: {{ silverbullet_hostname }}
+    ports:
+      - '{{ web_ui_port }}:3000'
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge    # <- Avoid creating default compose network
+{% else %}
+    environment:
+      - VIRTUAL_HOST={{ silverbullet_vhost }}
+      - VIRTUAL_PORT=3000
+    networks:
+      - {{ nginx_proxy_net }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

@@ -753,6 +753,35 @@ samba_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # Ex.: "{{ playbook_dir }}/resources/samba/extra.env.j2"
 samba_extra_envfile:
 
+# ========================
+#       SILVERBULLET
+# ========================
+# An open source personal productivity platform built on Markdown, turbo
+# charged with the scripting power of Lua
+#   https://silverbullet.md/
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/zefhemel/silverbullet/tags
+# -----
+silverbullet_managed: true
+silverbullet_enabled: true
+silverbullet_version:       # Leave blank to leverage bookshelf configuration
+silverbullet_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
+silverbullet_owner: "{{ ansible_user_id }}"   # <- Who runs the container
+silverbullet_conf_dir: ~/conf/silverbullet
+silverbullet_service_name: silverbullet
+silverbullet_hostname: "{{ silverbullet_service_name }}"
+silverbullet_vhost: "{{ silverbullet_service_name }}.domain.local"
+silverbullet_web_ui_port:   # Leave blank to leverage bookshelf configuration
+# Auth
+silverbullet_auth_user: admin    # (OPTIONAL)
+silverbullet_auth_pass: changeme # (REQUIRED when non-empty user) If user not set, user defaults to 'admin'
+# silverbullet_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional extra env vars
+silverbullet_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/silverbullet.env.j2') }}"
+  FOO1=bar1
+  FOO2=bar2
+
 # =====================
 #       SYNCTHING
 # =====================

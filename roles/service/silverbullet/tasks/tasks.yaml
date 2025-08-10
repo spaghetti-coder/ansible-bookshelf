@@ -1,0 +1,49 @@
+---
+- name: Docker
+  ansible.builtin.import_role: { name: docker }
+  vars: { docker_users: ["{{ silverbullet_owner }}"] }
+
+- name: Compose
+  become: true
+  become_user: "{{ silverbullet_owner }}"
+  vars:
+    compose_dir: "{{ silverbullet_compose_dir | default(bookshelf_const_compose_dir + '/silverbullet', true) }}"
+    service_state: "{{ silverbullet_enabled | ternary('present', 'absent') }}"
+    conf_dir: "{{ silverbullet_conf_dir }}"
+    user_ent: "{{ getent_passwd[silverbullet_owner] }}"
+    user_uid: "{{ user_ent.1 }}"
+    user_gid: "{{ user_ent.2 }}"
+  block:
+    - name: Create directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop:
+        - "{{ compose_dir }}"
+        - "{{ conf_dir }}/space"
+
+    - name: Create .env files
+      ansible.builtin.template:
+        src: "{{ item }}.env.j2"
+        dest: "{{ compose_dir }}/{{ item }}.env"
+        mode: '0600'
+      loop:
+        - main
+        - secret
+
+    - name: Create extra.env
+      ansible.builtin.copy:
+        content: |
+          {{ silverbullet_extra_env | default('', true) }}
+        dest: "{{ compose_dir }}/extra.env"
+        mode: '0600'
+
+    - name: Compose apply
+      ansible.builtin.import_role: { name: bookshelf-compose-apply }
+      # noqa: var-naming[no-role-prefix]
+      vars: { template: compose.yaml.j2, dest_dir: "{{ compose_dir }}", state: "{{ service_state }}" }
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    silverbullet_done: true
