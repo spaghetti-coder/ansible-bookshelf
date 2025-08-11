@@ -75,6 +75,10 @@
       tags: [virt-manager]
       when: virt_manager_managed | default(false)
 
+    - role: vnstat
+      tags: [vnstat]
+      when: vnstat_managed | default(false)
+
 - name: ServiceBook
   tags: [services]
   hosts: all

@@ -213,6 +213,13 @@ virt_manager_managed: false   # "{{ factum_os_family in ['debian'] }}"  # <- Onl
 virt_manager_users:   # <- Existing users to be added to libvirt group
   # - "{{ ansible_user_id }}"
 
+# ==================
+#       VNSTAT
+# ==================
+# Console-based network traffic monitor that keeps a log of daily network
+# traffic for the selected interface(s)
+vnstat_managed: false
+
 
 
 ###########################

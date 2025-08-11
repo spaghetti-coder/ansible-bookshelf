@@ -1,0 +1,4 @@
+---
+# Console-based network traffic monitor that keeps a log of daily network
+# traffic for the selected interface(s)
+vnstat_managed: false
