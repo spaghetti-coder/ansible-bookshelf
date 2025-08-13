@@ -1,0 +1,12 @@
+---
+alert_max_traffic_managed: false
+# notify-sh configuration
+alert_max_traffic_provider:    # (REQUIRED) See supported in notify-sh role
+alert_max_traffic_token:       # (REQUIRED)
+alert_max_traffic_server:      # (REQUIRED for gotify)
+alert_max_traffic_chat_id:     # (REQUIRED for telegram)
+# Traffic alert settings
+alert_max_traffic_interface:   # (REQUIRED) Network interface
+# Max total traffic in MiB
+alert_max_traffic_max_day:     # (OPTIONAL)
+alert_max_traffic_max_month:   # (OPTIONAL)

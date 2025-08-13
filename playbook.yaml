@@ -12,6 +12,14 @@
       tags: [age, upgradable, upgradable-pkg]
       when: age_managed | default(false)
 
+    - role: alert-max-traffic
+      tags: [alert-max-traffic]
+      when: alert_max_traffic_managed | default(false)
+
+    - role: alert-ssh
+      tags: [alert-ssh]
+      when: alert_ssh_managed | default(false)
+
     - role: bash
       tags: [bash]
       when: bash_managed | default(false)
@@ -40,10 +48,6 @@
       tags: [git]
       when: git_managed | default(false)
 
-    - role: max-traffic-alert
-      tags: [max-traffic-alert]
-      when: max_traffic_alert_managed | default(false)
-
     - role: notify-sh
       tags: [notify-sh]
       when: notify_sh_managed | default(false)
@@ -55,10 +59,6 @@
     - role: snapd
       tags: [snapd]
       when: snapd_managed | default(false)
-
-    - role: ssh-alert
-      tags: [ssh-alert]
-      when: ssh_alert_managed | default(false)
 
     - role: tailscale-client
       tags: [tailscale-client]

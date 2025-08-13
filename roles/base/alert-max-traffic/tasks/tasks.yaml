@@ -1,0 +1,52 @@
+---
+- name: Bash
+  ansible.builtin.import_role: { name: bash }
+
+- name: Notify.sh
+  ansible.builtin.import_role: { name: notify-sh }
+  vars:   # noqa: var-naming[no-role-prefix]
+    notify_sh_prereqs: true
+
+- name: Privileged
+  vars:
+    tool_home: "{{ alert_max_traffic_path | dirname }}"
+  become: true
+  block:
+    - name: Create directory
+      ansible.builtin.file:
+        path: "{{ tool_home }}"
+        state: directory
+        mode: '0755'
+
+    - name: Install
+      ansible.builtin.template:
+        src: alert.sh.j2
+        dest: "{{ alert_max_traffic_path }}"
+        mode: '0755'
+
+    - name: Create notify secret
+      ansible.builtin.template:
+        src: alert._secret_.sh.j2
+        dest: "{{ tool_home }}/alert._secret_.sh"
+        mode: '0600'
+
+    - name: Test installation
+      ansible.builtin.command:
+        cmd: "{{ alert_max_traffic_path }} {{ alert_max_traffic_test_flag }} -t 'Alert test' -- 'Max traffic'"
+      register: alert_max_traffic_test
+      changed_when: false
+
+    - name: Setup cron
+      ansible.builtin.cron:
+        name: alert-max-traffic
+        minute: "*/5"
+        job: "{{ alert_max_traffic_path }} '{{ interface }}' '{{ max_day }}' '{{ max_month }}'"
+      vars:
+        interface: "{{ alert_max_traffic_interface }}"
+        max_day: "{{ alert_max_traffic_max_day }}"
+        max_month: "{{ alert_max_traffic_max_month }}"
+      when: alert_max_traffic_test.rc < 1
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    alert_max_traffic_done: true

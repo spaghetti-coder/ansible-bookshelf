@@ -2,4 +2,4 @@
 - name: Load tasks
   ansible.builtin.include_tasks:
     file: tasks.yaml
-  when: not (ssh_alert_done | default(false))
+  when: not (alert_max_traffic_done | default(false))

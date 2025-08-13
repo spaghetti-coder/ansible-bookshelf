@@ -1,0 +1,9 @@
+---
+# SSH login notificator.
+# Inspired by https://www.youtube.com/watch?v=VzH4NfJMiQc
+# -----
+alert_ssh_managed: false   #  "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
+alert_ssh_provider:        # (REQUIRED) See supported in notify-sh role
+alert_ssh_token:           # (REQUIRED)
+alert_ssh_server:          # (REQUIRED for gotify)
+alert_ssh_chat_id:         # (REQUIRED for telegram)

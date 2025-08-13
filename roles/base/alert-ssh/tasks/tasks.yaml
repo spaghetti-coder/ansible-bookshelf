@@ -7,37 +7,39 @@
 - name: Privileged
   become: true
   vars:
-    script_home: /opt/varlog/ssh-alert
-    script_path: "{{ script_home }}/notify.sh"
-    secret_path: "{{ script_home }}/notify._secret_.sh"
+    tool_home: "{{ alert_ssh_path | dirname }}"
   block:
     - name: Create home directory
       ansible.builtin.file:
-        path: "{{ script_home }}"
+        path: "{{ tool_home }}"
         state: directory
         mode: '0755'
 
-    - name: Create notify.sh script
+    - name: Install
       ansible.builtin.template:
-        src: notify.sh.j2
-        dest: "{{ script_path }}"
+        src: alert.sh.j2
+        dest: "{{ alert_ssh_path }}"
         mode: '0755'
 
     - name: Create notify secret
       ansible.builtin.template:
-        src: notify._secret_.sh.j2
-        dest: "{{ secret_path }}"
+        src: alert._secret_.sh.j2
+        dest: "{{ tool_home }}/alert._secret_.sh"
         mode: '0600'
 
     - name: Test installation
       ansible.builtin.command:
-        cmd: "{{ script_path }} {{ ssh_alert_test_flag }} -t 'SSH test' -- 'Alert test'"
-      register: ssh_alert_test
+        cmd: "{{ alert_ssh_path }} {{ alert_ssh_test_flag }} -t 'Alert test' -- 'SSH'"
+      register: alert_ssh_test
       changed_when: false
 
     - name: Add to pam.d/ssh
       ansible.builtin.blockinfile:
         path: /etc/pam.d/sshd
-        marker: "# {mark} ssh-alert"
-        block: session required pam_exec.so {{ script_path }}
-      when: ssh_alert_test.rc < 1
+        marker: "# {mark} alert-ssh"
+        block: session required pam_exec.so {{ alert_ssh_path }}
+      when: alert_ssh_test.rc < 1
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    alert_ssh_done: true

@@ -38,6 +38,18 @@ age_managed: true
 age_version:    # Leave blank to leverage bookshelf configuration
 
 # =====================
+#       ALERT-SSH
+# =====================
+# SSH login notificator.
+# Inspired by https://www.youtube.com/watch?v=VzH4NfJMiQc
+# -----
+alert_ssh_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
+alert_ssh_provider: gotify              # (REQUIRED) See supported in notify-sh role
+alert_ssh_token: 123                    # (REQUIRED)
+alert_ssh_server: https://gotify.home   # (REQUIRED for gotify)
+alert_ssh_chat_id:                      # (REQUIRED for telegram)
+
+# =====================
 #       BASH-SANE
 # =====================
 bash_sane_managed: true
@@ -101,19 +113,19 @@ git_extraconf:
   # # ...
 
 # =============================
-#       MAX-TRAFFIC-ALERT
+#       ALERT-MAX-TRAFFIC
 # =============================
-max_traffic_alert_managed: false
+alert_max_traffic_managed: false
 # notify-sh configuration
-max_traffic_alert_provider:    # (REQUIRED) See supported in notify-sh role
-max_traffic_alert_token:       # (REQUIRED)
-max_traffic_alert_server:      # (REQUIRED for gotify)
-max_traffic_alert_chat_id:     # (REQUIRED for telegram)
+alert_max_traffic_provider:    # (REQUIRED) See supported in notify-sh role
+alert_max_traffic_token:       # (REQUIRED)
+alert_max_traffic_server:      # (REQUIRED for gotify)
+alert_max_traffic_chat_id:     # (REQUIRED for telegram)
 # Traffic alert settings
-max_traffic_alert_interface:   # (REQUIRED) Network interface
+alert_max_traffic_interface:   # (REQUIRED) Network interface
 # Max total traffic in MiB
-max_traffic_alert_max_day:     # (OPTIONAL)
-max_traffic_alert_max_month:   # (OPTIONAL)
+alert_max_traffic_max_day:     # (OPTIONAL)
+alert_max_traffic_max_month:   # (OPTIONAL)
 
 # =====================
 #       NOTIFY-SH
@@ -133,18 +145,6 @@ ps1_git_users:  # <- Existing users to have this PS1
 #   SNAPD
 # =========
 snapd_managed: "{{ factum_os_like in ['ubuntu'] }}"  # <- Only supported by Ubuntu like
-
-# =====================
-#       SSH-ALERT
-# =====================
-# SSH login notificator.
-# Inspired by https://www.youtube.com/watch?v=VzH4NfJMiQc
-# -----
-ssh_alert_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
-ssh_alert_provider: gotify              # (REQUIRED) See supported in notify-sh role
-ssh_alert_token: 123                    # (REQUIRED)
-ssh_alert_server: https://gotify.home   # (REQUIRED for gotify)
-ssh_alert_chat_id:                      # (REQUIRED for telegram)
 
 # ============================
 #       TAILSCALE-CLIENT

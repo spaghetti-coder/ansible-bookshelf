@@ -3,7 +3,7 @@
 # Based on https://github.com/vergoh/vnstat/wiki/Usage-%23-Limit-alerts
 
 `# Configure NOTIFY_* variables`;
-NOTIFY_PROVIDER='{{ max_traffic_alert_provider }}' `#   <- (REQUIRED) One of: discord, gotify, telegram`;
+NOTIFY_PROVIDER='{{ alert_max_traffic_provider }}' `#   <- (REQUIRED) One of: discord, gotify, telegram`;
 `# NOTIFY_TOKEN='<HOOK_ID>/<HOOK_TOKEN>'      # <- From discord channel`;
 `# NOTIFY_TOKEN='<GOTIFY_APPLICATION_TOKEN>'  # <- From https://${NOTIFY_SERVER}/#/applications`;
 `# NOTIFY_TOKEN='<TELEGRAM_BOT_TOKEN>'        # <- From BotFather`;
@@ -11,14 +11,14 @@ NOTIFY_TOKEN='' `#      <- (REQUIRED)`
 
 `# ===== PROVIDER SPECIFIC OPTIONS =====`
 
-#{% if max_traffic_alert_provider in ['gotify'] +%}
-NOTIFY_SERVER='{{ max_traffic_alert_server }}' `#     <- (REQUIRED for gotify)`
+#{% if alert_max_traffic_provider in ['gotify'] +%}
+NOTIFY_SERVER='{{ alert_max_traffic_server }}' `#     <- (REQUIRED for gotify)`
 #{% endif +%}
 
-#{% if max_traffic_alert_provider in ['telegram'] +%}
+#{% if alert_max_traffic_provider in ['telegram'] +%}
 `# Telegram setup instructions:`;
 `#   https://gist.github.com/spaghetti-coder/2b4befe34f8b4af56080a2c4744a1efb`;
-NOTIFY_CHAT_ID='{{ max_traffic_alert_chat_id }}' `#    <- (REQUIRED for telegram) '<CHAT_ID>' or '<CHAT_ID>/<THREAD_ID>'`
+NOTIFY_CHAT_ID='{{ alert_max_traffic_chat_id }}' `#    <- (REQUIRED for telegram) '<CHAT_ID>' or '<CHAT_ID>/<THREAD_ID>'`
 #{% endif +%}
 
 print_help() {
@@ -86,6 +86,12 @@ MSG_TITLE=""
 [ -z "${MSG_TITLE}" ] || {
   . '{{ notify_sh_path }}'
 
+  if [ "${1}" = '{{ alert_max_traffic_test_flag }}' ]; then   # <- To test it works fine
+    notify_core "${@:2}"; exit
+  fi
+
   MSG_TITLE="Traffic quota reached"
-  notify_core -t "${MSG_TITLE}" -- "$(hostname -f)" "" "${MSG_BODY}"
+  notify_core -t "${MSG_TITLE}" -- \
+    "$(hostname -f)" "@ $(date +'%Y-%m-%d %H:%M:%S')" "" \
+    "${MSG_BODY}"
 }
