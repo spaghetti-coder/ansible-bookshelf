@@ -111,6 +111,17 @@ git_extraconf:
   #   # No variables, as it's not a template
   # # ...
 
+# =====================
+#       NOTIFY-SH
+# =====================
+# Exposes:
+#   * notify_sh_path - notify.sh script location
+# -----
+notify_sh_managed: false
+# false is useful when notify.sh is for exemple intended to be mounted and used
+# in a docker container. In such case docker host machine doesn't need prereqs
+notify_sh_prereqs: false  # Install notify.sh prepreqs
+
 # ===================
 #       PS1-GIT
 # ===================
@@ -134,7 +145,7 @@ snapd_managed: false  # "{{ factum_os_like in ['ubuntu'] }}"  # <- Only supporte
 # Inspired by https://www.youtube.com/watch?v=VzH4NfJMiQc
 # -----
 ssh_alert_managed: false   #  "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
-ssh_alert_provider:        # (REQUIRED) See supported in bookshelf-notify-sh role
+ssh_alert_provider:        # (REQUIRED) See supported in notify-sh role
 ssh_alert_token:           # (REQUIRED)
 ssh_alert_server:          # (REQUIRED for gotify)
 ssh_alert_chat_id:         # (REQUIRED for telegram)

@@ -18,7 +18,7 @@ services:
     volumes:
       - '{{ conf_dir }}/config:/config'
       - '{{ data_dir }}:/downloads'
-      - '{{ bookshelf_notify_sh_path}}:{{ bookshelf_notify_sh_path }}:ro'
+      - '{{ notify_sh_path }}:{{ notify_sh_path }}:ro'
 {% if qbittorrent_notify_provider %}
       # Usage:
       #   qBittorrent UI -> Settings -> Downloads -> External ... on finished -> '/scripts/notify.sh "Downloaded" "%N"'

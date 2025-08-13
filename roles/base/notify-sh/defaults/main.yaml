@@ -1,0 +1,8 @@
+---
+# Exposes:
+#   * notify_sh_path - notify.sh script location
+# -----
+notify_sh_managed: false
+# false is useful when notify.sh is for exemple intended to be mounted and used
+# in a docker container. In such case docker host machine doesn't need prereqs
+notify_sh_prereqs: false  # Install notify.sh prepreqs

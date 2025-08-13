@@ -1,24 +1,30 @@
 ---
-- name: Create scripts directory
-  ansible.builtin.file:
-    path: "{{ scripts_dir }}"
-    state: directory
-    mode: '0700'
-    owner: "{{ user_uid }}"
-    group: "{{ user_gid }}"
+- name: Install notify.sh
+  ansible.builtin.import_role: { name: notify-sh }
 
-- name: Create notify.sh
-  ansible.builtin.template:
-    src: notify.sh.j2
-    dest: "{{ scripts_dir }}/notify.sh"
-    mode: '0700'
-    owner: "{{ user_uid }}"
-    group: "{{ user_gid }}"
+- name: Privileged
+  become: true
+  block:
+    - name: Create scripts directory
+      ansible.builtin.file:
+        path: "{{ scripts_dir }}"
+        state: directory
+        mode: '0700'
+        owner: "{{ user_uid }}"
+        group: "{{ user_gid }}"
 
-- name: Create notify.secret.sh
-  ansible.builtin.template:
-    src: notify._secret_.sh.j2
-    dest: "{{ scripts_dir }}/notify._secret_.sh"
-    mode: '0600'
-    owner: "{{ user_uid }}"
-    group: "{{ user_gid }}"
+    - name: Create notify.sh wrapper
+      ansible.builtin.template:
+        src: notify.sh.j2
+        dest: "{{ scripts_dir }}/notify.sh"
+        mode: '0700'
+        owner: "{{ user_uid }}"
+        group: "{{ user_gid }}"
+
+    - name: Create notify secret
+      ansible.builtin.template:
+        src: notify._secret_.sh.j2
+        dest: "{{ scripts_dir }}/notify._secret_.sh"
+        mode: '0600'
+        owner: "{{ user_uid }}"
+        group: "{{ user_gid }}"

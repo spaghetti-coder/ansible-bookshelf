@@ -1,31 +1,29 @@
 ---
+- name: Install notify.sh
+  ansible.builtin.import_role: { name: notify-sh }
+  vars:   # noqa: var-naming[no-role-prefix]
+    notify_sh_prereqs: true
+
 - name: Privileged
   become: true
   vars:
-    script_home: /opt/ssh-alert
+    script_home: /opt/varlog/ssh-alert
     script_path: "{{ script_home }}/notify.sh"
     secret_path: "{{ script_home }}/notify._secret_.sh"
   block:
-    - name: Install notify.sh
-      ansible.builtin.import_role: { name: bookshelf-notify-sh }
-      # noqa: var-naming[no-role-prefix]
-      vars:
-        bookshelf_notify_prereqs: true    # <- (OPTIONAL) Install prereqs, defaults to false
-        bookshelf_notify_sh_dest:         # <- (OPTIONAL) Defaults to bookshelf_notify_sh_path value
-
     - name: Create home directory
       ansible.builtin.file:
         path: "{{ script_home }}"
         state: directory
         mode: '0755'
 
-    - name: Install notify script
+    - name: Create notify.sh script
       ansible.builtin.template:
         src: notify.sh.j2
         dest: "{{ script_path }}"
         mode: '0755'
 
-    - name: Install notify secret
+    - name: Create notify secret
       ansible.builtin.template:
         src: notify._secret_.sh.j2
         dest: "{{ secret_path }}"

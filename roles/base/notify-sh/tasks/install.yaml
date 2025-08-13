@@ -1,0 +1,24 @@
+---
+- name: Install
+  become: true
+  block:
+    - name: Create home directory
+      ansible.builtin.file:
+        path: "{{ dest_dir }}"
+        state: directory
+        mode: "{{ omit }}"
+      vars:
+        dest_dir: "{{ notify_sh_path | dirname }}"
+
+    - name: Install
+      ansible.builtin.copy:
+        src: notify.sh
+        dest: "{{ notify_sh_path }}"
+        mode: '0755'
+
+    - name: Create synlink
+      ansible.builtin.file:
+        path: /usr/local/bin/notify.sh
+        src: "{{ notify_sh_path }}"
+        state: link
+        force: true

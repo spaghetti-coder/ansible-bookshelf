@@ -21,6 +21,6 @@ NOTIFY_CHAT_ID='{{ qbittorrent_notify_chat_id }}' `#    <- (REQUIRED for telegra
 #{% endif +%}
 
 (return 2>/dev/null) || {   # <- File executed
-  . '{{ bookshelf_notify_sh_path }}'
-  notify_core -t "${1}" -- "${2}"   # I.e. `SCRIPT TITLE BODY`
+  . '{{ notify_sh_path }}'
+  notify_core -t "${1}" -- "${2}"   # I.e. `SCRIPT -t TITLE BODY`
 }

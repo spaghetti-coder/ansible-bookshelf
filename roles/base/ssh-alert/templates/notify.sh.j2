@@ -21,7 +21,7 @@ NOTIFY_CHAT_ID='{{ ssh_alert_chat_id }}' `#    <- (REQUIRED for telegram) '<CHAT
 #{% endif +%}
 
 (return 2>/dev/null) || {   # <- File executed
-  . '{{ bookshelf_notify_sh_path }}'
+  . '{{ notify_sh_path }}'
 
   if [ "${1}" = '{{ ssh_alert_test_flag }}' ]; then   # <- To test it works fine
     notify_core "${@:2}"; exit

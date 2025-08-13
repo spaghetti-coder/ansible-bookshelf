@@ -39,31 +39,22 @@
             dest: "{{ compose_dir }}/extra.env"
             mode: '0600'
 
-    - name: Root
+    - name: Create config directories   # <- Must belong to the 'user'
+      ansible.builtin.file:
+        path: "{{ conf_dir }}/{{ item }}"
+        state: directory
+        mode: '0700'
+        owner: "{{ user_uid }}"
+        group: "{{ user_gid }}"
+      loop:
+        - config
       become: true
-      block:
-        - name: Create config directories   # <- Must belong to the 'user'
-          ansible.builtin.file:
-            path: "{{ conf_dir }}/{{ item }}"
-            state: directory
-            mode: '0700'
-            owner: "{{ user_uid }}"
-            group: "{{ user_gid }}"
-          loop:
-            - config
 
-        - name: Install notify.sh
-          ansible.builtin.import_role: { name: bookshelf-notify-sh }
-          # noqa: var-naming[no-role-prefix]
-          vars:
-            bookshelf_notify_prereqs:   # <- (OPTIONAL) Install prereqs, defaults to false
-            bookshelf_notify_sh_dest:   # <- (OPTIONAL) Defaults to bookshelf_notify_sh_path value
-
-        - name: Load downloaded hook apply state
-          ansible.builtin.include_tasks: downloaded-hook-{{ state }}.yaml
-          vars:
-            state: "{{ qbittorrent_notify_provider | ternary('install', 'clean') }}"
-            scripts_dir: "{{ conf_dir }}/scripts"
+    - name: Load downloaded hook apply state
+      ansible.builtin.include_tasks: downloaded-hook-{{ state }}.yaml
+      vars:
+        state: "{{ qbittorrent_notify_provider | ternary('install', 'clean') }}"
+        scripts_dir: "{{ conf_dir }}/scripts"
 
     - name: Create data directory
       ansible.builtin.file:

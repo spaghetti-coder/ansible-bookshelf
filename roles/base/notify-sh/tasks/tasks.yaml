@@ -1,0 +1,15 @@
+---
+- name: Load prereqs
+  ansible.builtin.include_tasks:
+    file: prereqs.yaml
+  when: need_prereqs
+
+- name: Load install
+  ansible.builtin.include_tasks:
+    file: install.yaml
+  when: not installed
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    notify_sh_install_done: true
+    notify_sh_prereqs_done: "{{ ((notify_sh_prereqs_done | default([])) + [notify_sh_prereqs]) | unique }}"

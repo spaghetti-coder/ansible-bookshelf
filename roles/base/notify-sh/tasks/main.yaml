@@ -1,0 +1,8 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  vars:
+    installed: "{{ notify_sh_install_done | default(false) }}"
+    need_prereqs: "{{ notify_sh_prereqs and (notify_sh_prereqs not in (notify_sh_prereqs_done | default([]))) }}"
+  when: not installed or need_prereqs

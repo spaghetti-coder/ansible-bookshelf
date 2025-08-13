@@ -3,7 +3,7 @@
 # Inspired by https://www.youtube.com/watch?v=VzH4NfJMiQc
 # -----
 ssh_alert_managed: false   #  "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
-ssh_alert_provider:        # (REQUIRED) See supported in bookshelf-notify-sh role
+ssh_alert_provider:        # (REQUIRED) See supported in notify-sh role
 ssh_alert_token:           # (REQUIRED)
 ssh_alert_server:          # (REQUIRED for gotify)
 ssh_alert_chat_id:         # (REQUIRED for telegram)

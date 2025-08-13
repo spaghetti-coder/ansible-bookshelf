@@ -100,6 +100,12 @@ git_extraconf:
   #   # No variables, as it's not a template
   # # ...
 
+# =====================
+#       NOTIFY-SH
+# =====================
+notify_sh_managed: true
+notify_sh_prereqs: true  # Install notify.sh prepreqs
+
 # ===========
 #   PS1-GIT
 # ===========
@@ -120,7 +126,7 @@ snapd_managed: "{{ factum_os_like in ['ubuntu'] }}"  # <- Only supported by Ubun
 # Inspired by https://www.youtube.com/watch?v=VzH4NfJMiQc
 # -----
 ssh_alert_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
-ssh_alert_provider: gotify              # (REQUIRED) See supported in bookshelf-notify-sh role
+ssh_alert_provider: gotify              # (REQUIRED) See supported in notify-sh role
 ssh_alert_token: 123                    # (REQUIRED)
 ssh_alert_server: https://gotify.home   # (REQUIRED for gotify)
 ssh_alert_chat_id:                      # (REQUIRED for telegram)
