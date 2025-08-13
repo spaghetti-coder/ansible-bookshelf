@@ -1,0 +1,41 @@
+---
+- name: Bash
+  ansible.builtin.import_role: { name: bash }
+
+- name: Notify.sh
+  ansible.builtin.import_role: { name: notify-sh }
+  vars:   # noqa: var-naming[no-role-prefix]
+    notify_sh_prereqs: true
+
+- name: Privileged
+  vars:
+    tool_home: "{{ max_traffic_alert_path | dirname }}"
+  become: true
+  block:
+    - name: Create directory
+      ansible.builtin.file:
+        path: "{{ tool_home }}"
+        state: directory
+        mode: '0755'
+
+    - name: Install
+      ansible.builtin.template:
+        src: traffic-alert.sh.j2
+        dest: "{{ max_traffic_alert_path }}"
+        mode: '0755'
+
+    - name: Create notify secret
+      ansible.builtin.template:
+        src: traffic-alert._secret_.sh.j2
+        dest: "{{ tool_home }}/traffic-alert._secret_.sh"
+        mode: '0600'
+
+    - name: Setup cron
+      ansible.builtin.cron:
+        name: max-traffic-alert
+        minute: "*/5"
+        job: "{{ max_traffic_alert_path }} '{{ interface }}' '{{ max_day }}' '{{ max_month }}'"
+      vars:
+        interface: "{{ max_traffic_alert_interface }}"
+        max_day: "{{ max_traffic_alert_max_day }}"
+        max_month: "{{ max_traffic_alert_max_month }}"

@@ -28,7 +28,7 @@ NOTIFY_CHAT_ID='{{ ssh_alert_chat_id }}' `#    <- (REQUIRED for telegram) '<CHAT
   fi
 
   notify_core -t "SSH ${PAM_TYPE:-<unknown-action>}" -- \
-    "$(hostname -f)" \
+    "$(hostname -f)" "" \
     "USER: ${PAM_USER:-<unknown>}" \
     "FROM: ${PAM_RHOST:-<unknown>}" \
     "TIME: $(date +'%Y-%m-%d %H:%M')" \

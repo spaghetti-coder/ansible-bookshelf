@@ -40,6 +40,10 @@
       tags: [git]
       when: git_managed | default(false)
 
+    - role: max-traffic-alert
+      tags: [max-traffic-alert]
+      when: max_traffic_alert_managed | default(false)
+
     - role: notify-sh
       tags: [notify-sh]
       when: notify_sh_managed | default(false)

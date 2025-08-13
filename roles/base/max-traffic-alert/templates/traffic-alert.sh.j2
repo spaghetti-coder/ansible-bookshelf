@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+# Based on https://github.com/vergoh/vnstat/wiki/Usage-%23-Limit-alerts
+
+`# Configure NOTIFY_* variables`;
+NOTIFY_PROVIDER='{{ max_traffic_alert_provider }}' `#   <- (REQUIRED) One of: discord, gotify, telegram`;
+`# NOTIFY_TOKEN='<HOOK_ID>/<HOOK_TOKEN>'      # <- From discord channel`;
+`# NOTIFY_TOKEN='<GOTIFY_APPLICATION_TOKEN>'  # <- From https://${NOTIFY_SERVER}/#/applications`;
+`# NOTIFY_TOKEN='<TELEGRAM_BOT_TOKEN>'        # <- From BotFather`;
+NOTIFY_TOKEN='' `#      <- (REQUIRED)`
+
+`# ===== PROVIDER SPECIFIC OPTIONS =====`
+
+#{% if max_traffic_alert_provider in ['gotify'] +%}
+NOTIFY_SERVER='{{ max_traffic_alert_server }}' `#     <- (REQUIRED for gotify)`
+#{% endif +%}
+
+#{% if max_traffic_alert_provider in ['telegram'] +%}
+`# Telegram setup instructions:`;
+`#   https://gist.github.com/spaghetti-coder/2b4befe34f8b4af56080a2c4744a1efb`;
+NOTIFY_CHAT_ID='{{ max_traffic_alert_chat_id }}' `#    <- (REQUIRED for telegram) '<CHAT_ID>' or '<CHAT_ID>/<THREAD_ID>'`
+#{% endif +%}
+
+print_help() {
+  local SELF_SCRIPT; SELF_SCRIPT="$(basename -- "${0}")"
+  declare -r T_BOLD='\033[1m' \
+    T_DIM='\033[2m' \
+    T_ITALIC='\033[3m' \
+    T_UNDER='\033[4m' \
+    T_RESET='\033[0m'
+
+  echo -e "
+    ${T_BOLD}USAGE${T_RESET}:
+   ,  ${SELF_SCRIPT} INTERFACE MAX_DAILY_IN_MiB MAX_MONTHLY_IN_MiB
+   ,
+    ${T_BOLD}DEMO${T_RESET}:
+   ,  ${T_DIM}# Alert with traffic > 1000 MiB today or > 10000 MiB this month
+   ,  # on tailscale0 interface${T_RESET}
+   ,  ${SELF_SCRIPT} tailscale0 1000 10000
+   ,
+   ,  ${T_DIM}# Alert with traffic > 1000 MiB today on ens3 interface${T_RESET}
+   ,  ${SELF_SCRIPT} ens3 1000
+   ,
+   ,  ${T_DIM}# Alert with traffic > 10000 MiB this month on ens3 interface${T_RESET}
+   ,  ${SELF_SCRIPT} ens3 '' 10000
+  " | sed -e 's/^\s\+//' -e 's/\s\+$//' -e '/^$/d' -e 's/^,//'
+}
+
+check() {
+  # USAGE:
+  #   check day|month MAX_IN_MiB BY_REF_RESULT
+
+  declare -A map=([day]=d [month]=m)
+  local output; output="$(
+    vnstat -i "${INTERFACE}" --alert 1 3 "${map[${1}]}" total "${2}" MiB
+  )" && return 0
+
+  local -n _result="${3}"
+
+  output="$(
+    cat <<< "${output}" \
+    | grep -e '\s*\(used\|limit\)\s*|' \
+    | cut -d '|' -f1,2 \
+    | sed -e 's/^\s\+//' -e 's/\s\{2,\}/ /g' -e 's/\s*|/:/' \
+    | sed -e 's/^\s/  /'
+  )"
+  output="${1^^}"$'\n'"${output}"
+  _result+="${_result:+$'\n\n'}${output}"
+  return 1
+}
+
+[[ "${1}" =~ ^(-\?|-h|--help)$ ]] && {
+  print_help; exit
+}
+
+INTERFACE="${1}"
+MAX_DAILY="${2}"      # Max Daily traffic in MiB
+MAX_MONTHLY="${3}"    # Max Monthly traffic in MiB
+
+# shellcheck disable=SC2034
+MSG_BODY=""
+MSG_TITLE=""
+[ -z "${MAX_DAILY}" ] || check day "${MAX_DAILY}" MSG_BODY || MSG_TITLE+="${MSG_TITLE:+ and }Daily"
+[ -z "${MAX_MONTHLY}" ] || check month "${MAX_MONTHLY}" MSG_BODY || MSG_TITLE+="${MSG_TITLE:+ and }Monthly"
+
+[ -z "${MSG_TITLE}" ] || {
+  . '{{ notify_sh_path }}'
+
+  MSG_TITLE="Traffic quota reached"
+  notify_core -t "${MSG_TITLE}" -- "$(hostname -f)" "" "${MSG_BODY}"
+}
