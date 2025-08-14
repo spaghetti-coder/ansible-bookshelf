@@ -502,7 +502,10 @@ hedgedoc_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 hedgedoc_domain:        # (REQUIRED)
 # Optional extra env vars. For reverse proxy configuration see:
 #   https://docs.hedgedoc.org/guides/reverse-proxy/#reverse-proxy-config
-hedgedoc_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/hedgedoc.env.j2') }}"
+hedgedoc_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/hedgedoc.env.j2') }}"
+  # CMD_URL_ADDPORT=false
+  # CMD_PROTOCOL_USESSL=true
+  # CMD_ALLOW_EMAIL_REGISTER=true   # <- Allow users registration
 
 # ====================
 #       HEIMDALL
