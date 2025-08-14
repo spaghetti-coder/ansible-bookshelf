@@ -40,7 +40,7 @@ bookshelf_const_version:    # <- Last update: 2025-08-14
   # https://hub.docker.com/r/gotify/server/tags
   gotify: 2.6.3
   # https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
-  hedgedoc: 1.10.3
+  hedgedoc: 1.10.3-alpine
   # https://hub.docker.com/r/linuxserver/heimdall/tags
   heimdall: v2.7.4-ls318
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
