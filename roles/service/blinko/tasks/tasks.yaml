@@ -29,6 +29,12 @@
         - main
         - secret
 
+    - name: Create healthcheck.sh script
+      ansible.builtin.copy:
+        src: healthcheck.sh
+        dest: "{{ compose_dir }}/healthcheck.sh"
+        mode: '0644'
+
     - name: Create extra.env
       ansible.builtin.copy:
         content: |

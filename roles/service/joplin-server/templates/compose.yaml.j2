@@ -30,16 +30,16 @@ services:
     depends_on:
       - {{ db_service_name }}
     ports:
-      - "{{ web_ui_port }}:22300"
+      - "{{ web_ui_port }}:{{ joplin_server_web_ui_port_int }}"
     environment:
-      - APP_PORT=22300
+      - APP_PORT={{ joplin_server_web_ui_port_int }}
       - POSTGRES_HOST={{ db_service_name }}
 {% if not (nginx_proxy_enabled | default(false)) %}
     networks:
       - joplin
 {% else %}
       - VIRTUAL_HOST={{ joplin_server_vhost }}
-      - VIRTUAL_PORT=22300
+      - VIRTUAL_PORT={{ joplin_server_web_ui_port_int }}
     networks:
       - joplin
       - {{ nginx_proxy_net }}

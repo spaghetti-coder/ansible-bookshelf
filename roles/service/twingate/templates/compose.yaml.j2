@@ -9,8 +9,8 @@ services:
     container_name: {{ twingate_service_name }}
     restart: unless-stopped
     hostname: {{ twingate_hostname }}
-    # Make Connector available only in local network
-    # network_mode: host
+    network_mode: bridge
+    # network_mode: host  # <- Make Connector available only in local network
     env_file:
       - ./main.env
       - ./secret.env
