@@ -26,10 +26,10 @@
         dest: "{{ compose_dir }}/main.env"
         mode: '0600'
 
-    - name: Create fix-https script
+    - name: Create fix-app-url script
       ansible.builtin.copy:
-        src: fix-https.sh
-        dest: "{{ compose_dir }}/fix-https.sh"
+        src: fix-app-url.sh
+        dest: "{{ compose_dir }}/fix-app-url.sh"
         mode: '0755'
 
     - name: Compose apply

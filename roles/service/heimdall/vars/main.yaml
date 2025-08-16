@@ -1,0 +1,2 @@
+---
+heimdall_ext_port: "{{ heimdall_web_ui_port | default(bookshelf_const_port.heimdall.web_ui, true) }}"
