@@ -20,7 +20,8 @@ blinko_hostname: "{{ blinko_service_name }}"
 blinko_vhost: "{{ blinko_service_name }}.domain.local"
 blinko_web_ui_port:         # Leave blank to leverage bookshelf configuration
 blinko_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-blinko_nextauth_secret:     # (REQUIRED)
+blinko_db_pass:             # (REQUIRED) Something hard and random
+blinko_nextauth_secret:     # (REQUIRED) Something hard and random
 # Optional extra env vars, will affect both Blinko and Tailscale.
 blinko_extra_env:           # "{{ lookup('template', playbook_dir + '/resources/blinko.env.j2') }}"
 # ----------

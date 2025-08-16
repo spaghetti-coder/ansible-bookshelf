@@ -12,8 +12,8 @@ services:
     container_name: {{ blinko_service_name }}
     restart: unless-stopped
     env_file:
-      - main.env
       - secret.env
+      - main.env
     depends_on:
       {{ db_service }}:
         condition: service_healthy
@@ -56,8 +56,8 @@ services:
     container_name: {{ tailscale_service }}
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
+      - ./main.env
       - ./extra.env
     volumes:
       - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
