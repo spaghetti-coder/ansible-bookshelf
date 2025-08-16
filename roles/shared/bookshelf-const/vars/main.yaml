@@ -6,7 +6,7 @@ bookshelf_const_version_shared:
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.86.2
 
-bookshelf_const_version:    # <- Last update: 2025-08-14
+bookshelf_const_version:    # <- Last update: 2025-08-16
   #
   # BASE
   #
@@ -32,9 +32,9 @@ bookshelf_const_version:    # <- Last update: 2025-08-14
   # => See tailscale versions in the top
   blinko_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
-  code_server: v4.103.0
+  code_server: v4.103.1
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-  filebrowser: v2.42.3-s6
+  filebrowser: v2.42.5-s6
   # => See tailscale versions in the top
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/gotify/server/tags
@@ -42,7 +42,7 @@ bookshelf_const_version:    # <- Last update: 2025-08-14
   # https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
   hedgedoc: 1.10.3-alpine
   # https://hub.docker.com/r/linuxserver/heimdall/tags
-  heimdall: v2.7.4-ls318
+  heimdall: v2.7.4-ls319
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
   # => See tailscale versions in the top
@@ -83,7 +83,7 @@ bookshelf_const_version:    # <- Last update: 2025-08-14
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: v2
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
-  syncthing: v2.0.0-ls189
+  syncthing: v2.0.2-ls191
   # => See tailscale versions in the top
   syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # => See tailscale versions in the top
