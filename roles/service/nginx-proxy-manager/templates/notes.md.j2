@@ -1,4 +1,5 @@
-{% set nginx_proxy_port = nginx_proxy_http_port | default('Not configured') %}
+{% set nginx_proxy_host = nginx_proxy_manager_host_net | ternary ('localhost', nginx_proxy_net) %}
+{% set nginx_proxy_port = nginx_proxy_manager_host_net | ternary(nginx_proxy_http_port | default('Not configured', true), '80') %}
 ## Ninx Proxy Manager
 
 {% if nginx_proxy_enabled | default(false) %}
@@ -6,12 +7,12 @@
   1. `Hosts > Proxy Hosts > Add ...`
   2.  ...
       - **Sheme**: `http`
-      - **Forward Hostname**: `localhost`
-      - **Forward Port**: {{ nginx_proxy_port }}
+      - **Forward Hostname**: `{{ nginx_proxy_host }}`
+      - **Forward Port**: `{{ nginx_proxy_port }}`
 {% else %}
 * Nginx Proxy is not enabled, skip configuration
 {% endif %}{# nginx_proxy_enabled #}
-* If Proxmox host is configured via NPM, fix SPICE not loaded issue:
+* If Proxmox host is configured via NPM and nginx_proxy_manager_host_net == true, fix SPICE not loaded issue:
   1. `Hosts > Streams > Add ...`
   2.  ...
       - **Incoming** and **Forward** ports: `3128`

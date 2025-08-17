@@ -133,6 +133,10 @@ bookshelf_const_port:
     web_ui: 8093
   navidrome:
     web_ui: 8097
+  nginx_proxy_manager:
+    web_ui: 81
+    http: 80
+    https: 443
   olivetin:
     web_ui: 8096
   portainer:

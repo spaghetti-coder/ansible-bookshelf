@@ -1,4 +1,8 @@
 {% set version = (nginx_proxy_manager_version | default(bookshelf_const_version.nginx_proxy_manager, true)) %}
+{% set web_ui_port = (nginx_proxy_manager_web_ui_port | default(bookshelf_const_port.nginx_proxy_manager.web_ui, true)) %}
+{% set http_port = (nginx_proxy_manager_http_port | default(bookshelf_const_port.nginx_proxy_manager.http, true)) %}
+{% set https_port = (nginx_proxy_manager_https_port | default(bookshelf_const_port.nginx_proxy_manager.https, true)) %}
+{% set proxy_enabled = (nginx_proxy_enabled | default(false)) %}
 ---
 services:
   nginx-proxy-manager:
@@ -10,27 +14,38 @@ services:
     volumes:
       - "{{ conf_dir }}/data:/data"
       - "{{ conf_dir }}/letsencrypt:/etc/letsencrypt"
-    network_mode: host  # <- Allows adding Stream ports without editting compose file
-    # ports:
-    #   - '80:80'   # HTTP Port
-    #   - '81:81'   # Web UI port
-    #   - '443:443' # HTTPS Port
-    #   # Add any other Stream port you want to expose
-    #   # - '21:21' # FTP
     env_file:
       - ./main.env
-{% if extra_env %}
       - ./extra.env
+{% if nginx_proxy_manager_host_net %}
+    network_mode: host          # <- Allows adding Stream ports without editting compose file
+{% else %}
+{% if proxy_enabled %}
+    networks:
+      - {{ nginx_proxy_net }}
+{% else %}
+    network_mode: bridge
+{% endif %}{# proxy_enabled #}
+    ports:
+      - '{{ web_ui_port }}:81'  # Web UI port
+{% if http_port | int > -1 %}
+      - '{{ http_port }}:80'     # HTTP Port
 {% endif %}
-{% if nginx_proxy_enabled | default(false) %}
+{% if https_port | int > -1 %}
+      - '{{ https_port }}:443'    # HTTPS Port
+{% endif %}
+      # Add any other Stream port you want to expose
+      # - '21:21'               # FTP
+{% endif %}{# nginx_proxy_manager_host_net #}
+{% if proxy_enabled %}
     environment:
       # Meta data for nginx-proxy
       - VIRTUAL_HOST={{ nginx_proxy_manager_vhost }}
       - VIRTUAL_PORT=81
+{% if not nginx_proxy_manager_host_net %}
 
-# * Due to 'host' network 'nginx-proxy' network is not required
-# * 'nginx-proxy' container is reachable via http://localhost:NGINX_PROXY_HTTP_PORT
-# networks:
-#   "{{ nginx_proxy_net }}":
-#     external: true
-{% endif %}
+networks:
+  "{{ nginx_proxy_net }}":
+    external: true
+{% endif %}{# nginx_proxy_manager_host_net #}
+{% endif %}{# proxy_enabled #}
