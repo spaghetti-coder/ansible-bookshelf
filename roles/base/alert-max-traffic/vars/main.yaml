@@ -1,3 +1,2 @@
 ---
-alert_max_traffic_test_flag: --alert-test
 alert_max_traffic_path: /opt/varlog/alert-max-traffic/alert.sh

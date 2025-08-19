@@ -23,9 +23,8 @@ NOTIFY_CHAT_ID='{{ alert_ssh_chat_id }}' `#    <- (REQUIRED for telegram) '<CHAT
 alert() {
   . '{{ notify_sh_path }}'
 
-  if [ "${1}" = '{{ alert_ssh_test_flag }}' ]; then   # <- To test it works fine
-    notify_core "${@:2}"; return
-  fi
+  # To test it works fine
+  [ "${1}" = '--alert-test' ] && { notify_core "${@:2}"; return; }
 
   notify_core -t "SSH ${PAM_TYPE:-<unknown-action>}" -- \
     "$(hostname -f)" "@ $(date +'%Y-%m-%d %H:%M:%S')" "" \

@@ -29,7 +29,7 @@
 
     - name: Test installation
       ansible.builtin.command:
-        cmd: "{{ alert_ssh_path }} {{ alert_ssh_test_flag }} -t 'Alert test' -- 'SSH'"
+        cmd: "{{ alert_ssh_path }} --alert-test -t 'Alert test' -- 'SSH'"
       register: alert_ssh_test
       changed_when: false
 

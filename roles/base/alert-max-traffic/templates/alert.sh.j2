@@ -83,12 +83,14 @@ MSG_TITLE=""
 [ -z "${MAX_DAILY}" ] || check day "${MAX_DAILY}" MSG_BODY || MSG_TITLE+="${MSG_TITLE:+ and }Daily"
 [ -z "${MAX_MONTHLY}" ] || check month "${MAX_MONTHLY}" MSG_BODY || MSG_TITLE+="${MSG_TITLE:+ and }Monthly"
 
+# To test it works fine
+[ "${1}" = '--alert-test' ] && {
+  . '{{ notify_sh_path }}'
+  notify_core "${@:2}"; exit
+}
+
 [ -z "${MSG_TITLE}" ] || {
   . '{{ notify_sh_path }}'
-
-  if [ "${1}" = '{{ alert_max_traffic_test_flag }}' ]; then   # <- To test it works fine
-    notify_core "${@:2}"; exit
-  fi
 
   MSG_TITLE="Traffic quota reached"
   notify_core -t "${MSG_TITLE}" -- \

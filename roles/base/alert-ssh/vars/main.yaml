@@ -1,3 +1,2 @@
 ---
-alert_ssh_test_flag: --alert-test
 alert_ssh_path: /opt/varlog/alert-ssh/alert.sh

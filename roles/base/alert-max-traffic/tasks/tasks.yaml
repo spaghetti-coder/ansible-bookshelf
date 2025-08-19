@@ -32,7 +32,7 @@
 
     - name: Test installation
       ansible.builtin.command:
-        cmd: "{{ alert_max_traffic_path }} {{ alert_max_traffic_test_flag }} -t 'Alert test' -- 'Max traffic'"
+        cmd: "{{ alert_max_traffic_path }} --alert-test -t 'Alert test' -- 'Max traffic'"
       register: alert_max_traffic_test
       changed_when: false
 

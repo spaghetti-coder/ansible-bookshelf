@@ -343,7 +343,7 @@ notify_core() {
 
     "${params_maker}" endpoint payload || return
 
-    curl -sSL -X POST -H 'Content-Type: application/json' \
+    curl --max-time 20 -ksSL -X POST -H 'Content-Type: application/json' \
       --data "${payload}" -- "${endpoint}"
   }
 
