@@ -78,6 +78,31 @@ docker_managed: true
 docker_users:   # <- Users to be added to docker group
   - "{{ ansible_user_id }}"
 
+# =========================
+#       DYDNS-UPDATER
+# =========================
+dydns_updater_managed: true
+dydns_updater_prereqs: true
+dydns_updater_providers:    # <- Supported list
+  - duckdns
+  # - dynu
+dydns_updater_secret: |     # <- Will go to secret file
+  DUCKDNS_TOKEN=123
+#   DYNU_TOKEN=456
+#   # ... Same for other providers ...
+dydns_updater_config: |     # <- Will go to config file
+  DUCKDNS_DOMAINS=(                    `# <- (REQUIRED)`
+    site1.duckdns.org
+    site2.duckdns.org
+  )
+  DUCKDNS_SCHEDULE='0 22 * * *'         # <- (OPTIONAL)
+  DUCKDNS_ERR_TITLE='DuckDNS failure'   # <- (OPTIONAL)
+#   # ... Same for other providers ...
+# Extra providers to go to extra file
+dydns_updater_extra: |      # "{{ lookup('file', playbook_dir + '/resources/dydns.extra.sh') }}"
+  #!/usr/bin/env bash
+  FOO=bar
+
 # =========
 #   ENVAR
 # =========

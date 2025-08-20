@@ -1,0 +1,5 @@
+---
+dydns_updater_path: /opt/varlog/dydns-updater/dydns.sh
+dydns_updater_home: "{{ dydns_updater_path | dirname }}"
+dydns_updater_confdir: "{{ dydns_updater_home }}/config"
+dydns_updater_sys_path: /usr/local/bin/dydns.sh

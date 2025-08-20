@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+{{ dydns_updater_config }}
+{% if dydns_updater_alert_provider %}
+
+. '{{ notify_sh_path }}'
+
+NOTIFY_PROVIDER='{{ dydns_updater_alert_provider }}'
+{% endif %}
+{% if dydns_updater_alert_provider in ['gotify'] %}
+NOTIFY_SERVER='{{ dydns_updater_alert_server }}' `#     <- (REQUIRED for gotify)`
+{% endif %}
+{% if dydns_updater_alert_provider in ['telegram'] %}
+`# Telegram setup instructions:`
+`#   https://gist.github.com/spaghetti-coder/2b4befe34f8b4af56080a2c4744a1efb`
+NOTIFY_CHAT_ID='{{ dydns_updater_alert_chat_id }}' `#    <- (REQUIRED for telegram) '<CHAT_ID>' or '<CHAT_ID>/<THREAD_ID>'`
+{% endif %}

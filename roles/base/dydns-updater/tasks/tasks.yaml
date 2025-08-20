@@ -1,0 +1,39 @@
+---
+- name: Load prereqs
+  ansible.builtin.include_tasks:
+    file: prereqs.yaml
+  when: need_prereqs
+
+- name: Load install
+  ansible.builtin.include_tasks:
+    file: install.yaml
+  when: not installed
+
+- name: Privileged
+  become: true
+  block:
+    - name: Install extra.sh
+      ansible.builtin.copy:
+        content: |
+          {{ dydns_updater_extra | default('', true) }}
+        dest: "{{ dydns_updater_confdir }}/extra.sh"
+        mode: '0600'
+
+    - name: Setup cron
+      ansible.builtin.command:
+        argv: ["{{ dydns_updater_sys_path }}", cron-set, "{{ item }}"]
+      register: dydns_updater_cron_result
+      changed_when: dydns_updater_cron_result.stdout | lower == 'done'
+      loop: "{{ providers_todo }}"
+
+    - name: Remove cron orphans
+      ansible.builtin.command:
+        argv: ["{{ dydns_updater_sys_path }}", cron-rm-orphans]
+      register: dydns_updater_cron_orphans_result
+      changed_when: dydns_updater_cron_orphans_result.stdout | lower == 'done'
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    dydns_updater_install_done: true
+    dydns_updater_prereqs_done: "{{ ((dydns_updater_prereqs_done | default([])) + [need_prereqs]) | unique }}"
+    dydns_updater_providers_done: "{{ (dydns_updater_providers_done | default([])) + providers_todo }}"

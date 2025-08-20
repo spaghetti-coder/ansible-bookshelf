@@ -36,6 +36,10 @@
       tags: [docker-clean]
       when: docker_clean_managed | default(false)
 
+    - role: dydns-updater
+      tags: [dydns-updater]
+      when: dydns_updater_managed | default(false)
+
     - role: envar
       tags: [envar]
       when: envar_managed | default(false)

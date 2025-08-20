@@ -1,0 +1,9 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  vars:
+    installed: "{{ dydns_updater_install_done | default(false) }}"
+    need_prereqs: "{{ dydns_updater_prereqs and (dydns_updater_prereqs not in (dydns_updater_prereqs_done | default([]))) }}"
+    providers_todo: "{{ dydns_updater_providers | default([], true) | difference(dydns_updater_providers_done | default([])) }}"
+  when: not installed or need_prereqs or (providers_todo | length) > 0

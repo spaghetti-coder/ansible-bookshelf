@@ -94,6 +94,39 @@ docker_managed: false
 docker_users:     # <- Existing users to be added to docker group
   # - "{{ ansible_user_id }}"
 
+# =========================
+#       DYDNS-UPDATER
+# =========================
+# For more details see dydns.sh under files
+# -----
+dydns_updater_managed: false
+dydns_updater_prereqs: true
+dydns_updater_providers:    # <- Supported list
+  # - duckdns
+  # - dynu
+  # - now-dns
+  # - ydns
+dydns_updater_secret: |     # <- Will go to secret file
+#   DUCKDNS_TOKEN=123   # (REQUIRED for given provider)
+#   DYNU_TOKEN=456
+#   # ... Same for other providers ...
+dydns_updater_config: |     # <- Will go to config file
+#   DUCKDNS_DOMAINS=(                    `# (REQUIRED)`
+#     site1.duckdns.org
+#     site2.duckdns.org
+#   )
+#   DUCKDNS_SCHEDULE='*/10 * * * *'       # (OPTIONAL)
+#   DUCKDNS_ERR_TITLE='DuckDNS failure'   # (OPTIONAL)
+#   # ... Same for other providers ...
+# Extra providers to go to extra file
+dydns_updater_extra:        # "{{ lookup('file', playbook_dir + '/resources/dydns.extra.sh') }}"
+# Update failure alert settings. Fields marked as REQUIRED
+# are only required when provider is set
+dydns_updater_alert_provider:       # See supported in notify-sh role
+dydns_updater_alert_token:          # (REQUIRED)
+dydns_updater_alert_server:         # (REQUIRED for gotify)
+dydns_updater_alert_chat_id:        # (REQUIRED for telegram)
+
 # =================
 #       ENVAR
 # =================

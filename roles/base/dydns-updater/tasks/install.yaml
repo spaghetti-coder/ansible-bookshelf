@@ -1,0 +1,45 @@
+---
+- name: Install notify.sh
+  ansible.builtin.import_role: { name: notify-sh }
+  vars:   # noqa: var-naming[no-role-prefix]
+    notify_sh_prereqs: "{{ dydns_updater_prereqs }}"
+
+- name: Install
+  become: true
+  block:
+    - name: Create home directory
+      ansible.builtin.file:
+        path: "{{ dydns_updater_home }}"
+        state: directory
+        mode: '0755'
+
+    - name: Install
+      ansible.builtin.copy:
+        src: dydns.sh
+        dest: "{{ dydns_updater_path }}"
+        mode: '0755'
+
+    - name: Create config directory
+      ansible.builtin.file:
+        path: "{{ dydns_updater_confdir }}"
+        state: directory
+        mode: '0700'
+
+    - name: Create config file
+      ansible.builtin.template:
+        src: config.sh.j2
+        dest: "{{ dydns_updater_confdir }}/config.sh"
+        mode: '0600'
+
+    - name: Create secret file
+      ansible.builtin.template:
+        src: secret.sh.j2
+        dest: "{{ dydns_updater_confdir }}/secret.sh"
+        mode: '0600'
+
+    - name: Create synlink
+      ansible.builtin.file:
+        path: "{{ dydns_updater_sys_path }}"
+        src: "{{ dydns_updater_path }}"
+        state: link
+        force: true
