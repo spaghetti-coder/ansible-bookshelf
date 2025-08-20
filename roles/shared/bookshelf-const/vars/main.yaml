@@ -6,7 +6,7 @@ bookshelf_const_version_shared:
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.86.2
 
-bookshelf_const_version:    # <- Last update: 2025-08-16
+bookshelf_const_version:    # <- Last update: 2025-08-20
   #
   # BASE
   #
@@ -18,7 +18,7 @@ bookshelf_const_version:    # <- Last update: 2025-08-16
   # SERVICE
   #
   # https://hub.docker.com/r/adguard/adguardhome/tags
-  adguard: v0.107.64
+  adguard: v0.107.65
   # => See tailscale versions in the top
   adguard_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/advplyr/audiobookshelf/tags
@@ -48,11 +48,11 @@ bookshelf_const_version:    # <- Last update: 2025-08-16
   # => See tailscale versions in the top
   jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/joplin/server/tags
-  joplin_server: 3.4.1
+  joplin_server: 3.4.2
   # => See postgres versions in the top
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
-  mealie: v3.0.2
+  mealie: v3.1.1
   # => See tailscale versions in the top
   mealie_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/neosmemo/memos/tags
@@ -75,15 +75,15 @@ bookshelf_const_version:    # <- Last update: 2025-08-16
   # https://hub.docker.com/r/jamesread/olivetin/tags
   olivetin: 2025.7.29
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
-  portainer: 2.32.0-alpine
+  portainer: 2.33.0-alpine
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
-  portainer_agent: 2.32.0-alpine
+  portainer_agent: 2.33.0-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.2-r1-ls409
+  qbittorrent: 5.1.2-r1-ls410
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: v2
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
-  syncthing: v2.0.2-ls191
+  syncthing: v2.0.2-ls192
   # => See tailscale versions in the top
   syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # => See tailscale versions in the top
