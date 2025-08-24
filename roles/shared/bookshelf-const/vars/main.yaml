@@ -4,9 +4,9 @@ bookshelf_const_version_shared:
   postgres: 16.9-alpine3.22
   # NOTE: With version update also update auth key: https://tailscale.com/admin/settings/keys
   # https://hub.docker.com/r/tailscale/tailscale/tags
-  tailscale: v1.86.2
+  tailscale: v1.86.5
 
-bookshelf_const_version:    # <- Last update: 2025-08-20
+bookshelf_const_version:    # <- Last update: 2025-08-24
   #
   # BASE
   #
@@ -42,7 +42,7 @@ bookshelf_const_version:    # <- Last update: 2025-08-20
   # https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
   hedgedoc: 1.10.3-alpine
   # https://hub.docker.com/r/linuxserver/heimdall/tags
-  heimdall: v2.7.4-ls319
+  heimdall: v2.7.4-ls320
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
   # => See tailscale versions in the top
@@ -63,7 +63,7 @@ bookshelf_const_version:    # <- Last update: 2025-08-20
   # => See tailscale versions in the top
   memos_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
-  metube: 2025.08.13
+  metube: 2025.08.23
   # https://hub.docker.com/r/deluan/navidrome/tags
   navidrome: 0.58.0
   # => See tailscale versions in the top
@@ -79,11 +79,11 @@ bookshelf_const_version:    # <- Last update: 2025-08-20
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
   portainer_agent: 2.33.0-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.2-r1-ls410
+  qbittorrent: 5.1.2-r1-ls411
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: v2
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
-  syncthing: v2.0.2-ls192
+  syncthing: v2.0.3-ls193
   # => See tailscale versions in the top
   syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # => See tailscale versions in the top

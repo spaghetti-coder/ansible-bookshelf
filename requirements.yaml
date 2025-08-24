@@ -2,16 +2,16 @@
 collections:
   # https://galaxy.ansible.com/ui/repo/published/ansible/posix/
   - name: ansible.posix
-    version: 2.0.0
+    version: 2.1.0
 
   # https://galaxy.ansible.com/ui/repo/published/community/docker/
   - name: community.docker
-    version: 4.6.1
+    version: 4.7.0
 
   # https://galaxy.ansible.com/ui/repo/published/community/general/
   - name: community.general
-    version: 11.0.0
+    version: 11.2.1
 
   # # https://galaxy.ansible.com/ui/repo/published/community/mysql/
   # - name: community.mysql
-  #   version: 3.14.0
+  #   version: 3.15.0
