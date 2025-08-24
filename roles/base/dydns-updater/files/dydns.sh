@@ -106,14 +106,17 @@ dydns_core() (
   )
 
   main() {
-    [[ "${1}" == '--usage' ]] && { print_help_usage; return; }
-    [[ "${1}" == '--demo' ]] && { print_help_demo; return; }
     [[ "${1}" =~ ^(-\?|-h|--help)$ ]] && { print_help; return; }
+    [ "${1}" = '--usage' ] && { print_help_usage; return; }
+    [ "${1}" = '--demo' ] && { print_help_demo; return; }
 
     declare CONF_DIR; CONF_DIR="$(dirname -- "$(realpath -- "${BASH_SOURCE[0]}" 2>/dev/null)")/config"
     . "${CONF_DIR}/secret.sh" 2>/dev/null   # <- Contains secret tokens for all DyDNSes and optionally NOTIFY_TOKEN
     . "${CONF_DIR}/config.sh" 2>/dev/null   # <- Contains the rest of DyDNS and NOTIFY_* configurations
     . "${CONF_DIR}/extra.sh" 2>/dev/null    # <- Contains the rest of DyDNS and NOTIFY_* configurations
+
+    # Test alert works, configs must be loaded by the moment
+    [ "${1}" = '--alert-test' ] && { test_alert "${@:2}"; return; }
 
     local cmd; cmd="$(get_command "${1}")" || return
 
@@ -266,6 +269,11 @@ dydns_core() (
     fi
 
     return ${rc}
+  }
+
+  test_alert() {
+    [ -z "${NOTIFY_PROVIDER}" ] && return
+    notify_core "${@}"
   }
 
   print_help_usage() {

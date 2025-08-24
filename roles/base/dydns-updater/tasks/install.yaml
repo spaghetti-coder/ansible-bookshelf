@@ -37,6 +37,12 @@
         dest: "{{ dydns_updater_confdir }}/secret.sh"
         mode: '0600'
 
+    - name: Test alert
+      ansible.builtin.command:
+        cmd: "{{ dydns_updater_path }} --alert-test -t 'Alert test' -- 'DyDNS updater'"
+      register: alert_max_traffic_test
+      changed_when: false
+
     - name: Create synlink
       ansible.builtin.file:
         path: "{{ dydns_updater_sys_path }}"
