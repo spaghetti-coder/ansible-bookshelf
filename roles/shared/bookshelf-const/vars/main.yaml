@@ -6,7 +6,7 @@ bookshelf_const_version_shared:
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.86.5
 
-bookshelf_const_version:    # <- Last update: 2025-08-24
+bookshelf_const_version:    # <- Last update: 2025-08-27
   #
   # BASE
   #
@@ -22,7 +22,7 @@ bookshelf_const_version:    # <- Last update: 2025-08-24
   # => See tailscale versions in the top
   adguard_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/advplyr/audiobookshelf/tags
-  audiobookshelf: 2.28.0
+  audiobookshelf: 2.29.0
   # => See tailscale versions in the top
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/blinkospace/blinko/tags
@@ -32,7 +32,7 @@ bookshelf_const_version:    # <- Last update: 2025-08-24
   # => See tailscale versions in the top
   blinko_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
-  code_server: v4.103.1
+  code_server: v4.103.2
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
   filebrowser: v2.42.5-s6
   # => See tailscale versions in the top
@@ -52,7 +52,7 @@ bookshelf_const_version:    # <- Last update: 2025-08-24
   # => See postgres versions in the top
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
-  mealie: v3.1.1
+  mealie: v3.1.2
   # => See tailscale versions in the top
   mealie_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/neosmemo/memos/tags
@@ -63,7 +63,7 @@ bookshelf_const_version:    # <- Last update: 2025-08-24
   # => See tailscale versions in the top
   memos_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
-  metube: 2025.08.23
+  metube: 2025.08.26
   # https://hub.docker.com/r/deluan/navidrome/tags
   navidrome: 0.58.0
   # => See tailscale versions in the top
@@ -75,9 +75,9 @@ bookshelf_const_version:    # <- Last update: 2025-08-24
   # https://hub.docker.com/r/jamesread/olivetin/tags
   olivetin: 2025.7.29
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
-  portainer: 2.33.0-alpine
+  portainer: 2.33.1-alpine
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
-  portainer_agent: 2.33.0-alpine
+  portainer_agent: 2.33.1-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
   qbittorrent: 5.1.2-r1-ls411
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
