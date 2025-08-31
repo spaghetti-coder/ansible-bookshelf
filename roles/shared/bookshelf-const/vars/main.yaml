@@ -6,7 +6,7 @@ bookshelf_const_version_shared:
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.86.5
 
-bookshelf_const_version:    # <- Last update: 2025-08-27
+bookshelf_const_version:    # <- Last update: 2025-08-31
   #
   # BASE
   #
@@ -26,7 +26,7 @@ bookshelf_const_version:    # <- Last update: 2025-08-27
   # => See tailscale versions in the top
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/blinkospace/blinko/tags
-  blinko: 1.3.1
+  blinko: 1.4.0
   # => See postgres versions in the top
   blinko_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # => See tailscale versions in the top
@@ -63,7 +63,7 @@ bookshelf_const_version:    # <- Last update: 2025-08-27
   # => See tailscale versions in the top
   memos_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
-  metube: 2025.08.26
+  metube: 2025.08.28
   # https://hub.docker.com/r/deluan/navidrome/tags
   navidrome: 0.58.0
   # => See tailscale versions in the top
@@ -79,11 +79,11 @@ bookshelf_const_version:    # <- Last update: 2025-08-27
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
   portainer_agent: 2.33.1-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.2-r1-ls411
+  qbittorrent: 5.1.2-r1-ls412
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
-  silverbullet: v2
+  silverbullet: 2.0.0
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
-  syncthing: v2.0.3-ls193
+  syncthing: v2.0.3-ls194
   # => See tailscale versions in the top
   syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # => See tailscale versions in the top
