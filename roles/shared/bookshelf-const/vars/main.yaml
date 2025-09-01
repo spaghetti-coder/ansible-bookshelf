@@ -74,6 +74,10 @@ bookshelf_const_version:    # <- Last update: 2025-08-31
   nginx_proxy_manager: 2.12.6
   # https://hub.docker.com/r/jamesread/olivetin/tags
   olivetin: 2025.7.29
+  # https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
+  pairdrop: v1.11.2-ls121
+  # => See tailscale versions in the top
+  pairdrop_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
   portainer: 2.33.1-alpine
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
@@ -139,6 +143,8 @@ bookshelf_const_port:
     https: 443
   olivetin:
     web_ui: 8096
+  pairdrop:
+    web_ui: 8104        # <- Last (8081+)
   portainer:
     web_ui: 8086
     tunnel: 8000
@@ -148,7 +154,7 @@ bookshelf_const_port:
     web_ui: 8088
     torrenting: 6881
   silverbullet:
-    web_ui: 8103        # <- Last (8081+)
+    web_ui: 8103
   syncthing:
     web_ui: 8091
     file_transfers: 22000

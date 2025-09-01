@@ -719,6 +719,40 @@ olivetin_volumes:
   - '~:/app/home:ro'
 olivetin_config: "{{ lookup('file', 'config.yaml') }}"
 
+# ====================
+#       PAIRDROP
+# ====================
+# Transfer Files Cross-Platform. No Setup, No Signup.
+#   https://github.com/schlagmichdoch/PairDrop
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
+#   * => See tailscale role versions
+# -----
+pairdrop_managed: true
+pairdrop_enabled: true
+pairdrop_version:       # Leave blank to leverage bookshelf configuration
+pairdrop_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
+pairdrop_owner: "{{ ansible_user_id }}"
+pairdrop_service_name: pairdrop
+pairdrop_hostname: "{{ pairdrop_service_name }}"
+pairdrop_vhost: "{{ pairdrop_service_name }}.domain.local"
+pairdrop_web_ui_port:   # Leave blank to leverage bookshelf configuration
+pairdrop_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional extra env vars, will affect both PairDrop and tailscale.
+pairdrop_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/pairdrop.env.j2') }}"
+  FOO1=bar1
+  FOO2=bar2
+# ----------
+# The following settings configure PairDrop to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+pairdrop_tailscaled: false
+pairdrop_tailscale_version:    # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+pairdrop_tailscale_ts_hostname: "{{ pairdrop_service_name }}-tailscale"
+pairdrop_tailscale_auth_key:
+
 # ===========================
 #       PORTAINER-AGENT
 # ===========================
