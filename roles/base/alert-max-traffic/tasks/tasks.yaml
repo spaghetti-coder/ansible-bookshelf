@@ -23,18 +23,22 @@
         src: alert.sh.j2
         dest: "{{ alert_max_traffic_path }}"
         mode: '0755'
+      register: alert_max_traffic_install_state
 
     - name: Create notify secret
       ansible.builtin.template:
         src: alert._secret_.sh.j2
         dest: "{{ tool_home }}/alert._secret_.sh"
         mode: '0600'
+      register: alert_max_traffic_secret_state
 
     - name: Test installation
       ansible.builtin.command:
         cmd: "{{ alert_max_traffic_path }} --alert-test -t 'Alert test' -- 'Max traffic'"
-      register: alert_max_traffic_test
-      changed_when: false
+      changed_when: true
+      when: |
+        alert_max_traffic_install_state.changed
+        or alert_max_traffic_secret_state.changed
 
     - name: Setup cron
       ansible.builtin.cron:
@@ -45,7 +49,6 @@
         interface: "{{ alert_max_traffic_interface }}"
         max_day: "{{ alert_max_traffic_max_day }}"
         max_month: "{{ alert_max_traffic_max_month }}"
-      when: alert_max_traffic_test.rc < 1
 
 - name: Mark done
   ansible.builtin.set_fact:

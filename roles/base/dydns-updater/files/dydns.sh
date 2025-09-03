@@ -292,8 +292,12 @@ dydns_core() (
     echo "
       # (Given ${provider} provider configured)
      ,
-      # Verify provider configuration
+      # Verify provider configuration for provider
       ${self_script} verify ${provider}
+     ,
+      # Send test alert message if NOTIFY_PROVIDER is configured.
+      # All args after '--test-alert' flag go to nogify script.
+      ${self_script} --test-alert -t 'Alert test' -- 'DyDNS updater'
      ,
       # Update all configured provider hosts
       ${self_script} update ${provider}

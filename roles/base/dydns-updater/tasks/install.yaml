@@ -18,6 +18,7 @@
         src: dydns.sh
         dest: "{{ dydns_updater_path }}"
         mode: '0755'
+      register: dydns_updater_install_state
 
     - name: Create config directory
       ansible.builtin.file:
@@ -30,18 +31,23 @@
         src: config.sh.j2
         dest: "{{ dydns_updater_confdir }}/config.sh"
         mode: '0600'
+      register: dydns_updater_config_state
 
     - name: Create secret file
       ansible.builtin.template:
         src: secret.sh.j2
         dest: "{{ dydns_updater_confdir }}/secret.sh"
         mode: '0600'
+      register: dydns_updater_secret_state
 
     - name: Test alert
       ansible.builtin.command:
         cmd: "{{ dydns_updater_path }} --alert-test -t 'Alert test' -- 'DyDNS updater'"
-      register: alert_max_traffic_test
-      changed_when: false
+      changed_when: true
+      when: |
+        dydns_updater_install_state.changed
+        or dydns_updater_config_state.changed
+        or dydns_updater_secret_state.changed
 
     - name: Create synlink
       ansible.builtin.file:

@@ -20,25 +20,28 @@
         src: alert.sh.j2
         dest: "{{ alert_ssh_path }}"
         mode: '0755'
+      register: alert_ssh_install_state
 
     - name: Create notify secret
       ansible.builtin.template:
         src: alert._secret_.sh.j2
         dest: "{{ tool_home }}/alert._secret_.sh"
         mode: '0600'
+      register: alert_ssh_secret_state
 
     - name: Test installation
       ansible.builtin.command:
         cmd: "{{ alert_ssh_path }} --alert-test -t 'Alert test' -- 'SSH'"
-      register: alert_ssh_test
-      changed_when: false
+      changed_when: true
+      when: |
+        alert_ssh_install_state.changed
+        or alert_ssh_secret_state.changed
 
     - name: Add to pam.d/ssh
       ansible.builtin.blockinfile:
         path: /etc/pam.d/sshd
         marker: "# {mark} alert-ssh"
         block: session required pam_exec.so {{ alert_ssh_path }}
-      when: alert_ssh_test.rc < 1
 
 - name: Mark done
   ansible.builtin.set_fact:
