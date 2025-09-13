@@ -1035,6 +1035,35 @@ vaultwarden_extra_env: |    # "{{ lookup('file', playbook_dir + '/resources/vaul
   FOO2=bar2
 
 # ===================
+#       VIKUNJA
+# ===================
+vikunja_managed: "{{ factum_os_family in ['alpine'] }}"
+vikunja_enabled: true
+vikunja_version:            # Leave blank to leverage bookshelf configuration
+vikunja_postgres_version:   # Leave blank to leverage bookshelf configuration
+vikunja_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
+vikunja_owner: "{{ ansible_user_id }}"
+vikunja_conf_dir: ~/conf/vikunja
+vikunja_service_name: vikunja
+vikunja_hostname: "{{ vikunja_service_name }}"
+vikunja_vhost: "{{ vikunja_service_name }}.domain.local"
+vikunja_web_ui_port:        # Leave blank to leverage bookshelf configuration
+vikunja_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+vikunja_db_pass: changeme     # (REQUIRED) Something hard and random
+vikunja_jwtsecret: changeme   # (REQUIRED) Something hard and random
+# Optional extra env vars, will affect both Vikunja and Tailscale.
+vikunja_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/vikunja.env.j2') }}"
+  FOO1=bar1
+  FOO2=bar2
+# ----------
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+vikunja_tailscaled: false
+vikunja_tailscale_version:  # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+vikunja_tailscale_ts_hostname: "{{ vikunja_service_name }}-tailscale"
+vikunja_tailscale_auth_key:
+
+# ===================
 #       WG-EASY
 # ===================
 # The easiest way to run WireGuard VPN + Web-based Admin UI.

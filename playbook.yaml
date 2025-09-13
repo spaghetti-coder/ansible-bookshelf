@@ -203,6 +203,10 @@
       tags: [vaultwarden, upgradable]
       when: vaultwarden_managed | default(false)
 
+    - role: vikunja
+      tags: [vikunja, upgradable]
+      when: vikunja_managed | default(false)
+
     - role: wg-easy
       tags: [wg-easy, upgradable]
       when: wg_easy_managed | default(false)

@@ -1,0 +1,36 @@
+---
+# The to-do app to organize your life.
+#   https://vikunja.io/
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/vikunja/vikunja/tags
+#   * https://hub.docker.com/_/postgres/tags?name=alpine
+#   * => See tailscale role versions
+# Options:
+#   * https://vikunja.io/docs/config-options/
+# -----
+vikunja_managed: false
+vikunja_enabled: false
+vikunja_version:            # Leave blank to leverage bookshelf configuration
+vikunja_postgres_version:   # Leave blank to leverage bookshelf configuration
+vikunja_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
+vikunja_owner: "{{ ansible_user_id }}"
+vikunja_conf_dir: ~/conf/vikunja
+vikunja_service_name: vikunja
+vikunja_hostname: "{{ vikunja_service_name }}"
+vikunja_vhost: "{{ vikunja_service_name }}.domain.local"
+vikunja_web_ui_port:        # Leave blank to leverage bookshelf configuration
+vikunja_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+vikunja_db_pass:            # (REQUIRED) Something hard and random
+vikunja_jwtsecret:          # (REQUIRED) Something hard and random
+# Optional extra env vars, will affect both Vikunja and Tailscale.
+vikunja_extra_env:          # "{{ lookup('template', playbook_dir + '/resources/vikunja.env.j2') }}"
+# ----------
+# The following settings configure Vikunja to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+vikunja_tailscaled: false
+vikunja_tailscale_version:  # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+vikunja_tailscale_ts_hostname: "{{ vikunja_service_name }}-tailscale"
+vikunja_tailscale_auth_key:

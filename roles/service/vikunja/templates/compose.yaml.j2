@@ -1,35 +1,27 @@
-{% set version = (blinko_version | default(bookshelf_const_version.blinko, true)) %}
-{% set postgres_version = (blinko_postgres_version | default(bookshelf_const_version.blinko_postgres, true)) %}
-{% set web_ui_port = (blinko_web_ui_port | default(bookshelf_const_port.blinko.web_ui, true)) %}
-{% set db_service = (blinko_service_name + '-db') %}
-{% set tailscale_version = (blinko_tailscale_version | default(bookshelf_const_version.blinko_tailscale, true)) %}
-{% set tailscale_service = (blinko_service_name + '-tailscale') %}
+{% set version = (vikunja_version | default(bookshelf_const_version.vikunja, true)) %}
+{% set postgres_version = (vikunja_postgres_version | default(bookshelf_const_version.vikunja_postgres, true)) %}
+{% set web_ui_port = (vikunja_web_ui_port | default(bookshelf_const_port.vikunja.web_ui, true)) %}
+{% set db_service = (vikunja_service_name + '-db') %}
+{% set tailscale_version = (vikunja_tailscale_version | default(bookshelf_const_version.vikunja_tailscale, true)) %}
+{% set tailscale_service = (vikunja_service_name + '-tailscale') %}
 ---
 services:
-  blinko:
-    # https://hub.docker.com/r/blinkospace/blinko/tags
-    image: blinkospace/blinko:{{ version }}
-    container_name: {{ blinko_service_name }}
+  vikunja:
+    # https://hub.docker.com/r/vikunja/vikunja/tags
+    image: vikunja/vikunja:{{ version }}
+    container_name: {{ vikunja_service_name }}
     restart: unless-stopped
     env_file:
-      - secret.env
       - main.env
+      - secret.env
+      # https://vikunja.io/docs/config-options/
+      - extra.env
     depends_on:
       {{ db_service }}:
         condition: service_healthy
     volumes:
-      - '{{ conf_dir }}/config:/app/.blinko'
-      - ./healthcheck.sh:/healthcheck.sh:ro
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "3"
-    healthcheck:
-      test: ["CMD", "sh", "/healthcheck.sh", "http://127.0.0.1:{{ blinko_web_ui_port_int }}"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
+      - '{{ conf_dir }}/config:/app/vikunja/files'
+    user: "{{ user_uid }}:{{ user_gid }}"
     network_mode: "service:{{ db_service }}"
 
   {{ db_service }}:
@@ -38,17 +30,16 @@ services:
     container_name: {{ db_service }}
     restart: unless-stopped
     env_file:
-      - secret.env
       - main.env
+      - secret.env
     volumes:
       - '{{ conf_dir }}/db:/var/lib/postgresql/data'
     healthcheck:
-      # User and dbname must me same as in .env file
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 10s
       retries: 5
-{% if blinko_tailscaled %}
+{% if vikunja_tailscaled %}
     network_mode: "service:{{ tailscale_service }}"
 
   {{ tailscale_service }}:
@@ -69,18 +60,18 @@ services:
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
-{% endif %}{# blinko_tailscaled #}
-    hostname: {{ blinko_hostname }}
+{% endif %}{# vikunja_tailscaled #}
+    hostname: {{ vikunja_hostname }}
     ports:
-      - "{{ web_ui_port }}:{{ blinko_web_ui_port_int }}"
+      - "{{ web_ui_port }}:{{ vikunja_web_ui_port_int }}"
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge
 {% else %}
     networks:
       - {{ nginx_proxy_net }}
     environment:
-      - VIRTUAL_HOST={{ blinko_vhost }}
-      - VIRTUAL_PORT={{ blinko_web_ui_port_int }}
+      - VIRTUAL_HOST={{ vikunja_vhost }}
+      - VIRTUAL_PORT={{ vikunja_web_ui_port_int }}
 
 networks:
   {{ nginx_proxy_net }}:
