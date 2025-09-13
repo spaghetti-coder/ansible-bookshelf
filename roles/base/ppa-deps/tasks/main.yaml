@@ -1,16 +1,7 @@
 ---
-- name: Create keyrings directory
-  ansible.builtin.file:
-    path: "{{ ppa_deps_keyrings_dir }}"
-    state: directory
-    mode: '0755'
-  become: true
-  when: factum_os_like in ['debian', 'ubuntu']
-
-# - name: Install packages  # <- Not needed when downloading asc keys directly
-#   ansible.builtin.package:
-#     name:
-#       - ca-certificates
-#       - gpg
-#   become: true
-#   when: factum_os_like in ['debian', 'ubuntu']
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  when:
+    not (ppa_deps_done | default(false))
+    and (factum_os_like in ['debian', 'ubuntu'])

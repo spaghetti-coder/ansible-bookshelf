@@ -38,12 +38,13 @@ services:
     container_name: {{ db_service }}
     restart: unless-stopped
     env_file:
+      - secret.env
       - main.env
     volumes:
       - '{{ conf_dir }}/db:/var/lib/postgresql/data'
     healthcheck:
       # User and dbname must me same as in .env file
-      test: ["CMD", "pg_isready", "-U", "blinko", "-d", "blinko"]
+      test: ["CMD", "pg_isready", "-U", "$${POSTGRES_USER}", "-d", "$${POSTGRES_DB}"]
       interval: 5s
       timeout: 10s
       retries: 5

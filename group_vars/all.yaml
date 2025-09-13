@@ -37,13 +37,28 @@ ansible_become_password: "{{ lookup('env', 'ANSIBLE_USER_PASS') }}"
 age_managed: true
 age_version:    # Leave blank to leverage bookshelf configuration
 
+# =============================
+#       ALERT-MAX-TRAFFIC
+# =============================
+alert_max_traffic_managed: false
+# notify-sh configuration
+alert_max_traffic_provider:    # (REQUIRED) See supported in notify-sh role
+alert_max_traffic_token:       # (REQUIRED)
+alert_max_traffic_server:      # (REQUIRED for gotify)
+alert_max_traffic_chat_id:     # (REQUIRED for telegram)
+# Traffic alert settings
+alert_max_traffic_interface:   # (REQUIRED) Network interface
+# Max total traffic in MiB
+alert_max_traffic_max_day:     # (OPTIONAL)
+alert_max_traffic_max_month:   # (OPTIONAL)
+
 # =====================
 #       ALERT-SSH
 # =====================
 # SSH login notificator.
 # Inspired by https://www.youtube.com/watch?v=VzH4NfJMiQc
 # -----
-alert_ssh_managed: "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
+alert_ssh_managed: false   #  "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
 alert_ssh_provider: gotify              # (REQUIRED) See supported in notify-sh role
 alert_ssh_token: 123                    # (REQUIRED)
 alert_ssh_server: https://gotify.home   # (REQUIRED for gotify)
@@ -137,21 +152,6 @@ git_extraconf:
   #   # No variables, as it's not a template
   # # ...
 
-# =============================
-#       ALERT-MAX-TRAFFIC
-# =============================
-alert_max_traffic_managed: false
-# notify-sh configuration
-alert_max_traffic_provider:    # (REQUIRED) See supported in notify-sh role
-alert_max_traffic_token:       # (REQUIRED)
-alert_max_traffic_server:      # (REQUIRED for gotify)
-alert_max_traffic_chat_id:     # (REQUIRED for telegram)
-# Traffic alert settings
-alert_max_traffic_interface:   # (REQUIRED) Network interface
-# Max total traffic in MiB
-alert_max_traffic_max_day:     # (OPTIONAL)
-alert_max_traffic_max_month:   # (OPTIONAL)
-
 # =====================
 #       NOTIFY-SH
 # =====================
@@ -241,7 +241,7 @@ vnstat_managed: true
 
 
 
-###################
+###################   # All docker services are only tested in alpine
 ###   SERVICE   ###
 ###################
 
@@ -252,7 +252,7 @@ vnstat_managed: true
 #   * https://hub.docker.com/r/adguard/adguardhome/tags
 #   * => See tailscale role versions
 # -----
-adguard_managed: "{{ factum_os_like not in ['ubuntu'] }}"   # <- All hosts but Ubuntu
+adguard_managed: "{{ factum_os_family in ['alpine'] }}"   # "{{ factum_os_like not in ['ubuntu'] }}"   # <- All hosts but Ubuntu
 adguard_enabled: true
 adguard_version:        # Leave blank to leverage bookshelf configuration
 adguard_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -292,7 +292,7 @@ adguard_tailscale_auth_key:
 #   * https://hub.docker.com/r/advplyr/audiobookshelf/tags
 #   * => See tailscale role versions
 # -----
-audiobookshelf_managed: true
+audiobookshelf_managed: "{{ factum_os_family in ['alpine'] }}"
 audiobookshelf_enabled: true
 audiobookshelf_version:       # Leave blank to leverage bookshelf configuration
 audiobookshelf_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -332,7 +332,7 @@ audiobookshelf_tailscale_auth_key:
 #   * https://hub.docker.com/_/postgres/tags?name=alpine
 #   * => See tailscale role versions
 # -----
-blinko_managed: true
+blinko_managed: "{{ factum_os_family in ['alpine'] }}"
 blinko_enabled: true
 blinko_version:             # Leave blank to leverage bookshelf configuration
 blinko_postgres_version:    # Leave blank to leverage bookshelf configuration
@@ -389,7 +389,7 @@ code_server_user_conf:      # "{{ lookup('template', 'sane.json.j2') }}"
 #   * https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
 #   * => See tailscale role versions
 # -----
-filebrowser_managed: true
+filebrowser_managed: "{{ factum_os_family in ['alpine'] }}"
 filebrowser_enabled: true
 filebrowser_version:        # Leave blank to leverage bookshelf configuration
 filebrowser_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -420,7 +420,7 @@ filebrowser_tailscale_auth_key:
 # ==================
 # VERSIONS: https://hub.docker.com/r/gotify/server/tags
 # -----
-gotify_managed: true
+gotify_managed: "{{ factum_os_family in ['alpine'] }}"
 gotify_enabled: true
 gotify_version:       # Leave blank to leverage bookshelf configuration
 gotify_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -442,7 +442,7 @@ gotify_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 #     They can be overriden with extra_env
 #   * with restrictions in place users registration with ./bin/manage_users tool.
 # -----
-hedgedoc_managed: true
+hedgedoc_managed: "{{ factum_os_family in ['alpine'] }}"
 hedgedoc_enabled: true
 hedgedoc_version:       # Leave blank to leverage bookshelf configuration
 hedgedoc_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -464,7 +464,7 @@ hedgedoc_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/hed
 # ====================
 # VERSIONS: https://hub.docker.com/r/linuxserver/heimdall/tags
 # -----
-heimdall_managed: true
+heimdall_managed: "{{ factum_os_family in ['alpine'] }}"
 heimdall_enabled: true
 heimdall_version:       # Leave blank to leverage bookshelf configuration
 heimdall_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -488,7 +488,7 @@ heimdall_base_url: http://{{ ansible_default_ipv4.address }}:{{ heimdall_ext_por
 #   * https://hub.docker.com/r/linuxserver/jellyfin/tags
 #   * => See tailscale role versions
 # -----
-jellyfin_managed: true
+jellyfin_managed: "{{ factum_os_family in ['alpine'] }}"
 jellyfin_enabled: true
 jellyfin_version:       # Leave blank to leverage bookshelf configuration
 jellyfin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -521,7 +521,7 @@ jellyfin_tailscale_auth_key:
 #   * https://hub.docker.com/r/joplin/server/tags
 #   * https://hub.docker.com/_/postgres/tags?name=alpine
 # -----
-joplin_server_managed: true
+joplin_server_managed: "{{ factum_os_family in ['alpine'] }}"
 joplin_server_enabled: true
 joplin_server_version:              # Leave blank to leverage bookshelf configuration
 joplin_server_postgres_version:     # Leave blank to leverage bookshelf configuration
@@ -544,7 +544,7 @@ joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # =====================
 # VERSIONS: https://hub.docker.com/r/deluan/navidrome/tags
 # -----
-navidrome_managed: true
+navidrome_managed: "{{ factum_os_family in ['alpine'] }}"
 navidrome_enabled: true
 navidrome_version:        # Leave blank to leverage bookshelf configuration
 navidrome_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -581,7 +581,7 @@ navidrome_tailscale_auth_key:
 #   * https://github.com/mealie-recipes/mealie/pkgs/container/mealie
 #   * => See tailscale role versions
 # -----
-mealie_managed: true
+mealie_managed: "{{ factum_os_family in ['alpine'] }}"
 mealie_enabled: true
 mealie_version:       # Leave blank to leverage bookshelf configuration
 mealie_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -610,7 +610,7 @@ mealie_tailscale_auth_key:
 # VERSIONS:
 #   * https://hub.docker.com/r/neosmemo/memos/tags
 # -----
-memos_managed: true
+memos_managed: "{{ factum_os_family in ['alpine'] }}"
 memos_enabled: true
 memos_version:        # Leave blank to leverage bookshelf configuration
 memos_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -639,7 +639,7 @@ memos_tailscale_auth_key:
 # ==================
 # VERSIONS: https://github.com/alexta69/metube/pkgs/container/metube
 # -----
-metube_managed: true
+metube_managed: "{{ factum_os_family in ['alpine'] }}"
 metube_enabled: true
 metube_version:       # Leave blank to leverage bookshelf configuration
 metube_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -662,7 +662,7 @@ metube_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/metube
 # =======================
 # VERSIONS: https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
 # -----
-nginx_proxy_manager_managed: true
+nginx_proxy_manager_managed: "{{ factum_os_family in ['alpine'] }}"
 nginx_proxy_manager_enabled: true
 nginx_proxy_manager_version:          # Leave blank to leverage bookshelf configuration
 nginx_proxy_manager_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -688,7 +688,7 @@ nginx_proxy_manager_extra_env: |      # "{{ lookup('template', playbook_dir + '/
 # Exposes:
 # * nxinx_proxy_net - proxy network name
 # -----
-nginx_proxy_managed: true
+nginx_proxy_managed: "{{ factum_os_family in ['alpine'] }}"
 nginx_proxy_enabled: true
 nginx_proxy_version:        # Leave blank to leverage bookshelf configuration
 nginx_proxy_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -702,7 +702,7 @@ nginx_proxy_certs_dir:      # Path to certs on the managed machine. Works paired
 # ====================
 #       OLIVETIN
 # ====================
-olivetin_managed: true
+olivetin_managed: "{{ factum_os_family in ['alpine'] }}"
 olivetin_enabled: true
 olivetin_version:       # Leave blank to leverage bookshelf configuration
 olivetin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -729,7 +729,7 @@ olivetin_config: "{{ lookup('file', 'config.yaml') }}"
 #   * https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
 #   * => See tailscale role versions
 # -----
-pairdrop_managed: true
+pairdrop_managed: "{{ factum_os_family in ['alpine'] }}"
 pairdrop_enabled: true
 pairdrop_version:       # Leave blank to leverage bookshelf configuration
 pairdrop_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -759,7 +759,7 @@ pairdrop_tailscale_auth_key:
 # Versions:
 # * https://hub.docker.com/r/portainer/agent/tags?name=alpine
 # -----
-portainer_agent_managed: true
+portainer_agent_managed: "{{ factum_os_family in ['alpine'] }}"
 portainer_agent_enabled: true
 portainer_agent_version:        # Leave blank to leverage bookshelf configuration
 portainer_agent_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -775,7 +775,7 @@ portainer_agent_tcp_port: 9002  # Leave blank to leverage bookshelf configuratio
 # Versions:
 # * https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
 # -----
-portainer_managed: true
+portainer_managed: "{{ factum_os_family in ['alpine'] }}"
 portainer_enabled: true
 portainer_version:        # Leave blank to leverage bookshelf configuration
 portainer_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -804,7 +804,7 @@ portainer_agent_ready: true
 #
 # NOTE 2: Switch to alternative UI
 #   Settings > WebUI > check Use alternative WebUI, Files location: /vuetorrent
-qbittorrent_managed: true
+qbittorrent_managed: "{{ factum_os_family in ['alpine'] }}"
 qbittorrent_enabled: true
 qbittorrent_version:              # Leave blank to leverage bookshelf configuration
 qbittorrent_vuetorrent_version:   # Leave blank to leverage bookshelf configuration
@@ -838,7 +838,7 @@ qbittorrent_extra_env: |          # "{{ lookup('template', playbook_dir + '/reso
 # Versions:
 # * https://hub.docker.com/r/crazymax/samba/tags
 # -----
-samba_managed: true
+samba_managed: "{{ factum_os_family in ['alpine'] }}"
 samba_enabled: true
 samba_version:        # Leave blank to leverage bookshelf configuration
 samba_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -861,7 +861,7 @@ samba_extra_envfile:
 # VERSIONS:
 #   * https://hub.docker.com/r/zefhemel/silverbullet/tags
 # -----
-silverbullet_managed: true
+silverbullet_managed: "{{ factum_os_family in ['alpine'] }}"
 silverbullet_enabled: true
 silverbullet_version:       # Leave blank to leverage bookshelf configuration
 silverbullet_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -886,7 +886,7 @@ silverbullet_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/
 # Versions:
 # * https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
 # -----
-syncthing_managed: true
+syncthing_managed: "{{ factum_os_family in ['alpine'] }}"
 syncthing_enabled: true
 syncthing_version:              # Leave blank to leverage bookshelf configuration
 syncthing_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -975,7 +975,7 @@ twingate_extra_env: |     # "{{ lookup('file', playbook_dir + '/resources/twinga
 #   * https://hub.docker.com/r/louislam/uptime-kuma/tags?name=alpine
 #   * => See tailscale role versions
 # -----
-uptime_kuma_managed: true
+uptime_kuma_managed: "{{ factum_os_family in ['alpine'] }}"
 uptime_kuma_enabled: true
 uptime_kuma_version:        # Leave blank to leverage bookshelf configuration
 uptime_kuma_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -1010,7 +1010,7 @@ uptime_kuma_tailscale_auth_key:
 # Options description:
 # * https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
 # -----
-vaultwarden_managed: true
+vaultwarden_managed: "{{ factum_os_family in ['alpine'] }}"
 vaultwarden_enabled: true
 vaultwarden_version:        # Leave blank to leverage bookshelf configuration
 vaultwarden_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -1046,7 +1046,7 @@ vaultwarden_extra_env: |    # "{{ lookup('file', playbook_dir + '/resources/vaul
 # * https://github.com/wg-easy/wg-easy/tree/production?tab=readme-ov-file#options
 # * https://github.com/wg-easy/wg-easy/blob/production/How_to_generate_an_bcrypt_hash.md
 # -----
-wg_easy_managed: true
+wg_easy_managed: "{{ factum_os_family in ['alpine'] }}"
 wg_easy_enabled: true
 wg_easy_version:        # Leave blank to leverage bookshelf configuration
 wg_easy_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration

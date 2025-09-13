@@ -38,7 +38,7 @@ deploy_ve_config() {
   PVE_HOST="${DEPLOY_VE_PVE_HOST}"
 
   # Best match from available templates: http://download.proxmox.com/images/system
-  VE_TEMPLATE=debian-12
+  VE_TEMPLATE=debian-13
   VE_ID="${DEPLOY_VE_DEBIAN_ID}"
 
   CREATE_FLAGS=(              # <- Create LXC flags, '--password' is autoappended with value from EXTRAS[root_pass]

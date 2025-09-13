@@ -1,0 +1,20 @@
+---
+- name: Privileged
+  become: true
+  block:
+    - name: Create keyrings directory
+      ansible.builtin.file:
+        path: "{{ ppa_deps_keyrings_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Install packages
+      ansible.builtin.package:
+        name:
+          # - ca-certificates   # <- Not needed when downloading asc keys directly
+          - gnupg2
+      when: factum_os_like in ['debian']  # <- Not required by ubuntu 24.04
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    ppa_deps_done: true
