@@ -100,6 +100,12 @@ bookshelf_const_version:    # <- Last update: 2025-09-13
   uptime_kuma_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
   vaultwarden: 1.34.3-alpine
+  # https://hub.docker.com/r/vikunja/vikunja/tags
+  vikunja: 0.24.6
+  # => See postgres versions in the top
+  vikunja_postgres: "{{ bookshelf_const_version_shared.postgres }}"
+  # => See tailscale versions in the top
+  vikunja_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
   vuetorrent: 2.29.0
   # https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
@@ -144,7 +150,7 @@ bookshelf_const_port:
   olivetin:
     web_ui: 8096
   pairdrop:
-    web_ui: 8104        # <- Last (8081+)
+    web_ui: 8104
   portainer:
     web_ui: 8086
     tunnel: 8000
@@ -163,6 +169,8 @@ bookshelf_const_port:
     web_ui: 8098
   vaultwarden:
     web_ui: 8089
+  vikunja:
+    web_ui: 8105        # <- Last (8081+)
   wg_easy:
     web_ui: 8082
   # Reserved:
