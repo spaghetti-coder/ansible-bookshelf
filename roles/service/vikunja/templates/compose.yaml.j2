@@ -12,8 +12,9 @@ services:
     container_name: {{ vikunja_service_name }}
     restart: unless-stopped
     env_file:
-      - secret.env
       - main.env
+      - secret.env
+      # https://vikunja.io/docs/config-options/
       - extra.env
     depends_on:
       {{ db_service }}:
@@ -22,11 +23,6 @@ services:
       - '{{ conf_dir }}/config:/app/vikunja/files'
     network_mode: "service:{{ db_service }}"
 
-
-
-
-
-
   {{ db_service }}:
     # https://hub.docker.com/_/postgres/tags?name=alpine
     image: postgres:{{ postgres_version }}
@@ -34,6 +30,7 @@ services:
     restart: unless-stopped
     env_file:
       - main.env
+      - secret.env
     volumes:
       - '{{ conf_dir }}/db:/var/lib/postgresql/data'
     healthcheck:
