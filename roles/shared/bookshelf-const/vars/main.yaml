@@ -86,6 +86,10 @@ bookshelf_const_version:    # <- Last update: 2025-09-13
   qbittorrent: 5.1.2-r2-ls414
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: 2.0.0
+  # https://hub.docker.com/r/rnwood/smtp4dev/tags?name=v
+  smtp4dev: v3.10
+  # => See tailscale versions in the top
+  smtp4dev_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
   syncthing: v2.0.8-ls195
   # => See tailscale versions in the top
@@ -161,6 +165,10 @@ bookshelf_const_port:
     torrenting: 6881
   silverbullet:
     web_ui: 8103
+  smtp4dev:
+    web_ui: 8106        # <- Last (8081+)
+    smtp: 1025
+    imap: 10143
   syncthing:
     web_ui: 8091
     file_transfers: 22000
@@ -170,7 +178,7 @@ bookshelf_const_port:
   vaultwarden:
     web_ui: 8089
   vikunja:
-    web_ui: 8105        # <- Last (8081+)
+    web_ui: 8105
   wg_easy:
     web_ui: 8082
   # Reserved:

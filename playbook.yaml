@@ -183,6 +183,10 @@
       tags: [silverbullet, upgradable]
       when: silverbullet_managed | default(false)
 
+    - role: smtp4dev
+      tags: [smtp4dev, upgradable]
+      when: smtp4dev_managed | default(false)
+
     - role: syncthing
       tags: [syncthing, upgradable]
       when: syncthing_managed | default(false)

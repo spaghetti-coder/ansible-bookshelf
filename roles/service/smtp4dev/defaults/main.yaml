@@ -1,0 +1,38 @@
+---
+# Fake smtp email server for development and testing.
+#   https://github.com/rnwood/smtp4dev
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/rnwood/smtp4dev/tags?name=v
+#   * => See tailscale role versions
+# Configuration:
+#   * https://github.com/rnwood/smtp4dev/blob/master/docs/Configuration.md
+#   * https://github.com/rnwood/smtp4dev/blob/master/Rnwood.Smtp4dev/appsettings.json
+# -----
+# Exposes:
+#   * smtp4dev_smtp_port_ext - to be used by other tools
+#   * smtp4dev_imap_port_ext - to be used by other tools
+# -----
+smtp4dev_managed: false
+smtp4dev_enabled: false
+smtp4dev_version:       # Leave blank to leverage bookshelf configuration
+smtp4dev_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
+smtp4dev_owner: "{{ ansible_user_id }}"
+smtp4dev_conf_dir: ~/conf/smtp4dev
+smtp4dev_service_name: smtp4dev
+smtp4dev_hostname: "{{ smtp4dev_service_name }}"
+smtp4dev_vhost: "{{ smtp4dev_service_name }}.domain.local"
+smtp4dev_web_ui_port:   # Leave blank to leverage bookshelf configuration
+smtp4dev_smtp_port:     # Leave blank to leverage bookshelf configuration
+smtp4dev_imap_port:     # Leave blank to leverage bookshelf configuration
+# Optional extra env vars, will affect both smtp4dev and tailscale.
+smtp4dev_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/smtp4dev.env.j2') }}"
+# ----------
+# The following settings configure smtp4dev to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+smtp4dev_tailscaled: false
+smtp4dev_tailscale_version:    # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+smtp4dev_tailscale_ts_hostname: "{{ smtp4dev_service_name }}-tailscale"
+smtp4dev_tailscale_auth_key:
