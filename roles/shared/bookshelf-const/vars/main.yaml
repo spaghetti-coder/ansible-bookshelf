@@ -4,9 +4,9 @@ bookshelf_const_version_shared:
   postgres: 16.9-alpine3.22
   # NOTE: With version update also update auth key: https://tailscale.com/admin/settings/keys
   # https://hub.docker.com/r/tailscale/tailscale/tags
-  tailscale: v1.86.5
+  tailscale: v1.88.2
 
-bookshelf_const_version:    # <- Last update: 2025-09-15
+bookshelf_const_version:    # <- Last update: 2025-09-18
   #
   # BASE
   #
@@ -18,7 +18,7 @@ bookshelf_const_version:    # <- Last update: 2025-09-15
   # SERVICE
   #
   # https://hub.docker.com/r/adguard/adguardhome/tags
-  adguard: v0.107.65
+  adguard: v0.107.66
   # => See tailscale versions in the top
   adguard_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/advplyr/audiobookshelf/tags
@@ -26,13 +26,13 @@ bookshelf_const_version:    # <- Last update: 2025-09-15
   # => See tailscale versions in the top
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/blinkospace/blinko/tags
-  blinko: 1.4.0
+  blinko: 1.4.1
   # => See postgres versions in the top
   blinko_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # => See tailscale versions in the top
   blinko_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
-  code_server: v4.103.2
+  code_server: v4.104.0
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
   filebrowser: v2.43.0-s6
   # => See tailscale versions in the top
@@ -42,7 +42,7 @@ bookshelf_const_version:    # <- Last update: 2025-09-15
   # https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
   hedgedoc: 1.10.3-alpine
   # https://hub.docker.com/r/linuxserver/heimdall/tags
-  heimdall: v2.7.5-ls320
+  heimdall: v2.7.6-ls320
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
   # => See tailscale versions in the top
@@ -59,7 +59,7 @@ bookshelf_const_version:    # <- Last update: 2025-09-15
   # IMPORTANT:
   #   - Check release notes before update: https://github.com/usememos/memos/releases
   #   - Consider backup before upgrade: https://www.usememos.com/docs/install/upgrade
-  memos: 0.25.0
+  memos: 0.25.1
   # => See tailscale versions in the top
   memos_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
@@ -79,9 +79,9 @@ bookshelf_const_version:    # <- Last update: 2025-09-15
   # => See tailscale versions in the top
   pairdrop_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
-  portainer: 2.33.1-alpine
+  portainer: 2.34.0-alpine
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
-  portainer_agent: 2.33.1-alpine
+  portainer_agent: 2.34.0-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
   qbittorrent: 5.1.2-r2-ls415
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
