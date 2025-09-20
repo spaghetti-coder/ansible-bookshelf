@@ -10,10 +10,8 @@ services:
     container_name: {{ smtp4dev_service_name }}
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      # https://github.com/rnwood/smtp4dev/blob/master/Rnwood.Smtp4dev/appsettings.json
-      - ./extra.env
+      - ./main.env
     volumes:
       - '{{ conf_dir }}/config:/smtp4dev'
 {% if smtp4dev_tailscaled %}
@@ -25,9 +23,8 @@ services:
     container_name: {{ smtp4dev_service_name }}-tailscale
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
     volumes:
       - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
       # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json

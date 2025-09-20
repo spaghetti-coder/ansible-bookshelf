@@ -5,6 +5,7 @@
   changed_when: getent_passwd[user].5 != '/bin/bash'
   register: bash_user_state
   become: true
+  become_user: root
 
 - name: Reload users database
   # noqa: no-handler

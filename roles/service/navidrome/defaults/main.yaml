@@ -7,10 +7,9 @@
 #   * https://hub.docker.com/r/deluan/navidrome/tags
 #   * => See tailscale role versions
 # -----
-# NOTE 1: Due to switching users in the role don't use shortcuts in the paths
-# (like '~'), use absolute paths. For HOMEs available:
-#   "{{ navidrome_owner_home }}"
-#   "{{ navidrome_user_home }}"
+# NOTE 1:
+#   * for navidrome_data_dir '~' is navidrome_user HOME
+#   * for other directories '~' is navidrome_owner HOME
 # -----
 navidrome_managed: false
 navidrome_enabled: false
@@ -18,9 +17,9 @@ navidrome_version:        # Leave blank to leverage bookshelf configuration
 navidrome_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
 navidrome_owner: "{{ ansible_user_id }}"    # <- Who runs the container
 navidrome_user: "{{ navidrome_owner }}"     # <- The in-container user and data filesystem owner
-navidrome_conf_dir: "{{ navidrome_owner_home }}/conf/navidrome"
-navidrome_data_dir:       # (REQUIRED). Ex.: "{{ navidrome_user_home }}/Music"
-navidrome_extra_dir:      # (OPTIONAL). Gets mounted to '/extra'. Ex.: "{{ navidrome_user_home }}/More/Music"
+navidrome_conf_dir: ~/conf/navidrome
+navidrome_data_dir: ~/data/Music
+navidrome_extra_dir:      # (OPTIONAL). Gets mounted to '/extra'. Ex.: ~/More/Music
 navidrome_service_name: navidrome
 navidrome_hostname: "{{ navidrome_service_name }}"
 navidrome_vhost: "{{ navidrome_service_name }}.domain.local"

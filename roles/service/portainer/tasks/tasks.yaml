@@ -11,19 +11,25 @@
     conf_dir: "{{ portainer_conf_dir }}"
     service_state: "{{ portainer_enabled | ternary('present', 'absent') }}"
   block:
-    - name: Create directories
+    - name: Create compose directories
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
         mode: '0700'
-      loop:
-        - "{{ compose_dir }}"
-        - "{{ conf_dir }}"
+      loop: ["{{ compose_dir }}", "{{ conf_dir }}"]
 
-    - name: Compose apply
-      ansible.builtin.import_role: { name: bookshelf-compose-apply }
-      # noqa: var-naming[no-role-prefix]
-      vars: { template: compose.yaml.j2, dest_dir: "{{ compose_dir }}", state: "{{ service_state }}" }
+    - name: Create compose files
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
+        mode: '0600'
+      loop: [compose.yaml]
+
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
 
 - name: Mark done
   ansible.builtin.set_fact:

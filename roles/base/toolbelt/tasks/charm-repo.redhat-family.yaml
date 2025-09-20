@@ -5,4 +5,5 @@
     dest: /etc/yum.repos.d/charm.repo
     mode: '0644'
   become: true
+  become_user: root
   register: charm_repo_state

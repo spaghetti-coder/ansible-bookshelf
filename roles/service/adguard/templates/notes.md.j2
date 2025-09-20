@@ -1,4 +1,5 @@
 ## Adguard
+{% if adguard_tailscaled %}
 
 * Disable tailscale machine expiry:
   1. Go to https://tailscale.com/admin/machines
@@ -10,3 +11,4 @@
   4. `DNS > Global nameservers`
   5. Set **Global nameservers** `{{ adguard_tailscale_ts_hostname }}` IP
   6. (Optionally) Check **Override DNS servers** (for ad blocking)
+{% endif %}

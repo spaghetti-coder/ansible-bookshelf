@@ -3,3 +3,4 @@
   ansible.builtin.file:
     path: "{{ scripts_dir }}"
     state: absent
+  become: true

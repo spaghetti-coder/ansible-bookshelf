@@ -1,5 +1,7 @@
 ## Wiki.js
+{% if wikijs_tailscaled %}
 
 * Disable tailscale machine expiry:
   1. Go to https://tailscale.com/admin/machines
   2. `{{ wikijs_tailscale_ts_hostname }} *** > Disable key expiry`
+{% endif %}

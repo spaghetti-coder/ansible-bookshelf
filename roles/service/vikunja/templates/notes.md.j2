@@ -1,5 +1,7 @@
 ## Vikunja
+{% if vikunja_tailscaled %}
 
 * Disable tailscale machine expiry:
   1. Go to https://tailscale.com/admin/machines
   2. `{{ vikunja_tailscale_ts_hostname }} *** > Disable key expiry`
+{% endif %}

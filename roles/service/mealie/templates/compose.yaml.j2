@@ -13,9 +13,8 @@ services:
     restart: unless-stopped
     env_file:
       - ./main.env
-      - ./extra.env
     volumes:
-      - '{{ conf_dir }}/config:/app/data'
+      - '{{ mealie_conf_dir }}/config:/app/data'
 {% if mealie_tailscaled %}
     network_mode: service:{{ tailscale_service }}
 
@@ -25,11 +24,10 @@ services:
     container_name: {{ mealie_service_name }}-tailscale
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
     volumes:
-      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+      - '{{ mealie_conf_dir }}/tailscale:/var/lib/tailscale'
       # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
       - ./serve.json:/config/serve.json
     devices:

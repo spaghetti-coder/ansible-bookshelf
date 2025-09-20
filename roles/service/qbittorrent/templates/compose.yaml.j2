@@ -2,6 +2,7 @@
 {% set vuetorrent_version = (qbittorrent_vuetorrent_version | default(bookshelf_const_version.vuetorrent, true)) %}
 {% set web_ui_port = (qbittorrent_web_ui_port | default(bookshelf_const_port.qbittorrent.web_ui, true)) %}
 {% set torrenting_port = bookshelf_const_port.qbittorrent.torrenting %}
+{% set data_dir = ((qbittorrent_user == qbittorrent_owner) | ternary(qbittorrent_data_dir, data_dir_abs)) %}
 ---
 # Temporary password for the admin user will be printed to the container log on startup
 services:
@@ -11,19 +12,18 @@ services:
     image: linuxserver/qbittorrent:{{ version }}
     container_name: {{ qbittorrent_service_name }}
     restart: unless-stopped
-    hostname: {{ qbittorrent_hostname }}
     env_file:
       - ./main.env
-      - ./extra.env
     volumes:
-      - '{{ conf_dir }}/config:/config'
       - '{{ data_dir }}:/downloads'
-      - '{{ notify_sh_path }}:{{ notify_sh_path }}:ro'
-{% if qbittorrent_notify_provider %}
+      - '{{ qbittorrent_conf_dir }}/config:/config'
       # Usage:
       #   qBittorrent UI -> Settings -> Downloads -> External ... on finished -> '/scripts/notify.sh "Downloaded" "%N"'
-      - '{{ conf_dir }}/scripts:/scripts:ro'
+      - '{{ qbittorrent_conf_dir }}/scripts:/scripts:ro'
+{% if qbittorrent_notify_provider %}
+      - '{{ notify_sh_path }}:{{ notify_sh_path }}:ro'
 {% endif %}{# qbittorrent_notify_provider #}
+    hostname: {{ qbittorrent_hostname }}
     ports:
       - '{{ web_ui_port }}:{{ web_ui_port }}'
       - '{{ torrenting_port }}:{{ torrenting_port }}'

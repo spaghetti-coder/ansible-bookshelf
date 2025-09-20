@@ -6,10 +6,9 @@
 #   * https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
 #   * => See tailscale role versions
 # -----
-# NOTE 1: Due to switching users in the role don't use shortcuts in the paths
-# (like '~'), use absolute paths. For HOMEs available:
-#   "{{ syncthing_owner_home }}"
-#   "{{ syncthing_user_home }}"
+# NOTE 1:
+#   * for syncthing_data_dir '~' is syncthing_user HOME
+#   * for other directories '~' is syncthing_owner HOME
 # -----
 syncthing_managed: false
 syncthing_enabled: false
@@ -17,8 +16,8 @@ syncthing_version:              # Leave blank to leverage bookshelf configuratio
 syncthing_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
 syncthing_owner: "{{ ansible_user_id }}"  # <- Who runs the container
 syncthing_user: "{{ syncthing_owner }}"   # <- The in-container user and data filesystem owner
-syncthing_conf_dir: "{{ syncthing_owner_home }}/conf/syncthing"
-syncthing_data_dir:      # (REQUIRED). Ex.: "{{ syncthing_user_home }}/share"
+syncthing_conf_dir: ~/conf/syncthing
+syncthing_data_dir: ~/data
 syncthing_service_name: syncthing
 syncthing_hostname: "{{ syncthing_service_name }}"
 syncthing_vhost: "{{ syncthing_service_name }}.domain.local"

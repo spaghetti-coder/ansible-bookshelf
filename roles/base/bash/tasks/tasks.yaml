@@ -5,6 +5,7 @@
   vars:
     packages: "{{ bash_packages_todo }}"
   become: true
+  become_user: root
 
 - name: Install chsh
   ansible.builtin.package:
@@ -17,6 +18,7 @@
       alpine: shadow
       redhat: util-linux-user
   become: true
+  become_user: root
 
 - name: Load setup users
   ansible.builtin.include_tasks:

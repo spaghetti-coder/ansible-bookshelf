@@ -8,27 +8,10 @@
 #     src: notes.md.j2      # <- Source file in the parent templates/
 #     # src: notes.md       # <- Source file in the parent files/
 #     dest: qbittorrent.md  # <- Desination file name under bookshelf_note_home directory
+#     present: true         # <- (Optional) Defaults to true
 
-- name: Create notes directory
-  ansible.builtin.file:
-    path: "{{ bookshelf_note_home }}"
-    state: directory
-    mode: '0700'
-
-- name: Note
+- name: Load state tasks
+  ansible.builtin.include_tasks:
+    file: tasks-{{ state }}.yaml
   vars:
-    ext: "{{ src | splitext | last }}"
-  block:
-    - name: Deploy note template
-      ansible.builtin.template:
-        src: "{{ src }}"
-        dest: "{{ bookshelf_note_home }}/{{ dest }}"
-        mode: '0600'
-      when: ext in ['.j2']
-
-    - name: Deploy note file
-      ansible.builtin.copy:
-        src: "{{ src }}"
-        dest: "{{ bookshelf_note_home }}/{{ dest }}"
-        mode: '0600'
-      when: ext not in ['.j2']
+    state: "{{ present | ternary('present', 'absent') }}"

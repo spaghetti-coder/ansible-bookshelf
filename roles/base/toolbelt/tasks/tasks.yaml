@@ -23,6 +23,7 @@
   ansible.builtin.package:
     name: "{{ toolbelt_packages_todo }}"
   become: true
+  become_user: root
 
 - name: Mark packages done
   ansible.builtin.set_fact:

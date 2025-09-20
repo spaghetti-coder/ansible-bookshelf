@@ -10,13 +10,12 @@ services:
     image: jc21/nginx-proxy-manager:{{ version }}
     container_name: "{{ nginx_proxy_manager_service_name }}"
     restart: unless-stopped
-    hostname: "{{ nginx_proxy_manager_hostname }}"
     volumes:
       - "{{ conf_dir }}/data:/data"
       - "{{ conf_dir }}/letsencrypt:/etc/letsencrypt"
     env_file:
       - ./main.env
-      - ./extra.env
+    hostname: "{{ nginx_proxy_manager_hostname }}"
 {% if nginx_proxy_manager_host_net %}
     network_mode: host          # <- Allows adding Stream ports without editting compose file
 {% else %}

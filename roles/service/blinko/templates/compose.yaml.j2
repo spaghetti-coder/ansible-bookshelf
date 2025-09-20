@@ -1,11 +1,29 @@
 {% set version = (blinko_version | default(bookshelf_const_version.blinko, true)) %}
 {% set postgres_version = (blinko_postgres_version | default(bookshelf_const_version.blinko_postgres, true)) %}
 {% set web_ui_port = (blinko_web_ui_port | default(bookshelf_const_port.blinko.web_ui, true)) %}
-{% set db_service = (blinko_service_name + '-db') %}
 {% set tailscale_version = (blinko_tailscale_version | default(bookshelf_const_version.blinko_tailscale, true)) %}
 {% set tailscale_service = (blinko_service_name + '-tailscale') %}
+{% set self_net = 'blinko' %}
 ---
 services:
+  {{ blinko_db_service }}:
+    # https://hub.docker.com/_/postgres/tags?name=alpine
+    image: postgres:{{ postgres_version }}
+    container_name: {{ blinko_db_service }}
+    restart: unless-stopped
+    env_file:
+      - secret.env
+      - main.env    # <- Relies on values from secret.env
+    volumes:
+      - '{{ conf_dir }}/db:/var/lib/postgresql/data'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    networks:
+      - {{ self_net }}
+
   blinko:
     # https://hub.docker.com/r/blinkospace/blinko/tags
     image: blinkospace/blinko:{{ version }}
@@ -13,10 +31,7 @@ services:
     restart: unless-stopped
     env_file:
       - secret.env
-      - main.env
-    depends_on:
-      {{ db_service }}:
-        condition: service_healthy
+      - main.env    # <- Relies on values from secret.env
     volumes:
       - '{{ conf_dir }}/config:/app/.blinko'
       - ./healthcheck.sh:/healthcheck.sh:ro
@@ -30,24 +45,6 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
-    network_mode: "service:{{ db_service }}"
-
-  {{ db_service }}:
-    # https://hub.docker.com/_/postgres/tags?name=alpine
-    image: postgres:{{ postgres_version }}
-    container_name: {{ db_service }}
-    restart: unless-stopped
-    env_file:
-      - secret.env
-      - main.env
-    volumes:
-      - '{{ conf_dir }}/db:/var/lib/postgresql/data'
-    healthcheck:
-      # User and dbname must me same as in .env file
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 10s
-      retries: 5
 {% if blinko_tailscaled %}
     network_mode: "service:{{ tailscale_service }}"
 
@@ -59,7 +56,6 @@ services:
     env_file:
       - ./secret.env
       - ./main.env
-      - ./extra.env
     volumes:
       - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
       # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
@@ -70,19 +66,25 @@ services:
       - NET_ADMIN
       - SYS_MODULE
 {% endif %}{# blinko_tailscaled #}
+    depends_on:
+      {{ blinko_db_service }}:
+        condition: service_healthy
     hostname: {{ blinko_hostname }}
     ports:
       - "{{ web_ui_port }}:{{ blinko_web_ui_port_int }}"
-{% if not (nginx_proxy_enabled | default(false)) %}
-    network_mode: bridge
-{% else %}
     networks:
+      - {{ self_net }}
+{% if (nginx_proxy_enabled | default(false)) %}
       - {{ nginx_proxy_net }}
     environment:
       - VIRTUAL_HOST={{ blinko_vhost }}
       - VIRTUAL_PORT={{ blinko_web_ui_port_int }}
+{% endif %}{# nginx_proxy_enabled #}
 
 networks:
+  {{ self_net }}:
+    name: {{ self_net }}
+{% if (nginx_proxy_enabled | default(false)) %}
   {{ nginx_proxy_net }}:
     external: true
 {% endif %}{# nginx_proxy_enabled #}

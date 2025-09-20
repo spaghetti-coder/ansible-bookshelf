@@ -7,16 +7,15 @@ services:
     image: quay.io/hedgedoc/hedgedoc:{{ version }}
     container_name: {{ hedgedoc_service_name }}
     restart: unless-stopped
-    hostname: {{ hedgedoc_hostname }}
     env_file:
       - main.env
-      - extra.env
     volumes:
-      - '{{ conf_dir }}/config:/hedgedoc/config'           # Must be owned by user_uid:user_gid
-      - '{{ conf_dir }}/uploads:/hedgedoc/public/uploads'  # Must be owned by user_uid:user_gid
+      - '{{ hedgedoc_conf_dir }}/config:/hedgedoc/config'           # Must be owned by user_uid:user_gid
+      - '{{ hedgedoc_conf_dir }}/uploads:/hedgedoc/public/uploads'  # Must be owned by user_uid:user_gid
+    user: '{{ user_uid }}:{{ user_gid }}'
+    hostname: {{ hedgedoc_hostname }}
     ports:
       - "{{ web_ui_port }}:{{ web_ui_port }}"
-    user: '{{ user_uid }}:{{ user_gid }}'
     environment:
       - CMD_PORT={{ web_ui_port }}
 {% if not (nginx_proxy_enabled | default(false)) %}

@@ -16,3 +16,31 @@
 
 **`service/syncthing`**:
   * `{{ syncthing_conf_dir }}/syncthing` directory moved to `{{ syncthing_conf_dir }}/config` and now owned by `{{ syncthing_user }}`
+
+**`service/adguard`**:
+  * `conf` and `work` directories content is moved to config root directory
+
+**`service/auidobookshelf`**:
+  * `metadata` directory content is moved to `config` directory
+
+**`service/filebrowser`**:
+  * `database` directory content is moved to `config` directory
+
+**`service/heimdall`**:
+  * main configuration directory content is moved to `config` directory
+  * `heimdall_ext_port` is renamed to `heimdall_web_ui_port_ext`
+
+**`service/portainer`**:
+  * main configuration directory content is moved to `config` directory
+
+**`service/silverbullet`**:
+  * `space` directory content is moved to `config` directory
+
+**`service/tailscale`**:
+  * main configuration directory content is moved to `config` directory
+
+**`service/vaultwarden`**:
+  * main configuration directory content is moved to `config` directory
+
+**`service/wg-easy`**:
+  * main configuration directory content is moved to `config` directory

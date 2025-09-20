@@ -10,9 +10,8 @@ services:
     container_name: {{ pairdrop_service_name }}
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
 {% if pairdrop_tailscaled %}
     network_mode: service:{{ tailscale_service }}
 
@@ -22,9 +21,8 @@ services:
     container_name: {{ pairdrop_service_name }}-tailscale
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
     volumes:
       - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
       # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json

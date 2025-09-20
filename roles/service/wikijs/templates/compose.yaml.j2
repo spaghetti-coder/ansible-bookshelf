@@ -12,10 +12,10 @@ services:
     container_name: {{ wikijs_db_service }}
     restart: unless-stopped
     env_file:
-      - main.env
       - secret.env
+      - main.env
     volumes:
-      - '{{ conf_dir }}/db:/var/lib/postgresql/data'
+      - '{{ wikijs_conf_dir }}/db:/var/lib/postgresql/data'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
@@ -30,12 +30,11 @@ services:
     container_name: {{ wikijs_service_name }}
     restart: unless-stopped
     env_file:
-      - main.env
       - secret.env
-      - extra.env
+      - main.env
     volumes:
-      - '{{ conf_dir }}/config:/config'
-      - '{{ conf_dir }}/config:/data'
+      - '{{ wikijs_conf_dir }}/config:/config'
+      - '{{ wikijs_conf_dir }}/config:/data'
 {% if wikijs_tailscaled %}
     network_mode: service:{{ tailscale_service }}
 
@@ -45,11 +44,10 @@ services:
     container_name: {{ wikijs_service_name }}-tailscale
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
     volumes:
-      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+      - '{{ wikijs_conf_dir }}/tailscale:/var/lib/tailscale'
       # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
       - ./serve.json:/config/serve.json
     devices:

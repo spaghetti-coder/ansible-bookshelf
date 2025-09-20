@@ -2,6 +2,7 @@
 {% set web_ui_port = (syncthing_web_ui_port | default(bookshelf_const_port.syncthing.web_ui, true)) %}
 {% set file_transfers_port = bookshelf_const_port.syncthing.file_transfers %}
 {% set local_discovery_port = bookshelf_const_port.syncthing.local_discovery %}
+{% set data_dir = ((syncthing_user == syncthing_owner) | ternary(syncthing_data_dir, data_dir_abs)) %}
 {% set tailscale_version = (syncthing_tailscale_version | default(bookshelf_const_version.syncthing_tailscale, true)) %}
 {% set tailscale_service = 'syncthing-tailscale' %}
 ---
@@ -12,12 +13,11 @@ services:
     container_name: {{ syncthing_service_name }}
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
     volumes:
-      - '{{ conf_dir }}/config:/config'
       - '{{ data_dir }}:/data'
+      - '{{ syncthing_conf_dir }}/config:/config'
     healthcheck:
       test: curl -fkLsS -m 2 127.0.0.1:8384/rest/noauth/health | grep -o --color=never OK || exit 1
       interval: 1m
@@ -32,11 +32,10 @@ services:
     container_name: {{ syncthing_service_name }}-tailscale
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
     volumes:
-      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+      - '{{ syncthing_conf_dir }}/tailscale:/var/lib/tailscale'
       # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
       - ./serve.json:/config/serve.json
     devices:

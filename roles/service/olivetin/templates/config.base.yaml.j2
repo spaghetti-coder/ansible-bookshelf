@@ -1,2 +1,4 @@
+{{ olivetin_config | default(lookup('file', 'config.yaml'), true) }}
+
 # Listen on all addresses available, port {{ web_ui_port }}
 listenAddressSingleHTTPFrontend: 0.0.0.0:{{ web_ui_port }}

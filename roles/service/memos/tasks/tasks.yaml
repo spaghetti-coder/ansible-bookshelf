@@ -8,52 +8,48 @@
   become_user: "{{ memos_owner }}"
   vars:
     compose_dir: "{{ memos_compose_dir | default(bookshelf_const_compose_dir + '/memos', true) }}"
-    extra_env: "{{ memos_extra_env }}"
     conf_dir: "{{ memos_conf_dir }}"
     service_state: "{{ memos_enabled | ternary('present', 'absent') }}"
   block:
-    - name: Create directories
+    - name: Create compose directories
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
         mode: '0700'
-      loop:
-        - "{{ compose_dir }}"
-        - "{{ conf_dir }}"
+      loop: ["{{ compose_dir }}", "{{ conf_dir }}"]
 
-    - name: Create .env files
+    - name: Create compose files
       ansible.builtin.template:
-        src: "{{ item }}.env.j2"
-        dest: "{{ compose_dir }}/{{ item }}.env"
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
       loop:
-        - main
-        - secret
+        - serve.json    # <- Must be first
+        - compose.yaml
+        - main.env
+        - secret.env
+      register: memos_compose_files_result
 
-    - name: Create extra.env
-      ansible.builtin.copy:
-        content: |
-          {{ extra_env | default('', true) }}
-        dest: "{{ compose_dir }}/extra.env"
-        mode: '0600'
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+      register: memos_service_state
 
-    - name: Create serve.json
-      ansible.builtin.template:
-        src: "serve.json.j2"
-        dest: "{{ compose_dir }}/serve.json"
-        mode: '0600'
-      when: memos_tailscaled
-
-    - name: Compose apply
-      ansible.builtin.import_role: { name: bookshelf-compose-apply }
-      # noqa: var-naming[no-role-prefix]
-      vars: { template: compose.yaml.j2, dest_dir: "{{ compose_dir }}", state: "{{ service_state }}" }
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - memos_enabled and not memos_service_state.changed
+        - memos_tailscaled and memos_compose_files_result.results[0].changed
 
     - name: Create note
       ansible.builtin.import_role: { name: bookshelf-note }
       # noqa: var-naming[no-role-prefix]
-      vars: { src: notes.md.j2, dest: memos-service.md }
-      when: memos_tailscaled
+      vars: { src: notes.md.j2, dest: memos-service.md, present: "{{ memos_enabled }}" }
 
 - name: Mark done
   ansible.builtin.set_fact:

@@ -1,5 +1,6 @@
 {% set version = (audiobookshelf_version | default(bookshelf_const_version.audiobookshelf, true)) %}
 {% set web_ui_port = (audiobookshelf_web_ui_port | default(bookshelf_const_port.audiobookshelf.web_ui, true)) %}
+{% set data_dir = ((audiobookshelf_user == audiobookshelf_owner) | ternary(audiobookshelf_data_dir, data_dir_abs)) %}
 {% set tailscale_version = (audiobookshelf_tailscale_version | default(bookshelf_const_version.audiobookshelf_tailscale, true)) %}
 {% set tailscale_service = 'audiobookshelf-tailscale' %}
 ---
@@ -10,13 +11,12 @@ services:
     container_name: {{ audiobookshelf_service_name }}
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
     volumes:
       - '{{ data_dir }}:/data'
-      - '{{ conf_dir }}/config:/config'
-      - '{{ conf_dir }}/metadata:/metadata'
+      - '{{ audiobookshelf_conf_dir }}/config:/config'
+      - '{{ audiobookshelf_conf_dir }}/config:/metadata'
     user: "{{ user_uid }}:{{ user_gid }}"
 {% if audiobookshelf_tailscaled %}
     network_mode: "service:{{ tailscale_service }}"
@@ -27,11 +27,10 @@ services:
     container_name: {{ audiobookshelf_service_name }}-tailscale
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
     volumes:
-      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+      - '{{ audiobookshelf_conf_dir }}/tailscale:/var/lib/tailscale'
       # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
       - ./serve.json:/config/serve.json
     devices:

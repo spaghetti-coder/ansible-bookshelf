@@ -4,10 +4,9 @@
 # -----
 # VERSIONS: https://github.com/alexta69/metube/pkgs/container/metube
 # -----
-# NOTE 1: Due to switching users in the role don't use shortcuts in the paths
-# (like '~'), use absolute paths. For HOMEs available:
-#   "{{ metube_owner_home }}"
-#   "{{ metube_user_home }}"
+# NOTE 1:
+#   * for metube_data_dir '~' is metube_user HOME
+#   * for other directories '~' is metube_owner HOME
 # -----
 metube_managed: false
 metube_enabled: false
@@ -15,8 +14,8 @@ metube_version:       # Leave blank to leverage bookshelf configuration
 metube_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
 metube_owner: "{{ ansible_user_id }}"       # <- Who runs the container
 metube_user: "{{ metube_owner }}"           # <- The in-container user and data filesystem owner
-metube_conf_dir: "{{ metube_owner_home }}/conf/metube"
-metube_data_dir:      # (REQUIRED). Ex.: "{{ metube_user_home }}/share/Metube"
+metube_conf_dir: ~/conf/metube
+metube_data_dir: ~/data/Metube
 metube_service_name: metube
 metube_hostname: "{{ metube_service_name }}"
 metube_vhost: "{{ metube_service_name }}.domain.local"

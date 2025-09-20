@@ -8,10 +8,10 @@ services:
     image: portainer/portainer-ce:{{ version }}
     container_name: {{ portainer_service_name }}
     restart: unless-stopped
-    hostname: {{ portainer_hostname }}
     volumes:
-      - '{{ conf_dir }}:/data'
+      - '{{ conf_dir }}/config:/data'
       - '/var/run/docker.sock:/var/run/docker.sock'
+    hostname: {{ portainer_hostname }}
     ports:
       - '{{ web_ui_port }}:9443'
 {% if portainer_agent_ready %}

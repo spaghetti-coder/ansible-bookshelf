@@ -7,18 +7,11 @@ services:
     image: ghcr.io/wg-easy/wg-easy:{{ version }}
     container_name: {{ wg_easy_service_name }}
     restart: unless-stopped
-    hostname: {{ wg_easy_hostname }}
     env_file:
       - ./main.env
-{% if extra_env %}
-      - ./extra.env
-{% endif %}
     volumes:
-      - '{{ conf_dir }}:/etc/wireguard'
+      - '{{ conf_dir }}/config:/etc/wireguard'
       # - /lib/modules:/lib/modules:ro    # <- Don't know what it's for
-    ports:
-      - "{{ wg_easy_udp_port }}:51820/udp"
-      - "{{ web_ui_port }}:51821/tcp"     # <- Web-UI
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
@@ -29,6 +22,10 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
       - net.ipv6.conf.all.forwarding=1
       - net.ipv6.conf.default.forwarding=1
+    hostname: {{ wg_easy_hostname }}
+    ports:
+      - "{{ wg_easy_udp_port }}:51820/udp"
+      - "{{ web_ui_port }}:51821/tcp"     # <- Web-UI
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}

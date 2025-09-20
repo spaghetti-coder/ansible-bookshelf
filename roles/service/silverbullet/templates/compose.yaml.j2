@@ -8,11 +8,10 @@ services:
     container_name: {{ silverbullet_service_name }}
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
     volumes:
-      - '{{ conf_dir }}/space:/space'
+      - '{{ silverbullet_conf_dir }}/config:/space'
     # user: "{{ user_uid }}:{{ user_gid }}"
     hostname: {{ silverbullet_hostname }}
     ports:

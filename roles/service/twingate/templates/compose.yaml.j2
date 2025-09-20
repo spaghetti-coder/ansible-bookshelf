@@ -8,14 +8,11 @@ services:
     image: twingate/connector:{{ version }}
     container_name: {{ twingate_service_name }}
     restart: unless-stopped
+    env_file:
+      - ./secret.env
+      - ./main.env
     hostname: {{ twingate_hostname }}
     network_mode: bridge
     # network_mode: host  # <- Make Connector available only in local network
-    env_file:
-      - ./main.env
-      - ./secret.env
-{% if extra_env %}
-      - ./extra.env
-{% endif %}
 #     sysctls:
 #       net.ipv4.ping_group_range: '0 2147483647'

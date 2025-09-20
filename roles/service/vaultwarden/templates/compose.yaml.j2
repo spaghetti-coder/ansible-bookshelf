@@ -7,16 +7,12 @@ services:
     image: vaultwarden/server:{{ version }}
     container_name: {{ vaultwarden_service_name }}
     restart: unless-stopped
-    hostname: {{ vaultwarden_hostname }}
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./static.env
-{% if extra_env %}
-      - ./extra.env
-{% endif %}
+      - ./main.env
     volumes:
-      - '{{ conf_dir }}:/data'
+      - '{{ conf_dir }}/config:/data'
+    hostname: {{ vaultwarden_hostname }}
     ports:
       - '{{ web_ui_port }}:80'
 {% if not (nginx_proxy_enabled | default(false)) %}

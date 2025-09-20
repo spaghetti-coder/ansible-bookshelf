@@ -1,2 +1,3 @@
 ---
 joplin_server_web_ui_port_int: 22300
+joplin_server_web_ui_port_ext: "{{ joplin_server_web_ui_port | default(bookshelf_const_port.joplin_server.web_ui, true) }}"

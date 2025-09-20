@@ -3,50 +3,75 @@
   ansible.builtin.import_role: { name: docker }
   vars: { docker_users: ["{{ hedgedoc_owner }}"] }
 
+- name: Get directories info
+  ansible.builtin.file: { path: "{{ item.path }}" }
+  check_mode: true
+  failed_when: false
+  register: hedgedoc_dirs       # hedgedoc_dirs.results[ix].path
+  loop_control: { label: "{{ item.user }}:{{ item.path }}" }
+  loop:
+    - { path: "{{ hedgedoc_conf_dir }}", user: "{{ hedgedoc_owner }}" }
+  become: true
+  become_user: "{{ item.user }}"
+
 - name: Compose
   become: true
   become_user: "{{ hedgedoc_owner }}"
   vars:
     compose_dir: "{{ hedgedoc_compose_dir | default(bookshelf_const_compose_dir + '/hedgedoc', true) }}"
-    conf_dir: "{{ hedgedoc_conf_dir }}"
+    conf_dir_abs: "{{ hedgedoc_dirs.results[0].path }}"
     service_state: "{{ hedgedoc_enabled | ternary('present', 'absent') }}"
     the_user: "{{ getent_passwd[hedgedoc_owner] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:
-    - name: Create directories
+    - name: Create compose and service assets directories
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
         mode: '0700'
-      loop:
-        - "{{ compose_dir }}"
-        - "{{ conf_dir }}/config"
-        - "{{ conf_dir }}/uploads"
+      loop: ["{{ compose_dir }}", "{{ conf_dir_abs }}/config", "{{ conf_dir_abs }}/uploads"]
 
-    - name: Create main.env
+    - name: Create compose files
       ansible.builtin.template:
-        src: main.env.j2
-        dest: "{{ compose_dir }}/main.env"
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
+      loop:
+        - compose.yaml
+        - main.env
+
+    - name: Ensure service user directories ownership
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: "{{ user_uid }}"
+        group: "{{ user_gid }}"
+      loop: ["{{ conf_dir_abs }}/config", "{{ conf_dir_abs }}/uploads"]
+      become: true
+      become_user: root
 
     - name: Create config.json
       ansible.builtin.copy:
         src: config.json
-        dest: "{{ conf_dir }}/config/config.json"
+        dest: "{{ conf_dir_abs }}/config/config.json"
         mode: '0600'
+      register: hedgedoc_config_state
 
-    - name: Create extra.env
-      ansible.builtin.copy:
-        content: |
-          {{ hedgedoc_extra_env | default('', true) }}
-        dest: "{{ compose_dir }}/extra.env"
-        mode: '0600'
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+      register: hedgedoc_service_state
 
-    - name: Compose apply
-      ansible.builtin.import_role: { name: bookshelf-compose-apply }
-      # noqa: var-naming[no-role-prefix]
-      vars: { template: compose.yaml.j2, dest_dir: "{{ compose_dir }}", state: "{{ service_state }}" }
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - hedgedoc_enabled and not hedgedoc_service_state.changed
+        - hedgedoc_config_state.changed
 
 - name: Mark done
   ansible.builtin.set_fact:

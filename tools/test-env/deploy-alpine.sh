@@ -63,6 +63,9 @@ deploy_ve_config() {
     [user1_name]="${ANSIBLE_USER}"
     [user1_uid]=1000
     [user1_pass]="$(openssl passwd -6 -stdin <<< "${ANSIBLE_USER_PASS}")"
+    [user2_name]=bug2
+    [user2_uid]=1001
+    [user2_pass]="$(openssl passwd -6 -stdin <<< "${ANSIBLE_USER_PASS}")"
     [snapshot]="${DEPLOY_VE_SNAPSHOT}"
   )
 
@@ -94,7 +97,8 @@ deploy_ve() (
       install_ansible_prereqs || return
 
       # Custom provisioning
-      create_lxc_user || return
+      create_lxc_user1 || return
+      create_lxc_user2 || return
     stop_ve || return   # <- To ensure changes applied on the next start
 
     (set -x; pct snapshot "${VE_ID}" "${EXTRAS[snapshot]}") || return
@@ -103,7 +107,7 @@ deploy_ve() (
     # start_ve || return
   }
 
-  create_lxc_user() {
+  create_lxc_user1() {
     # Demo provisioner
     #
     # * $VE_ID - LXC IC
@@ -117,6 +121,26 @@ deploy_ve() (
         apk add -q --update --no-cache shadow sudo \
         && groupadd -g '${EXTRAS[user1_uid]}' '${name}' \
         && useradd -g '${EXTRAS[user1_uid]}' -G wheel -u '${EXTRAS[user1_uid]}' -m '${name}' \
+        && { echo '%wheel ALL=(ALL) ALL' | tee /etc/sudoers.d/wheel >/dev/null; } \
+        && chpasswd -e
+      " || return
+    echo "Done provision: ${FUNCNAME[0]}" >&2
+  }
+
+  create_lxc_user2() {
+    # Demo provisioner
+    #
+    # * $VE_ID - LXC IC
+
+    local name="${EXTRAS[user2_name]}"
+    local pass; pass="$(decrypt_secret <<< "${EXTRAS[user2_pass]}")" || return
+
+    echo "Do provision: ${FUNCNAME[0]} ..." >&2
+      cat <<< "${name}:${pass}" | lxc-attach -n "${VE_ID}" -- /bin/sh -c "
+        set -x
+        apk add -q --update --no-cache shadow sudo \
+        && groupadd -g '${EXTRAS[user2_uid]}' '${name}' \
+        && useradd -g '${EXTRAS[user2_uid]}' -G wheel -u '${EXTRAS[user2_uid]}' -m '${name}' \
         && { echo '%wheel ALL=(ALL) ALL' | tee /etc/sudoers.d/wheel >/dev/null; } \
         && chpasswd -e
       " || return

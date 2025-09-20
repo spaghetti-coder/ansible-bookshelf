@@ -1,5 +1,7 @@
 {% set version = (navidrome_version | default(bookshelf_const_version.navidrome, true)) %}
 {% set web_ui_port = (navidrome_web_ui_port | default(bookshelf_const_port.navidrome.web_ui, true)) %}
+{% set data_dir = ((navidrome_user == navidrome_owner) | ternary(navidrome_data_dir, data_dir_abs)) %}
+{% set extra_dir = ((navidrome_user == navidrome_owner) | ternary(navidrome_extra_dir, extra_dir_abs)) %}
 {% set tailscale_version = (navidrome_tailscale_version | default(bookshelf_const_version.navidrome_tailscale, true)) %}
 {% set tailscale_service = 'navidrome-tailscale' %}
 ---
@@ -10,15 +12,14 @@ services:
     container_name: {{ navidrome_service_name }}
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
     volumes:
-      - '{{ conf_dir }}/config:/data'
       - '{{ data_dir }}:/music:ro'
 {% if extra_dir %}
       - '{{ extra_dir }}:/extra:ro'
 {% endif %}
+      - '{{ navidrome_conf_dir }}/config:/data'
     user: "{{ user_uid }}:{{ user_gid }}"
 {% if navidrome_tailscaled %}
     network_mode: "service:{{ tailscale_service }}"
@@ -29,11 +30,10 @@ services:
     container_name: {{ navidrome_service_name }}-tailscale
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
     volumes:
-      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+      - '{{ navidrome_conf_dir }}/tailscale:/var/lib/tailscale'
       # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
       - ./serve.json:/config/serve.json
     devices:

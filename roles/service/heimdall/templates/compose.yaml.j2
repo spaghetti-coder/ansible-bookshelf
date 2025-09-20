@@ -6,16 +6,16 @@ services:
     image: linuxserver/heimdall:{{ version }}
     container_name: {{ heimdall_service_name }}
     restart: unless-stopped
-    hostname: {{ heimdall_hostname }}
     env_file:
       - ./main.env
     volumes:
-      - '{{ conf_dir }}:/config'
+      - '{{ heimdall_conf_dir }}/config:/config'
 {% if (nginx_proxy_enabled | default(false)) %}
       - ./fix-app-url.sh:/scripts/fix-app-url.sh:ro
 {% endif %}
+    hostname: {{ heimdall_hostname }}
     ports:
-      - '{{ heimdall_ext_port }}:80'
+      - '{{ heimdall_web_ui_port_ext }}:80'
       # - 443:443
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network

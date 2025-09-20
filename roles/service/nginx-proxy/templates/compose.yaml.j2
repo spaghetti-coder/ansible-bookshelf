@@ -8,14 +8,14 @@ services:
     image: jwilder/nginx-proxy:{{ version }}
     container_name: "{{ nginx_proxy_service_name }}"
     restart: unless-stopped
-    hostname: "{{ nginx_proxy_hostname }}"
-    networks:
-      - "{{ nginx_proxy_net }}"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
 {% if nginx_proxy_certs_dir %}
       - {{ nginx_proxy_certs_dir }}:/etc/nginx/certs
 {% endif %}
+    hostname: "{{ nginx_proxy_hostname }}"
+    networks:
+      - "{{ nginx_proxy_net }}"
 {% if http_port or https_port %}
     ports:
 {% if http_port %}

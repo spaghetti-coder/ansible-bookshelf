@@ -296,10 +296,10 @@ audiobookshelf_managed: "{{ factum_os_family in ['alpine'] }}"
 audiobookshelf_enabled: true
 audiobookshelf_version:       # Leave blank to leverage bookshelf configuration
 audiobookshelf_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-audiobookshelf_owner: root    # <- Who runs the container
+audiobookshelf_owner: bug2    # <- Who runs the container
 audiobookshelf_user: "{{ ansible_user_id }}"    # <- The in-container user and data filesystem owner
-audiobookshelf_conf_dir: "{{ audiobookshelf_owner_home }}/conf/audiobookshelf"
-audiobookshelf_data_dir: "{{ audiobookshelf_user_home }}/share/Audiobooks"   # (REQUIRED)
+audiobookshelf_conf_dir: ~/conf/audiobookshelf
+audiobookshelf_data_dir: ~/data/Audiobooks   # (REQUIRED)
 audiobookshelf_service_name: audiobookshelf
 audiobookshelf_hostname: "{{ audiobookshelf_service_name }}"
 audiobookshelf_vhost: "{{ audiobookshelf_service_name }}.domain.local"
@@ -347,7 +347,9 @@ blinko_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 blinko_db_pass: foobarbaz            # (REQUIRED) Something hard and random
 blinko_nextauth_secret: foobarbaz    # (REQUIRED)
 # Optional extra env vars, will affect both Blinko and Tailscale.
-blinko_extra_env:           # "{{ lookup('template', playbook_dir + '/resources/blinko.env.j2') }}"
+blinko_extra_env: |         # "{{ lookup('template', playbook_dir + '/resources/blinko.env.j2') }}"
+  FOO1=bar1
+  FOO2=bar2
 # ----------
 # The following settings configure Blinko to run as a part of tailnet
 #
@@ -393,10 +395,10 @@ filebrowser_managed: "{{ factum_os_family in ['alpine'] }}"
 filebrowser_enabled: true
 filebrowser_version:        # Leave blank to leverage bookshelf configuration
 filebrowser_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-filebrowser_owner: root    # <- Who runs the container
+filebrowser_owner: bug2    # <- Who runs the container
 filebrowser_user: "{{ ansible_user_id }}"   # <- The in-container user and data filesystem owner
-filebrowser_conf_dir: "{{ filebrowser_owner_home }}/conf/filebrowser"
-filebrowser_data_dir: "{{ filebrowser_user_home }}"   # (REQUIRED). Ex.: "{{ filebrowser_user_home }}/Filebrowser"
+filebrowser_conf_dir: ~/conf/filebrowser
+filebrowser_data_dir: ~/data
 filebrowser_service_name: filebrowser
 filebrowser_hostname: "{{ filebrowser_service_name }}"
 filebrowser_vhost: "{{ filebrowser_service_name }}.domain.local"
@@ -457,7 +459,10 @@ hedgedoc_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 hedgedoc_domain: "{{ ansible_default_ipv4.address }}"       # (REQUIRED)
 # Optional extra env vars. For reverse proxy configuration see:
 #   https://docs.hedgedoc.org/guides/reverse-proxy/#reverse-proxy-config
-hedgedoc_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/hedgedoc.env.j2') }}"
+hedgedoc_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/hedgedoc.env.j2') }}"
+  # CMD_URL_ADDPORT=false
+  # CMD_PROTOCOL_USESSL=true
+  # CMD_ALLOW_EMAIL_REGISTER=true   # <- Allow users registration
 
 # ====================
 #       HEIMDALL
@@ -476,10 +481,10 @@ heimdall_vhost: "{{ heimdall_service_name }}.domain.local"
 heimdall_web_ui_port:   # Leave blank to leverage bookshelf configuration
 heimdall_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # Ex.:
-#   # heimdall_ext_port - contains actual external port
-#   http://{{ ansible_default_ipv4.address }}:{{ heimdall_ext_port }}
+#   # heimdall_web_ui_port_ext - contains actual external port
+#   http://{{ ansible_default_ipv4.address }}:{{ heimdall_web_ui_port_ext }}
 #   https://{{ heimdall_vhost }}
-heimdall_base_url: http://{{ ansible_default_ipv4.address }}:{{ heimdall_ext_port }}     # (REQUIRED)
+heimdall_base_url: http://{{ ansible_default_ipv4.address }}:{{ heimdall_web_ui_port_ext }}     # (REQUIRED)
 
 # ====================
 #       JELLYFIN
@@ -492,10 +497,10 @@ jellyfin_managed: "{{ factum_os_family in ['alpine'] }}"
 jellyfin_enabled: true
 jellyfin_version:       # Leave blank to leverage bookshelf configuration
 jellyfin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-jellyfin_owner: root                    # <- Who runs the container
+jellyfin_owner: bug2                    # <- Who runs the container
 jellyfin_user: "{{ ansible_user_id }}"  # <- The in-container user and data filesystem owner
-jellyfin_conf_dir: "{{ jellyfin_owner_home }}/conf/jellyfin"
-jellyfin_data_dir: "{{ jellyfin_user_home }}/share/Media"   # (REQUIRED). Ex.: "{{ jellyfin_user_home }}/share/Media"
+jellyfin_conf_dir: ~/conf/jellyfin
+jellyfin_data_dir: ~/data/Media
 jellyfin_service_name: jellyfin
 jellyfin_hostname: "{{ jellyfin_service_name }}"
 jellyfin_vhost: "{{ jellyfin_service_name }}.domain.local"
@@ -533,45 +538,12 @@ joplin_server_hostname: "{{ joplin_server_service_name }}"
 joplin_server_vhost: "{{ joplin_server_service_name }}.domain.local"
 joplin_server_web_ui_port:          # Leave blank to leverage bookshelf configuration
 # Joplin base url. Ex.:
+#   # joplin_server_web_ui_port_ext - contains actual external port
 #   https://{{ joplin_server_vhost }}
-#   http://{{ ansible_default_ipv4.address }}:{{ joplin_server_web_ui_port | default(bookshelf_const_port.joplin_server.web_ui, true) }}
-joplin_server_base_url: http://{{ ansible_default_ipv4.address }}:{{ joplin_server_web_ui_port | default(bookshelf_const_port.joplin_server.web_ui, true) }}
+#   http://{{ ansible_default_ipv4.address }}:{{ joplin_server_web_ui_port_ext }}
+joplin_server_base_url: http://{{ ansible_default_ipv4.address }}:{{ joplin_server_web_ui_port_ext }}
 joplin_server_db_pass: changeme
 joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-
-# =====================
-#       NAVIDROME
-# =====================
-# VERSIONS: https://hub.docker.com/r/deluan/navidrome/tags
-# -----
-navidrome_managed: "{{ factum_os_family in ['alpine'] }}"
-navidrome_enabled: true
-navidrome_version:        # Leave blank to leverage bookshelf configuration
-navidrome_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-navidrome_owner: root                       # <- Who runs the container
-navidrome_user: "{{ ansible_user_id }}"     # <- The in-container user and data filesystem owner
-navidrome_conf_dir: "{{ navidrome_owner_home }}/conf/navidrome"
-navidrome_data_dir: "{{ navidrome_user_home }}/Music"   # (REQUIRED). Ex.: "{{ navidrome_user_home }}/Music"
-navidrome_extra_dir: "{{ navidrome_user_home }}/Music2" # (OPTIONAL). Gets mounted to '/extra'. Ex.: "{{ navidrome_user_home }}/More/Music"
-navidrome_service_name: navidrome
-navidrome_hostname: "{{ navidrome_service_name }}"
-navidrome_vhost: "{{ navidrome_service_name }}.domain.local"
-navidrome_web_ui_port:    # Leave blank to leverage bookshelf configuration
-navidrome_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Optional extra env vars, will affect both navidrome and tailscale.
-# https://www.navidrome.org/docs/usage/configuration-options/#available-options
-navidrome_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/navidrome.env.j2') }}"
-  FOO1=bar1
-  FOO2=bar2
-# ----------
-# The following settings configure Navidrome to run as a part of tailnet
-#
-# IMPORTANT 1: See IMPORTANTs in tailscale service description
-navidrome_tailscaled: false
-navidrome_tailscale_version:    # Leave blank to leverage bookshelf configuration
-# Hostname within tailnet
-navidrome_tailscale_ts_hostname: "{{ navidrome_service_name }}-tailscale"
-navidrome_tailscale_auth_key:
 
 # ==================
 #       MEALIE
@@ -643,10 +615,10 @@ metube_managed: "{{ factum_os_family in ['alpine'] }}"
 metube_enabled: true
 metube_version:       # Leave blank to leverage bookshelf configuration
 metube_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-metube_owner: root       # <- Who runs the container
+metube_owner: bug2       # <- Who runs the container
 metube_user: "{{ ansible_user_id }}"   # <- The in-container user and data filesystem owner
-metube_conf_dir: "{{ metube_owner_home }}/conf/metube"
-metube_data_dir: "{{ metube_user_home }}/share/Metube"     # (REQUIRED). Ex.: "{{ metube_user_home }}/share/Metube"
+metube_conf_dir: ~/conf/metube
+metube_data_dir: ~/data/Metube
 metube_service_name: metube
 metube_hostname: "{{ metube_service_name }}"
 metube_vhost: "{{ metube_service_name }}.domain.local"
@@ -656,6 +628,40 @@ metube_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 metube_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/metube.env.j2') }}"
   FOO1=bar1
   FOO2=bar2
+
+# =====================
+#       NAVIDROME
+# =====================
+# VERSIONS: https://hub.docker.com/r/deluan/navidrome/tags
+# -----
+navidrome_managed: "{{ factum_os_family in ['alpine'] }}"
+navidrome_enabled: true
+navidrome_version:        # Leave blank to leverage bookshelf configuration
+navidrome_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+navidrome_owner: bug2                       # <- Who runs the container
+navidrome_user: "{{ ansible_user_id }}"     # <- The in-container user and data filesystem owner
+navidrome_conf_dir: ~/conf/navidrome
+navidrome_data_dir: ~/data/Music
+navidrome_extra_dir: ~/data/Music2
+navidrome_service_name: navidrome
+navidrome_hostname: "{{ navidrome_service_name }}"
+navidrome_vhost: "{{ navidrome_service_name }}.domain.local"
+navidrome_web_ui_port:    # Leave blank to leverage bookshelf configuration
+navidrome_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional extra env vars, will affect both navidrome and tailscale.
+# https://www.navidrome.org/docs/usage/configuration-options/#available-options
+navidrome_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/navidrome.env.j2') }}"
+  FOO1=bar1
+  FOO2=bar2
+# ----------
+# The following settings configure Navidrome to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+navidrome_tailscaled: false
+navidrome_tailscale_version:    # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+navidrome_tailscale_ts_hostname: "{{ navidrome_service_name }}-tailscale"
+navidrome_tailscale_auth_key:
 
 # =======================
 #   NGINX-PROXY-MANAGER
@@ -809,10 +815,10 @@ qbittorrent_enabled: true
 qbittorrent_version:              # Leave blank to leverage bookshelf configuration
 qbittorrent_vuetorrent_version:   # Leave blank to leverage bookshelf configuration
 qbittorrent_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
-qbittorrent_owner: root       # <- Who runs the container
+qbittorrent_owner: bug2                     # <- Who runs the container
 qbittorrent_user: "{{ ansible_user_id }}"   # <- The in-container user and data filesystem owner
-qbittorrent_conf_dir: "{{ qbittorrent_owner_home }}/conf/qbittorrent"
-qbittorrent_data_dir: "{{ qbittorrent_user_home }}/share/Torrent"     # (REQUIRED). Ex.: "{{ qbittorrent_user_home }}/share/Torrent"
+qbittorrent_conf_dir: ~/conf/qbittorrent
+qbittorrent_data_dir: ~/data/Torrent
 qbittorrent_service_name: qbittorrent
 qbittorrent_hostname: "{{ qbittorrent_service_name }}"
 qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"
@@ -923,10 +929,10 @@ syncthing_managed: "{{ factum_os_family in ['alpine'] }}"
 syncthing_enabled: true
 syncthing_version:              # Leave blank to leverage bookshelf configuration
 syncthing_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
-syncthing_owner: root  # <- Who runs the container
+syncthing_owner: bug2  # <- Who runs the container
 syncthing_user: "{{ ansible_user_id }}"   # <- The in-container user and data filesystem owner
-syncthing_conf_dir: "{{ syncthing_owner_home }}/conf/syncthing"
-syncthing_data_dir: "{{ syncthing_user_home }}/share"   # (REQUIRED). Ex.: "{{ syncthing_user_home }}/share"
+syncthing_conf_dir: ~/conf/syncthing
+syncthing_data_dir: ~/data
 syncthing_service_name: syncthing
 syncthing_hostname: "{{ syncthing_service_name }}"
 syncthing_vhost: "{{ syncthing_service_name }}.domain.local"

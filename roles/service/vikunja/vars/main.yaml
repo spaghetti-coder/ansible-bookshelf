@@ -1,2 +1,3 @@
 ---
 vikunja_web_ui_port_int: 3456
+vikunja_db_service: vikunja-db

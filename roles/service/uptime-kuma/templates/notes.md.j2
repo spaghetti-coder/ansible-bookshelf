@@ -1,5 +1,7 @@
 ## Uptime Kuma
+{% if uptime_kuma_tailscaled %}
 
 * Disable tailscale machine expiry:
   1. Go to https://tailscale.com/admin/machines
   2. `{{ uptime_kuma_tailscale_ts_hostname }} *** > Disable key expiry`
+{% endif %}

@@ -3,77 +3,70 @@
   ansible.builtin.import_role: { name: docker }
   vars: { docker_users: ["{{ metube_owner }}"] }
 
+- name: Get directories info
+  ansible.builtin.file: { path: "{{ item.path }}" }
+  check_mode: true
+  failed_when: false
+  register: metube_dirs       # metube_dirs.results[ix].path
+  loop_control: { label: "{{ item.user }}:{{ item.path }}" }
+  loop:
+    - { path: "{{ metube_conf_dir }}", user: "{{ metube_owner }}" }
+    - { path: "{{ metube_data_dir }}", user: "{{ metube_user }}" }
+  become: true
+  become_user: "{{ item.user }}"
+
 - name: Compose
+  become: true
+  become_user: "{{ metube_owner }}"
   vars:
     compose_dir: "{{ metube_compose_dir | default(bookshelf_const_compose_dir + '/metube', true) }}"
+    conf_dir_abs: "{{ metube_dirs.results[0].path }}"
+    data_dir_abs: "{{ metube_dirs.results[1].path }}"
     service_state: "{{ metube_enabled | ternary('present', 'absent') }}"
-    extra_env: "{{ metube_extra_env }}"
-    conf_dir: "{{ metube_conf_dir }}"
-    data_dir: "{{ metube_data_dir }}"
     the_user: "{{ getent_passwd[metube_user] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:
-    - name: Owner
-      become: true
-      become_user: "{{ metube_owner }}"
-      block:
-        - name: Create directories
-          ansible.builtin.file:
-            path: "{{ item }}"
-            state: directory
-            mode: '0700'
-          loop:
-            - "{{ compose_dir }}"
-            - "{{ conf_dir }}"
-
-        - name: Create main.env files
-          ansible.builtin.template:
-            src: main.env.j2
-            dest: "{{ compose_dir }}/main.env"
-            mode: '0600'
-
-        - name: Remove obsolete extra.env
-          ansible.builtin.file:
-            path: "{{ compose_dir }}/extra.env"
-            state: absent
-          when: not extra_env
-
-        - name: Create extra.env
-          ansible.builtin.copy:
-            content: |
-              {{ extra_env }}
-            dest: "{{ compose_dir }}/extra.env"
-            mode: '0600'
-          when: extra_env
-
-    - name: Create config directories   # <- Must belong to the 'user'
-      ansible.builtin.file:
-        path: "{{ conf_dir }}/{{ item }}"
-        state: directory
-        mode: '0700'
-        owner: "{{ user_uid }}"
-        group: "{{ user_gid }}"
-      loop:
-        - config
-      become: true
-
     - name: Create data directory
       ansible.builtin.file:
-        path: "{{ data_dir }}"
+        path: "{{ data_dir_abs }}"
         state: directory
         mode: "{{ omit }}"
       become: true
       become_user: "{{ metube_user }}"
 
-    - name: Owner
+    - name: Create compose directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop: ["{{ compose_dir }}", "{{ conf_dir_abs }}/config"]
+
+    - name: Create compose files
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
+        mode: '0600'
+      loop:
+        - compose.yaml
+        - main.env
+
+    - name: Ensure service user directories ownership
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: "{{ user_uid }}"
+        group: "{{ user_gid }}"
+      loop: ["{{ data_dir_abs }}", "{{ conf_dir_abs }}/config"]
+      become: true
+      become_user: root
+
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
       become: true
       become_user: "{{ metube_owner }}"
-      block:
-        - name: Compose apply
-          ansible.builtin.import_role: { name: bookshelf-compose-apply }
-          # noqa: var-naming[no-role-prefix]
-          vars: { template: compose.yaml.j2, dest_dir: "{{ compose_dir }}", state: "{{ service_state }}" }
 
 - name: Mark done
   ansible.builtin.set_fact:

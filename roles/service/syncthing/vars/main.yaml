@@ -1,4 +1,2 @@
 ---
 syncthing_web_ui_port_int: 8384
-syncthing_owner_home: "{{ getent_passwd[syncthing_owner].4 }}"
-syncthing_user_home: "{{ getent_passwd[syncthing_user].4 }}"

@@ -2,8 +2,9 @@
 - name: Ppa-deps    # <- 'import' because will need the role vars
   ansible.builtin.import_role: { name: ppa-deps }
 
-- name: Docker repo
+- name: Charm repo
   become: true
+  become_user: root
   vars:
     keyfile: "{{ ppa_deps_keyrings_dir }}/charm.asc"
   block:

@@ -1,6 +1,5 @@
 {% set version = (joplin_server_version | default(bookshelf_const_version.joplin_server, true)) %}
 {% set postgres_version = (joplin_server_postgres_version | default(bookshelf_const_version.joplin_server_postgres, true)) %}
-{% set web_ui_port = (joplin_server_web_ui_port | default(bookshelf_const_port.joplin_server.web_ui, true)) %}
 {% set db_service_name = (joplin_server_service_name + '-db') %}
 ---
 services:
@@ -11,7 +10,7 @@ services:
     restart: unless-stopped
     env_file:
       - ./secret.env
-      - ./static.env
+      - ./main.env
     volumes:
       - {{ joplin_server_conf_dir }}/db:/var/lib/postgresql/data
     networks:
@@ -24,13 +23,12 @@ services:
     restart: unless-stopped
     hostname: {{ joplin_server_hostname }}
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./static.env
+      - ./main.env
     depends_on:
       - {{ db_service_name }}
     ports:
-      - "{{ web_ui_port }}:{{ joplin_server_web_ui_port_int }}"
+      - "{{ joplin_server_web_ui_port_ext }}:{{ joplin_server_web_ui_port_int }}"
     environment:
       - APP_PORT={{ joplin_server_web_ui_port_int }}
       - POSTGRES_HOST={{ db_service_name }}

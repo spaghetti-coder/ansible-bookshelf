@@ -1,5 +1,6 @@
 {% set version = (filebrowser_version | default(bookshelf_const_version.filebrowser, true)) %}
 {% set web_ui_port = (filebrowser_web_ui_port | default(bookshelf_const_port.filebrowser.web_ui, true)) %}
+{% set data_dir = ((filebrowser_user == filebrowser_owner) | ternary(filebrowser_data_dir, data_dir_abs)) %}
 {% set tailscale_version = (filebrowser_tailscale_version | default(bookshelf_const_version.filebrowser_tailscale, true)) %}
 {% set tailscale_service = 'filebrowser-tailscale' %}
 ---
@@ -10,13 +11,12 @@ services:
     container_name: {{ filebrowser_service_name }}
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
     volumes:
       - '{{ data_dir }}:/srv'
-      - '{{ conf_dir }}/config:/config'
-      - '{{ conf_dir }}/database:/database'
+      - '{{ filebrowser_conf_dir }}/config:/config'
+      - '{{ filebrowser_conf_dir }}/config:/database'
 {% if filebrowser_tailscaled %}
     network_mode: "service:{{ tailscale_service }}"
 
@@ -26,11 +26,10 @@ services:
     container_name: {{ filebrowser_service_name }}-tailscale
     restart: unless-stopped
     env_file:
-      - ./main.env
       - ./secret.env
-      - ./extra.env
+      - ./main.env
     volumes:
-      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+      - '{{ filebrowser_conf_dir }}/tailscale:/var/lib/tailscale'
       # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
       - ./serve.json:/config/serve.json
     devices:
