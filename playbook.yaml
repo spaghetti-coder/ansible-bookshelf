@@ -215,6 +215,10 @@
       tags: [wg-easy, upgradable]
       when: wg_easy_managed | default(false)
 
+    - role: wikijs
+      tags: [wikijs, upgradable]
+      when: wikijs_managed | default(false)
+
 - name: DesktopBook
   tags: [desktops]
   hosts: all

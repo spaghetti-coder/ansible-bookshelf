@@ -1,0 +1,82 @@
+{% set version = (wikijs_version | default(bookshelf_const_version.wikijs, true)) %}
+{% set postgres_version = (wikijs_postgres_version | default(bookshelf_const_version.wikijs_postgres, true)) %}
+{% set web_ui_port = (wikijs_web_ui_port | default(bookshelf_const_port.wikijs.web_ui, true)) %}
+{% set tailscale_version = (wikijs_tailscale_version | default(bookshelf_const_version.wikijs_tailscale, true)) %}
+{% set tailscale_service = 'wikijs-tailscale' %}
+{% set self_net = 'wikijs' %}
+---
+services:
+  {{ wikijs_db_service }}:
+    # https://hub.docker.com/_/postgres/tags?name=alpine
+    image: postgres:{{ postgres_version }}
+    container_name: {{ wikijs_db_service }}
+    restart: unless-stopped
+    env_file:
+      - main.env
+      - secret.env
+    volumes:
+      - '{{ conf_dir }}/db:/var/lib/postgresql/data'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    networks:
+      - {{ self_net }}
+
+  wikijs:
+    # https://hub.docker.com/r/linuxserver/wikijs/tags?name=-ls
+    image: linuxserver/wikijs:{{ version }}
+    container_name: {{ wikijs_service_name }}
+    restart: unless-stopped
+    env_file:
+      - main.env
+      - secret.env
+      - extra.env
+    volumes:
+      - '{{ conf_dir }}/config:/config'
+      - '{{ conf_dir }}/config:/data'
+{% if wikijs_tailscaled %}
+    network_mode: service:{{ tailscale_service }}
+
+  {{ tailscale_service }}:
+    # https://hub.docker.com/r/tailscale/tailscale/tags
+    image: tailscale/tailscale:{{ tailscale_version }}
+    container_name: {{ wikijs_service_name }}-tailscale
+    restart: unless-stopped
+    env_file:
+      - ./main.env
+      - ./secret.env
+      - ./extra.env
+    volumes:
+      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+      # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
+      - ./serve.json:/config/serve.json
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+{% endif %}{# wikijs_tailscaled #}
+    depends_on:
+      {{ wikijs_db_service }}:
+        condition: service_healthy
+    hostname: {{ wikijs_hostname }}
+    ports:
+      - '{{ web_ui_port }}:{{ wikijs_web_ui_port_int }}'
+    networks:
+      - {{ self_net }}
+{% if (nginx_proxy_enabled | default(false)) %}
+      - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ wikijs_vhost }}
+      - VIRTUAL_PORT={{ wikijs_web_ui_port_int }}
+{% endif %}{# nginx_proxy_enabled #}
+
+networks:
+  {{ self_net }}:
+    name: {{ self_net }}
+{% if (nginx_proxy_enabled | default(false)) %}
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

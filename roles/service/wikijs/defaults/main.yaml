@@ -1,0 +1,33 @@
+---
+# A modern and powerful wiki app built on Node.js
+#   https://js.wiki/
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/linuxserver/wikijs/tags?name=-ls
+#   * https://hub.docker.com/_/postgres/tags?name=alpine
+#   * => See tailscale role versions
+# -----
+wikijs_managed: false
+wikijs_enabled: false
+wikijs_version:             # Leave blank to leverage bookshelf configuration
+wikijs_postgres_version:    # Leave blank to leverage bookshelf configuration
+wikijs_compose_dir:         # Unless you know ..., leave blank to leverage bookshelf configuration
+wikijs_owner: "{{ ansible_user_id }}"
+wikijs_conf_dir: ~/conf/wikijs
+wikijs_service_name: wikijs
+wikijs_hostname: "{{ wikijs_service_name }}"
+wikijs_vhost: "{{ wikijs_service_name }}.domain.local"
+wikijs_web_ui_port:         # Leave blank to leverage bookshelf configuration
+wikijs_db_pass:             # (REQUIRED) Something hard and random
+wikijs_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional extra env vars, will affect both Wiki.js and tailscale.
+wikijs_extra_env:           # "{{ lookup('template', playbook_dir + '/resources/wikijs.env.j2') }}"
+# ----------
+# The following settings configure Wiki.js to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+wikijs_tailscaled: false
+wikijs_tailscale_version:   # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+wikijs_tailscale_ts_hostname: "{{ wikijs_service_name }}-tailscale"
+wikijs_tailscale_auth_key:
