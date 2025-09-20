@@ -16,3 +16,7 @@
 
 **`service/syncthing`**:
   * `{{ syncthing_conf_dir }}/syncthing` directory moved to `{{ syncthing_conf_dir }}/config` and now owned by `{{ syncthing_user }}`
+
+TODO:
+  * Merge services config and data directories
+  * Check all `the_user` under services
