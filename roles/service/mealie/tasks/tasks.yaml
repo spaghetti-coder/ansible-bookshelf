@@ -10,7 +10,7 @@
     compose_dir: "{{ mealie_compose_dir | default(bookshelf_const_compose_dir + '/mealie', true) }}"
     conf_dir: "{{ mealie_conf_dir }}"
     service_state: "{{ mealie_enabled | ternary('present', 'absent') }}"
-    the_user: "{{ getent_passwd[syncthing_user] }}"
+    the_user: "{{ getent_passwd[mealie_owner] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:
