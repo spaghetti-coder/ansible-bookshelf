@@ -16,3 +16,12 @@
 
 **`service/syncthing`**:
   * `{{ syncthing_conf_dir }}/syncthing` directory moved to `{{ syncthing_conf_dir }}/config` and now owned by `{{ syncthing_user }}`
+
+**`service/adguard`**:
+  * `conf` and `work` directories content is moved to config root directory
+
+**`service/auidobookshelf`**:
+  * `metadata` directory content is moved to `config` directory
+
+**`service/filebrowser`**:
+  * `database` directory content is moved to `config` directory

@@ -15,8 +15,8 @@ services:
       - ./secret.env
       - ./extra.env
     volumes:
-      - '{{ conf_dir }}/conf:/opt/adguardhome/conf'
-      - '{{ conf_dir }}/work:/opt/adguardhome/work'
+      - '{{ conf_dir }}/config:/opt/adguardhome/conf'
+      - '{{ conf_dir }}/config:/opt/adguardhome/work'
 {% if adguard_tailscaled %}
     network_mode: "service:{{ tailscale_service }}"
 

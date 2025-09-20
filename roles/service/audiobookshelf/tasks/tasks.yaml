@@ -59,7 +59,6 @@
         group: "{{ user_gid }}"
       loop:
         - config
-        - metadata
       become: true
 
     - name: Create data directory
