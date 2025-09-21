@@ -1,0 +1,24 @@
+---
+- name: Create notes directory
+  ansible.builtin.file:
+    path: "{{ bookshelf_note_home }}"
+    state: directory
+    mode: '0700'
+
+- name: Note
+  vars:
+    ext: "{{ src | splitext | last }}"
+  block:
+    - name: Deploy note template
+      ansible.builtin.template:
+        src: "{{ src }}"
+        dest: "{{ bookshelf_note_home }}/{{ dest }}"
+        mode: '0600'
+      when: ext in ['.j2']
+
+    - name: Deploy note file
+      ansible.builtin.copy:
+        src: "{{ src }}"
+        dest: "{{ bookshelf_note_home }}/{{ dest }}"
+        mode: '0600'
+      when: ext not in ['.j2']

@@ -10,8 +10,8 @@ services:
     container_name: {{ db_service_name }}
     restart: unless-stopped
     env_file:
+      - ./main.env
       - ./secret.env
-      - ./static.env
     volumes:
       - {{ joplin_server_conf_dir }}/db:/var/lib/postgresql/data
     networks:
@@ -26,7 +26,6 @@ services:
     env_file:
       - ./main.env
       - ./secret.env
-      - ./static.env
     depends_on:
       - {{ db_service_name }}
     ports:

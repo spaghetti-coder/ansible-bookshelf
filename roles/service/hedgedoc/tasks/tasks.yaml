@@ -14,39 +14,56 @@
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:
-    - name: Create directories
+    - name: Create compose and service assets directories
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
         mode: '0700'
-      loop:
-        - "{{ compose_dir }}"
-        - "{{ conf_dir }}/config"
-        - "{{ conf_dir }}/uploads"
+      loop: ["{{ compose_dir }}", "{{ conf_dir }}"]
 
-    - name: Create main.env
+    - name: Create compose files
       ansible.builtin.template:
-        src: main.env.j2
-        dest: "{{ compose_dir }}/main.env"
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
+      loop:
+        - compose.yaml
+        - extra.env
+        - main.env
+
+    - name: Create service assets directories
+      ansible.builtin.file:
+        path: "{{ conf_dir }}/{{ item }}"
+        state: directory
+        mode: '0700'
+        owner: "{{ user_uid }}"
+        group: "{{ user_gid }}"
+      loop: [config, uploads]
+      become: true
+      become_user: root
 
     - name: Create config.json
       ansible.builtin.copy:
         src: config.json
         dest: "{{ conf_dir }}/config/config.json"
         mode: '0600'
+      register: hedgedoc_config_state
 
-    - name: Create extra.env
-      ansible.builtin.copy:
-        content: |
-          {{ hedgedoc_extra_env | default('', true) }}
-        dest: "{{ compose_dir }}/extra.env"
-        mode: '0600'
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+      register: hedgedoc_service_state
 
-    - name: Compose apply
-      ansible.builtin.import_role: { name: bookshelf-compose-apply }
-      # noqa: var-naming[no-role-prefix]
-      vars: { template: compose.yaml.j2, dest_dir: "{{ compose_dir }}", state: "{{ service_state }}" }
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - hedgedoc_enabled and not hedgedoc_service_state.changed
+        - hedgedoc_config_state.changed
 
 - name: Mark done
   ansible.builtin.set_fact:

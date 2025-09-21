@@ -1,0 +1,5 @@
+---
+- name: Drop note
+  ansible.builtin.file:
+    path: "{{ bookshelf_note_home }}/{{ dest }}"
+    state: absent
