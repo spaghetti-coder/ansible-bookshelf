@@ -6,7 +6,7 @@ bookshelf_const_version_shared:
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.88.2
 
-bookshelf_const_version:    # <- Last update: 2025-09-18
+bookshelf_const_version:    # <- Last update: 2025-09-22
   #
   # BASE
   #
@@ -24,20 +24,20 @@ bookshelf_const_version:    # <- Last update: 2025-09-18
   audiobookshelf: 2.29.0
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/blinkospace/blinko/tags
-  blinko: 1.4.1
+  blinko: 1.4.3
   blinko_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   blinko_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
-  code_server: v4.104.0
+  code_server: v4.104.1
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
   filebrowser: v2.43.0-s6
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/gotify/server/tags
-  gotify: 2.7.2
+  gotify: 2.7.3
   # https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
   hedgedoc: 1.10.3-alpine
   # https://hub.docker.com/r/linuxserver/heimdall/tags
-  heimdall: v2.7.6-ls320
+  heimdall: v2.7.6-ls321
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
   jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
@@ -65,21 +65,21 @@ bookshelf_const_version:    # <- Last update: 2025-09-18
   # https://hub.docker.com/r/jamesread/olivetin/tags
   olivetin: 2025.7.29
   # https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
-  pairdrop: v1.11.2-ls121
+  pairdrop: v1.11.2-ls122
   pairdrop_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
   portainer: 2.34.0-alpine
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
   portainer_agent: 2.34.0-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.2-r2-ls415
+  qbittorrent: 5.1.2-r2-ls416
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: 2.0.0
   # https://hub.docker.com/r/rnwood/smtp4dev/tags?name=v
   smtp4dev: v3.10
   smtp4dev_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
-  syncthing: v2.0.9-ls195
+  syncthing: v2.0.9-ls196
   syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # => See tailscale versions in the top
   tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
@@ -95,7 +95,7 @@ bookshelf_const_version:    # <- Last update: 2025-09-18
   vikunja_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   vikunja_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
-  vuetorrent: 2.29.0
+  vuetorrent: 2.30.0
   # https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
   wg_easy: 15.1.0
   # https://hub.docker.com/r/linuxserver/wikijs/tags?name=-ls
