@@ -179,6 +179,10 @@
       tags: [qbittorrent, upgradable]
       when: qbittorrent_managed | default(false)
 
+    - role: rwmarkable
+      tags: [rwmarkable, upgradable]
+      when: rwmarkable_managed | default(false)
+
     - role: silverbullet
       tags: [silverbullet, upgradable]
       when: silverbullet_managed | default(false)

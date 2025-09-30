@@ -73,6 +73,9 @@ bookshelf_const_version:    # <- Last update: 2025-09-29
   portainer_agent: 2.34.0-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
   qbittorrent: 5.1.2-r2-ls417
+  # https://github.com/fccview/rwMarkable/pkgs/container/rwmarkable
+  rwmarkable: 1.5.0
+  rwmarkable_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: 2.1.5
   # https://hub.docker.com/r/rnwood/smtp4dev/tags?name=v
@@ -151,6 +154,8 @@ bookshelf_const_port:
   qbittorrent:
     web_ui: 8088
     torrenting: 6881
+  rwmarkable:
+    web_ui: 8108        # <- Last (8081+)
   silverbullet:
     web_ui: 8103
   smtp4dev:
@@ -170,7 +175,7 @@ bookshelf_const_port:
   wg_easy:
     web_ui: 8082
   wikijs:
-    web_ui: 8107        # <- Last (8081+)
+    web_ui: 8107
   # Reserved:
   # * 80    # <- nginx-proxy or nginx-proxy-manager HTTP
   # * 81    # <- nginx-proxy-manager.web_ui

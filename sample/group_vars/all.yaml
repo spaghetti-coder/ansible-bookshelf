@@ -981,6 +981,38 @@ qbittorrent_notify_chat_id:   # (REQUIRED for telegram)
 # Optional extra env vars
 qbittorrent_extra_env:        # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"
 
+# ======================
+#       RWMARKABLE
+# ======================
+# A simple, self-hosted app for your checklists and notes.
+#   https://github.com/fccview/rwMarkable
+# -----
+# VERSIONS:
+#   * https://github.com/fccview/rwMarkable/pkgs/container/rwmarkable
+#   * => See tailscale role versions
+# -----
+rwmarkable_managed: false
+rwmarkable_enabled: false
+rwmarkable_version:            # Leave blank to leverage bookshelf configuration
+rwmarkable_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
+rwmarkable_owner: "{{ ansible_user_id }}"
+rwmarkable_conf_dir: ~/conf/rwmarkable
+rwmarkable_service_name: rwmarkable
+rwmarkable_hostname: "{{ rwmarkable_service_name }}"
+rwmarkable_vhost: "{{ rwmarkable_service_name }}.domain.local"
+rwmarkable_web_ui_port:        # Leave blank to leverage bookshelf configuration
+# Optional extra env vars, will affect both rwMarkable and Tailscale.
+rwmarkable_extra_env:          # "{{ lookup('template', playbook_dir + '/resources/rwmarkable.env.j2') }}"
+# ----------
+# The following settings configure rwMarkable to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+rwmarkable_tailscaled: false
+rwmarkable_tailscale_version:  # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+rwmarkable_tailscale_ts_hostname: "{{ rwmarkable_service_name }}-tailscale"
+rwmarkable_tailscale_auth_key:
+
 # ========================
 #       SILVERBULLET
 # ========================
