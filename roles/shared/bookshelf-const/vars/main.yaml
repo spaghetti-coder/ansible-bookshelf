@@ -29,6 +29,9 @@ bookshelf_const_version:    # <- Last update: 2025-09-29
   blinko_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
   code_server: v4.104.2
+  # https://github.com/fccview/cronmaster/pkgs/container/cronmaster
+  cronmaster: 1.4.1
+  cronmaster_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
   filebrowser: v2.44.0-s6
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
@@ -116,6 +119,8 @@ bookshelf_const_port:
     web_ui: 8102
   code_server:
     web_ui: 8090
+  cronmaster:
+    web_ui: 8109        # <- Last (8081+)
   filebrowser:
     web_ui: 8094
   gotify:
@@ -155,7 +160,7 @@ bookshelf_const_port:
     web_ui: 8088
     torrenting: 6881
   rwmarkable:
-    web_ui: 8108        # <- Last (8081+)
+    web_ui: 8108
   silverbullet:
     web_ui: 8103
   smtp4dev:

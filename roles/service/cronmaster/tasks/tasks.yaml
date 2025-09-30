@@ -1,0 +1,131 @@
+---
+- name: Docker
+  ansible.builtin.import_role: { name: docker }
+  vars: { docker_users: ["{{ cronmaster_owner }}"] }
+
+- name: Get directories info
+  ansible.builtin.file: { path: "{{ item.path }}" }
+  check_mode: true
+  failed_when: false
+  register: cronmaster_dirs       # cronmaster_dirs.results[ix].path
+  loop_control: { label: "{{ item.user }}:{{ item.path }}" }
+  loop:
+    - { path: "{{ cronmaster_conf_dir }}", user: "{{ cronmaster_owner }}" }
+    - { path: "{{ cronmaster_compose_dir | default(bookshelf_const_compose_dir + '/cronmaster', true) }}", user: "{{ cronmaster_owner }}" }
+  become: true
+  become_user: "{{ item.user }}"
+
+- name: Compose
+  become: true
+  become_user: "{{ cronmaster_owner }}"
+  vars:
+    compose_dir: "{{ cronmaster_compose_dir | default(bookshelf_const_compose_dir + '/cronmaster', true) }}"
+    compose_dir_abs: "{{ cronmaster_dirs.results[1].path }}"
+    conf_dir_abs: "{{ cronmaster_dirs.results[0].path }}"
+    service_state: "{{ cronmaster_enabled | ternary('present', 'absent') }}"
+    the_user: "{{ getent_passwd[cronmaster_owner] }}"
+    user_uid: "{{ the_user.1 }}"
+    user_gid: "{{ the_user.2 }}"
+  block:
+    - name: Create compose directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop: ["{{ compose_dir }}", "{{ conf_dir_abs }}/config"]
+
+    - name: Create compose files
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
+        mode: '0600'
+      loop:
+        - serve.json    # <- Must be first
+        - compose.yaml
+        - main.env
+        - secret.env
+      register: cronmaster_compose_files_result
+
+    - name: Root
+      become: true
+      become_user: root
+      # noqa: jinja[spacing]
+      vars:
+        scripts: "{{ cronmaster_scripts | default([], true) | map('combine', {
+          '_mode': '0755', '_dir': compose_dir_abs + '/scripts', '_owner': 'root' }) }}"
+        snippets: "{{ cronmaster_snippets | default([], true) | map('combine', {
+          '_mode': '0644', '_dir': compose_dir_abs + '/snippets', '_owner': 'root' }) }}"
+        secrets: "{{ cronmaster_secrets | default([], true) | map('combine', {
+          '_mode': '0600', '_dir': compose_dir_abs + '/secrets' }) }}"
+      block:
+        - name: Ensure service user directories ownership
+          ansible.builtin.file:
+            path: "{{ item }}"
+            owner: "{{ user_uid }}"
+            group: "{{ user_gid }}"
+          loop: ["{{ conf_dir_abs }}/config"]
+
+        - name: Create assets directories
+          ansible.builtin.file:
+            path: "{{ compose_dir_abs }}/{{ item }}"
+            state: directory
+            mode: '0755'
+            owner: "{{ user_uid }}"
+            group: "{{ user_gid }}"
+          loop: [scripts, secrets, snippets]
+
+        - name: Create assets files
+          ansible.builtin.copy:
+            content: |
+              {{ item.text }}
+            dest: "{{ item._dir }}/{{ item.filename }}"
+            mode: "{{ item._mode }}"
+            # Fall back to item.owner || 'root' for secrets
+            owner: "{{ item._owner | default(item.owner | default('root', true)) }}"
+          loop_control: { label: "{{ item._dir }}/{{ item.filename }}" }
+          # noqa: jinja[spacing]
+          loop: "{{ scripts + snippets + secrets }}"
+          vars: { secrets_dir: "{{ compose_dir_abs }}/secrets" }
+
+        - name: Get obsolete assets candidates
+          ansible.builtin.find:
+            paths:
+              - "{{ compose_dir_abs }}/secrets"
+              - "{{ compose_dir_abs }}/snippets"
+            file_type: any
+            hidden: true
+          register: cronmaster_obsolete_assets
+
+        - name: Remove obsolete assets
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: absent
+          vars:
+            exclude_meta: "{{ (snippets + secrets) }}"
+            exclude_paths: "{{ exclude_meta | map(attribute='_dir') | zip(exclude_meta | map(attribute='filename')) | map('join', '/') }}"
+          loop: "{{ cronmaster_obsolete_assets.files | map(attribute='path') | difference(exclude_paths) }}"
+
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+      register: cronmaster_service_state
+
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - cronmaster_enabled and not cronmaster_service_state.changed
+        - cronmaster_tailscaled and cronmaster_compose_files_result.results[0].changed
+
+    - name: Create note
+      ansible.builtin.import_role: { name: bookshelf-note }
+      # noqa: var-naming[no-role-prefix]
+      vars: { src: notes.md.j2, dest: cronmaster-service.md, present: "{{ cronmaster_enabled }}" }
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    cronmaster_done: true

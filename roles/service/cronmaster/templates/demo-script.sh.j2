@@ -1,0 +1,11 @@
+# @id: script_123
+# @title: Demo script
+# @description: Demo script description
+
+# id must be unique
+
+#!/bin/bash
+
+# Uses demo-secret.txt
+SECRET_TOKEN="$(cat '{{ secrets_dir }}/demo-secret.txt')" || exit
+echo "${SECRET_TOKEN}" | tee ~/cronmaster-demo.txt

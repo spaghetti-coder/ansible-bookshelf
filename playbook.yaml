@@ -111,6 +111,10 @@
       tags: [code-server, upgradable]
       when: code_server_managed | default(false)
 
+    - role: cronmaster
+      tags: [cronmaster, upgradable]
+      when: cronmaster_managed | default(false)
+
     - role: filebrowser
       tags: [filebrowser, upgradable]
       when: filebrowser_managed | default(false)

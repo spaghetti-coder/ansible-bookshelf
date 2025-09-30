@@ -1,0 +1,43 @@
+---
+# Cron management made easy
+#   https://github.com/fccview/cronmaster
+# -----
+# VERSIONS:
+#   * https://github.com/fccview/cronmaster/pkgs/container/cronmaster
+#   * => See tailscale role versions
+# -----
+cronmaster_managed: false
+cronmaster_enabled: false
+cronmaster_version:             # Leave blank to leverage bookshelf configuration
+cronmaster_compose_dir:         # Unless you know ..., leave blank to leverage bookshelf configuration
+cronmaster_owner: "{{ ansible_user_id }}"
+cronmaster_conf_dir: ~/conf/cronmaster
+cronmaster_service_name: cronmaster
+cronmaster_hostname: "{{ cronmaster_service_name }}"
+cronmaster_vhost: "{{ cronmaster_service_name }}.domain.local"
+cronmaster_web_ui_port:         # Leave blank to leverage bookshelf configuration
+cronmaster_auth_pass:           # (REQUIRED)
+cronmaster_crontab_users:       # List of crontab users (from host)
+  # - root
+  # - "{{ ansible_user_id }}"
+cronmaster_scripts:
+  # - text: "{{ lookup('template', 'demo-script.sh.j2') }}"  # <- See this one for demo, uses demo-secret.txt
+  #   filename: demo-script.sh        # Destination filename, should not intersect with existing scripts
+cronmaster_snippets:  # <- Guide: https://github.com/fccview/cronmaster/blob/main/snippets/README.md
+  # - text: "{{ lookup('file', 'demo-snippet.sh') }}"
+  #   filename: demo-snippet.sh
+cronmaster_secrets:
+  # - text: "{{ lookup('file', 'demo-secret.txt') }}"
+  #   filename: demo-secret.txt       # See demo-script.sh.j2 to see how to reference the secret
+  #   # owner: "{{ ansible_user_id }}"  # Optional, defaults to root. The file is only RW by the owner
+# Optional extra env vars, will affect both CronMaster and Tailscale.
+cronmaster_extra_env:          # "{{ lookup('template', playbook_dir + '/resources/cronmaster.env.j2') }}"
+# ----------
+# The following settings configure CronMaster to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+cronmaster_tailscaled: false
+cronmaster_tailscale_version:  # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+cronmaster_tailscale_ts_hostname: "{{ cronmaster_service_name }}-tailscale"
+cronmaster_tailscale_auth_key:
