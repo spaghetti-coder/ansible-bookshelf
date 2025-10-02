@@ -32,6 +32,9 @@ bookshelf_const_version:    # <- Last update: 2025-10-04
   # https://github.com/fccview/cronmaster/pkgs/container/cronmaster
   cronmaster: 1.4.1
   cronmaster_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://hub.docker.com/r/linuxserver/duplicati/tags?name=-ls
+  duplicati: v2.1.0.5_stable_2025-03-04-ls260
+  duplicati_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
   filebrowser: v2.44.0-s6
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
@@ -120,7 +123,9 @@ bookshelf_const_port:
   code_server:
     web_ui: 8090
   cronmaster:
-    web_ui: 8109        # <- Last (8081+)
+    web_ui: 8109
+  duplicati:
+    web_ui: 8110        # <- Last (8081+)
   filebrowser:
     web_ui: 8094
   gotify:

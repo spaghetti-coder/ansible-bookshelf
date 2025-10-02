@@ -115,6 +115,10 @@
       tags: [cronmaster, upgradable]
       when: cronmaster_managed | default(false)
 
+    - role: duplicati
+      tags: [duplicati, upgradable]
+      when: duplicati_managed | default(false)
+
     - role: filebrowser
       tags: [filebrowser, upgradable]
       when: filebrowser_managed | default(false)
