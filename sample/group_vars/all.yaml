@@ -492,6 +492,54 @@ cronmaster_tailscale_version:  # Leave blank to leverage bookshelf configuration
 cronmaster_tailscale_ts_hostname: "{{ cronmaster_service_name }}-tailscale"
 cronmaster_tailscale_auth_key:
 
+# =====================
+#       DUPLICATI
+# =====================
+# Store securely encrypted backups in the cloud!
+#   https://duplicati.com/
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/linuxserver/duplicati/tags?name=-ls
+#   * => See tailscale role versions
+# -----
+duplicati_managed: false
+duplicati_enabled: false
+duplicati_version:        # Leave blank to leverage bookshelf configuration
+duplicati_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+duplicati_owner: "{{ ansible_user_id }}"    # <- Who runs the container
+duplicati_conf_dir: ~/conf/duplicati
+duplicati_backup_volumes:                   # <- Mounts for backups, at least one entry required
+  - ~/backup/Main:/backups                  # <- One of data volumes must be mounted to '/backups'
+  # - ~/backup/Photos:/extra/backups/Photos
+  # - ~/backup/Important:/extra/backups/Important
+# '~' refers to the owner HOME.
+duplicati_data_volumes:                     # <- Mounts for data, at least one entry required
+  - volume: ~/data:/source                  # <- One of data volumes must be mounted to '/source'
+    owner: "{{ duplicati_owner }}"          # <- (OPTIONAL) Host directory owner
+  # - volume: ~/data1/Photos:/extra/source/Photos    # <- Owner is duplicati_owner
+  # - ~/data1/Important:/extra/source/Important      # <- Owner is duplicati_owner
+duplicati_service_name: duplicati
+duplicati_hostname: "{{ duplicati_service_name }}"
+duplicati_vhost: "{{ duplicati_service_name }}.domain.local"
+duplicati_web_ui_port:    # Leave blank to leverage bookshelf configuration
+duplicati_enc_key:        # (REQUIRED) Min 8 symbols
+duplicati_pass:           # (OPTIONAL)
+duplicati_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Optional extra env vars, will affect both Duplicati and tailscale.
+duplicati_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/duplicati.env.j2') }}"
+  # https://prev-docs.duplicati.com/en/latest/07-other-command-line-utilities/
+  # ----------
+  # CLI_ARGS=--server-datafolder=/root/.config/Duplicati
+# ----------
+# The following settings configure Duplicati to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+duplicati_tailscaled: false
+duplicati_tailscale_version:    # Leave blank to leverage bookshelf configuration
+# Hostname within tailnet
+duplicati_tailscale_ts_hostname: "{{ duplicati_service_name }}-tailscale"
+duplicati_tailscale_auth_key:
+
 # =======================
 #       FILEBROWSER
 # =======================

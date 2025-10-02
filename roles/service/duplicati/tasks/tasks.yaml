@@ -1,0 +1,78 @@
+---
+- name: Docker
+  ansible.builtin.import_role: { name: docker }
+  vars: { docker_users: ["{{ duplicati_owner }}"] }
+
+- name: Acl
+  ansible.builtin.import_role: { name: acl }
+  vars:   # noqa: var-naming[no-role-prefix]
+    owners: "{{ duplicati_data_volumes_unified | map(attribute='owner') | unique }}"
+  when: owners | difference(['root', duplicati_owner]) | length > 0
+
+# Data dirs are only required to exist, ownership and privileges don't matter
+# as in-container root user can read any
+- name: Create data directories
+  ansible.builtin.file: { path: "{{ the_path }}", state: directory, mode: "{{ omit }}" }
+  vars:
+    the_path: "{{ item.volume | split(':') | first }}"
+  register: duplicati_dirs_create_info
+  loop_control: { label: "{{ item.owner }}:{{ the_path }}" }
+  loop: "{{ duplicati_data_volumes_unified }}"
+  become: true
+  become_user: "{{ item.owner }}"
+
+- name: Compose
+  become: true
+  become_user: "{{ duplicati_owner }}"
+  vars:     # noqa: jinja[spacing]
+    compose_dir: "{{ duplicati_compose_dir | default(bookshelf_const_compose_dir + '/duplicati', true) }}"
+    conf_dir: "{{ duplicati_conf_dir }}"
+    backup_volumes: "{{ duplicati_backup_volumes | default([], true) }}"
+    data_volumes_abs: "{{ duplicati_dirs_create_info.results | map(attribute='path') | zip(
+        duplicati_data_volumes_flat | map('regex_replace', '^[^:]*:', '')
+      ) | map('join', ':') }}"
+    service_state: "{{ duplicati_enabled | ternary('present', 'absent') }}"
+  block:
+    - name: Create compose directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop: "{{ [compose_dir, conf_dir] + backup_volumes | map('split', ':') | map('first') }}"
+
+    - name: Create compose files
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
+        mode: '0600'
+      loop:
+        - serve.json    # <- Must be first
+        - compose.yaml
+        - main.env
+        - secret.env
+      register: duplicati_compose_files_result
+
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+      register: duplicati_service_state
+
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - duplicati_enabled and not duplicati_service_state.changed
+        - duplicati_tailscaled and duplicati_compose_files_result.results[0].changed
+
+    - name: Create note
+      ansible.builtin.import_role: { name: bookshelf-note }
+      # noqa: var-naming[no-role-prefix]
+      vars: { src: notes.md.j2, dest: duplicati-service.md, present: "{{ duplicati_enabled }}" }
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    duplicati_done: true

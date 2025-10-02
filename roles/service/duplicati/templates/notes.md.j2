@@ -1,0 +1,7 @@
+## Duplicati
+{% if duplicati_tailscaled %}
+
+* Disable tailscale machine expiry:
+  1. Go to https://tailscale.com/admin/machines
+  2. `{{ duplicati_tailscale_ts_hostname }} *** > Disable key expiry`
+{% endif %}

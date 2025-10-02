@@ -1,0 +1,16 @@
+---
+# - ansible.builtin.debug:
+#     msg: "{{ the_dir }}"
+#   vars:
+#     struct: "{{ (item | type_debug == 'dict') | ternary(
+#         { 'volume': item.volume, 'owner': (item.owner | default('root', true)) },
+#         { 'volume': item, 'owner': 'root' }
+#       ) }}"
+#     the_dir: "{{ struct.volume | split(':') | first }}"
+#   loop: "{{ duplicati_backup_mounts }}"
+# - ansible.builtin.fail: { msg: None }
+
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  when: not (duplicati_done | default(false))

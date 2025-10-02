@@ -1,0 +1,14 @@
+---
+duplicati_web_ui_port_int: 8200
+
+duplicati_data_volumes_int: "{{ duplicati_data_volumes | default([], true) }}"
+duplicati_data_volumes_unified: "{{
+    duplicati_data_volumes_int | select('mapping') | selectattr('owner', 'defined') + (
+      duplicati_data_volumes_int | select('mapping') | selectattr('owner', 'undefined')
+      + duplicati_data_volumes_int | reject('mapping')
+        | map('community.general.dict_kv', 'volume')
+    ) | map('combine', {'owner': duplicati_owner})
+  }}"
+
+# [{ 'volume': VOL1, 'owner': OWNER1 }, VOL2] => [VOL1, VOL2]
+duplicati_data_volumes_flat: "{{ duplicati_data_volumes_unified | map(attribute='volume') }}"
