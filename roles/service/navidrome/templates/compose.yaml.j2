@@ -1,7 +1,8 @@
 {% set version = (navidrome_version | default(bookshelf_const_version.navidrome, true)) %}
 {% set web_ui_port = (navidrome_web_ui_port | default(bookshelf_const_port.navidrome.web_ui, true)) %}
-{% set data_dir = ((navidrome_user == navidrome_owner) | ternary(navidrome_data_dir, data_dir_abs)) %}
-{% set extra_dir = ((navidrome_user == navidrome_owner) | ternary(navidrome_extra_dir, extra_dir_abs)) %}
+{% set same_owner = (navidrome_user == navidrome_owner) %}
+{% set data_dir = (same_owner | ternary(navidrome_data_dir, data_dir_abs)) %}
+{% set extra_mounts = (same_owner | ternary(navidrome_extra_mounts, extra_mounts_abs) | default([], true)) %}
 {% set tailscale_version = (navidrome_tailscale_version | default(bookshelf_const_version.navidrome_tailscale, true)) %}
 {% set tailscale_service = 'navidrome-tailscale' %}
 ---
@@ -16,9 +17,9 @@ services:
       - ./main.env
     volumes:
       - '{{ data_dir }}:/music:ro'
-{% if extra_dir %}
-      - '{{ extra_dir }}:/extra:ro'
-{% endif %}
+{% for extra_mount in extra_mounts %}
+      - '{{ extra_mount }}'
+{% endfor %}
       - '{{ navidrome_conf_dir }}/config:/data'
     user: "{{ user_uid }}:{{ user_gid }}"
 {% if navidrome_tailscaled %}

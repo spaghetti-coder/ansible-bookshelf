@@ -44,3 +44,6 @@
 
 **`service/wg-easy`**:
   * main configuration directory content is moved to `config` directory
+
+**`service/wg-easy`**:
+  * `navidrome_extra_dir` is changed to `navidrome_extra_mounts`

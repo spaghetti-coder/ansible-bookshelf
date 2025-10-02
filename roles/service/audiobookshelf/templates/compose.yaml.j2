@@ -1,6 +1,8 @@
 {% set version = (audiobookshelf_version | default(bookshelf_const_version.audiobookshelf, true)) %}
 {% set web_ui_port = (audiobookshelf_web_ui_port | default(bookshelf_const_port.audiobookshelf.web_ui, true)) %}
-{% set data_dir = ((audiobookshelf_user == audiobookshelf_owner) | ternary(audiobookshelf_data_dir, data_dir_abs)) %}
+{% set same_owner = (audiobookshelf_user == audiobookshelf_owner) %}
+{% set data_dir = (same_owner | ternary(audiobookshelf_data_dir, data_dir_abs)) %}
+{% set extra_mounts = (same_owner | ternary(audiobookshelf_extra_mounts, extra_mounts_abs) | default([], true)) %}
 {% set tailscale_version = (audiobookshelf_tailscale_version | default(bookshelf_const_version.audiobookshelf_tailscale, true)) %}
 {% set tailscale_service = 'audiobookshelf-tailscale' %}
 ---
@@ -15,6 +17,9 @@ services:
       - ./main.env
     volumes:
       - '{{ data_dir }}:/data'
+{% for extra_mount in extra_mounts %}
+      - '{{ extra_mount }}'
+{% endfor %}
       - '{{ audiobookshelf_conf_dir }}/config:/config'
       - '{{ audiobookshelf_conf_dir }}/config:/metadata'
     user: "{{ user_uid }}:{{ user_gid }}"

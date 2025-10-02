@@ -299,7 +299,10 @@ audiobookshelf_compose_dir:   # Unless you know ..., leave blank to leverage boo
 audiobookshelf_owner: bug2    # <- Who runs the container
 audiobookshelf_user: "{{ ansible_user_id }}"    # <- The in-container user and data filesystem owner
 audiobookshelf_conf_dir: ~/conf/audiobookshelf
-audiobookshelf_data_dir: ~/data/Audiobooks   # (REQUIRED)
+audiobookshelf_data_dir: ~/data/Audiobooks          # <- Primary books directory, mounted to '/data'
+audiobookshelf_extra_mounts:                             # <- Extra mounts for books
+  - '~/data/Children/Audiobooks:/extra/Children'
+  - '~/data/Parents/Audiobooks:/extra/Parents'
 audiobookshelf_service_name: audiobookshelf
 audiobookshelf_hostname: "{{ audiobookshelf_service_name }}"
 audiobookshelf_vhost: "{{ audiobookshelf_service_name }}.domain.local"
@@ -543,10 +546,13 @@ jellyfin_managed: "{{ factum_os_family in ['alpine'] }}"
 jellyfin_enabled: true
 jellyfin_version:       # Leave blank to leverage bookshelf configuration
 jellyfin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-jellyfin_owner: bug2                    # <- Who runs the container
-jellyfin_user: "{{ ansible_user_id }}"  # <- The in-container user and data filesystem owner
+jellyfin_owner: bug2                      # <- Who runs the container
+jellyfin_user: "{{ ansible_user_id }}"    # <- The in-container user and data filesystem owner
 jellyfin_conf_dir: ~/conf/jellyfin
-jellyfin_data_dir: ~/data/Media
+jellyfin_data_dir: ~/data/Movies          # <- Primary movies collection directory, mounted to '/data'
+jellyfin_extra_mounts:                    # <- Extra mounts for additional collections
+  - '~/data/Parents/Movies:/extra/Parents'
+  - '~/data/Children/Movies:/extra/Children'
 jellyfin_service_name: jellyfin
 jellyfin_hostname: "{{ jellyfin_service_name }}"
 jellyfin_vhost: "{{ jellyfin_service_name }}.domain.local"
@@ -687,8 +693,10 @@ navidrome_compose_dir:    # Unless you know ..., leave blank to leverage bookshe
 navidrome_owner: bug2                       # <- Who runs the container
 navidrome_user: "{{ ansible_user_id }}"     # <- The in-container user and data filesystem owner
 navidrome_conf_dir: ~/conf/navidrome
-navidrome_data_dir: ~/data/Music
-navidrome_extra_dir: ~/data/Music2
+navidrome_data_dir: ~/data/Music            # <- Primary music collection directory, mounted to '/music'
+navidrome_extra_mounts:                     # <- Extra mounts for additional collections
+  - '~/data/Metal:/extra/Metal:ro'
+  - '~/data/Pop:/extra/Pop:ro'
 navidrome_service_name: navidrome
 navidrome_hostname: "{{ navidrome_service_name }}"
 navidrome_vhost: "{{ navidrome_service_name }}.domain.local"
@@ -864,7 +872,10 @@ qbittorrent_compose_dir:          # Unless you know ..., leave blank to leverage
 qbittorrent_owner: bug2                     # <- Who runs the container
 qbittorrent_user: "{{ ansible_user_id }}"   # <- The in-container user and data filesystem owner
 qbittorrent_conf_dir: ~/conf/qbittorrent
-qbittorrent_data_dir: ~/data/Torrent
+qbittorrent_data_dir: ~/data/Torrent          # <- Primary downloads directory, mounted to '/downloads'
+qbittorrent_extra_mounts:                     # <- Extra mounts for additional downloads
+  - '~/data/Movies/Torrent:/extra/Movies'
+  - '~/data/Books/Torrent:/extra/Books'
 qbittorrent_service_name: qbittorrent
 qbittorrent_hostname: "{{ qbittorrent_service_name }}"
 qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"
@@ -1010,7 +1021,10 @@ syncthing_compose_dir:          # Unless you know ..., leave blank to leverage b
 syncthing_owner: bug2  # <- Who runs the container
 syncthing_user: "{{ ansible_user_id }}"   # <- The in-container user and data filesystem owner
 syncthing_conf_dir: ~/conf/syncthing
-syncthing_data_dir: ~/data
+syncthing_data_dir: ~/data                # <- Primary data directory, mounted to '/data'
+syncthing_extra_mounts:                   # <- Extra mounts for additional data
+  - '~/data2:/extra/data2'
+  - '~/data3:/extra/data3'
 syncthing_service_name: syncthing
 syncthing_hostname: "{{ syncthing_service_name }}"
 syncthing_vhost: "{{ syncthing_service_name }}.domain.local"

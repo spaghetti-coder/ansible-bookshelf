@@ -8,30 +8,40 @@
   check_mode: true
   failed_when: false
   register: qbittorrent_dirs       # qbittorrent_dirs.results[ix].path
+  # noqa: jinja[spacing]
+  vars:
+    extra_dirs: "{{ qbittorrent_extra_mounts | default([], true) | map('split', ':') | map('first') }}"
+    base_structs:
+      - { path: "{{ qbittorrent_conf_dir }}", user: "{{ qbittorrent_owner }}" }
+      - { path: "{{ qbittorrent_data_dir }}", user: "{{ qbittorrent_user }}" }
+    all_structs: "{{ base_structs + (extra_dirs | map('community.general.dict_kv', 'path') | map('combine', { 'user': qbittorrent_user })) }}"
   loop_control: { label: "{{ item.user }}:{{ item.path }}" }
-  loop:
-    - { path: "{{ qbittorrent_conf_dir }}", user: "{{ qbittorrent_owner }}" }
-    - { path: "{{ qbittorrent_data_dir }}", user: "{{ qbittorrent_user }}" }
+  loop: "{{ all_structs }}"
   become: true
   become_user: "{{ item.user }}"
 
 - name: Compose
   become: true
   become_user: "{{ qbittorrent_owner }}"
+  # noqa: jinja[spacing]
   vars:
     compose_dir: "{{ qbittorrent_compose_dir | default(bookshelf_const_compose_dir + '/qbittorrent', true) }}"
     conf_dir_abs: "{{ qbittorrent_dirs.results[0].path }}"
     data_dir_abs: "{{ qbittorrent_dirs.results[1].path }}"
+    # For extra_* base directories count is important
+    extra_dirs_abs: "{{ qbittorrent_dirs.results[2:] | map(attribute='path') }}"
+    extra_mounts_abs: "{{ extra_dirs_abs | zip(
+        qbittorrent_extra_mounts | default([], true) | map('regex_replace', '^[^:]*:', '')
+      ) | map('join', ':') }}"
+    data_dirs_abs: "{{ [data_dir_abs] + extra_dirs_abs }}"
     service_state: "{{ qbittorrent_enabled | ternary('present', 'absent') }}"
     the_user: "{{ getent_passwd[qbittorrent_user] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:
-    - name: Create data directory
-      ansible.builtin.file:
-        path: "{{ data_dir_abs }}"
-        state: directory
-        mode: "{{ omit }}"
+    - name: Create data directories
+      ansible.builtin.file: { path: "{{ item }}", state: directory, mode: "{{ omit }}" }
+      loop: "{{ data_dirs_abs }}"
       become: true
       become_user: "{{ qbittorrent_user }}"
 
@@ -62,7 +72,7 @@
         path: "{{ item }}"
         owner: "{{ user_uid }}"
         group: "{{ user_gid }}"
-      loop: ["{{ data_dir_abs }}", "{{ conf_dir_abs }}/config", "{{ conf_dir_abs }}/scripts"]
+      loop: "{{ data_dirs_abs + [conf_dir_abs + '/config', conf_dir_abs + '/scripts'] }}"
       become: true
       become_user: root
 
