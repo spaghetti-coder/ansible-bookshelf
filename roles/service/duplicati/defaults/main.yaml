@@ -6,22 +6,19 @@
 #   * https://hub.docker.com/r/linuxserver/duplicati/tags?name=-ls
 #   * => See tailscale role versions
 # -----
-# NOTE 1:
-#   * for duplicati_data_dir and duplicati_extra_mounts '~' is duplicati_user HOME
-#   * for other directories '~' is duplicati_owner HOME
-# -----
 duplicati_managed: false
 duplicati_enabled: false
 duplicati_version:        # Leave blank to leverage bookshelf configuration
 duplicati_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
 duplicati_owner: "{{ ansible_user_id }}"    # <- Who runs the container
-duplicati_user: "{{ duplicati_owner }}"     # <- The in-container user and data filesystem owner
 duplicati_conf_dir: ~/conf/duplicati
-duplicati_backup_dir: ~/backup              # <- Primary backup directory, mounted to '/backups'
-# The rest of directories are not required to belong to duplicati_user
-duplicati_data_dir: ~/data                  # <- Primary data directory, mounted to '/source'
-duplicati_extra_mounts:                     # <- Extra mounts for additional data sources or backups
-  # - '~/data1/Important:/extra/Important'
+# '~' refers to the owner HOME.
+duplicati_data_mounts:                      # <- Mounts for data, at least one entry required
+  - volume: '~/data:/source'                # <- One of data volumes must be mounted to '/source'
+    owner: "{{ duplicati_owner }}"          # <- (OPTIONAL) Host directory owner. Defaults to root
+  # - '~/data1/Important:/extra/Important'  # <- Can be a string, then owner is root
+duplicati_backup_mounts:                    # <- Mounts for backups, at least one entry required
+  - '~/backup:/backups'                     # <- One of data volumes must be mounted to '/backups'
   # - '~/backup1:/extra/backup1'
 duplicati_service_name: duplicati
 duplicati_hostname: "{{ duplicati_service_name }}"

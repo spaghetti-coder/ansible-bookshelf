@@ -3,23 +3,18 @@
   ansible.builtin.import_role: { name: docker }
   vars: { docker_users: ["{{ duplicati_owner }}"] }
 
-- name: Get directories info
-  ansible.builtin.file: { path: "{{ item.path }}" }
-  check_mode: true
-  failed_when: false
-  register: duplicati_dirs       # duplicati_dirs.results[ix].path
-  # noqa: jinja[spacing]
+# Data dirs are only required to exist, ownership and privileges don't matter
+# as in-container root user can read any
+- name: Create data directories
+  ansible.builtin.file: { path: "{{ the_dir }}", state: directory, mode: "{{ omit }}" }
   vars:
-    extra_dirs: "{{ duplicati_extra_mounts | default([], true) | map('split', ':') | map('first') }}"
-    base_structs:
-      - { path: "{{ duplicati_conf_dir }}", user: "{{ duplicati_owner }}" }
-      - { path: "{{ duplicati_data_dir }}", user: "{{ duplicati_user }}" }
-      - { path: "{{ duplicati_backup_dir }}", user: "{{ duplicati_user }}" }
-    all_structs: "{{ base_structs + (extra_dirs | map('community.general.dict_kv', 'path') | map('combine', { 'user': duplicati_user })) }}"
-  loop_control: { label: "{{ item.user }}:{{ item.path }}" }
-  loop: "{{ all_structs }}"
+    the_owner: "{{ item.owner | default('root', true) }}"
+    the_dir: "{{ (item | type_debug == 'dict') | ternary(item.volume, item) | split(':') | first }}"
+  register: duplicati_data_dirs
+  loop_control: { label: "{{ the_owner }}:{{ the_dir }}" }
+  loop: "{{ duplicati_data_mounts }}"
   become: true
-  become_user: "{{ item.user }}"
+  become_user: "{{ the_owner }}"
 
 - name: Compose
   become: true
@@ -27,26 +22,9 @@
   # noqa: jinja[spacing]
   vars:
     compose_dir: "{{ duplicati_compose_dir | default(bookshelf_const_compose_dir + '/duplicati', true) }}"
-    conf_dir_abs: "{{ duplicati_dirs.results[0].path }}"
-    data_dir_abs: "{{ duplicati_dirs.results[1].path }}"
-    backup_dir_abs: "{{ duplicati_dirs.results[2].path }}"
-    # For extra_* base directories count is important
-    extra_dirs_abs: "{{ duplicati_dirs.results[3:] | map(attribute='path') }}"
-    extra_mounts_abs: "{{ extra_dirs_abs | zip(
-        duplicati_extra_mounts | default([], true) | map('regex_replace', '^[^:]*:', '')
-      ) | map('join', ':') }}"
-    data_dirs_abs: "{{ [data_dir_abs, backup_dir_abs] + extra_dirs_abs }}"
+    conf_dir: "{{ blinko_conf_dir }}"
     service_state: "{{ duplicati_enabled | ternary('present', 'absent') }}"
-    the_user: "{{ getent_passwd[duplicati_user] }}"
-    user_uid: "{{ the_user.1 }}"
-    user_gid: "{{ the_user.2 }}"
   block:
-    - name: Create data directories
-      ansible.builtin.file: { path: "{{ item }}", state: directory, mode: "{{ omit }}" }
-      loop: "{{ data_dirs_abs }}"
-      become: true
-      become_user: "{{ duplicati_user }}"
-
     - name: Create compose directories
       ansible.builtin.file:
         path: "{{ item }}"
@@ -65,16 +43,6 @@
         - main.env
         - secret.env
       register: duplicati_compose_files_result
-
-    # # Data dirs are not required to be owned by user
-    # - name: Ensure service user directories ownership
-    #   ansible.builtin.file:
-    #     path: "{{ item }}"
-    #     owner: "{{ user_uid }}"
-    #     group: "{{ user_gid }}"
-    #   loop: "{{ [conf_dir_abs + '/config'] }}"
-    #   become: true
-    #   become_user: root
 
     - name: Apply service state
       community.docker.docker_compose_v2:
