@@ -10,8 +10,6 @@
     owner: "{{ user_uid }}"
     group: "{{ user_gid }}"
   loop_control: { label: "{{ item.file }}" }
-  loop:
-    - { mode: '0700', file: notify.sh }
-    - { mode: '0600', file: notify._secret_.sh }
+  loop: "{{ scripts_info }}"
   become: true
   become_user: root

@@ -8,7 +8,7 @@
 #   * https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
 # -----
 # NOTE 1:
-#   * for qbittorrent_data_dir and syncthing_extra_mounts '~' is qbittorrent_user HOME
+#   * for qbittorrent_data_volumes '~' is qbittorrent_user HOME
 #   * for other directories '~' is qbittorrent_owner HOME
 #
 # NOTE 2: Temporary password for the admin user will be printed to the container
@@ -25,10 +25,10 @@ qbittorrent_compose_dir:          # Unless you know ..., leave blank to leverage
 qbittorrent_owner: "{{ ansible_user_id }}"    # <- Who runs the container
 qbittorrent_user: "{{ qbittorrent_owner }}"   # <- The in-container user and data filesystem owner
 qbittorrent_conf_dir: ~/conf/qbittorrent
-qbittorrent_data_dir: ~/data/Torrent          # <- Primary downloads directory, mounted to '/downloads'
-qbittorrent_extra_mounts:                     # <- Extra mounts for additional downloads
-  # - '~/data/Movies/Torrent:/extra/Movies'
-  # - '~/data/Books/Torrent:/extra/Books'
+qbittorrent_data_volumes:       # <- Volumes for data
+  - ~/data/Torrent:/downloads   # (REQUIRED) At least one volume required to be mounted to '/downloads'
+  # - ~/data/Movies/Torrent:/extra/Movies
+  # - ~/data/Music/Torrent:/extra/Music
 qbittorrent_service_name: qbittorrent
 qbittorrent_hostname: "{{ qbittorrent_service_name }}"
 qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"

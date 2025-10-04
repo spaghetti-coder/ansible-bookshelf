@@ -1,6 +1,8 @@
 ---
-- name: Remove obsolete scripts directory
+- name: Remove obsolete scripts
   ansible.builtin.file:
-    path: "{{ scripts_dir }}"
+    path: "{{ scripts_dir }}/{{ item }}"
     state: absent
+  loop: "{{ scripts_info | map(attribute='file') }}"
   become: true
+  become_user: root

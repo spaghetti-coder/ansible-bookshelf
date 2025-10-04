@@ -3,22 +3,20 @@
   ansible.builtin.import_role: { name: docker }
   vars: { docker_users: ["{{ navidrome_owner }}"] }
 
-- name: Get directories info
-  ansible.builtin.file: { path: "{{ item.path }}" }
-  check_mode: true
-  failed_when: false
-  register: navidrome_dirs       # navidrome_dirs.results[ix].path
-  # noqa: jinja[spacing]
-  vars:
-    extra_dirs: "{{ navidrome_extra_mounts | default([], true) | map('split', ':') | map('first') }}"
-    base_structs:
-      - { path: "{{ navidrome_conf_dir }}", user: "{{ navidrome_owner }}" }
-      - { path: "{{ navidrome_data_dir }}", user: "{{ navidrome_user }}" }
-    all_structs: "{{ base_structs + (extra_dirs | map('community.general.dict_kv', 'path') | map('combine', { 'user': navidrome_user })) }}"
-  loop_control: { label: "{{ item.user }}:{{ item.path }}" }
-  loop: "{{ all_structs }}"
+- name: Create storage directories
+  ansible.builtin.file: { path: "{{ the_path }}", state: directory, mode: "{{ omit }}" }
+  vars:     # noqa: jinja[spacing]
+    storage_dirs: "{{ []
+        + [{'path': navidrome_conf_dir, 'owner': navidrome_owner}]
+        + (navidrome_data_volumes | default([], true) | map('split', ':') | map('first'))
+      }}"
+    the_path: "{{ item.path | default(item) }}"
+    the_owner: "{{ item.owner | default(navidrome_user) }}"
+  loop_control: {label: "{{ the_owner }}:{{ the_path }}"}
+  loop: "{{ storage_dirs }}"
+  register: navidrome_dirs_create_info   # navidrome_dirs_create_info.results[ix].path
   become: true
-  become_user: "{{ item.user }}"
+  become_user: "{{ the_owner }}"
 
 - name: Compose
   become: true
@@ -26,25 +24,16 @@
   # noqa: jinja[spacing]
   vars:
     compose_dir: "{{ navidrome_compose_dir | default(bookshelf_const_compose_dir + '/navidrome', true) }}"
-    conf_dir_abs: "{{ navidrome_dirs.results[0].path }}"
-    data_dir_abs: "{{ navidrome_dirs.results[1].path }}"
-    # For extra_* base directories count is important
-    extra_dirs_abs: "{{ navidrome_dirs.results[2:] | map(attribute='path') }}"
-    extra_mounts_abs: "{{ extra_dirs_abs | zip(
-        navidrome_extra_mounts | default([], true) | map('regex_replace', '^[^:]*:', '')
+    conf_dir_abs: "{{ navidrome_dirs_create_info.results[0].path }}"
+    data_dirs_abs: "{{ navidrome_dirs_create_info.results[1:] | map(attribute='path') }}"
+    data_volumes_abs: "{{ data_dirs_abs | zip(
+        navidrome_data_volumes | default([], true) | map('regex_replace', '^[^:]*:', '')
       ) | map('join', ':') }}"
-    data_dirs_abs: "{{ [data_dir_abs] + extra_dirs_abs }}"
     service_state: "{{ navidrome_enabled | ternary('present', 'absent') }}"
     the_user: "{{ getent_passwd[navidrome_user] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:
-    - name: Create data directories
-      ansible.builtin.file: { path: "{{ item }}", state: directory, mode: "{{ omit }}" }
-      loop: "{{ data_dirs_abs }}"
-      become: true
-      become_user: "{{ navidrome_user }}"
-
     - name: Create compose directories
       ansible.builtin.file:
         path: "{{ item }}"

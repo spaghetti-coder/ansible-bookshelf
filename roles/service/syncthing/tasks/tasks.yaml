@@ -3,22 +3,20 @@
   ansible.builtin.import_role: { name: docker }
   vars: { docker_users: ["{{ syncthing_owner }}"] }
 
-- name: Get directories info
-  ansible.builtin.file: { path: "{{ item.path }}" }
-  check_mode: true
-  failed_when: false
-  register: syncthing_dirs       # syncthing_dirs.results[ix].path
-  # noqa: jinja[spacing]
-  vars:
-    extra_dirs: "{{ syncthing_extra_mounts | default([], true) | map('split', ':') | map('first') }}"
-    base_structs:
-      - { path: "{{ syncthing_conf_dir }}", user: "{{ syncthing_owner }}" }
-      - { path: "{{ syncthing_data_dir }}", user: "{{ syncthing_user }}" }
-    all_structs: "{{ base_structs + (extra_dirs | map('community.general.dict_kv', 'path') | map('combine', { 'user': syncthing_user })) }}"
-  loop_control: { label: "{{ item.user }}:{{ item.path }}" }
-  loop: "{{ all_structs }}"
+- name: Create storage directories
+  ansible.builtin.file: { path: "{{ the_path }}", state: directory, mode: "{{ omit }}" }
+  vars:     # noqa: jinja[spacing]
+    storage_dirs: "{{ []
+        + [{'path': syncthing_conf_dir, 'owner': syncthing_owner}]
+        + (syncthing_data_volumes | default([], true) | map('split', ':') | map('first'))
+      }}"
+    the_path: "{{ item.path | default(item) }}"
+    the_owner: "{{ item.owner | default(syncthing_user) }}"
+  loop_control: {label: "{{ the_owner }}:{{ the_path }}"}
+  loop: "{{ storage_dirs }}"
+  register: syncthing_dirs_create_info    # syncthing_dirs_create_info.results[ix].path
   become: true
-  become_user: "{{ item.user }}"
+  become_user: "{{ the_owner }}"
 
 - name: Compose
   become: true
@@ -26,25 +24,16 @@
   # noqa: jinja[spacing]
   vars:
     compose_dir: "{{ syncthing_compose_dir | default(bookshelf_const_compose_dir + '/syncthing', true) }}"
-    conf_dir_abs: "{{ syncthing_dirs.results[0].path }}"
-    data_dir_abs: "{{ syncthing_dirs.results[1].path }}"
-    # For extra_* base directories count is important
-    extra_dirs_abs: "{{ syncthing_dirs.results[2:] | map(attribute='path') }}"
-    extra_mounts_abs: "{{ extra_dirs_abs | zip(
-        syncthing_extra_mounts | default([], true) | map('regex_replace', '^[^:]*:', '')
+    conf_dir_abs: "{{ syncthing_dirs_create_info.results[0].path }}"
+    data_dirs_abs: "{{ syncthing_dirs_create_info.results[1:] | map(attribute='path') }}"
+    data_volumes_abs: "{{ data_dirs_abs | zip(
+        syncthing_data_volumes | default([], true) | map('regex_replace', '^[^:]*:', '')
       ) | map('join', ':') }}"
-    data_dirs_abs: "{{ [data_dir_abs] + extra_dirs_abs }}"
     service_state: "{{ syncthing_enabled | ternary('present', 'absent') }}"
     the_user: "{{ getent_passwd[syncthing_user] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:
-    - name: Create data directories
-      ansible.builtin.file: { path: "{{ item }}", state: directory, mode: "{{ omit }}" }
-      loop: "{{ data_dirs_abs }}"
-      become: true
-      become_user: "{{ syncthing_user }}"
-
     - name: Create compose directories
       ansible.builtin.file:
         path: "{{ item }}"

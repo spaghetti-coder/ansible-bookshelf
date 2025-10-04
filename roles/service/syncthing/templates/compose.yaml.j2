@@ -1,10 +1,9 @@
-{% set version = (syncthing_version | default(bookshelf_const_version.syncthing, true)) %}
-{% set web_ui_port = (syncthing_web_ui_port | default(bookshelf_const_port.syncthing.web_ui, true)) %}
+{% set version = syncthing_version | default(bookshelf_const_version.syncthing, true) %}
+{% set web_ui_port = syncthing_web_ui_port | default(bookshelf_const_port.syncthing.web_ui, true) %}
 {% set file_transfers_port = bookshelf_const_port.syncthing.file_transfers %}
 {% set local_discovery_port = bookshelf_const_port.syncthing.local_discovery %}
-{% set same_owner = (syncthing_user == syncthing_owner) %}
-{% set data_dir = (same_owner | ternary(syncthing_data_dir, data_dir_abs)) %}
-{% set extra_mounts = (same_owner | ternary(syncthing_extra_mounts, extra_mounts_abs) | default([], true)) %}
+{% set data_volumes = (syncthing_user == syncthing_owner)
+    | ternary(syncthing_data_volumes, data_volumes_abs) | default([], true) %}
 {% set tailscale_version = (syncthing_tailscale_version | default(bookshelf_const_version.syncthing_tailscale, true)) %}
 {% set tailscale_service = 'syncthing-tailscale' %}
 ---
@@ -18,9 +17,8 @@ services:
       - ./secret.env
       - ./main.env
     volumes:
-      - '{{ data_dir }}:/data'
-{% for extra_mount in extra_mounts %}
-      - '{{ extra_mount }}'
+{% for volume in data_volumes %}
+      - '{{ volume }}'
 {% endfor %}
       - '{{ syncthing_conf_dir }}/config:/config'
     healthcheck:

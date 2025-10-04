@@ -35,6 +35,10 @@ services:
     volumes:
       - '{{ wikijs_conf_dir }}/config:/config'
       - '{{ wikijs_conf_dir }}/config:/data'
+    depends_on:
+      {{ wikijs_db_service }}:
+        condition: service_healthy
+        restart: true
 {% if wikijs_tailscaled %}
     network_mode: service:{{ tailscale_service }}
 
@@ -56,9 +60,6 @@ services:
       - NET_ADMIN
       - SYS_MODULE
 {% endif %}{# wikijs_tailscaled #}
-    depends_on:
-      {{ wikijs_db_service }}:
-        condition: service_healthy
     hostname: {{ wikijs_hostname }}
     ports:
       - '{{ web_ui_port }}:{{ wikijs_web_ui_port_int }}'

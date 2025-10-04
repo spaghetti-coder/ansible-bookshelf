@@ -8,7 +8,7 @@
 #   * => See tailscale role versions
 # -----
 # NOTE 1:
-#   * for navidrome_data_dir and navidrome_extra_mounts '~' is navidrome_user HOME
+#   * for navidrome_data_volumes '~' is navidrome_user HOME
 #   * for other directories '~' is navidrome_owner HOME
 # -----
 navidrome_managed: false
@@ -18,10 +18,10 @@ navidrome_compose_dir:    # Unless you know ..., leave blank to leverage bookshe
 navidrome_owner: "{{ ansible_user_id }}"    # <- Who runs the container
 navidrome_user: "{{ navidrome_owner }}"     # <- The in-container user and data filesystem owner
 navidrome_conf_dir: ~/conf/navidrome
-navidrome_data_dir: ~/data/Music            # <- Primary music collection directory, mounted to '/music'
-navidrome_extra_mounts:                     # <- Extra mounts for additional collections
-  # - '~/data/Metal:/extra/Metal:ro'
-  # - '~/data/Pop:/extra/Pop:ro'
+navidrome_data_volumes:     # <- Volumes for data, NOTE: navidrome needs only to read it
+  - ~/data/Music:/music:ro  # (REQUIRED) At least one volume required to be mounted to '/music'
+  # - ~/data/Metal:/extra/Metal:ro
+  # - ~/data/Pop:/extra/Pop:ro
 navidrome_service_name: navidrome
 navidrome_hostname: "{{ navidrome_service_name }}"
 navidrome_vhost: "{{ navidrome_service_name }}.domain.local"

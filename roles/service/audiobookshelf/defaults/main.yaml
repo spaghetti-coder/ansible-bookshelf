@@ -7,7 +7,7 @@
 #   * => See tailscale role versions
 # -----
 # NOTE 1:
-#   * for audiobookshelf_data_dir and audiobookshelf_extra_mounts '~' is navidrome_user HOME
+#   * for audiobookshelf_data_volumes '~' is navidrome_user HOME
 #   * for other directories '~' is audiobookshelf_owner HOME
 # -----
 # iOS clients:
@@ -23,10 +23,10 @@ audiobookshelf_compose_dir:   # Unless you know ..., leave blank to leverage boo
 audiobookshelf_owner: "{{ ansible_user_id }}"       # <- Who runs the container
 audiobookshelf_user: "{{ audiobookshelf_owner }}"   # <- The in-container user and data filesystem owner
 audiobookshelf_conf_dir: ~/conf/audiobookshelf
-audiobookshelf_data_dir: ~/data/Audiobooks          # <- Primary books directory, mounted to '/data'
-audiobookshelf_extra_mounts:                             # <- Extra mounts for books
-  # - '~/data/Children/Audiobooks:/extra/Children'
-  # - '~/data/Parents/Audiobooks:/extra/Parents'
+audiobookshelf_data_volumes:  # <- Volumes for data
+  - ~/data/Audiobooks:/data   # (REQUIRED) At least one volume required
+  # - ~/data/Children/Audiobooks:/extra/Children
+  # - ~/data/Parents/Audiobooks:/extra/Parents
 audiobookshelf_service_name: audiobookshelf
 audiobookshelf_hostname: "{{ audiobookshelf_service_name }}"
 audiobookshelf_vhost: "{{ audiobookshelf_service_name }}.domain.local"

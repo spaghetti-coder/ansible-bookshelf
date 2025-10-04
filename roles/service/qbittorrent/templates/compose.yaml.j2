@@ -1,10 +1,9 @@
-{% set version = (qbittorrent_version | default(bookshelf_const_version.qbittorrent, true)) %}
-{% set vuetorrent_version = (qbittorrent_vuetorrent_version | default(bookshelf_const_version.vuetorrent, true)) %}
-{% set web_ui_port = (qbittorrent_web_ui_port | default(bookshelf_const_port.qbittorrent.web_ui, true)) %}
+{% set version = qbittorrent_version | default(bookshelf_const_version.qbittorrent, true) %}
+{% set vuetorrent_version = qbittorrent_vuetorrent_version | default(bookshelf_const_version.vuetorrent, true) %}
+{% set web_ui_port = qbittorrent_web_ui_port | default(bookshelf_const_port.qbittorrent.web_ui, true) %}
 {% set torrenting_port = bookshelf_const_port.qbittorrent.torrenting %}
-{% set same_owner = (qbittorrent_user == qbittorrent_owner) %}
-{% set data_dir = (same_owner | ternary(qbittorrent_data_dir, data_dir_abs)) %}
-{% set extra_mounts = (same_owner | ternary(qbittorrent_extra_mounts, extra_mounts_abs) | default([], true)) %}
+{% set data_volumes = (qbittorrent_user == qbittorrent_owner)
+    | ternary(qbittorrent_data_volumes, data_volumes_abs) | default([], true) %}
 ---
 # Temporary password for the admin user will be printed to the container log on startup
 services:
@@ -17,9 +16,8 @@ services:
     env_file:
       - ./main.env
     volumes:
-      - '{{ data_dir }}:/downloads'
-{% for extra_mount in extra_mounts %}
-      - '{{ extra_mount }}'
+{% for volume in data_volumes %}
+      - '{{ volume }}'
 {% endfor %}
       - '{{ qbittorrent_conf_dir }}/config:/config'
       # Usage:

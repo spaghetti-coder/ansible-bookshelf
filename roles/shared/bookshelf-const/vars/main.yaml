@@ -6,7 +6,7 @@ bookshelf_const_version_shared:
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.88.3
 
-bookshelf_const_version:    # <- Last update: 2025-10-01
+bookshelf_const_version:    # <- Last update: 2025-10-04
   #
   # BASE
   #
@@ -40,7 +40,7 @@ bookshelf_const_version:    # <- Last update: 2025-10-01
   # https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
   hedgedoc: 1.10.3-alpine
   # https://hub.docker.com/r/linuxserver/heimdall/tags
-  heimdall: v2.7.6-ls322
+  heimdall: v2.7.6-ls323
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.10.7
   jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
@@ -48,7 +48,7 @@ bookshelf_const_version:    # <- Last update: 2025-10-01
   joplin_server: 3.4.3
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
-  mealie: v3.3.0
+  mealie: v3.3.1
   mealie_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/neosmemo/memos/tags
   # IMPORTANT:
@@ -105,7 +105,7 @@ bookshelf_const_version:    # <- Last update: 2025-10-01
   # https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
   wg_easy: 15.1.0
   # https://hub.docker.com/r/linuxserver/wikijs/tags?name=-ls
-  wikijs: v2.5.308-ls193
+  wikijs: v2.5.308-ls194
   wikijs_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   wikijs_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
 

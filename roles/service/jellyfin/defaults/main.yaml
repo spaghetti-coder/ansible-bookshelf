@@ -7,7 +7,7 @@
 #   * => See tailscale role versions
 # -----
 # NOTE 1:
-#   * for jellyfin_data_dir and jellyfin_extra_mounts '~' is jellyfin_user HOME
+#   * for jellyfin_data_volumes '~' is navidrome_user HOME
 #   * for other directories '~' is jellyfin_owner HOME
 # -----
 jellyfin_managed: false
@@ -17,10 +17,10 @@ jellyfin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf
 jellyfin_owner: "{{ ansible_user_id }}"   # <- Who runs the container
 jellyfin_user: "{{ jellyfin_owner }}"     # <- The in-container user and data filesystem owner
 jellyfin_conf_dir: ~/conf/jellyfin
-jellyfin_data_dir: ~/data/Movies          # <- Primary movies collection directory, mounted to '/data'
-jellyfin_extra_mounts:                    # <- Extra mounts for additional collections
-  # - '~/data/Parents/Movies:/extra/Parents'
-  # - '~/data/Children/Movies:/extra/Children'
+jellyfin_data_volumes:    # <- Volumes for data
+  - ~/data/Movies:/data   # (REQUIRED) At least one volume required
+  # - ~/data/Parents/Movies:/extra/Parents
+  # - ~/data/Children/Movies:/extra/Children
 jellyfin_service_name: jellyfin
 jellyfin_hostname: "{{ jellyfin_service_name }}"
 jellyfin_vhost: "{{ jellyfin_service_name }}.domain.local"

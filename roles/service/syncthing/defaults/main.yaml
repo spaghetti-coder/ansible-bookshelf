@@ -7,7 +7,7 @@
 #   * => See tailscale role versions
 # -----
 # NOTE 1:
-#   * for syncthing_data_dir and syncthing_extra_mounts  '~' is syncthing_user HOME
+#   * for syncthing_data_volumes  '~' is syncthing_user HOME
 #   * for other directories '~' is syncthing_owner HOME
 # -----
 syncthing_managed: false
@@ -17,10 +17,10 @@ syncthing_compose_dir:          # Unless you know ..., leave blank to leverage b
 syncthing_owner: "{{ ansible_user_id }}"  # <- Who runs the container
 syncthing_user: "{{ syncthing_owner }}"   # <- The in-container user and data filesystem owner
 syncthing_conf_dir: ~/conf/syncthing
-syncthing_data_dir: ~/data                # <- Primary data directory, mounted to '/data'
-syncthing_extra_mounts:                   # <- Extra mounts for additional data
-  # - '~/data2:/extra/data2'
-  # - '~/data3:/extra/data3'
+syncthing_data_volumes:   # <- Volumes for data
+  - ~/data:/data          # (REQUIRED) At least one volume required
+  # - ~/data2:/extra/data2
+  # - ~/data3:/extra/data3
 syncthing_service_name: syncthing
 syncthing_hostname: "{{ syncthing_service_name }}"
 syncthing_vhost: "{{ syncthing_service_name }}.domain.local"
