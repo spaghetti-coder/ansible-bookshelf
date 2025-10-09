@@ -6,7 +6,7 @@ bookshelf_const_version_shared:
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.88.3
 
-bookshelf_const_version:    # <- Last update: 2025-10-04
+bookshelf_const_version:    # <- Last update: 2025-10-09
   #
   # BASE
   #
@@ -21,19 +21,19 @@ bookshelf_const_version:    # <- Last update: 2025-10-04
   adguard: v0.107.67
   adguard_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/advplyr/audiobookshelf/tags
-  audiobookshelf: 2.29.0
+  audiobookshelf: 2.30.0
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/blinkospace/blinko/tags
   blinko: 1.6.3
   blinko_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   blinko_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
-  code_server: v4.104.2
+  code_server: v4.104.3
   # https://github.com/fccview/cronmaster/pkgs/container/cronmaster
-  cronmaster: 1.4.1
+  cronmaster: 1.4.2
   cronmaster_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/duplicati/tags?name=-ls
-  duplicati: v2.1.0.5_stable_2025-03-04-ls260
+  duplicati: v2.1.0.5_stable_2025-03-04-ls261
   duplicati_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
   filebrowser: v2.44.0-s6
@@ -78,12 +78,12 @@ bookshelf_const_version:    # <- Last update: 2025-10-04
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
   portainer_agent: 2.34.0-alpine
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.2-r2-ls417
+  qbittorrent: 5.1.2-r3-ls419
   # https://github.com/fccview/rwMarkable/pkgs/container/rwmarkable
-  rwmarkable: 1.5.0
+  rwmarkable: 1.5.4
   rwmarkable_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
-  silverbullet: 2.1.6
+  silverbullet: 2.1.7
   # https://hub.docker.com/r/rnwood/smtp4dev/tags?name=v
   smtp4dev: v3.10
   smtp4dev_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
