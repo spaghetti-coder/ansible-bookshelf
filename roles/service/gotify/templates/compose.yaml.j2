@@ -2,7 +2,7 @@
 {% set web_ui_port = (gotify_web_ui_port | default(bookshelf_const_port.gotify.web_ui, true)) %}
 ---
 services:
-  gotify:
+  {{ gotify_service_name }}:
     # https://hub.docker.com/r/gotify/server/tags
     image: gotify/server:{{ version }}
     container_name: {{ gotify_service_name }}
@@ -13,8 +13,13 @@ services:
       - '{{ gotify_conf_dir }}/config:/app/data'
     user: '{{ user_uid }}:{{ user_gid }}'
     hostname: {{ gotify_hostname }}
+{% if gotify_web_ui_ports_exposed %}
     ports:
       - '{{ web_ui_port }}:80'
+{% else %}
+    # ports:
+    #   - '{{ web_ui_port }}:80'
+{% endif %}{# gotify_web_ui_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}

@@ -33,7 +33,8 @@ qbittorrent_service_name: qbittorrent
 qbittorrent_hostname: "{{ qbittorrent_service_name }}"
 qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"
 qbittorrent_web_ui_port:          # Leave blank to leverage bookshelf configuration
-qbittorrent_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+qbittorrent_torrenting_port:      # Leave blank to leverage bookshelf configuration
+qbittorrent_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional. Configure notifications script, that will be available in the container
 #   /scripts/notify.sh
 # Configure in qBittorrent UI -> Settings -> Downloads -> External ... on finished
@@ -44,4 +45,11 @@ qbittorrent_notify_token:     # "{{ lookup('file', playbook_dir + '/resources/qb
 qbittorrent_notify_server:    # (REQUIRED for gotify)
 qbittorrent_notify_chat_id:   # (REQUIRED for telegram)
 # Optional extra env vars
-qbittorrent_extra_env:        # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"
+qbittorrent_extra_env: |      # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"
+  # References:
+  #   * qBittorrent is not really configurable via env vars
+  # ----------
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+qbittorrent_web_ui_ports_exposed: true
+qbittorrent_torrenting_ports_exposed: true

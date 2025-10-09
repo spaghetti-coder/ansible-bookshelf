@@ -18,13 +18,23 @@ memos_hostname: "{{ memos_service_name }}"
 memos_vhost: "{{ memos_service_name }}.domain.local"
 memos_web_ui_port:    # Leave blank to leverage bookshelf configuration
 # Optional extra env vars, will affect both Memos and tailscale.
-memos_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/memos.env.j2') }}"
+memos_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/memos.env.j2') }}"
+  # References:
+  #   * https://www.usememos.com/docs/configuration
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # MEMOS_MAX_LOGIN_ATTEMPTS=5
+  # MEMOS_LOCKOUT_DURATION=900
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+memos_web_ui_ports_exposed: true
 # ----------
 # The following settings configure Memos to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 memos_tailscaled: false
-memos_tailscale_version:    # Leave blank to leverage bookshelf configuration
+memos_ts_version:    # Leave blank to leverage bookshelf configuration
+memos_ts_service_name: "{{ memos_service_name }}-ts"
 # Hostname within tailnet
-memos_tailscale_ts_hostname: "{{ memos_service_name }}-tailscale"
-memos_tailscale_auth_key:
+memos_ts_hostname: "{{ memos_service_name }}"
+memos_ts_auth_key:

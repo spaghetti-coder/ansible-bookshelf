@@ -31,13 +31,22 @@ cronmaster_secrets:
   #   filename: demo-secret.txt       # See demo-script.sh.j2 to see how to reference the secret
   #   # owner: "{{ ansible_user_id }}"  # Optional, defaults to root. The file is only RW by the owner
 # Optional extra env vars, will affect both CronMaster and Tailscale.
-cronmaster_extra_env:          # "{{ lookup('template', playbook_dir + '/resources/cronmaster.env.j2') }}"
+cronmaster_extra_env: |         # "{{ lookup('template', playbook_dir + '/resources/cronmaster.env.j2') }}"
+  # References:
+  #   * https://github.com/fccview/cronmaster#environment-variables
+  #   * https://hub.docker.com/_/postgres#environment-variables
+  # ----------
+  # NEXT_PUBLIC_CLOCK_UPDATE_INTERVAL=60000
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+cronmaster_web_ui_ports_exposed: true
 # ----------
 # The following settings configure CronMaster to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 cronmaster_tailscaled: false
-cronmaster_tailscale_version:  # Leave blank to leverage bookshelf configuration
+cronmaster_ts_version:          # Leave blank to leverage bookshelf configuration
+cronmaster_ts_service_name: "{{ cronmaster_service_name }}-ts"
 # Hostname within tailnet
-cronmaster_tailscale_ts_hostname: "{{ cronmaster_service_name }}-tailscale"
-cronmaster_tailscale_auth_key:
+cronmaster_ts_hostname: "{{ cronmaster_service_name }}"
+cronmaster_ts_auth_key:

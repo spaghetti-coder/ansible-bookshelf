@@ -290,6 +290,11 @@ vnstat_managed: false
 # ===================
 # The world’s most advanced ad blocker!
 #   https://adguard.com/en/adguard-home/overview.html
+# Configured only to work as DNS server
+# -----
+# IMPORTANT:
+#   Fix for resolved:
+#   https://hub.docker.com/r/adguard/adguardhome#resolved-daemon
 # -----
 # VERSIONS:
 #   * https://hub.docker.com/r/adguard/adguardhome/tags
@@ -306,9 +311,17 @@ adguard_hostname: "{{ adguard_service_name }}"
 adguard_vhost: "{{ adguard_service_name }}.domain.local"
 adguard_web_ui_port:    # Leave blank to leverage bookshelf configuration
 adguard_init_ui_port:   # Leave blank to leverage bookshelf configuration
-adguard_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+adguard_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both adguard and tailscale.
-adguard_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/adguard.env.j2') }}"
+adguard_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/adguard.env.j2') }}"
+  # References:
+  #   * Adguard is not really configurable via env vars
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+adguard_web_ui_ports_exposed: true
+adguard_dns_ports_exposed: true
 # ----------
 # The following settings configure Adguard to run as a part of tailnet. This
 # allows to configure adguard for a tailnet DNS server under
@@ -321,10 +334,11 @@ adguard_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/adgu
 # will not be reachable in the tailnet. SOLUTION: deploy another tailscale
 # service with "advertised routes" (https://tailscale.com/kb/1019/subnets)
 adguard_tailscaled: false
-adguard_tailscale_version:    # Leave blank to leverage bookshelf configuration
+adguard_ts_version:    # Leave blank to leverage bookshelf configuration
+adguard_ts_service_name: "{{ adguard_service_name }}-ts"
 # Hostname within tailnet
-adguard_tailscale_ts_hostname: "{{ adguard_service_name }}-tailscale"
-adguard_tailscale_auth_key:
+adguard_ts_hostname: "{{ adguard_service_name }}"
+adguard_ts_auth_key:
 
 # ==========================
 #       AUDIOBOOKSHELF
@@ -361,18 +375,27 @@ audiobookshelf_service_name: audiobookshelf
 audiobookshelf_hostname: "{{ audiobookshelf_service_name }}"
 audiobookshelf_vhost: "{{ audiobookshelf_service_name }}.domain.local"
 audiobookshelf_web_ui_port:   # Leave blank to leverage bookshelf configuration
-audiobookshelf_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+audiobookshelf_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both audiobookshelf and tailscale.
-audiobookshelf_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/audiobookshelf.env.j2') }}"
+audiobookshelf_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/audiobookshelf.env.j2') }}"
+  # References:
+  #   * https://www.audiobookshelf.org/docs#env-configuration
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # PORT=5555
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+audiobookshelf_web_ui_ports_exposed: true
 # ----------
 # The following settings configure Audiobookshelf to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 audiobookshelf_tailscaled: false
-audiobookshelf_tailscale_version:   # Leave blank to leverage bookshelf configuration
+audiobookshelf_ts_version:   # Leave blank to leverage bookshelf configuration
+audiobookshelf_ts_service_name: "{{ audiobookshelf_service_name }}-ts"
 # Hostname within tailnet
-audiobookshelf_tailscale_ts_hostname: "{{ audiobookshelf_service_name }}-tailscale"
-audiobookshelf_tailscale_auth_key:
+audiobookshelf_ts_hostname: "{{ audiobookshelf_service_name }}"
+audiobookshelf_ts_auth_key:
 
 # ==================
 #       BLINKO
@@ -397,20 +420,31 @@ blinko_service_name: blinko
 blinko_hostname: "{{ blinko_service_name }}"
 blinko_vhost: "{{ blinko_service_name }}.domain.local"
 blinko_web_ui_port:         # Leave blank to leverage bookshelf configuration
-blinko_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+blinko_db_service_name: "{{ blinko_service_name }}-db"
 blinko_db_pass:             # (REQUIRED) Something hard and random
 blinko_nextauth_secret:     # (REQUIRED) Something hard and random
+blinko_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Blinko and Tailscale.
-blinko_extra_env:           # "{{ lookup('template', playbook_dir + '/resources/blinko.env.j2') }}"
+blinko_extra_env: |         # "{{ lookup('template', playbook_dir + '/resources/blinko.env.j2') }}"
+  # References:
+  #   * https://docs.blinko.space/en/install#docker-installation
+  #   * https://hub.docker.com/_/postgres#environment-variables
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # NEXTAUTH_URL=...
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+blinko_web_ui_ports_exposed: true
 # ----------
 # The following settings configure Blinko to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 blinko_tailscaled: false
-blinko_tailscale_version:   # Leave blank to leverage bookshelf configuration
+blinko_ts_version:   # Leave blank to leverage bookshelf configuration
+blinko_ts_service_name: "{{ blinko_service_name }}-ts"
 # Hostname within tailnet
-blinko_tailscale_ts_hostname: "{{ blinko_service_name }}-tailscale"
-blinko_tailscale_auth_key:
+blinko_ts_hostname: "{{ blinko_service_name }}"
+blinko_ts_auth_key:
 
 # =======================
 #       CODE-SERVER
@@ -481,16 +515,25 @@ cronmaster_secrets:
   #   filename: demo-secret.txt       # See demo-script.sh.j2 to see how to reference the secret
   #   # owner: "{{ ansible_user_id }}"  # Optional, defaults to root. The file is only RW by the owner
 # Optional extra env vars, will affect both CronMaster and Tailscale.
-cronmaster_extra_env:          # "{{ lookup('template', playbook_dir + '/resources/cronmaster.env.j2') }}"
+cronmaster_extra_env: |         # "{{ lookup('template', playbook_dir + '/resources/cronmaster.env.j2') }}"
+  # References:
+  #   * https://github.com/fccview/cronmaster#environment-variables
+  #   * https://hub.docker.com/_/postgres#environment-variables
+  # ----------
+  # NEXT_PUBLIC_CLOCK_UPDATE_INTERVAL=60000
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+cronmaster_web_ui_ports_exposed: true
 # ----------
 # The following settings configure CronMaster to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 cronmaster_tailscaled: false
-cronmaster_tailscale_version:  # Leave blank to leverage bookshelf configuration
+cronmaster_ts_version:          # Leave blank to leverage bookshelf configuration
+cronmaster_ts_service_name: "{{ cronmaster_service_name }}-ts"
 # Hostname within tailnet
-cronmaster_tailscale_ts_hostname: "{{ cronmaster_service_name }}-tailscale"
-cronmaster_tailscale_auth_key:
+cronmaster_ts_hostname: "{{ cronmaster_service_name }}"
+cronmaster_ts_auth_key:
 
 # =====================
 #       DUPLICATI
@@ -524,21 +567,27 @@ duplicati_vhost: "{{ duplicati_service_name }}.domain.local"
 duplicati_web_ui_port:    # Leave blank to leverage bookshelf configuration
 duplicati_enc_key:        # (REQUIRED) Min 8 symbols
 duplicati_pass:           # (OPTIONAL)
-duplicati_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+duplicati_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Duplicati and tailscale.
 duplicati_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/duplicati.env.j2') }}"
-  # https://prev-docs.duplicati.com/en/latest/07-other-command-line-utilities/
+  # References:
+  #   * https://prev-docs.duplicati.com/en/latest/07-other-command-line-utilities/
+  #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # CLI_ARGS=--server-datafolder=/root/.config/Duplicati
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+duplicati_web_ui_ports_exposed: true
 # ----------
 # The following settings configure Duplicati to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 duplicati_tailscaled: false
-duplicati_tailscale_version:    # Leave blank to leverage bookshelf configuration
+duplicati_ts_version:    # Leave blank to leverage bookshelf configuration
+duplicati_ts_service_name: "{{ duplicati_service_name }}-ts"
 # Hostname within tailnet
-duplicati_tailscale_ts_hostname: "{{ duplicati_service_name }}-tailscale"
-duplicati_tailscale_auth_key:
+duplicati_ts_hostname: "{{ duplicati_service_name }}"
+duplicati_ts_auth_key:
 
 # =======================
 #       FILEBROWSER
@@ -570,18 +619,26 @@ filebrowser_service_name: filebrowser
 filebrowser_hostname: "{{ filebrowser_service_name }}"
 filebrowser_vhost: "{{ filebrowser_service_name }}.domain.local"
 filebrowser_web_ui_port:    # Leave blank to leverage bookshelf configuration
-filebrowser_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+filebrowser_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both filebrowser and tailscale.
-filebrowser_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/filebrowser.env.j2') }}"
+filebrowser_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/filebrowser.env.j2') }}"
+  # References:
+  #   * FileBrowser is not really configurable via env vars
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+filebrowser_web_ui_ports_exposed: true
 # ----------
 # The following settings configure FileBrowser to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 filebrowser_tailscaled: false
-filebrowser_tailscale_version:    # Leave blank to leverage bookshelf configuration
+filebrowser_ts_version:    # Leave blank to leverage bookshelf configuration
+filebrowser_ts_service_name: "{{ filebrowser_service_name }}-ts"
 # Hostname within tailnet
-filebrowser_tailscale_ts_hostname: "{{ filebrowser_service_name }}-tailscale"
-filebrowser_tailscale_auth_key:
+filebrowser_ts_hostname: "{{ filebrowser_service_name }}"
+filebrowser_ts_auth_key:
 
 # ==================
 #       GOTIFY
@@ -601,7 +658,10 @@ gotify_service_name: gotify
 gotify_hostname: "{{ gotify_service_name }}"
 gotify_vhost: "{{ gotify_service_name }}.domain.local"
 gotify_web_ui_port:   # Leave blank to leverage bookshelf configuration
-gotify_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+gotify_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+# ----------
+# Disable if plan to access only via reverse-proxy
+gotify_web_ui_ports_exposed: true
 
 # ====================
 #       HEDGEDOC
@@ -626,15 +686,21 @@ hedgedoc_service_name: hedgedoc
 hedgedoc_hostname: "{{ hedgedoc_service_name }}"
 hedgedoc_vhost: "{{ hedgedoc_service_name }}.domain.local"
 hedgedoc_web_ui_port:   # Leave blank to leverage bookshelf configuration
-hedgedoc_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # HedgeDoc domain. Ex.: {{ hedgedoc_vhost }} or {{ ansible_default_ipv4.address }}
 hedgedoc_domain:        # (REQUIRED)
+hedgedoc_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars. For reverse proxy configuration see:
 #   https://docs.hedgedoc.org/guides/reverse-proxy/#reverse-proxy-config
 hedgedoc_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/hedgedoc.env.j2') }}"
+  # References:
+  #   * https://docs.hedgedoc.org/configuration/
+  # ----------
   # CMD_URL_ADDPORT=false
   # CMD_PROTOCOL_USESSL=true
   # CMD_ALLOW_EMAIL_REGISTER=true   # <- Allow users registration
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+hedgedoc_web_ui_ports_exposed: true
 
 # ====================
 #       HEIMDALL
@@ -654,12 +720,15 @@ heimdall_service_name: heimdall
 heimdall_hostname: "{{ heimdall_service_name }}"
 heimdall_vhost: "{{ heimdall_service_name }}.domain.local"
 heimdall_web_ui_port:   # Leave blank to leverage bookshelf configuration
-heimdall_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # Ex.:
 #   # heimdall_web_ui_port_ext - contains actual external port
 #   http://{{ ansible_default_ipv4.address }}:{{ heimdall_web_ui_port_ext }}
 #   https://{{ heimdall_vhost }}
 heimdall_base_url:      # (REQUIRED)
+heimdall_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+heimdall_web_ui_ports_exposed: true
 
 # ====================
 #       JELLYFIN
@@ -690,18 +759,28 @@ jellyfin_service_name: jellyfin
 jellyfin_hostname: "{{ jellyfin_service_name }}"
 jellyfin_vhost: "{{ jellyfin_service_name }}.domain.local"
 jellyfin_web_ui_port:   # Leave blank to leverage bookshelf configuration
-jellyfin_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+jellyfin_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both jellyfin and tailscale.
-jellyfin_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/jellyfin.env.j2') }}"
+jellyfin_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/jellyfin.env.j2') }}"
+  # References:
+  #   * https://hub.docker.com/r/linuxserver/jellyfin#parameters
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # JELLYFIN_PublishedServerUrl=https://{{ jellyfin_vhost }}
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+jellyfin_web_ui_ports_exposed: true
+jellyfin_discovery_ports_exposed: true
 # ----------
 # The following settings configure Jellyfin to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 jellyfin_tailscaled: false
-jellyfin_tailscale_version:    # Leave blank to leverage bookshelf configuration
+jellyfin_ts_version:    # Leave blank to leverage bookshelf configuration
+jellyfin_ts_service_name: "{{ jellyfin_service_name }}-ts"
 # Hostname within tailnet
-jellyfin_tailscale_ts_hostname: "{{ jellyfin_service_name }}-tailscale"
-jellyfin_tailscale_auth_key:
+jellyfin_ts_hostname: "{{ jellyfin_service_name }}"
+jellyfin_ts_auth_key:
 
 # =========================
 #       JOPLIN-SERVER
@@ -724,13 +803,17 @@ joplin_server_service_name: joplin-server
 joplin_server_hostname: "{{ joplin_server_service_name }}"
 joplin_server_vhost: "{{ joplin_server_service_name }}.domain.local"
 joplin_server_web_ui_port:          # Leave blank to leverage bookshelf configuration
+joplin_server_db_service_name: "{{ joplin_server_service_name }}-db"
+joplin_server_db_pass:              # (REQUIRED)
 # Joplin base url. Ex.:
 #   # joplin_server_web_ui_port_ext - contains actual external port
 #   https://{{ joplin_server_vhost }}
 #   http://{{ ansible_default_ipv4.address }}:{{ joplin_server_web_ui_port_ext }}
 joplin_server_base_url:             # (REQUIRED)
-joplin_server_db_pass:              # (REQUIRED)
-joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+joplin_server_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+joplin_server_web_ui_ports_exposed: true
 
 # ==================
 #       MEALIE
@@ -756,18 +839,27 @@ mealie_service_name: mealie
 mealie_hostname: "{{ mealie_service_name }}"
 mealie_vhost: "{{ mealie_service_name }}.domain.local"
 mealie_web_ui_port:   # Leave blank to leverage bookshelf configuration
-mealie_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+mealie_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Mealie and tailscale.
-mealie_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/mealie.env.j2') }}"
+mealie_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/mealie.env.j2') }}"
+  # References:
+  #   * https://docs.mealie.io/documentation/getting-started/installation/backend-config/
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  ALLOW_SIGNUP=false
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+mealie_web_ui_ports_exposed: true
 # ----------
 # The following settings configure Mealie to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 mealie_tailscaled: false
-mealie_tailscale_version:    # Leave blank to leverage bookshelf configuration
+mealie_ts_version:    # Leave blank to leverage bookshelf configuration
+mealie_ts_service_name: "{{ mealie_service_name }}-ts"
 # Hostname within tailnet
-mealie_tailscale_ts_hostname: "{{ mealie_service_name }}-tailscale"
-mealie_tailscale_auth_key:
+mealie_ts_hostname: "{{ mealie_service_name }}"
+mealie_ts_auth_key:
 
 # =================
 #       MEMOS
@@ -791,16 +883,26 @@ memos_hostname: "{{ memos_service_name }}"
 memos_vhost: "{{ memos_service_name }}.domain.local"
 memos_web_ui_port:    # Leave blank to leverage bookshelf configuration
 # Optional extra env vars, will affect both Memos and tailscale.
-memos_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/memos.env.j2') }}"
+memos_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/memos.env.j2') }}"
+  # References:
+  #   * https://www.usememos.com/docs/configuration
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # MEMOS_MAX_LOGIN_ATTEMPTS=5
+  # MEMOS_LOCKOUT_DURATION=900
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+memos_web_ui_ports_exposed: true
 # ----------
 # The following settings configure Memos to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 memos_tailscaled: false
-memos_tailscale_version:    # Leave blank to leverage bookshelf configuration
+memos_ts_version:    # Leave blank to leverage bookshelf configuration
+memos_ts_service_name: "{{ memos_service_name }}-ts"
 # Hostname within tailnet
-memos_tailscale_ts_hostname: "{{ memos_service_name }}-tailscale"
-memos_tailscale_auth_key:
+memos_ts_hostname: "{{ memos_service_name }}"
+memos_ts_auth_key:
 
 # ==================
 #       METUBE
@@ -826,10 +928,16 @@ metube_service_name: metube
 metube_hostname: "{{ metube_service_name }}"
 metube_vhost: "{{ metube_service_name }}.domain.local"
 metube_web_ui_port:   # Leave blank to leverage bookshelf configuration
-metube_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# https://github.com/alexta69/metube?tab=readme-ov-file#configuration-via-environment-variables
+metube_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars
-metube_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/metube.env.j2') }}"
+metube_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/metube.env.j2') }}"
+  # References:
+  #   * https://github.com/alexta69/metube#%EF%B8%8F-configuration-via-environment-variables
+  # ----------
+  DEFAULT_THEME=dark
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+metube_web_ui_ports_exposed: true
 
 # =====================
 #       NAVIDROME
@@ -861,19 +969,27 @@ navidrome_service_name: navidrome
 navidrome_hostname: "{{ navidrome_service_name }}"
 navidrome_vhost: "{{ navidrome_service_name }}.domain.local"
 navidrome_web_ui_port:    # Leave blank to leverage bookshelf configuration
-navidrome_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+navidrome_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both navidrome and tailscale.
-# https://www.navidrome.org/docs/usage/configuration-options/#available-options
-navidrome_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/navidrome.env.j2') }}"
+navidrome_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/navidrome.env.j2') }}"
+  # References:
+  #   * https://www.navidrome.org/docs/usage/configuration-options/#available-options
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # ND_ENABLEINSIGHTSCOLLECTOR=true
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+navidrome_web_ui_ports_exposed: true
 # ----------
 # The following settings configure Navidrome to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 navidrome_tailscaled: false
-navidrome_tailscale_version:    # Leave blank to leverage bookshelf configuration
+navidrome_ts_version:    # Leave blank to leverage bookshelf configuration
+navidrome_ts_service_name: "{{ navidrome_service_name }}-ts"
 # Hostname within tailnet
-navidrome_tailscale_ts_hostname: "{{ navidrome_service_name }}-tailscale"
-navidrome_tailscale_auth_key:
+navidrome_ts_hostname: "{{ navidrome_service_name }}"
+navidrome_ts_auth_key:
 
 # ===============================
 #       NGINX-PROXY-MANAGER
@@ -984,18 +1100,27 @@ pairdrop_service_name: pairdrop
 pairdrop_hostname: "{{ pairdrop_service_name }}"
 pairdrop_vhost: "{{ pairdrop_service_name }}.domain.local"
 pairdrop_web_ui_port:   # Leave blank to leverage bookshelf configuration
-pairdrop_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+pairdrop_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both PairDrop and tailscale.
-pairdrop_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/pairdrop.env.j2') }}"
+pairdrop_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/pairdrop.env.j2') }}"
+  # References:
+  #   * https://hub.docker.com/r/linuxserver/pairdrop#parameters
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # RATE_LIMIT=true
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+pairdrop_web_ui_ports_exposed: true
 # ----------
 # The following settings configure PairDrop to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 pairdrop_tailscaled: false
-pairdrop_tailscale_version:    # Leave blank to leverage bookshelf configuration
+pairdrop_ts_version:    # Leave blank to leverage bookshelf configuration
+pairdrop_ts_service_name: "{{ pairdrop_service_name }}-ts"
 # Hostname within tailnet
-pairdrop_tailscale_ts_hostname: "{{ pairdrop_service_name }}-tailscale"
-pairdrop_tailscale_auth_key:
+pairdrop_ts_hostname: "{{ pairdrop_service_name }}"
+pairdrop_ts_auth_key:
 
 # ===========================
 #       PORTAINER-AGENT
@@ -1073,7 +1198,8 @@ qbittorrent_service_name: qbittorrent
 qbittorrent_hostname: "{{ qbittorrent_service_name }}"
 qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"
 qbittorrent_web_ui_port:          # Leave blank to leverage bookshelf configuration
-qbittorrent_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+qbittorrent_torrenting_port:      # Leave blank to leverage bookshelf configuration
+qbittorrent_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional. Configure notifications script, that will be available in the container
 #   /scripts/notify.sh
 # Configure in qBittorrent UI -> Settings -> Downloads -> External ... on finished
@@ -1084,7 +1210,14 @@ qbittorrent_notify_token:     # "{{ lookup('file', playbook_dir + '/resources/qb
 qbittorrent_notify_server:    # (REQUIRED for gotify)
 qbittorrent_notify_chat_id:   # (REQUIRED for telegram)
 # Optional extra env vars
-qbittorrent_extra_env:        # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"
+qbittorrent_extra_env: |      # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"
+  # References:
+  #   * qBittorrent is not really configurable via env vars
+  # ----------
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+qbittorrent_web_ui_ports_exposed: true
+qbittorrent_torrenting_ports_exposed: true
 
 # ======================
 #       RWMARKABLE

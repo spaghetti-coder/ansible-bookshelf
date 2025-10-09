@@ -2,11 +2,10 @@
 {% set web_ui_port = navidrome_web_ui_port | default(bookshelf_const_port.navidrome.web_ui, true) %}
 {% set data_volumes = (navidrome_user == navidrome_owner)
     | ternary(navidrome_data_volumes, data_volumes_abs) | default([], true) %}
-{% set tailscale_version = navidrome_tailscale_version | default(bookshelf_const_version.navidrome_tailscale, true) %}
-{% set tailscale_service = 'navidrome-tailscale' %}
+{% set tailscale_version = navidrome_ts_version | default(bookshelf_const_version.navidrome_tailscale, true) %}
 ---
 services:
-  navidrome:
+  {{ navidrome_service_name }}:
     # https://hub.docker.com/r/deluan/navidrome/tags
     image: deluan/navidrome:{{ version }}
     container_name: {{ navidrome_service_name }}
@@ -21,12 +20,12 @@ services:
       - '{{ navidrome_conf_dir }}/config:/data'
     user: "{{ user_uid }}:{{ user_gid }}"
 {% if navidrome_tailscaled %}
-    network_mode: "service:{{ tailscale_service }}"
+    network_mode: "service:{{ navidrome_ts_service_name }}"
 
-  {{ tailscale_service }}:
+  {{ navidrome_ts_service_name }}:
     # https://hub.docker.com/r/tailscale/tailscale/tags
     image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ navidrome_service_name }}-tailscale
+    container_name: {{ navidrome_ts_service_name }}
     restart: unless-stopped
     env_file:
       - ./secret.env
@@ -42,8 +41,13 @@ services:
       - SYS_MODULE
 {% endif %}{# navidrome_tailscaled #}
     hostname: {{ navidrome_hostname }}
+{% if navidrome_web_ui_ports_exposed %}
     ports:
       - '{{ web_ui_port }}:{{ navidrome_web_ui_port_int }}'
+{% else %}
+    # ports:
+    #   - '{{ web_ui_port }}:{{ navidrome_web_ui_port_int }}'
+{% endif %}{# navidrome_web_ui_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}

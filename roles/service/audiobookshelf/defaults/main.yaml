@@ -31,15 +31,24 @@ audiobookshelf_service_name: audiobookshelf
 audiobookshelf_hostname: "{{ audiobookshelf_service_name }}"
 audiobookshelf_vhost: "{{ audiobookshelf_service_name }}.domain.local"
 audiobookshelf_web_ui_port:   # Leave blank to leverage bookshelf configuration
-audiobookshelf_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+audiobookshelf_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both audiobookshelf and tailscale.
-audiobookshelf_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/audiobookshelf.env.j2') }}"
+audiobookshelf_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/audiobookshelf.env.j2') }}"
+  # References:
+  #   * https://www.audiobookshelf.org/docs#env-configuration
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # PORT=5555
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+audiobookshelf_web_ui_ports_exposed: true
 # ----------
 # The following settings configure Audiobookshelf to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 audiobookshelf_tailscaled: false
-audiobookshelf_tailscale_version:   # Leave blank to leverage bookshelf configuration
+audiobookshelf_ts_version:   # Leave blank to leverage bookshelf configuration
+audiobookshelf_ts_service_name: "{{ audiobookshelf_service_name }}-ts"
 # Hostname within tailnet
-audiobookshelf_tailscale_ts_hostname: "{{ audiobookshelf_service_name }}-tailscale"
-audiobookshelf_tailscale_auth_key:
+audiobookshelf_ts_hostname: "{{ audiobookshelf_service_name }}"
+audiobookshelf_ts_auth_key:

@@ -19,17 +19,28 @@ blinko_service_name: blinko
 blinko_hostname: "{{ blinko_service_name }}"
 blinko_vhost: "{{ blinko_service_name }}.domain.local"
 blinko_web_ui_port:         # Leave blank to leverage bookshelf configuration
-blinko_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+blinko_db_service_name: "{{ blinko_service_name }}-db"
 blinko_db_pass:             # (REQUIRED) Something hard and random
 blinko_nextauth_secret:     # (REQUIRED) Something hard and random
+blinko_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Blinko and Tailscale.
-blinko_extra_env:           # "{{ lookup('template', playbook_dir + '/resources/blinko.env.j2') }}"
+blinko_extra_env: |         # "{{ lookup('template', playbook_dir + '/resources/blinko.env.j2') }}"
+  # References:
+  #   * https://docs.blinko.space/en/install#docker-installation
+  #   * https://hub.docker.com/_/postgres#environment-variables
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # NEXTAUTH_URL=...
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+blinko_web_ui_ports_exposed: true
 # ----------
 # The following settings configure Blinko to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 blinko_tailscaled: false
-blinko_tailscale_version:   # Leave blank to leverage bookshelf configuration
+blinko_ts_version:   # Leave blank to leverage bookshelf configuration
+blinko_ts_service_name: "{{ blinko_service_name }}-ts"
 # Hostname within tailnet
-blinko_tailscale_ts_hostname: "{{ blinko_service_name }}-tailscale"
-blinko_tailscale_auth_key:
+blinko_ts_hostname: "{{ blinko_service_name }}"
+blinko_ts_auth_key:

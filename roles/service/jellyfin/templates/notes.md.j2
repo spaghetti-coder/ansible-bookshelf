@@ -1,5 +1,7 @@
 ## Jellyfin
+{% if jellyfin_tailscaled %}
 
 * Disable tailscale machine expiry:
   1. Go to https://tailscale.com/admin/machines
-  2. `{{ jellyfin_tailscale_ts_hostname }} *** > Disable key expiry`
+  2. `{{ jellyfin_ts_hostname }} *** > Disable key expiry`
+{% endif %}

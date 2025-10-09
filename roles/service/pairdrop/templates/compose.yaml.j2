@@ -1,10 +1,9 @@
 {% set version = (pairdrop_version | default(bookshelf_const_version.pairdrop, true)) %}
 {% set web_ui_port = (pairdrop_web_ui_port | default(bookshelf_const_port.pairdrop.web_ui, true)) %}
-{% set tailscale_version = (pairdrop_tailscale_version | default(bookshelf_const_version.pairdrop_tailscale, true)) %}
-{% set tailscale_service = 'pairdrop-tailscale' %}
+{% set tailscale_version = (pairdrop_ts_version | default(bookshelf_const_version.pairdrop_tailscale, true)) %}
 ---
 services:
-  pairdrop:
+  {{ pairdrop_service_name }}:
     # https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
     image: linuxserver/pairdrop:{{ version }}
     container_name: {{ pairdrop_service_name }}
@@ -13,12 +12,12 @@ services:
       - ./secret.env
       - ./main.env
 {% if pairdrop_tailscaled %}
-    network_mode: service:{{ tailscale_service }}
+    network_mode: service:{{ pairdrop_ts_service_name }}
 
-  {{ tailscale_service }}:
+  {{ pairdrop_ts_service_name }}:
     # https://hub.docker.com/r/tailscale/tailscale/tags
     image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ pairdrop_service_name }}-tailscale
+    container_name: {{ pairdrop_ts_service_name }}
     restart: unless-stopped
     env_file:
       - ./secret.env
@@ -34,8 +33,13 @@ services:
       - SYS_MODULE
 {% endif %}{# pairdrop_tailscaled #}
     hostname: {{ pairdrop_hostname }}
+{% if pairdrop_web_ui_ports_exposed %}
     ports:
       - "{{ web_ui_port }}:{{ pairdrop_web_ui_port_int }}"
+{% else %}
+    # ports:
+    #   - "{{ web_ui_port }}:{{ pairdrop_web_ui_port_int }}"
+{% endif %}{# pairdrop_web_ui_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}

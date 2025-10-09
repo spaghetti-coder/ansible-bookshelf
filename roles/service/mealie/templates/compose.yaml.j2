@@ -1,12 +1,11 @@
 {% set version = (mealie_version | default(bookshelf_const_version.mealie, true)) %}
 {% set web_ui_port = (mealie_web_ui_port | default(bookshelf_const_port.mealie.web_ui, true)) %}
-{% set tailscale_version = (mealie_tailscale_version | default(bookshelf_const_version.mealie_tailscale, true)) %}
-{% set tailscale_service = 'mealie-tailscale' %}
+{% set tailscale_version = (mealie_ts_version | default(bookshelf_const_version.mealie_tailscale, true)) %}
 ---
 # https://www.youtube.com/watch?v=DDzKd9aNFX0
 # https://docs.techdox.nz/mealie/
 services:
-  mealie:
+  {{ mealie_service_name }}:
     # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
     image: ghcr.io/mealie-recipes/mealie:{{ version }}
     container_name: {{ mealie_service_name }}
@@ -16,12 +15,12 @@ services:
     volumes:
       - '{{ mealie_conf_dir }}/config:/app/data'
 {% if mealie_tailscaled %}
-    network_mode: service:{{ tailscale_service }}
+    network_mode: service:{{ mealie_ts_service_name }}
 
-  {{ tailscale_service }}:
+  {{ mealie_ts_service_name }}:
     # https://hub.docker.com/r/tailscale/tailscale/tags
     image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ mealie_service_name }}-tailscale
+    container_name: {{ mealie_ts_service_name }}
     restart: unless-stopped
     env_file:
       - ./secret.env
@@ -37,8 +36,13 @@ services:
       - SYS_MODULE
 {% endif %}{# mealie_tailscaled #}
     hostname: {{ mealie_hostname }}
+{% if mealie_web_ui_ports_exposed %}
     ports:
       - "{{ web_ui_port }}:{{ mealie_web_ui_port_int }}"
+{% else %}
+    # ports:
+    #   - "{{ web_ui_port }}:{{ mealie_web_ui_port_int }}"
+{% endif %}{# mealie_web_ui_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}

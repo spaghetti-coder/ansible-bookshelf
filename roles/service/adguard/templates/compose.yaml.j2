@@ -1,11 +1,11 @@
 {% set version = (adguard_version | default(bookshelf_const_version.adguard, true)) %}
 {% set web_ui_port = (adguard_web_ui_port | default(bookshelf_const_port.adguard.web_ui, true)) %}
 {% set init_ui_port = (adguard_init_ui_port | default(bookshelf_const_port.adguard.init_ui, true)) %}
-{% set tailscale_version = (adguard_tailscale_version | default(bookshelf_const_version.adguard_tailscale, true)) %}
-{% set tailscale_service = 'adguard-tailscale' %}
+{% set tailscale_version = (adguard_ts_version | default(bookshelf_const_version.adguard_tailscale, true)) %}
+{% set ports_exposed = (adguard_web_ui_ports_exposed or adguard_dns_ports_exposed) %}
 ---
 services:
-  adguard:
+  {{ adguard_service_name }}:
     # https://hub.docker.com/r/adguard/adguardhome/tags
     image: adguard/adguardhome:{{ version }}
     container_name: {{ adguard_service_name }}
@@ -17,12 +17,12 @@ services:
       - '{{ conf_dir }}/config:/opt/adguardhome/conf'
       - '{{ conf_dir }}/config:/opt/adguardhome/work'
 {% if adguard_tailscaled %}
-    network_mode: "service:{{ tailscale_service }}"
+    network_mode: "service:{{ adguard_ts_service_name }}"
 
-  {{ tailscale_service }}:
+  {{ adguard_ts_service_name }}:
     # https://hub.docker.com/r/tailscale/tailscale/tags
     image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ adguard_service_name }}-tailscale
+    container_name: {{ adguard_ts_service_name }}
     restart: unless-stopped
     env_file:
       - ./secret.env
@@ -38,20 +38,35 @@ services:
       - SYS_MODULE
 {% endif %}{# adguard_tailscaled #}
     hostname: "{{ adguard_hostname }}"
+{% if ports_exposed %}
     ports:
-      - '53:53/udp'
-      - '53:53/tcp'
+{% else %}
+    # ports:
+{% endif %}{# ports_exposed #}
+{% if adguard_web_ui_ports_exposed %}
       - '{{ web_ui_port }}:{{ adguard_web_ui_port_int }}/tcp'
       - '{{ init_ui_port }}:3000/tcp'
-      # - '67:67/udp'
-      # - '68:68/udp'
-      # - '443:443/udp'
-      # - '443:443/tcp'
-      # - '853:853/udp'
-      # - '853:853/tcp'
-      # - '5443:5443/udp'
-      # - '5443:5443/tcp'
-      # - '6060:6060/tcp'
+{% else %}
+    #   - '{{ web_ui_port }}:{{ adguard_web_ui_port_int }}/tcp'
+    #   - '{{ init_ui_port }}:3000/tcp'
+{% endif %}{# adguard_web_ui_ports_exposed #}
+{% if adguard_dns_ports_exposed %}
+      - '53:53/udp'
+      - '53:53/tcp'
+{% else %}
+    #   - '53:53/udp'
+    #   - '53:53/tcp'
+{% endif %}{# adguard_dns_ports_exposed #}
+    # Available in container, but can't be configured within the role:
+    #   - '67:67/udp'
+    #   - '68:68/udp'
+    #   - '443:443/udp'
+    #   - '443:443/tcp'
+    #   - '853:853/udp'
+    #   - '853:853/tcp'
+    #   - '5443:5443/udp'
+    #   - '5443:5443/tcp'
+    #   - '6060:6060/tcp'
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge
 {% else %}

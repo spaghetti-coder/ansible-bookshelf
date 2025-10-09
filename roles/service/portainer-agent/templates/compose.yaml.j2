@@ -5,7 +5,7 @@
 # * https://www.youtube.com/watch?v=iX0HbrfRyvc
 
 services:
-  agent:
+  {{ portainer_agent_service_name }}:
     # https://hub.docker.com/r/portainer/agent/tags?name=alpine
     image: portainer/agent:{{ version }}
     container_name: {{ portainer_agent_service_name }}

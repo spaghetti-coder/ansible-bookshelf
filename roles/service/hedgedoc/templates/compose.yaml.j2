@@ -2,7 +2,7 @@
 {% set web_ui_port = (hedgedoc_web_ui_port | default(bookshelf_const_port.hedgedoc.web_ui, true)) %}
 ---
 services:
-  hedgedoc:
+  {{ hedgedoc_service_name }}:
     # https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
     image: quay.io/hedgedoc/hedgedoc:{{ version }}
     container_name: {{ hedgedoc_service_name }}
@@ -14,8 +14,13 @@ services:
       - '{{ hedgedoc_conf_dir }}/uploads:/hedgedoc/public/uploads'  # Must be owned by user_uid:user_gid
     user: '{{ user_uid }}:{{ user_gid }}'
     hostname: {{ hedgedoc_hostname }}
+{% if hedgedoc_web_ui_ports_exposed %}
     ports:
       - "{{ web_ui_port }}:{{ web_ui_port }}"
+{% else %}
+    # ports:
+    #   - "{{ web_ui_port }}:{{ web_ui_port }}"
+{% endif %}{# hedgedoc_web_ui_ports_exposed #}
     environment:
       - CMD_PORT={{ web_ui_port }}
 {% if not (nginx_proxy_enabled | default(false)) %}

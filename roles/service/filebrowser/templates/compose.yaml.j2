@@ -1,11 +1,10 @@
 {% set version = (filebrowser_version | default(bookshelf_const_version.filebrowser, true)) %}
 {% set web_ui_port = (filebrowser_web_ui_port | default(bookshelf_const_port.filebrowser.web_ui, true)) %}
 {% set data_dir = ((filebrowser_user == filebrowser_owner) | ternary(filebrowser_data_dir, data_dir_abs)) %}
-{% set tailscale_version = (filebrowser_tailscale_version | default(bookshelf_const_version.filebrowser_tailscale, true)) %}
-{% set tailscale_service = 'filebrowser-tailscale' %}
+{% set tailscale_version = (filebrowser_ts_version | default(bookshelf_const_version.filebrowser_tailscale, true)) %}
 ---
 services:
-  filebrowser:
+  {{ filebrowser_service_name }}:
     # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
     image: filebrowser/filebrowser:{{ version }}
     container_name: {{ filebrowser_service_name }}
@@ -18,12 +17,12 @@ services:
       - '{{ filebrowser_conf_dir }}/config:/config'
       - '{{ filebrowser_conf_dir }}/config:/database'
 {% if filebrowser_tailscaled %}
-    network_mode: "service:{{ tailscale_service }}"
+    network_mode: "service:{{ filebrowser_ts_service_name }}"
 
-  {{ tailscale_service }}:
+  {{ filebrowser_ts_service_name }}:
     # https://hub.docker.com/r/tailscale/tailscale/tags
     image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ filebrowser_service_name }}-tailscale
+    container_name: {{ filebrowser_ts_service_name }}
     restart: unless-stopped
     env_file:
       - ./secret.env
@@ -39,8 +38,13 @@ services:
       - SYS_MODULE
 {% endif %}{# filebrowser_tailscaled #}
     hostname: {{ filebrowser_hostname }}
+{% if filebrowser_web_ui_ports_exposed %}
     ports:
       - {{ web_ui_port }}:{{ filebrowser_web_ui_port_int }}
+{% else %}
+    # ports:
+    #   - {{ web_ui_port }}:{{ filebrowser_web_ui_port_int }}
+{% endif %}{# filebrowser_web_ui_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge
 {% else %}

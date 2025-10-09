@@ -1,13 +1,14 @@
 {% set version = qbittorrent_version | default(bookshelf_const_version.qbittorrent, true) %}
 {% set vuetorrent_version = qbittorrent_vuetorrent_version | default(bookshelf_const_version.vuetorrent, true) %}
 {% set web_ui_port = qbittorrent_web_ui_port | default(bookshelf_const_port.qbittorrent.web_ui, true) %}
-{% set torrenting_port = bookshelf_const_port.qbittorrent.torrenting %}
+{% set torrenting_port = qbittorrent_torrenting_port | default(bookshelf_const_port.qbittorrent.torrenting, true) %}
 {% set data_volumes = (qbittorrent_user == qbittorrent_owner)
     | ternary(qbittorrent_data_volumes, data_volumes_abs) | default([], true) %}
+{% set ports_exposed = (qbittorrent_web_ui_ports_exposed or qbittorrent_torrenting_ports_exposed) %}
 ---
 # Temporary password for the admin user will be printed to the container log on startup
 services:
-  qbittorrent:
+  {{ qbittorrent_service_name }}:
     # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
     # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
     image: linuxserver/qbittorrent:{{ version }}
@@ -27,10 +28,23 @@ services:
       - '{{ notify_sh_path }}:{{ notify_sh_path }}:ro'
 {% endif %}{# qbittorrent_notify_provider #}
     hostname: {{ qbittorrent_hostname }}
+{% if ports_exposed %}
     ports:
+{% else %}
+    # ports:
+{% endif %}{# ports_exposed #}
+{% if qbittorrent_web_ui_ports_exposed %}
       - '{{ web_ui_port }}:{{ web_ui_port }}'
+{% else %}
+    #   - '{{ web_ui_port }}:{{ web_ui_port }}'
+{% endif %}{# qbittorrent_web_ui_ports_exposed #}
+{% if qbittorrent_torrenting_ports_exposed %}
       - '{{ torrenting_port }}:{{ torrenting_port }}'
       - '{{ torrenting_port }}:{{ torrenting_port }}/udp'
+{% else %}
+    #   - '{{ torrenting_port }}:{{ torrenting_port }}'
+    #   - '{{ torrenting_port }}:{{ torrenting_port }}/udp'
+{% endif %}{# qbittorrent_torrenting_ports_exposed #}
     environment:
       # Enable VueTorrent mod
       # https://github.com/VueTorrent/VueTorrent/wiki/Installation#using-lsio-docker-mod

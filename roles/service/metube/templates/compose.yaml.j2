@@ -3,7 +3,7 @@
 {% set data_dir = ((metube_user == metube_owner) | ternary(metube_data_dir, data_dir_abs)) %}
 ---
 services:
-  metube:
+  {{ metube_service_name }}:
     # https://github.com/alexta69/metube/pkgs/container/metube
     image: ghcr.io/alexta69/metube:{{ version }}
     container_name: {{ metube_service_name }}
@@ -11,8 +11,13 @@ services:
     hostname: {{ metube_hostname }}
     env_file:
       - ./main.env
+{% if metube_web_ui_ports_exposed %}
     ports:
       - '{{ web_ui_port }}:8081'
+{% else %}
+    # ports:
+    #   - '{{ web_ui_port }}:8081'
+{% endif %}{# metube_web_ui_ports_exposed #}
     volumes:
       - '{{ data_dir }}:/downloads'
       - '{{ metube_conf_dir }}/config:/config'

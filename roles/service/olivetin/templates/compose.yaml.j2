@@ -1,7 +1,7 @@
 {% set version = (olivetin_version | default(bookshelf_const_version.olivetin, true)) %}
 ---
 services:
-  olivetin:
+  {{ olivetin_service_name }}:
     # https://hub.docker.com/r/jamesread/olivetin/tags
     image: jamesread/olivetin:{{ version }}
     container_name: {{ olivetin_service_name }}

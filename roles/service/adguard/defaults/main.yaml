@@ -1,6 +1,11 @@
 ---
 # The world’s most advanced ad blocker!
 #   https://adguard.com/en/adguard-home/overview.html
+# Configured only to work as DNS server
+# -----
+# IMPORTANT:
+#   Fix for resolved:
+#   https://hub.docker.com/r/adguard/adguardhome#resolved-daemon
 # -----
 # VERSIONS:
 #   * https://hub.docker.com/r/adguard/adguardhome/tags
@@ -17,9 +22,17 @@ adguard_hostname: "{{ adguard_service_name }}"
 adguard_vhost: "{{ adguard_service_name }}.domain.local"
 adguard_web_ui_port:    # Leave blank to leverage bookshelf configuration
 adguard_init_ui_port:   # Leave blank to leverage bookshelf configuration
-adguard_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+adguard_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both adguard and tailscale.
-adguard_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/adguard.env.j2') }}"
+adguard_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/adguard.env.j2') }}"
+  # References:
+  #   * Adguard is not really configurable via env vars
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+adguard_web_ui_ports_exposed: true
+adguard_dns_ports_exposed: true
 # ----------
 # The following settings configure Adguard to run as a part of tailnet. This
 # allows to configure adguard for a tailnet DNS server under
@@ -32,7 +45,8 @@ adguard_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/adgu
 # will not be reachable in the tailnet. SOLUTION: deploy another tailscale
 # service with "advertised routes" (https://tailscale.com/kb/1019/subnets)
 adguard_tailscaled: false
-adguard_tailscale_version:    # Leave blank to leverage bookshelf configuration
+adguard_ts_version:    # Leave blank to leverage bookshelf configuration
+adguard_ts_service_name: "{{ adguard_service_name }}-ts"
 # Hostname within tailnet
-adguard_tailscale_ts_hostname: "{{ adguard_service_name }}-tailscale"
-adguard_tailscale_auth_key:
+adguard_ts_hostname: "{{ adguard_service_name }}"
+adguard_ts_auth_key:

@@ -3,7 +3,7 @@
 {% set tunnel_port = bookshelf_const_port.portainer.tunnel %}
 ---
 services:
-  portainer:
+  {{ portainer_service_name }}:
     # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
     image: portainer/portainer-ce:{{ version }}
     container_name: {{ portainer_service_name }}

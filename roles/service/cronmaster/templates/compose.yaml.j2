@@ -1,10 +1,9 @@
 {% set version = (cronmaster_version | default(bookshelf_const_version.cronmaster, true)) %}
 {% set web_ui_port = (cronmaster_web_ui_port | default(bookshelf_const_port.cronmaster.web_ui, true)) %}
-{% set tailscale_version = (cronmaster_tailscale_version | default(bookshelf_const_version.cronmaster_tailscale, true)) %}
-{% set tailscale_service = (cronmaster_service_name + '-tailscale') %}
+{% set tailscale_version = (cronmaster_ts_version | default(bookshelf_const_version.cronmaster_tailscale, true)) %}
 ---
 services:
-  cronjob-manager:
+  {{ cronmaster_service_name }}:
     # https://github.com/fccview/cronmaster/pkgs/container/cronmaster
     image: ghcr.io/fccview/cronmaster:{{ version }}
     container_name: {{ cronmaster_service_name }}
@@ -24,12 +23,12 @@ services:
     init: true
     # platform: linux/arm64                         # <- Uncomment to use ARM64
 {% if cronmaster_tailscaled %}
-    network_mode: "service:{{ tailscale_service }}"
+    network_mode: "service:{{ cronmaster_ts_service_name }}"
 
-  {{ tailscale_service }}:
+  {{ cronmaster_ts_service_name }}:
     # https://hub.docker.com/r/tailscale/tailscale/tags
     image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ cronmaster_service_name }}-tailscale
+    container_name: {{ cronmaster_ts_service_name }}
     restart: unless-stopped
     env_file:
       - ./secret.env
@@ -45,8 +44,13 @@ services:
       - SYS_MODULE
 {% endif %}{# cronmaster_tailscaled #}
     hostname: {{ cronmaster_hostname }}
+{% if cronmaster_web_ui_ports_exposed %}
     ports:
       - "{{ web_ui_port }}:{{ cronmaster_web_ui_port_int }}"
+{% else %}
+    # ports:
+    #   - "{{ web_ui_port }}:{{ cronmaster_web_ui_port_int }}"
+{% endif %}{# cronmaster_web_ui_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}

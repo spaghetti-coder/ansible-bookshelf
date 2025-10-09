@@ -1,10 +1,9 @@
 {% set version = duplicati_version | default(bookshelf_const_version.duplicati, true) %}
 {% set web_ui_port = duplicati_web_ui_port | default(bookshelf_const_port.duplicati.web_ui, true) %}
-{% set tailscale_version = duplicati_tailscale_version | default(bookshelf_const_version.duplicati_tailscale, true) %}
-{% set tailscale_service = 'duplicati-tailscale' %}
+{% set tailscale_version = duplicati_ts_version | default(bookshelf_const_version.duplicati_tailscale, true) %}
 ---
 services:
-  duplicati:
+  {{ duplicati_service_name }}:
     # https://hub.docker.com/r/linuxserver/duplicati/tags?name=-ls
     image: lscr.io/linuxserver/duplicati:{{ version }}
     container_name: {{ duplicati_service_name }}
@@ -21,12 +20,12 @@ services:
 {% endfor %}
       - {{ conf_dir }}/config:/config
 {% if duplicati_tailscaled %}
-    network_mode: "service:{{ tailscale_service }}"
+    network_mode: "service:{{ duplicati_ts_service_name }}"
 
-  {{ tailscale_service }}:
+  {{ duplicati_ts_service_name }}:
     # https://hub.docker.com/r/tailscale/tailscale/tags
     image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ duplicati_service_name }}-tailscale
+    container_name: {{ duplicati_ts_service_name }}
     restart: unless-stopped
     env_file:
       - ./secret.env
@@ -48,8 +47,13 @@ services:
       start_period: 30s
 {% endif %}{# duplicati_tailscaled #}
     hostname: {{ duplicati_hostname }}
+{% if duplicati_web_ui_ports_exposed %}
     ports:
       - '{{ web_ui_port }}:{{ duplicati_web_ui_port_int }}'
+{% else %}
+    # ports:
+    #   - '{{ web_ui_port }}:{{ duplicati_web_ui_port_int }}'
+{% endif %}{# duplicati_web_ui_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}

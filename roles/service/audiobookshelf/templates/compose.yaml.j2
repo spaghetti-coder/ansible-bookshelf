@@ -2,11 +2,10 @@
 {% set web_ui_port = audiobookshelf_web_ui_port | default(bookshelf_const_port.audiobookshelf.web_ui, true) %}
 {% set data_volumes = (audiobookshelf_user == audiobookshelf_owner)
     | ternary(audiobookshelf_data_volumes, data_volumes_abs) | default([], true) %}
-{% set tailscale_version = audiobookshelf_tailscale_version | default(bookshelf_const_version.audiobookshelf_tailscale, true) %}
-{% set tailscale_service = 'audiobookshelf-tailscale' %}
+{% set tailscale_version = audiobookshelf_ts_version | default(bookshelf_const_version.audiobookshelf_tailscale, true) %}
 ---
 services:
-  audiobookshelf:
+  {{ audiobookshelf_service_name }}:
     # https://hub.docker.com/r/advplyr/audiobookshelf/tags
     image: advplyr/audiobookshelf:{{ version }}
     container_name: {{ audiobookshelf_service_name }}
@@ -22,12 +21,12 @@ services:
       - '{{ audiobookshelf_conf_dir }}/config:/metadata'
     user: "{{ user_uid }}:{{ user_gid }}"
 {% if audiobookshelf_tailscaled %}
-    network_mode: "service:{{ tailscale_service }}"
+    network_mode: "service:{{ audiobookshelf_ts_service_name }}"
 
-  {{ tailscale_service }}:
+  {{ audiobookshelf_ts_service_name }}:
     # https://hub.docker.com/r/tailscale/tailscale/tags
     image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ audiobookshelf_service_name }}-tailscale
+    container_name: '{{ audiobookshelf_ts_service_name }}'
     restart: unless-stopped
     env_file:
       - ./secret.env
@@ -43,8 +42,13 @@ services:
       - SYS_MODULE
 {% endif %}{# audiobookshelf_tailscaled #}
     hostname: {{ audiobookshelf_hostname }}
+{% if audiobookshelf_web_ui_ports_exposed %}
     ports:
       - {{ web_ui_port }}:{{ audiobookshelf_web_ui_port_int }}
+{% else %}
+    # ports:
+    #   - {{ web_ui_port }}:{{ audiobookshelf_web_ui_port_int }}
+{% endif %}{# audiobookshelf_web_ui_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge
 {% else %}

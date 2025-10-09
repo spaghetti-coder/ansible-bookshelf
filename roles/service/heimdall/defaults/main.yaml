@@ -14,9 +14,12 @@ heimdall_service_name: heimdall
 heimdall_hostname: "{{ heimdall_service_name }}"
 heimdall_vhost: "{{ heimdall_service_name }}.domain.local"
 heimdall_web_ui_port:   # Leave blank to leverage bookshelf configuration
-heimdall_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # Ex.:
 #   # heimdall_web_ui_port_ext - contains actual external port
 #   http://{{ ansible_default_ipv4.address }}:{{ heimdall_web_ui_port_ext }}
 #   https://{{ heimdall_vhost }}
 heimdall_base_url:      # (REQUIRED)
+heimdall_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+heimdall_web_ui_ports_exposed: true

@@ -47,3 +47,5 @@
 
 **`service/wg-easy`**:
   * `navidrome_extra_dir` is changed to `navidrome_extra_mounts`
+
+* see `sample/group_vars/all.yaml` file changes
