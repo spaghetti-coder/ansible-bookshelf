@@ -19,6 +19,13 @@ silverbullet_web_ui_port:   # Leave blank to leverage bookshelf configuration
 # Auth
 silverbullet_auth_user:     # (OPTIONAL)
 silverbullet_auth_pass:     # (REQUIRED when non-empty user) If user not set, user defaults to 'admin'
-# silverbullet_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# silverbullet_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars
-silverbullet_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/silverbullet.env.j2') }}"
+silverbullet_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/silverbullet.env.j2') }}"
+  # References:
+  #   * https://silverbullet.md/Install/Configuration
+  # ----------
+  # SB_READ_ONLY=true
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+silverbullet_web_ui_ports_exposed: true
