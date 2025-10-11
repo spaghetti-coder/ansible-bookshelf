@@ -1161,17 +1161,25 @@ smtp4dev_smtp_port:     # Leave blank to leverage bookshelf configuration
 smtp4dev_imap_port:     # Leave blank to leverage bookshelf configuration
 # Optional extra env vars, will affect both smtp4dev and tailscale.
 smtp4dev_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/smtp4dev.env.j2') }}"
-  FOO1=bar1
-  FOO2=bar2
+  # References:
+  #   * https://github.com/rnwood/smtp4dev/blob/master/Rnwood.Smtp4dev/appsettings.json
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # ServerOptions__DisableIPv6=true
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+smtp4dev_web_ui_ports_exposed: true
+smtp4dev_mailing_ports_exposed: true
 # ----------
 # The following settings configure smtp4dev to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 smtp4dev_tailscaled: false
-smtp4dev_tailscale_version:    # Leave blank to leverage bookshelf configuration
+smtp4dev_ts_version:    # Leave blank to leverage bookshelf configuration
+smtp4dev_ts_service_name: "{{ smtp4dev_service_name }}-ts"
 # Hostname within tailnet
-smtp4dev_tailscale_ts_hostname: "{{ smtp4dev_service_name }}-tailscale"
-smtp4dev_tailscale_auth_key:
+smtp4dev_ts_hostname: "{{ smtp4dev_service_name }}"
+smtp4dev_ts_auth_key:
 
 # =====================
 #       SYNCTHING

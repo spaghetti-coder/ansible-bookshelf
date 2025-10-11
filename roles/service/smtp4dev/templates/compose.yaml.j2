@@ -1,10 +1,10 @@
 {% set version = (smtp4dev_version | default(bookshelf_const_version.smtp4dev, true)) %}
 {% set web_ui_port = (smtp4dev_web_ui_port | default(bookshelf_const_port.smtp4dev.web_ui, true)) %}
-{% set tailscale_version = (smtp4dev_tailscale_version | default(bookshelf_const_version.smtp4dev_tailscale, true)) %}
-{% set tailscale_service = 'smtp4dev-tailscale' %}
+{% set tailscale_version = (smtp4dev_ts_version | default(bookshelf_const_version.smtp4dev_tailscale, true)) %}
+{% set ports_exposed = (smtp4dev_web_ui_ports_exposed or smtp4dev_mailing_ports_exposed) %}
 ---
 services:
-  smtp4dev:
+  {{ smtp4dev_service_name }}:
     # https://hub.docker.com/r/rnwood/smtp4dev/tags?name=v
     image: rnwood/smtp4dev:{{ version }}
     container_name: {{ smtp4dev_service_name }}
@@ -15,12 +15,12 @@ services:
     volumes:
       - '{{ conf_dir }}/config:/smtp4dev'
 {% if smtp4dev_tailscaled %}
-    network_mode: service:{{ tailscale_service }}
+    network_mode: service:{{ smtp4dev_ts_service_name }}
 
-  {{ tailscale_service }}:
+  {{ smtp4dev_ts_service_name }}:
     # https://hub.docker.com/r/tailscale/tailscale/tags
     image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ smtp4dev_service_name }}-tailscale
+    container_name: {{ smtp4dev_ts_service_name }}
     restart: unless-stopped
     env_file:
       - ./secret.env
@@ -36,10 +36,23 @@ services:
       - SYS_MODULE
 {% endif %}{# smtp4dev_tailscaled #}
     hostname: {{ smtp4dev_hostname }}
+{% if ports_exposed %}
     ports:
+{% else %}
+    # ports:
+{% endif %}{# ports_exposed #}
+{% if smtp4dev_web_ui_ports_exposed %}
       - '{{ web_ui_port }}:{{ smtp4dev_web_ui_port_int }}'
+{% else %}
+    #   - '{{ web_ui_port }}:{{ smtp4dev_web_ui_port_int }}'
+{% endif%}{# smtp4dev_web_ui_ports_exposed #}
+{% if smtp4dev_mailing_ports_exposed %}
       - '{{ smtp4dev_smtp_port_ext }}:{{ smtp4dev_smtp_port_int }}'
       - '{{ smtp4dev_imap_port_ext }}:{{ smtp4dev_imap_port_int }}'
+{% else %}
+    #   - '{{ smtp4dev_smtp_port_ext }}:{{ smtp4dev_smtp_port_int }}'
+    #   - '{{ smtp4dev_imap_port_ext }}:{{ smtp4dev_imap_port_int }}'
+{% endif %}{# smtp4dev_mailing_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}
