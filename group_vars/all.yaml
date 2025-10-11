@@ -1066,16 +1066,26 @@ rwmarkable_hostname: "{{ rwmarkable_service_name }}"
 rwmarkable_vhost: "{{ rwmarkable_service_name }}.domain.local"
 rwmarkable_web_ui_port:        # Leave blank to leverage bookshelf configuration
 # Optional extra env vars, will affect both rwMarkable and Tailscale.
-rwmarkable_extra_env:          # "{{ lookup('template', playbook_dir + '/resources/rwmarkable.env.j2') }}"
+rwmarkable_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/rwmarkable.env.j2') }}"
+  # References:
+  #   * https://github.com/fccview/rwMarkable
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # SERVE_PUBLIC_IMAGES=yes
+  # SERVE_PUBLIC_FILES=yes
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+rwmarkable_web_ui_ports_exposed: true
 # ----------
 # The following settings configure rwMarkable to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 rwmarkable_tailscaled: false
-rwmarkable_tailscale_version:  # Leave blank to leverage bookshelf configuration
+rwmarkable_ts_version:  # Leave blank to leverage bookshelf configuration
+rwmarkable_ts_service_name: "{{ rwmarkable_service_name }}-ts"
 # Hostname within tailnet
-rwmarkable_tailscale_ts_hostname: "{{ rwmarkable_service_name }}-tailscale"
-rwmarkable_tailscale_auth_key:
+rwmarkable_ts_hostname: "{{ rwmarkable_service_name }}"
+rwmarkable_ts_auth_key:
 
 # =================
 #       SAMBA

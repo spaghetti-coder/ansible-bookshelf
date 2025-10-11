@@ -1,10 +1,9 @@
 {% set version = (rwmarkable_version | default(bookshelf_const_version.rwmarkable, true)) %}
 {% set web_ui_port = (rwmarkable_web_ui_port | default(bookshelf_const_port.rwmarkable.web_ui, true)) %}
-{% set tailscale_version = (rwmarkable_tailscale_version | default(bookshelf_const_version.rwmarkable_tailscale, true)) %}
-{% set tailscale_service = (rwmarkable_service_name + '-tailscale') %}
+{% set tailscale_version = (rwmarkable_ts_version | default(bookshelf_const_version.rwmarkable_tailscale, true)) %}
 ---
 services:
-  rwmarkable:
+  {{ rwmarkable_service_name }}:
     # https://github.com/fccview/rwMarkable/pkgs/container/rwmarkable
     image: ghcr.io/fccview/rwmarkable:{{ version }}
     container_name: {{ rwmarkable_service_name }}
@@ -19,12 +18,12 @@ services:
     user: '{{ user_uid }}:{{ user_gid }}'
     # platform: linux/arm64                               # <- Uncomment to use ARM64
 {% if rwmarkable_tailscaled %}
-    network_mode: "service:{{ tailscale_service }}"
+    network_mode: "service:{{ rwmarkable_ts_service_name }}"
 
-  {{ tailscale_service }}:
+  {{ rwmarkable_ts_service_name }}:
     # https://hub.docker.com/r/tailscale/tailscale/tags
     image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ rwmarkable_service_name }}-tailscale
+    container_name: {{ rwmarkable_ts_service_name }}
     restart: unless-stopped
     env_file:
       - ./secret.env
@@ -40,8 +39,13 @@ services:
       - SYS_MODULE
 {% endif %}{# rwmarkable_tailscaled #}
     hostname: {{ rwmarkable_hostname }}
+{% if rwmarkable_web_ui_ports_exposed %}
     ports:
       - '{{ web_ui_port }}:{{ rwmarkable_web_ui_port_int }}'
+{% else %}
+    # ports:
+    #   - '{{ web_ui_port }}:{{ rwmarkable_web_ui_port_int }}'
+{% endif %}{# rwmarkable_web_ui_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}
