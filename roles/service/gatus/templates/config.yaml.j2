@@ -1,0 +1,9 @@
+{{ gatus_config }}
+ui:
+  default-sort-by: group
+  dark-mode: true
+
+storage:
+  type: sqlite        # <- Can't resolve Postgres service due to TS side car
+  path: /data/data.db
+  caching: true

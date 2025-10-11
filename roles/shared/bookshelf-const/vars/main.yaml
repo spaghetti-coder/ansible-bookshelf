@@ -38,6 +38,9 @@ bookshelf_const_version:    # <- Last update: 2025-10-11
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
   filebrowser: v2.44.0-s6
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://github.com/twin/gatus/pkgs/container/gatus
+  gatus: v5.26.0
+  gatus_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/gotify/server/tags
   gotify: 2.7.3
   # https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
@@ -125,9 +128,11 @@ bookshelf_const_port:
   cronmaster:
     web_ui: 8109
   duplicati:
-    web_ui: 8110        # <- Last (8081+)
+    web_ui: 8110
   filebrowser:
     web_ui: 8094
+  gatus:
+    web_ui: 8111        # <- Last (8081+)
   gotify:
     web_ui: 8085
   hedgedoc:

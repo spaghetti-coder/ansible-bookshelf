@@ -1,0 +1,7 @@
+---
+endpoints:
+  - name: Doogle (demo)  # <- (REQUIRED) At least 1 entrypoint
+    group: Demos
+    url: "https://google.com"
+    interval: 1m
+    conditions: ["[STATUS] >= 200", "[STATUS] < 400"]
