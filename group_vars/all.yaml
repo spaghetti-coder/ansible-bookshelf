@@ -1202,19 +1202,27 @@ syncthing_service_name: syncthing
 syncthing_hostname: "{{ syncthing_service_name }}"
 syncthing_vhost: "{{ syncthing_service_name }}.domain.local"
 syncthing_web_ui_port:          # Leave blank to leverage bookshelf configuration
-syncthing_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+syncthing_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 syncthing_extra_env: |          # "{{ lookup('template', playbook_dir + '/resources/syncthing.env.j2') }}"
-  FOO1=bar1
-  FOO2=bar2
+  # References:
+  #   * SyncThing is not really configurable via env vars
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+syncthing_web_ui_ports_exposed: true
+syncthing_transfers_ports_exposed: true
+syncthing_discovery_ports_exposed: true
 # ----------
 # The following settings configure Syncthing to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 syncthing_tailscaled: false
-syncthing_tailscale_version:    # Leave blank to leverage bookshelf configuration
+syncthing_ts_version:    # Leave blank to leverage bookshelf configuration
+syncthing_ts_service_name: "{{ syncthing_service_name }}-ts"
 # Hostname within tailnet
-syncthing_tailscale_ts_hostname: "{{ syncthing_service_name }}-tailscale"
-syncthing_tailscale_auth_key:
+syncthing_ts_hostname: "{{ syncthing_service_name }}"
+syncthing_ts_auth_key:
 
 # =====================
 #       TAILSCALE

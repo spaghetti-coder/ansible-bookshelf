@@ -4,11 +4,11 @@
 {% set local_discovery_port = bookshelf_const_port.syncthing.local_discovery %}
 {% set data_volumes = (syncthing_user == syncthing_owner)
     | ternary(syncthing_data_volumes, data_volumes_abs) | default([], true) %}
-{% set tailscale_version = (syncthing_tailscale_version | default(bookshelf_const_version.syncthing_tailscale, true)) %}
-{% set tailscale_service = 'syncthing-tailscale' %}
+{% set tailscale_version = (syncthing_ts_version | default(bookshelf_const_version.syncthing_tailscale, true)) %}
+{% set ports_exposed = syncthing_web_ui_ports_exposed or syncthing_transfers_ports_exposed or syncthing_discovery_ports_exposed %}
 ---
 services:
-  syncthing:
+  {{ syncthing_service_name }}:
     # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
     image: linuxserver/syncthing:{{ version }}
     container_name: {{ syncthing_service_name }}
@@ -27,12 +27,12 @@ services:
       timeout: 10s
       retries: 3
 {% if syncthing_tailscaled %}
-    network_mode: service:{{ tailscale_service }}
+    network_mode: service:{{ syncthing_ts_service_name }}
 
-  {{ tailscale_service }}:
+  {{ syncthing_ts_service_name }}:
     # https://hub.docker.com/r/tailscale/tailscale/tags
     image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ syncthing_service_name }}-tailscale
+    container_name: {{ syncthing_ts_service_name }}
     restart: unless-stopped
     env_file:
       - ./secret.env
@@ -48,11 +48,28 @@ services:
       - SYS_MODULE
 {% endif %}{# syncthing_tailscaled #}
     hostname: {{ syncthing_hostname }}
+{% if ports_exposed %}
     ports:
+{% else %}
+    # ports:
+{% endif %}{# ports_exposed #}
+{% if syncthing_web_ui_ports_exposed %}
       - '{{ web_ui_port }}:{{ syncthing_web_ui_port_int }}'
+{% else %}
+    #   - '{{ web_ui_port }}:{{ syncthing_web_ui_port_int }}'
+{% endif %}{# syncthing_web_ui_ports_exposed #}
+{% if syncthing_transfers_ports_exposed %}
       - '{{ file_transfers_port }}:22000'       # <- TCP
       - '{{ file_transfers_port }}:22000/udp'   # <- QUIC
+{% else %}
+    #   - '{{ file_transfers_port }}:22000'       # <- TCP
+    #   - '{{ file_transfers_port }}:22000/udp'   # <- QUIC
+{% endif %}{# syncthing_transfers_ports_exposed #}
+{% if syncthing_discovery_ports_exposed %}
       - '{{ local_discovery_port }}:21027/udp'
+{% else %}
+    #   - '{{ local_discovery_port }}:21027/udp'
+{% endif %}{# syncthing_discovery_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}
