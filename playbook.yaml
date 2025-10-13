@@ -211,6 +211,10 @@
       tags: [tailscale, upgradable]
       when: tailscale_managed | default(false)
 
+    - role: torrserver
+      tags: [torrserver, upgradable]
+      when: torrserver_managed | default(false)
+
     - role: twingate
       tags: [twingate, upgradable]
       when: twingate_managed | default(false)

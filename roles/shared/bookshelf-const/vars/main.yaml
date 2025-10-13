@@ -98,6 +98,9 @@ bookshelf_const_version:    # <- Last update: 2025-10-11
   # => See tailscale versions in the top
   tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   tailscale_alpine: "{{ bookshelf_const_version_shared.alpine }}"
+  # https://github.com/yourok/TorrServer/pkgs/container/torrserver
+  torrserver: MatriX.136
+  torrserver_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/twingate/connector/tags
   twingate: 1.78.0
   # https://hub.docker.com/r/louislam/uptime-kuma/tags?name=alpine
@@ -135,7 +138,7 @@ bookshelf_const_port:
   filebrowser:
     web_ui: 8094
   gatus:
-    web_ui: 8111        # <- Last (8081+)
+    web_ui: 8111
   gotify:
     web_ui: 8085
   hedgedoc:
@@ -184,6 +187,8 @@ bookshelf_const_port:
     web_ui: 8091
     file_transfers: 22000
     local_discovery: 21027
+  torrserver:
+    web_ui: 8112        # <- Last (8081+)
   uptime_kuma:
     web_ui: 8098
   vaultwarden:

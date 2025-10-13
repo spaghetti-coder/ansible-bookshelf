@@ -1185,6 +1185,47 @@ tailscale_health_alpine_version:   # Leave blank to leverage bookshelf configura
 tailscale_health_service_name: "{{ tailscale_service_name }}-health"
 tailscale_health_check_schedule: '*/1 * * * *'   # <- Every minute
 
+# ======================
+#       TORRSERVER
+# ======================
+# Torrent stream server
+#   https://github.com/YouROK/TorrServer
+# -----
+# VERSIONS:
+#   * https://github.com/yourok/TorrServer/pkgs/container/torrserver
+#   * => See tailscale role versions
+# -----
+torrserver_managed: true
+torrserver_enabled: true
+torrserver_version:            # Leave blank to leverage bookshelf configuration
+torrserver_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
+torrserver_owner: "{{ ansible_user_id }}"
+torrserver_conf_dir: ~/conf/torrserver
+torrserver_service_name: torrserver
+torrserver_hostname: "{{ torrserver_service_name }}"
+torrserver_vhost: "{{ torrserver_service_name }}.domain.local"
+torrserver_web_ui_port:        # Leave blank to leverage bookshelf configuration
+# Optional extra env vars, will affect both TorrServer and Tailscale.
+torrserver_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/torrserver.env.j2') }}"
+  # References:
+  #   * https://github.com/YouROK/TorrServer/#docker-compose
+  # ----------
+  # Auth seems to break the server
+  # TS_HTTPAUTH=1   # <- Enable auth. https://github.com/YouROK/TorrServer/#authentication
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+torrserver_web_ui_ports_exposed: true
+# ----------
+# The following settings configure TorrServer to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+torrserver_tailscaled: false
+torrserver_ts_version:   # Leave blank to leverage bookshelf configuration
+torrserver_ts_service_name: "{{ torrserver_service_name }}-ts"
+# Hostname within tailnet
+torrserver_ts_hostname: "{{ torrserver_service_name }}"
+torrserver_ts_auth_key:
+
 # ====================
 #       TWINGATE
 # ====================

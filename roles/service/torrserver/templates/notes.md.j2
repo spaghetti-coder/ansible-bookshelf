@@ -1,0 +1,7 @@
+## TorrServer
+{% if torrserver_tailscaled %}
+
+* Disable tailscale machine expiry:
+  1. Go to https://tailscale.com/admin/machines
+  2. `{{ torrserver_ts_hostname }} *** > Disable key expiry`
+{% endif %}
