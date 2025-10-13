@@ -1,5 +1,7 @@
 ---
 bookshelf_const_version_shared:
+  # https://hub.docker.com/_/alpine
+  alpine: 3.22.2
   # https://hub.docker.com/_/postgres/tags?name=alpine
   postgres: 16.9-alpine3.22
   # NOTE: With version update also update auth key: https://tailscale.com/admin/settings/keys
@@ -95,6 +97,7 @@ bookshelf_const_version:    # <- Last update: 2025-10-11
   syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # => See tailscale versions in the top
   tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  tailscale_alpine: "{{ bookshelf_const_version_shared.alpine }}"
   # https://hub.docker.com/r/twingate/connector/tags
   twingate: 1.78.0
   # https://hub.docker.com/r/louislam/uptime-kuma/tags?name=alpine

@@ -28,6 +28,15 @@
         - main.env
         - secret.env
 
+    - name: Create health scripts
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
+        mode: '0777'
+      loop:
+        - health.init.sh
+        - health.check.sh
+
     - name: Apply service state
       community.docker.docker_compose_v2:
         project_src: "{{ compose_dir }}"

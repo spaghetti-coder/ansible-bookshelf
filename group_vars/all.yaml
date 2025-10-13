@@ -1164,9 +1164,26 @@ tailscale_auth_key:
 # Ex.: '192.168.0.0/24,192.168.2.0/24'
 tailscale_routes:
 tailscale_exit_node: false  # Advertise exit node
+tailscale_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+# Optional extra env vars
 tailscale_extra_env: |      # "{{ lookup('file', playbook_dir + '/resources/tailscale.env') }}"
-  FOO1=bar1
-  FOO2=bar2
+  # These are used in demo gatus.sh healthcheck script.
+  #   https://github.com/TwiN/gatus/#external-endpoints
+  # ----------
+  GATUS_URL=https://gatus.domain.local
+  GATUS_KEY=bookshelf_tailscale   # {GROUP}_{ENDPOINT}
+twingate_secrets_env: |     # "{{ lookup('file', playbook_dir + '/resources/tailscale.secret.env') }}"
+  # Same as extra env, but for secrets
+  # ----------
+  GATUS_TOKEN=changeme
+# ----------
+# The following settings configure healthcheck reporter sidecar container.
+# The container will start if tailscale_health_script not empty.
+# The container is equipped with curl, wget and bash.
+tailscale_health_script:           # "{{ lookup('file', 'gatus.sh') }}"
+tailscale_health_alpine_version:   # Leave blank to leverage bookshelf configuration
+tailscale_health_service_name: "{{ tailscale_service_name }}-health"
+tailscale_health_check_schedule: '*/1 * * * *'   # <- Every minute
 
 # ====================
 #       TWINGATE

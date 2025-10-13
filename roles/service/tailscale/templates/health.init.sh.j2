@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Basic installs and configuration
+apk add --update --no-cache bash curl tzdata wget \
+&& ln -s "/usr/share/zoneinfo/$TZ" /etc/localtime
+
+# Initialize crontab
+echo "{{ tailscale_health_check_schedule }} /bin/health.sh" \
+  | crontab - \
+&& crond -f -L /dev/stdout
