@@ -1321,7 +1321,7 @@ tailscale_extra_env: |      # "{{ lookup('file', playbook_dir + '/resources/tail
   # ----------
   GATUS_URL=https://gatus.domain.local
   GATUS_KEY=bookshelf_tailscale   # {GROUP}_{ENDPOINT}
-twingate_secrets_env: |     # "{{ lookup('file', playbook_dir + '/resources/tailscale.secret.env') }}"
+tailscale_secrets_env: |     # "{{ lookup('file', playbook_dir + '/resources/tailscale.secret.env') }}"
   # Same as extra env, but for secrets
   # ----------
   GATUS_TOKEN=changeme
@@ -1357,7 +1357,7 @@ torrserver_web_ui_port:        # Leave blank to leverage bookshelf configuration
 # Optional extra env vars, will affect both TorrServer and Tailscale.
 torrserver_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/torrserver.env.j2') }}"
   # References:
-  #   * https://github.com/YouROK/TorrServer/#docker-compose
+  #   * https://github.com/YouROK/TorrServer/#environments
   # ----------
   # Auth seems to break the server
   # TS_HTTPAUTH=1   # <- Enable auth. https://github.com/YouROK/TorrServer/#authentication

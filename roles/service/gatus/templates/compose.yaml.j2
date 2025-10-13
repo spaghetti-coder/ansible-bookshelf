@@ -2,15 +2,31 @@
 {% set web_ui_port = gatus_web_ui_port | default(bookshelf_const_port.gatus.web_ui, true) %}
 {% set tailscale_version = gatus_ts_version | default(bookshelf_const_version.gatus_tailscale, true) %}
 ---
+x-tailscale: &tailscale
+  # https://hub.docker.com/r/tailscale/tailscale/tags
+  image: tailscale/tailscale:{{ tailscale_version }}
+  container_name: {{ gatus_ts_service_name }}
+  restart: unless-stopped
+  env_file: &env_file
+    - ./secret.env
+    - ./main.env
+  volumes:
+    - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
+    # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
+    - ./serve.json:/config/serve.json
+  devices:
+    - /dev/net/tun:/dev/net/tun
+  cap_add:
+    - NET_ADMIN
+    - SYS_MODULE
+
 services:
   {{ gatus_service_name }}:
     # https://github.com/twin/gatus/pkgs/container/gatus
     image: ghcr.io/twin/gatus:{{ version }}
     container_name: {{ gatus_service_name }}
     restart: unless-stopped
-    env_file:
-      - secret.env
-      - main.env    # <- Relies on values from secret.env
+    env_file: *env_file
     volumes:
       - '{{ conf_dir }}/config:/data'
       - ./config.yaml:/config/config.yaml
@@ -18,22 +34,7 @@ services:
     network_mode: "service:{{ gatus_ts_service_name }}"
 
   {{ gatus_ts_service_name }}:
-    # https://hub.docker.com/r/tailscale/tailscale/tags
-    image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ gatus_ts_service_name }}
-    restart: unless-stopped
-    env_file:
-      - ./secret.env
-      - ./main.env
-    volumes:
-      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
-      # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
-      - ./serve.json:/config/serve.json
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
+    <<: *tailscale
 {% endif %}{# gatus_tailscaled #}
     hostname: {{ gatus_hostname }}
 {% if gatus_web_ui_ports_exposed %}

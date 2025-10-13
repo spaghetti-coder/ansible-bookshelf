@@ -4,9 +4,8 @@
 ---
 # This one is supposed to work as an exit node
 # and provide access to local network routes
-#
-# https://www.youtube.com/watch?v=QJzjJozAYJo
-# https://www.youtube.com/watch?v=d8FyQKAVJtQ
+#   * https://www.youtube.com/watch?v=QJzjJozAYJo
+#   * https://www.youtube.com/watch?v=d8FyQKAVJtQ
 
 services:
   {{ tailscale_service_name }}:
@@ -21,7 +20,7 @@ services:
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
-    env_file:
+    env_file: &env_file
       - ./secret.env
       - ./main.env
 {% if routed_traffic %}
@@ -38,19 +37,17 @@ services:
     network_mode: bridge
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:9002/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 {% if tailscale_health_script %}
 
   {{ tailscale_health_service_name }}:
-    #
-    # To make this work, set STATIC_CRON_TOKEN in your .env file or as an environment variable
-    # The STATIC_CRON_TOKEN must be *exactly* 32 characters long
-    #
     image: alpine:{{ health_version }}
     container_name: {{ tailscale_health_service_name }}
     restart: unless-stopped
-    env_file:
-      - ./secret.env
-      - ./main.env
+    env_file: *env_file
     volumes:
       - ./health.init.sh:/bin/init.sh:ro
       - ./health.check.sh:/bin/health.sh:ro
