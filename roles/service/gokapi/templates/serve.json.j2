@@ -1,0 +1,7 @@
+{% set proxy = 'http://127.0.0.1:' + (gokapi_web_ui_port_int | string) %}
+{% set funnelled = gokapi_ts_funnelled | ternary('true', 'false') %}
+{
+  "Web": { "${TS_CERT_DOMAIN}:443": { "Handlers": { "/": { "Proxy": "{{ proxy }}" } } } },
+  "TCP": { "443": { "HTTPS": true } },
+  "AllowFunnel": { "${TS_CERT_DOMAIN}:443": {{ funnelled }} }
+}

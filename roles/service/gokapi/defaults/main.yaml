@@ -1,0 +1,43 @@
+---
+# Lightweight selfhosted Firefox Send alternative without public upload. AWS S3 supported.
+#   https://github.com/Forceu/gokapi
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/f0rc3/gokapi/tags
+#   * => See tailscale role versions
+# -----
+gokapi_managed: false
+gokapi_enabled: false
+gokapi_version:            # Leave blank to leverage bookshelf configuration
+gokapi_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
+gokapi_owner: "{{ ansible_user_id }}"
+gokapi_conf_dir: ~/conf/gokapi
+gokapi_service_name: gokapi
+gokapi_hostname: "{{ gokapi_service_name }}"
+gokapi_vhost: "{{ gokapi_service_name }}.domain.local"
+gokapi_web_ui_port:        # Leave blank to leverage bookshelf configuration
+gokapi_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+# Optional extra env vars, will affect both Gokapi and Tailscale.
+gokapi_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/gokapi.env.j2') }}"
+  # References:
+  #   * https://gokapi.readthedocs.io/en/latest/advanced.html#environment-variables
+  # NOTES:
+  #   * Don't use the following variables:
+  #     * DOCKER_NONROOT
+  #     * GOKAPI_PORT
+  # ----------
+  # GOKAPI_CHUNK_SIZE_MB=80
+# ----------
+# Disable if plan to access only via tailnet or reverse-proxy
+gokapi_web_ui_ports_exposed: true
+# ----------
+# The following settings configure Gokapi to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+gokapi_tailscaled: false
+gokapi_ts_version:          # Leave blank to leverage bookshelf configuration
+gokapi_ts_service_name: "{{ gokapi_service_name }}-ts"
+gokapi_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+gokapi_ts_hostname: "{{ gokapi_service_name }}"
+gokapi_ts_auth_key:

@@ -1,0 +1,80 @@
+---
+# Demo tailscaled app. Borrowed from https://github.com/2Tiny2Scale/ScaleTail
+# ----------
+# Also see comments in the bottom of the file
+
+x-tailscale: &tailscale
+  # https://hub.docker.com/r/tailscale/tailscale/tags
+  image: tailscale/tailscale:v1.88.4
+  container_name: gokapi-ts
+  restart: unless-stopped
+  environment:
+    - TS_HOSTNAME=demo-gokapi
+    # - TS_AUTHKEY=${TS_AUTHKEY}              # <- (REQUIRED) Make sure it's defined in secret.env
+    # - TS_ACCEPT_DNS=${TS_ACCEPT_DNS:-false} # <- (OPTIONAL) Set to true in main.env to use MagicDNS
+    - TS_ENABLE_HEALTH_CHECK=true         # Enable "/healthz" endpoint
+    - TS_LOCAL_ADDR_PORT=127.0.0.1:6996   # {ADDR}:{PORT} for the healthz endpoint, ensure PORT doesn't conflict with app internal ports
+    - TS_STATE_DIR=/var/lib/tailscale
+    - TS_SERVE_CONFIG=/config/serve.json  # Tailscale Serve configuration
+    - TS_USERSPACE=false
+  env_file: &env_files
+    - ./secret.env  # <- Make sure file exists
+    - ./main.env    # <- Comment out or make sure file exists, even if empty
+  volumes:
+    - ./serve.json:/config/serve.json     # <- (REQUIRED) See demo in the bottom
+    - ./tailscale:/var/lib/tailscale      # Tailscale requirement
+  devices:
+    - /dev/net/tun:/dev/net/tun
+  cap_add:
+    - NET_ADMIN
+    - SYS_MODULE
+  healthcheck:  # Check Tailscale has a Tailnet IP and is operational
+    test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:6996/healthz"]
+    interval: 1m
+    timeout: 10s
+    retries: 3
+    start_period: 10s
+  network_mode: bridge                    # <- Avoid creating default compose network
+
+services:
+  app:
+    # https://hub.docker.com/r/f0rc3/gokapi/tags
+    image: f0rc3/gokapi:v2.1.0
+    container_name: gokapi
+    restart: unless-stopped
+    environment:
+      - TZ=UTC
+    env_file: *env_files
+    volumes:
+      - gokapi-config:/app/config
+      - gokapi-data:/app/data
+    network_mode: "service:tailscale"     # <- Use tailscale network
+    depends_on:
+      tailscale: { "condition": "service_healthy" }
+
+  tailscale:
+    <<: *tailscale
+    # Application network configuration moved here from app service
+    hostname: gokapi
+    ports:
+      - '53842:53842'                     # <- For the app port
+
+volumes:
+  gokapi-config:
+  gokapi-data:
+
+
+# Demo files section:
+# ~~~~~~~~~~~~~~~~~~
+
+## serve.json
+## ~~~~~~~~~~
+## PORT in Web["${TS_CERT_DOMAIN}:443"].Handlers.Proxy reflects app internal port
+## AllowFunnel["${TS_CERT_DOMAIN}:443"] set to true enables Funnel
+## ~~~~~~~~~~
+## Paste uncommented to serve.json:
+# {
+#   "Web": {"${TS_CERT_DOMAIN}:443": {"Handlers": {"/": {"Proxy": "http://127.0.0.1:53842"}}}},
+#   "TCP": {"443": {"HTTPS": true}},
+#   "AllowFunnel": {"${TS_CERT_DOMAIN}:443": false}
+# }

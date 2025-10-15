@@ -40,6 +40,9 @@ bookshelf_const_version:    # <- Last update: 2025-10-11
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
   filebrowser: v2.44.0-s6
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://hub.docker.com/r/f0rc3/gokapi/tags
+  gokapi: v2.1.0
+  gokapi_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/twin/gatus/pkgs/container/gatus
   gatus: v5.26.0
   gatus_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
@@ -139,6 +142,8 @@ bookshelf_const_port:
     web_ui: 8094
   gatus:
     web_ui: 8111
+  gokapi:
+    web_ui: 8113        # <- Last (8081+)
   gotify:
     web_ui: 8085
   hedgedoc:
@@ -188,7 +193,7 @@ bookshelf_const_port:
     file_transfers: 22000
     local_discovery: 21027
   torrserver:
-    web_ui: 8112        # <- Last (8081+)
+    web_ui: 8112
   uptime_kuma:
     web_ui: 8098
   vaultwarden:

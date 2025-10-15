@@ -1,0 +1,7 @@
+## Gokapi
+{% if gokapi_tailscaled %}
+
+* Disable tailscale machine expiry:
+  1. Go to https://tailscale.com/admin/machines
+  2. `{{ gokapi_ts_hostname }} *** > Disable key expiry`
+{% endif %}

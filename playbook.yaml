@@ -127,6 +127,10 @@
       tags: [gatus, upgradable]
       when: gatus_managed | default(false)
 
+    - role: gokapi
+      tags: [gokapi, upgradable]
+      when: gokapi_managed | default(false)
+
     - role: gotify
       tags: [gotify, upgradable]
       when: gotify_managed | default(false)
