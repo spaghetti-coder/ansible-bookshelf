@@ -1,12 +1,16 @@
 {% set version = jellyfin_version | default(bookshelf_const_version.jellyfin, true) %}
-{% set web_ui_port = jellyfin_web_ui_port | default(bookshelf_const_port.jellyfin.web_ui, true) %}
+{% set web_ui_port = jellyfin_web_ui_port | default(bookshelf_const_port.jellyfin.web_ui, true) | int %}
 {% set data_volumes = (jellyfin_user == jellyfin_owner)
     | ternary(jellyfin_data_volumes, data_volumes_abs) | default([], true) %}
-{% set tailscale_version = jellyfin_tailscale_version | default(bookshelf_const_version.jellyfin_tailscale, true) %}
-{% set tailscale_service = 'jellyfin-tailscale' %}
+{% set ports_exposed = (web_ui_port > -1 or jellyfin_discovery_ports_exposed) %}
 ---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = jellyfin_ts_version | default(bookshelf_const_version.jellyfin_tailscale, true),
+  ts_name = jellyfin_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
 services:
-  jellyfin:
+  app:
     # https://hub.docker.com/r/linuxserver/jellyfin/tags
     image: linuxserver/jellyfin:{{ version }}
     container_name: {{ jellyfin_service_name }}
@@ -18,38 +22,37 @@ services:
 {% for volume in data_volumes %}
       - '{{ volume }}'
 {% endfor %}
-      - '{{ jellyfin_conf_dir }}/config:/config'
+      - '{{ conf_dir }}/config:/config'
     devices:
       # https://github.com/linuxserver/docker-jellyfin#intelatiamd
       - /dev/dri:/dev/dri
 {% if jellyfin_tailscaled %}
-    network_mode: service:{{ tailscale_service }}
+    network_mode: service:tailscale
 
-  {{ tailscale_service }}:
-    # https://hub.docker.com/r/tailscale/tailscale/tags
-    image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ jellyfin_service_name }}-tailscale
-    restart: unless-stopped
-    env_file:
-      - ./secret.env
-      - ./main.env
-    volumes:
-      - '{{ jellyfin_conf_dir }}/tailscale:/var/lib/tailscale'
-      # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
-      - ./serve.json:/config/serve.json
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
+  tailscale:
+    <<: *tailscale
 {% endif %}{# jellyfin_tailscaled #}
     hostname: {{ jellyfin_hostname }}
     # https://jellyfin.org/docs/general/networking/#port-bindings
+{% if ports_exposed %}
     ports:
+{% else %}
+    # ports:
+{% endif %}
+{% if web_ui_port > -1 %}
       - '{{ web_ui_port }}:{{ jellyfin_web_ui_port_int }}'
       # - 8920:8920     # HTTPS traffic, optional
+{% else %}
+    #   - '{{ web_ui_port }}:{{ jellyfin_web_ui_port_int }}'
+    #   - 8920:8920     # HTTPS traffic, optional
+{% endif %}
+{% if jellyfin_discovery_ports_exposed %}
       - '{{ bookshelf_const_port.jellyfin.service_discovery }}:1900/udp' # <- Service discovery, optional
       - '{{ bookshelf_const_port.jellyfin.client_discovery }}:7359/udp' # <- Client discovery, optional
+{% else %}
+    #   - '{{ bookshelf_const_port.jellyfin.service_discovery }}:1900/udp' # <- Service discovery, optional
+    #   - '{{ bookshelf_const_port.jellyfin.client_discovery }}:7359/udp' # <- Client discovery, optional
+{% endif %}{# jellyfin_discovery_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}

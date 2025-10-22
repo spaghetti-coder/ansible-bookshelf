@@ -20,6 +20,7 @@
   become_user: "{{ filebrowser_owner }}"
   vars:
     compose_dir: "{{ filebrowser_compose_dir | default(bookshelf_const_compose_dir + '/filebrowser', true) }}"
+    conf_dir: "{{ filebrowser_conf_dir }}"
     conf_dir_abs: "{{ filebrowser_dirs.results[0].path }}"
     data_dir_abs: "{{ filebrowser_dirs.results[1].path }}"
     service_state: "{{ filebrowser_enabled | ternary('present', 'absent') }}"
@@ -48,7 +49,7 @@
         dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
       loop:
-        - serve.json    # <- Must be first
+        - ts-serve.json    # <- Must be first
         - compose.yaml
         - main.env
         - secret.env

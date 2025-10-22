@@ -28,7 +28,7 @@
         dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
       loop:
-        - serve.json    # <- Must be first
+        - ts-serve.json    # <- Must be first
         - compose.yaml
         - main.env
         - secret.env
@@ -61,7 +61,9 @@
       ansible.builtin.wait_for:
         port: 53
         timeout: 30
-      when: adguard_enabled
+      when:
+        - adguard_enabled
+        - adguard_dns_ports_exposed
 
 - name: Mark done
   ansible.builtin.set_fact:

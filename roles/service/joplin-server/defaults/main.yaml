@@ -16,11 +16,13 @@ joplin_server_conf_dir: ~/conf/joplin-server
 joplin_server_service_name: joplin-server
 joplin_server_hostname: "{{ joplin_server_service_name }}"
 joplin_server_vhost: "{{ joplin_server_service_name }}.domain.local"
-joplin_server_web_ui_port:          # Leave blank to leverage bookshelf configuration
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+joplin_server_web_ui_port:          # Leave blank for bookshelf default, or '-1' to not expose the port
 # Joplin base url. Ex.:
 #   # joplin_server_web_ui_port_ext - contains actual external port
 #   https://{{ joplin_server_vhost }}
 #   http://{{ ansible_default_ipv4.address }}:{{ joplin_server_web_ui_port_ext }}
 joplin_server_base_url:             # (REQUIRED)
+joplin_server_db_service_name: "{{ joplin_server_service_name }}-db"
 joplin_server_db_pass:              # (REQUIRED)
 joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"

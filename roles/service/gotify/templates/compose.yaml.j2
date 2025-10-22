@@ -1,20 +1,37 @@
 {% set version = (gotify_version | default(bookshelf_const_version.gotify, true)) %}
 {% set web_ui_port = (gotify_web_ui_port | default(bookshelf_const_port.gotify.web_ui, true)) %}
 ---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = gotify_ts_version | default(bookshelf_const_version.gotify_tailscale, true),
+  ts_name = gotify_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
 services:
-  gotify:
+  app:
     # https://hub.docker.com/r/gotify/server/tags
     image: gotify/server:{{ version }}
     container_name: {{ gotify_service_name }}
     restart: unless-stopped
     env_file:
+      - ./secret.env
       - ./main.env
     volumes:
-      - '{{ gotify_conf_dir }}/config:/app/data'
+      - '{{ conf_dir }}/config:/app/data'
     user: '{{ user_uid }}:{{ user_gid }}'
+{% if gotify_tailscaled %}
+    network_mode: "service:tailscale"
+
+  tailscale:
+    <<: *tailscale
+{% endif %}{# gotify_tailscaled #}
     hostname: {{ gotify_hostname }}
+{% if web_ui_port | int > -1 %}
     ports:
-      - '{{ web_ui_port }}:80'
+      - '{{ web_ui_port }}:{{ gotify_web_ui_port_int }}'
+{% else %}
+    # ports:
+    #   - '{{ web_ui_port }}:{{ gotify_web_ui_port_int }}'
+{% endif %}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}

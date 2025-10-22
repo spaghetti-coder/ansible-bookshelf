@@ -2,11 +2,14 @@
 {% set web_ui_port = navidrome_web_ui_port | default(bookshelf_const_port.navidrome.web_ui, true) %}
 {% set data_volumes = (navidrome_user == navidrome_owner)
     | ternary(navidrome_data_volumes, data_volumes_abs) | default([], true) %}
-{% set tailscale_version = navidrome_tailscale_version | default(bookshelf_const_version.navidrome_tailscale, true) %}
-{% set tailscale_service = 'navidrome-tailscale' %}
 ---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = navidrome_ts_version | default(bookshelf_const_version.navidrome_tailscale, true),
+  ts_name = navidrome_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
 services:
-  navidrome:
+  app:
     # https://hub.docker.com/r/deluan/navidrome/tags
     image: deluan/navidrome:{{ version }}
     container_name: {{ navidrome_service_name }}
@@ -18,32 +21,22 @@ services:
 {% for volume in data_volumes %}
       - '{{ volume }}'
 {% endfor %}
-      - '{{ navidrome_conf_dir }}/config:/data'
+      - '{{ conf_dir }}/config:/data'
     user: "{{ user_uid }}:{{ user_gid }}"
 {% if navidrome_tailscaled %}
-    network_mode: "service:{{ tailscale_service }}"
+    network_mode: "service:tailscale"
 
-  {{ tailscale_service }}:
-    # https://hub.docker.com/r/tailscale/tailscale/tags
-    image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ navidrome_service_name }}-tailscale
-    restart: unless-stopped
-    env_file:
-      - ./secret.env
-      - ./main.env
-    volumes:
-      - '{{ navidrome_conf_dir }}/tailscale:/var/lib/tailscale'
-      # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
-      - ./serve.json:/config/serve.json
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
+  tailscale:
+    <<: *tailscale
 {% endif %}{# navidrome_tailscaled #}
     hostname: {{ navidrome_hostname }}
+{% if web_ui_port | int > -1 %}
     ports:
       - '{{ web_ui_port }}:{{ navidrome_web_ui_port_int }}'
+{% else %}
+    # ports:
+    #   - '{{ web_ui_port }}:{{ navidrome_web_ui_port_int }}'
+{% endif %}{# navidrome_web_ui_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}

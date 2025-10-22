@@ -25,16 +25,23 @@ filebrowser_data_dir: ~/data
 filebrowser_service_name: filebrowser
 filebrowser_hostname: "{{ filebrowser_service_name }}"
 filebrowser_vhost: "{{ filebrowser_service_name }}.domain.local"
-filebrowser_web_ui_port:    # Leave blank to leverage bookshelf configuration
-filebrowser_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+filebrowser_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
+filebrowser_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both filebrowser and tailscale.
-filebrowser_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/filebrowser.env.j2') }}"
+filebrowser_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/filebrowser.env.j2') }}"
+  # References:
+  #   * FileBrowser is not really configurable via env vars
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
 # ----------
 # The following settings configure FileBrowser to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 filebrowser_tailscaled: false
-filebrowser_tailscale_version:    # Leave blank to leverage bookshelf configuration
+filebrowser_ts_version:           # Leave blank to leverage bookshelf configuration
+filebrowser_ts_service_name: "{{ filebrowser_service_name }}-ts"
+filebrowser_ts_funnelled: false   # Expose to the world via TS funnel. Use with caution
 # Hostname within tailnet
-filebrowser_tailscale_ts_hostname: "{{ filebrowser_service_name }}-tailscale"
-filebrowser_tailscale_auth_key:
+filebrowser_ts_hostname: "{{ filebrowser_service_name }}"
+filebrowser_ts_auth_key:

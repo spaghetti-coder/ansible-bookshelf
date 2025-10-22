@@ -25,17 +25,24 @@ navidrome_data_volumes:     # <- Volumes for data, NOTE: navidrome needs only to
 navidrome_service_name: navidrome
 navidrome_hostname: "{{ navidrome_service_name }}"
 navidrome_vhost: "{{ navidrome_service_name }}.domain.local"
-navidrome_web_ui_port:    # Leave blank to leverage bookshelf configuration
-navidrome_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+navidrome_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
+navidrome_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both navidrome and tailscale.
-# https://www.navidrome.org/docs/usage/configuration-options/#available-options
-navidrome_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/navidrome.env.j2') }}"
+navidrome_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/navidrome.env.j2') }}"
+  # References:
+  #   * https://www.navidrome.org/docs/usage/configuration-options/#available-options
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # ND_ENABLEINSIGHTSCOLLECTOR=true
 # ----------
 # The following settings configure Navidrome to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 navidrome_tailscaled: false
-navidrome_tailscale_version:    # Leave blank to leverage bookshelf configuration
+navidrome_ts_version:           # Leave blank to leverage bookshelf configuration
+navidrome_ts_service_name: "{{ navidrome_service_name }}-ts"
+navidrome_ts_funnelled: false   # Expose to the world via TS funnel. Use with caution
 # Hostname within tailnet
-navidrome_tailscale_ts_hostname: "{{ navidrome_service_name }}-tailscale"
-navidrome_tailscale_auth_key:
+navidrome_ts_hostname: "{{ navidrome_service_name }}"
+navidrome_ts_auth_key:

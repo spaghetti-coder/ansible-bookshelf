@@ -13,8 +13,6 @@
     conf_dir_etc: "{{ olivetin_conf_dir }}/etc"
     service_state: "{{ olivetin_enabled | ternary('present', 'absent') }}"
     scripts_dir: "{{ compose_dir }}/scripts"
-    # Required in both config.yaml and compose.yaml
-    web_ui_port: "{{ olivetin_web_ui_port | default(bookshelf_const_port.olivetin.web_ui, true) }}"
   block:
     - name: Create compose directories
       ansible.builtin.file:

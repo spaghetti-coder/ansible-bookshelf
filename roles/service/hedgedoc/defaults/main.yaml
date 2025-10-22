@@ -18,13 +18,16 @@ hedgedoc_conf_dir: ~/conf/hedgedoc
 hedgedoc_service_name: hedgedoc
 hedgedoc_hostname: "{{ hedgedoc_service_name }}"
 hedgedoc_vhost: "{{ hedgedoc_service_name }}.domain.local"
-hedgedoc_web_ui_port:   # Leave blank to leverage bookshelf configuration
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+hedgedoc_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
 hedgedoc_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # HedgeDoc domain. Ex.: {{ hedgedoc_vhost }} or {{ ansible_default_ipv4.address }}
 hedgedoc_domain:        # (REQUIRED)
-# Optional extra env vars. For reverse proxy configuration see:
-#   https://docs.hedgedoc.org/guides/reverse-proxy/#reverse-proxy-config
+# Optional extra env vars
 hedgedoc_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/hedgedoc.env.j2') }}"
+  # References:
+  #   * https://docs.hedgedoc.org/guides/reverse-proxy/#hedgedoc-config
+  # ----------
   # CMD_URL_ADDPORT=false
   # CMD_PROTOCOL_USESSL=true
   # CMD_ALLOW_EMAIL_REGISTER=true   # <- Allow users registration

@@ -1,11 +1,15 @@
-{% set version = (adguard_version | default(bookshelf_const_version.adguard, true)) %}
-{% set web_ui_port = (adguard_web_ui_port | default(bookshelf_const_port.adguard.web_ui, true)) %}
-{% set init_ui_port = (adguard_init_ui_port | default(bookshelf_const_port.adguard.init_ui, true)) %}
-{% set tailscale_version = (adguard_tailscale_version | default(bookshelf_const_version.adguard_tailscale, true)) %}
-{% set tailscale_service = 'adguard-tailscale' %}
+{% set version = adguard_version | default(bookshelf_const_version.adguard, true) %}
+{% set web_ui_port = adguard_web_ui_port | default(bookshelf_const_port.adguard.web_ui, true) | int %}
+{% set init_ui_port = adguard_init_ui_port | default(bookshelf_const_port.adguard.init_ui, true) | int %}
+{% set ports_exposed = (web_ui_port > -1 or init_ui_port > -1 or adguard_dns_ports_exposed) %}
 ---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = adguard_ts_version | default(bookshelf_const_version.adguard_tailscale, true),
+  ts_name = adguard_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
 services:
-  adguard:
+  app:
     # https://hub.docker.com/r/adguard/adguardhome/tags
     image: adguard/adguardhome:{{ version }}
     container_name: {{ adguard_service_name }}
@@ -17,32 +21,28 @@ services:
       - '{{ conf_dir }}/config:/opt/adguardhome/conf'
       - '{{ conf_dir }}/config:/opt/adguardhome/work'
 {% if adguard_tailscaled %}
-    network_mode: "service:{{ tailscale_service }}"
+    network_mode: "service:tailscale"
 
-  {{ tailscale_service }}:
-    # https://hub.docker.com/r/tailscale/tailscale/tags
-    image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ adguard_service_name }}-tailscale
-    restart: unless-stopped
-    env_file:
-      - ./secret.env
-      - ./main.env
-    volumes:
-      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
-      # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
-      - ./serve.json:/config/serve.json
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
+  tailscale:
+    <<: *tailscale
 {% endif %}{# adguard_tailscaled #}
     hostname: "{{ adguard_hostname }}"
+{% if ports_exposed %}
     ports:
+{% else %}
+    # ports:
+{% endif %}
+{% if web_ui_port > -1 %}
+      - '{{ web_ui_port }}:{{ adguard_web_ui_port_int }}/tcp'
+{% endif %}
+{% if init_ui_port > -1 %}
+      - '{{ init_ui_port }}:3000/tcp'
+{% endif%}
+{% if adguard_dns_ports_exposed %}
       - '53:53/udp'
       - '53:53/tcp'
-      - '{{ web_ui_port }}:{{ adguard_web_ui_port_int }}/tcp'
-      - '{{ init_ui_port }}:3000/tcp'
+{% endif %}
+      # Available in container, but can't be configured within the role:
       # - '67:67/udp'
       # - '68:68/udp'
       # - '443:443/udp'

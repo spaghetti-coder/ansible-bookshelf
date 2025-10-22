@@ -1,30 +1,17 @@
 {% set version = (blinko_version | default(bookshelf_const_version.blinko, true)) %}
-{% set postgres_version = (blinko_postgres_version | default(bookshelf_const_version.blinko_postgres, true)) %}
 {% set web_ui_port = (blinko_web_ui_port | default(bookshelf_const_port.blinko.web_ui, true)) %}
-{% set tailscale_version = (blinko_tailscale_version | default(bookshelf_const_version.blinko_tailscale, true)) %}
-{% set tailscale_service = (blinko_service_name + '-tailscale') %}
-{% set self_net = 'blinko' %}
 ---
-services:
-  {{ blinko_db_service }}:
-    # https://hub.docker.com/_/postgres/tags?name=alpine
-    image: postgres:{{ postgres_version }}
-    container_name: {{ blinko_db_service }}
-    restart: unless-stopped
-    env_file:
-      - secret.env
-      - main.env    # <- Relies on values from secret.env
-    volumes:
-      - '{{ conf_dir }}/db:/var/lib/postgresql/data'
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 10s
-      retries: 5
-    networks:
-      - {{ self_net }}
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = blinko_ts_version | default(bookshelf_const_version.blinko_tailscale, true),
+  ts_name = blinko_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+{{ lookup('template', './../../postgres/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  pg_version = blinko_postgres_version | default(bookshelf_const_version.blinko_postgres, true),
+  pg_name = blinko_db_service_name, pg_conf_dir = conf_dir + '/db', pg_net = blinko_service_name
+)) }}
 
-  blinko:
+services:
+  app:
     # https://hub.docker.com/r/blinkospace/blinko/tags
     image: blinkospace/blinko:{{ version }}
     container_name: {{ blinko_service_name }}
@@ -46,35 +33,25 @@ services:
       retries: 5
       start_period: 30s
     depends_on:
-      {{ blinko_db_service }}:
+      db:
         condition: service_healthy
         restart: true
 {% if blinko_tailscaled %}
-    network_mode: "service:{{ tailscale_service }}"
+    network_mode: "service:tailscale"
 
-  {{ tailscale_service }}:
-    # https://hub.docker.com/r/tailscale/tailscale/tags
-    image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ tailscale_service }}
-    restart: unless-stopped
-    env_file:
-      - ./secret.env
-      - ./main.env
-    volumes:
-      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
-      # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
-      - ./serve.json:/config/serve.json
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
+  tailscale:
+    <<: *tailscale
 {% endif %}{# blinko_tailscaled #}
     hostname: {{ blinko_hostname }}
+{% if web_ui_port | int > -1 %}
     ports:
       - "{{ web_ui_port }}:{{ blinko_web_ui_port_int }}"
+{% else %}
+    # ports:
+    #   - "{{ web_ui_port }}:{{ blinko_web_ui_port_int }}"
+{% endif %}
     networks:
-      - {{ self_net }}
+      - {{ blinko_service_name }}
 {% if (nginx_proxy_enabled | default(false)) %}
       - {{ nginx_proxy_net }}
     environment:
@@ -82,9 +59,11 @@ services:
       - VIRTUAL_PORT={{ blinko_web_ui_port_int }}
 {% endif %}{# nginx_proxy_enabled #}
 
+  db: *postgres
+
 networks:
-  {{ self_net }}:
-    name: {{ self_net }}
+  {{ blinko_service_name }}:
+    name: {{ blinko_service_name }}
 {% if (nginx_proxy_enabled | default(false)) %}
   {{ nginx_proxy_net }}:
     external: true

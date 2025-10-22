@@ -16,8 +16,9 @@ gatus_conf_dir: ~/conf/gatus
 gatus_service_name: gatus
 gatus_hostname: "{{ gatus_service_name }}"
 gatus_vhost: "{{ gatus_service_name }}.domain.local"
-gatus_web_ui_port:        # Leave blank to leverage bookshelf configuration
-gatus_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+gatus_web_ui_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
+gatus_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 gatus_config: "{{ lookup('file', 'demo.yaml') }}"   # <- (REQUIRED) Replace with yours
 # Optional extra env vars, will affect both Gatus and Tailscale.
 gatus_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/gatus.env.j2') }}"
@@ -29,15 +30,13 @@ gatus_secrets_env: |      # "{{ lookup('template', playbook_dir + '/resources/ga
   # ----------
   # SOME_SECRET_VAR=some-secret
 # ----------
-# Disable if plan to access only via tailnet or reverse-proxy
-gatus_web_ui_ports_exposed: true
-# ----------
 # The following settings configure Gatus to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 gatus_tailscaled: false
-gatus_ts_version:   # Leave blank to leverage bookshelf configuration
+gatus_ts_version:           # Leave blank to leverage bookshelf configuration
 gatus_ts_service_name: "{{ gatus_service_name }}-ts"
+gatus_ts_funnelled: false   # Expose to the world via TS funnel. Use with caution
 # Hostname within tailnet
 gatus_ts_hostname: "{{ gatus_service_name }}"
 gatus_ts_auth_key:

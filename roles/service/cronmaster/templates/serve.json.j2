@@ -1,7 +1,0 @@
-{% set proxy = 'http://127.0.0.1:' + (cronmaster_web_ui_port_int | string) %}
-{% set https_port = '443' %}
-{
-  "Web": { "${TS_CERT_DOMAIN}:443": { "Handlers": { "/": { "Proxy": "{{ proxy }}" } } } },
-  "TCP": { "{{ https_port }}": { "HTTPS": true } },
-  "AllowFunnel": { "${TS_CERT_DOMAIN}:{{ https_port }}": false }
-}

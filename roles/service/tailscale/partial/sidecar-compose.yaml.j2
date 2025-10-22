@@ -1,0 +1,40 @@
+{#
+# Borrowed from https://github.com/2Tiny2Scale/ScaleTail
+
+# USAGE:
+# -----
+{{ lookup('template', playbook_dir + '/roles/service/tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = <TS_IMAGE_VERSION>, ts_name = <SERVICE_NAME>, ts_conf_dir = <TS_CONF_DIR>
+)) }}
+
+services:
+  app:
+    # ...
+    network_mode: "service:tailscale"
+  tailscale:
+    <<: *tailscale  # <- Brought by the partial
+
+#}
+x-tailscale: &tailscale
+  # https://hub.docker.com/r/tailscale/tailscale/tags
+  image: tailscale/tailscale:{{ ts_version }}
+  container_name: {{ ts_name }}
+  restart: unless-stopped
+  env_file:
+    - ./secret.env
+    - ./main.env
+  volumes:
+    - '{{ ts_conf_dir }}:/var/lib/tailscale'
+    # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
+    - ./ts-serve.json:/config/serve.json
+  devices:
+    - /dev/net/tun:/dev/net/tun
+  cap_add:
+    - NET_ADMIN
+    - SYS_MODULE
+  healthcheck:  # Check Tailscale has a Tailnet IP and is operational
+    test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:39148/healthz"]
+    interval: 1m
+    timeout: 10s
+    retries: 3
+    start_period: 10s

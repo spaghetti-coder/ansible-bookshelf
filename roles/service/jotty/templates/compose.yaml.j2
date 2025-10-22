@@ -1,0 +1,50 @@
+{% set version = (jotty_version | default(bookshelf_const_version.jotty, true)) %}
+{% set web_ui_port = (jotty_web_ui_port | default(bookshelf_const_port.jotty.web_ui, true)) %}
+---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = jotty_ts_version | default(bookshelf_const_version.jotty_tailscale, true),
+  ts_name = jotty_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
+services:
+  app:
+    # https://github.com/fccview/jotty/pkgs/container/jotty
+    image: ghcr.io/fccview/jotty:{{ version }}
+    container_name: {{ jotty_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./secret.env
+      - ./main.env
+    volumes:
+      - '{{ conf_dir }}/config:/app/data'
+      - '{{ conf_dir }}/cache:/app/.next/cache'
+      # - '{{ jotty_conf_dir }}/config:/app/config'  # <- Theming directory
+    user: '{{ user_uid }}:{{ user_gid }}'
+    # platform: linux/arm64                               # <- Uncomment to use ARM64
+{% if jotty_tailscaled %}
+    network_mode: "service:tailscale"
+
+  tailscale:
+    <<: *tailscale
+{% endif %}{# jotty_tailscaled #}
+    hostname: {{ jotty_hostname }}
+{% if web_ui_port | int > -1 %}
+    ports:
+      - '{{ web_ui_port }}:{{ jotty_web_ui_port_int }}'
+{% else %}
+    # ports:
+    #   - '{{ web_ui_port }}:{{ jotty_web_ui_port_int }}'
+{% endif %}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge    # <- Avoid creating default compose network
+{% else %}
+    environment:
+      - VIRTUAL_HOST={{ jotty_vhost }}
+      - VIRTUAL_PORT={{ jotty_web_ui_port_int }}
+    networks:
+      - {{ nginx_proxy_net }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

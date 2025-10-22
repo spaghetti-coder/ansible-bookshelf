@@ -1,10 +1,13 @@
 {% set version = duplicati_version | default(bookshelf_const_version.duplicati, true) %}
 {% set web_ui_port = duplicati_web_ui_port | default(bookshelf_const_port.duplicati.web_ui, true) %}
-{% set tailscale_version = duplicati_tailscale_version | default(bookshelf_const_version.duplicati_tailscale, true) %}
-{% set tailscale_service = 'duplicati-tailscale' %}
 ---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = duplicati_ts_version | default(bookshelf_const_version.duplicati_tailscale, true),
+  ts_name = duplicati_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
 services:
-  duplicati:
+  app:
     # https://hub.docker.com/r/linuxserver/duplicati/tags?name=-ls
     image: lscr.io/linuxserver/duplicati:{{ version }}
     container_name: {{ duplicati_service_name }}
@@ -21,35 +24,19 @@ services:
 {% endfor %}
       - {{ conf_dir }}/config:/config
 {% if duplicati_tailscaled %}
-    network_mode: "service:{{ tailscale_service }}"
+    network_mode: "service:tailscale"
 
-  {{ tailscale_service }}:
-    # https://hub.docker.com/r/tailscale/tailscale/tags
-    image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ duplicati_service_name }}-tailscale
-    restart: unless-stopped
-    env_file:
-      - ./secret.env
-      - ./main.env
-    volumes:
-      - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
-      # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
-      - ./serve.json:/config/serve.json
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:9002/healthz"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
+  tailscale:
+    <<: *tailscale
 {% endif %}{# duplicati_tailscaled #}
     hostname: {{ duplicati_hostname }}
+{% if web_ui_port | int > -1 %}
     ports:
       - '{{ web_ui_port }}:{{ duplicati_web_ui_port_int }}'
+{% else %}
+    # ports:
+    #   - '{{ web_ui_port }}:{{ duplicati_web_ui_port_int }}'
+{% endif %}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}

@@ -25,13 +25,16 @@ duplicati_data_volumes:                     # <- Mounts for data, at least one e
 duplicati_service_name: duplicati
 duplicati_hostname: "{{ duplicati_service_name }}"
 duplicati_vhost: "{{ duplicati_service_name }}.domain.local"
-duplicati_web_ui_port:    # Leave blank to leverage bookshelf configuration
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+duplicati_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
 duplicati_enc_key:        # (REQUIRED) Min 8 symbols
 duplicati_pass:           # (OPTIONAL)
-duplicati_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+duplicati_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Duplicati and tailscale.
 duplicati_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/duplicati.env.j2') }}"
-  # https://prev-docs.duplicati.com/en/latest/07-other-command-line-utilities/
+  # References:
+  #   * https://prev-docs.duplicati.com/en/latest/07-other-command-line-utilities/
+  #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # CLI_ARGS=--server-datafolder=/root/.config/Duplicati
 # ----------
@@ -39,7 +42,9 @@ duplicati_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/du
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 duplicati_tailscaled: false
-duplicati_tailscale_version:    # Leave blank to leverage bookshelf configuration
+duplicati_ts_version:           # Leave blank to leverage bookshelf configuration
+duplicati_ts_service_name: "{{ duplicati_service_name }}-ts"
+duplicati_ts_funnelled: false   # Expose to the world via TS funnel. Use with caution
 # Hostname within tailnet
-duplicati_tailscale_ts_hostname: "{{ duplicati_service_name }}-tailscale"
-duplicati_tailscale_auth_key:
+duplicati_ts_hostname: "{{ duplicati_service_name }}"
+duplicati_ts_auth_key:

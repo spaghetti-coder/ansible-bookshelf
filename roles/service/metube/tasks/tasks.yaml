@@ -20,6 +20,7 @@
   become_user: "{{ metube_owner }}"
   vars:
     compose_dir: "{{ metube_compose_dir | default(bookshelf_const_compose_dir + '/metube', true) }}"
+    conf_dir: "{{ metube_conf_dir }}"
     conf_dir_abs: "{{ metube_dirs.results[0].path }}"
     data_dir_abs: "{{ metube_dirs.results[1].path }}"
     service_state: "{{ metube_enabled | ternary('present', 'absent') }}"

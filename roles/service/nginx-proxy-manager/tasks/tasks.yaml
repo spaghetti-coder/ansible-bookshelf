@@ -24,14 +24,27 @@
         dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
       loop:
+        - ts-serve.json    # <- Must be first
         - compose.yaml
         - main.env
+        - secret.env
+      register: nginx_proxy_manager_compose_files_result
 
     - name: Apply service state
       community.docker.docker_compose_v2:
         project_src: "{{ compose_dir }}"
         state: "{{ service_state }}"
         remove_orphans: true
+      register: nginx_proxy_manager_service_state
+
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - nginx_proxy_manager_enabled and not nginx_proxy_manager_service_state.changed
+        - nginx_proxy_manager_tailscaled and nginx_proxy_manager_compose_files_result.results[0].changed
 
     - name: Create note
       ansible.builtin.import_role: { name: bookshelf-note }

@@ -1,22 +1,12 @@
 {% set version = (joplin_server_version | default(bookshelf_const_version.joplin_server, true)) %}
-{% set postgres_version = (joplin_server_postgres_version | default(bookshelf_const_version.joplin_server_postgres, true)) %}
-{% set db_service_name = (joplin_server_service_name + '-db') %}
 ---
-services:
-  {{ db_service_name }}:
-    # https://hub.docker.com/_/postgres/tags?name=alpine
-    image: postgres:{{ postgres_version }}
-    container_name: {{ db_service_name }}
-    restart: unless-stopped
-    env_file:
-      - ./secret.env
-      - ./main.env
-    volumes:
-      - {{ joplin_server_conf_dir }}/db:/var/lib/postgresql/data
-    networks:
-      - joplin
+{{ lookup('template', './../../postgres/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  pg_version = joplin_server_postgres_version | default(bookshelf_const_version.joplin_server_postgres, true),
+  pg_name = joplin_server_db_service_name, pg_conf_dir = conf_dir + '/db', pg_net = joplin_server_service_name
+)) }}
 
-  joplin-server:
+services:
+  app:
     # https://hub.docker.com/r/joplin/server/tags
     image: joplin/server:{{ version }}
     container_name: {{ joplin_server_service_name }}
@@ -26,26 +16,35 @@ services:
       - ./secret.env
       - ./main.env
     depends_on:
-      - {{ db_service_name }}
+      db:
+        condition: service_healthy
+        restart: true
+{% if joplin_server_web_ui_port_ext | int > -1 %}
     ports:
       - "{{ joplin_server_web_ui_port_ext }}:{{ joplin_server_web_ui_port_int }}"
+{% else %}
+    # ports:
+    #   - "{{ joplin_server_web_ui_port_ext }}:{{ joplin_server_web_ui_port_int }}"
+{% endif %}
     environment:
       - APP_PORT={{ joplin_server_web_ui_port_int }}
-      - POSTGRES_HOST={{ db_service_name }}
+      - POSTGRES_HOST=db
 {% if not (nginx_proxy_enabled | default(false)) %}
     networks:
-      - joplin
+      - {{ joplin_server_service_name }}
 {% else %}
       - VIRTUAL_HOST={{ joplin_server_vhost }}
       - VIRTUAL_PORT={{ joplin_server_web_ui_port_int }}
     networks:
-      - joplin
+      - {{ joplin_server_service_name }}
       - {{ nginx_proxy_net }}
 {% endif %}{# nginx_proxy_enabled #}
 
+  db: *postgres
+
 networks:
-  joplin:
-    name: joplin
+  {{ joplin_server_service_name }}:
+    name: {{ joplin_server_service_name }}
 {% if (nginx_proxy_enabled | default(false)) %}
   {{ nginx_proxy_net }}:
     external: true

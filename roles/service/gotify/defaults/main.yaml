@@ -2,7 +2,9 @@
 # A simple server for sending and receiving messages
 #   https://gotify.net/
 # -----
-# VERSIONS: https://hub.docker.com/r/gotify/server/tags
+# VERSIONS:
+#   * https://hub.docker.com/r/gotify/server/tags
+#   * => See tailscale role versions
 # -----
 gotify_managed: false
 gotify_enabled: false
@@ -13,5 +15,24 @@ gotify_conf_dir: ~/conf/gotify
 gotify_service_name: gotify
 gotify_hostname: "{{ gotify_service_name }}"
 gotify_vhost: "{{ gotify_service_name }}.domain.local"
-gotify_web_ui_port:   # Leave blank to leverage bookshelf configuration
-gotify_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+gotify_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
+gotify_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+# Optional extra env vars, will affect both Gotify and tailscale.
+gotify_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/gotify.env.j2') }}"
+  # References:
+  #   * https://gotify.net/docs/config#environment-variables
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # GOTIFY_REGISTRATION=false
+# ----------
+# The following settings configure Gotify to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+gotify_tailscaled: false
+gotify_ts_version:           # Leave blank to leverage bookshelf configuration
+gotify_ts_service_name: "{{ gotify_service_name }}-ts"
+gotify_ts_funnelled: false   # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+gotify_ts_hostname: "{{ gotify_service_name }}"
+gotify_ts_auth_key:

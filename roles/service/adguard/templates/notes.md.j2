@@ -3,12 +3,12 @@
 
 * Disable tailscale machine expiry:
   1. Go to https://tailscale.com/admin/machines
-  2. `{{ adguard_tailscale_ts_hostname }} *** > Disable key expiry`
+  2. `{{ adguard_ts_hostname }} *** > Disable key expiry`
 * To make Adguard to be DNS server for all devices in the tailnet:
   1. Go to https://tailscale.com/admin/machines
-  2. Copy `{{ adguard_tailscale_ts_hostname }}` IP
+  2. Copy `{{ adguard_ts_hostname }}` IP
   3. Go to https://tailscale.com/admin/dns
   4. `DNS > Global nameservers`
-  5. Set **Global nameservers** `{{ adguard_tailscale_ts_hostname }}` IP
+  5. Set **Global nameservers** `{{ adguard_ts_hostname }}` IP
   6. (Optionally) Check **Override DNS servers** (for ad blocking)
 {% endif %}

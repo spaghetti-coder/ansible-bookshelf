@@ -21,6 +21,7 @@
   vars:
     compose_dir: "{{ cronmaster_compose_dir | default(bookshelf_const_compose_dir + '/cronmaster', true) }}"
     compose_dir_abs: "{{ cronmaster_dirs.results[1].path }}"
+    conf_dir: "{{ cronmaster_conf_dir }}"
     conf_dir_abs: "{{ cronmaster_dirs.results[0].path }}"
     service_state: "{{ cronmaster_enabled | ternary('present', 'absent') }}"
     the_user: "{{ getent_passwd[cronmaster_owner] }}"
@@ -40,7 +41,7 @@
         dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
       loop:
-        - serve.json    # <- Must be first
+        - ts-serve.json    # <- Must be first
         - compose.yaml
         - main.env
         - secret.env

@@ -12,6 +12,12 @@
 {% else %}
 * Nginx Proxy is not enabled, skip configuration
 {% endif %}{# nginx_proxy_enabled #}
+{% if nginx_proxy_manager_tailscaled %}
+* Disable tailscale machine expiry:
+  1. Go to https://tailscale.com/admin/machines
+  2. `{{ nginx_proxy_manager_ts_hostname }} *** > Disable key expiry`
+{% endif %}
+
 * If Proxmox host is configured via NPM and nginx_proxy_manager_host_net == true, fix SPICE not loaded issue:
   1. `Hosts > Streams > Add ...`
   2.  ...

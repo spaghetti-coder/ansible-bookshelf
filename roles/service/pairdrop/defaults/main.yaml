@@ -18,16 +18,24 @@ pairdrop_conf_dir: ~/conf/pairdrop
 pairdrop_service_name: pairdrop
 pairdrop_hostname: "{{ pairdrop_service_name }}"
 pairdrop_vhost: "{{ pairdrop_service_name }}.domain.local"
-pairdrop_web_ui_port:   # Leave blank to leverage bookshelf configuration
-pairdrop_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+pairdrop_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
+pairdrop_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both PairDrop and tailscale.
-pairdrop_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/pairdrop.env.j2') }}"
+pairdrop_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/pairdrop.env.j2') }}"
+  # References:
+  #   * https://hub.docker.com/r/linuxserver/pairdrop#parameters
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # RATE_LIMIT=true
 # ----------
 # The following settings configure PairDrop to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 pairdrop_tailscaled: false
-pairdrop_tailscale_version:    # Leave blank to leverage bookshelf configuration
+pairdrop_ts_version:          # Leave blank to leverage bookshelf configuration
+pairdrop_ts_service_name: "{{ pairdrop_service_name }}-ts"
+pairdrop_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
 # Hostname within tailnet
-pairdrop_tailscale_ts_hostname: "{{ pairdrop_service_name }}-tailscale"
-pairdrop_tailscale_auth_key:
+pairdrop_ts_hostname: "{{ pairdrop_service_name }}"
+pairdrop_ts_auth_key:

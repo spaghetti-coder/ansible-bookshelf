@@ -19,6 +19,7 @@
   become_user: "{{ gotify_owner }}"
   vars:
     compose_dir: "{{ gotify_compose_dir | default(bookshelf_const_compose_dir + '/gotify', true) }}"
+    conf_dir: "{{ gotify_conf_dir }}"
     conf_dir_abs: "{{ gotify_dirs.results[0].path }}"
     service_state: "{{ gotify_enabled | ternary('present', 'absent') }}"
     the_user: "{{ getent_passwd[gotify_owner] }}"
@@ -38,8 +39,11 @@
         dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
       loop:
+        - ts-serve.json   # <- Must be first
         - compose.yaml
         - main.env
+        - secret.env
+      register: gotify_compose_files_result
 
     - name: Ensure service user directories ownership
       ansible.builtin.file:
@@ -55,6 +59,21 @@
         project_src: "{{ compose_dir }}"
         state: "{{ service_state }}"
         remove_orphans: true
+      register: gotify_service_state
+
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - gotify_enabled and not gotify_service_state.changed
+        - gotify_tailscaled and gotify_compose_files_result.results[0].changed
+
+    - name: Create note
+      ansible.builtin.import_role: { name: bookshelf-note }
+      # noqa: var-naming[no-role-prefix]
+      vars: { src: notes.md.j2, dest: gotify-service.md, present: "{{ gotify_enabled }}" }
 
 - name: Mark done
   ansible.builtin.set_fact:

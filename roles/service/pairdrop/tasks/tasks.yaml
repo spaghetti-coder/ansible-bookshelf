@@ -27,7 +27,7 @@
         dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
       loop:
-        - serve.json    # <- Must be first
+        - ts-serve.json    # <- Must be first
         - compose.yaml
         - main.env
         - secret.env

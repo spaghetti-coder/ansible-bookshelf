@@ -1,0 +1,15 @@
+{#
+
+# USAGE:
+# -----
+{{ lookup('template', './../../tailscale/partial/sidecar-serve.json.j2', template_vars=dict(
+  ts_web_proxy = 'http://127.0.0.1:' + (<SERVICE_INT_WEB_UI_PORT> | string),
+  ts_funnelled = <BOOL_FUNNEL_ENABLED>
+)) | to_nice_json }}
+
+#}
+{
+  "Web": { "${TS_CERT_DOMAIN}:443": { "Handlers": { "/": { "Proxy": "{{ ts_web_proxy }}" } } } },
+  "TCP": { "443": { "HTTPS": true } },
+  "AllowFunnel": { "${TS_CERT_DOMAIN}:443": {{ ts_funnelled | ternary('true', 'false') }} }
+}

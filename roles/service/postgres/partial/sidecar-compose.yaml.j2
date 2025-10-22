@@ -1,0 +1,36 @@
+{#
+
+# USAGE:
+# Requires in env files:
+#   * POSTGRES_DB=<db-name>
+#   * POSTGRES_USER=<db-user>
+#   * POSTGRES_PASSWORD=<db-user-pass>
+# -----
+{{ lookup('template', playbook_dir + '/roles/service/tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  pg_version = <PG_IMAGE_VERSION>, pg_name = <SERVICE_NAME>,
+  pg_conf_dir = <PG_CONF_DIR>, pg_net = <SERVICE_NETWORK>
+)) }}
+
+services:
+  app:
+    # ...
+  db: *postgres  # <- Brought by the partial
+
+#}
+x-postgres: &postgres
+  # https://hub.docker.com/_/postgres/tags?name=alpine
+  image: postgres:{{ pg_version }}
+  container_name: {{ pg_name }}
+  restart: unless-stopped
+  env_file:
+    - secret.env
+    - main.env    # <- Relies on values from secret.env
+  volumes:
+    - '{{ pg_conf_dir }}/db:/var/lib/postgresql/data'
+  healthcheck:
+    test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+    interval: 5s
+    timeout: 10s
+    retries: 5
+  networks:
+    - {{ pg_net }}

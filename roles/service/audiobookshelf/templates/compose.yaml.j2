@@ -2,11 +2,14 @@
 {% set web_ui_port = audiobookshelf_web_ui_port | default(bookshelf_const_port.audiobookshelf.web_ui, true) %}
 {% set data_volumes = (audiobookshelf_user == audiobookshelf_owner)
     | ternary(audiobookshelf_data_volumes, data_volumes_abs) | default([], true) %}
-{% set tailscale_version = audiobookshelf_tailscale_version | default(bookshelf_const_version.audiobookshelf_tailscale, true) %}
-{% set tailscale_service = 'audiobookshelf-tailscale' %}
 ---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = audiobookshelf_ts_version | default(bookshelf_const_version.audiobookshelf_tailscale, true),
+  ts_name = audiobookshelf_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
 services:
-  audiobookshelf:
+  app:
     # https://hub.docker.com/r/advplyr/audiobookshelf/tags
     image: advplyr/audiobookshelf:{{ version }}
     container_name: {{ audiobookshelf_service_name }}
@@ -18,33 +21,23 @@ services:
 {% for volume in data_volumes %}
       - '{{ volume }}'
 {% endfor %}
-      - '{{ audiobookshelf_conf_dir }}/config:/config'
-      - '{{ audiobookshelf_conf_dir }}/config:/metadata'
+      - '{{ conf_dir }}/config:/config'
+      - '{{ conf_dir }}/config:/metadata'
     user: "{{ user_uid }}:{{ user_gid }}"
 {% if audiobookshelf_tailscaled %}
-    network_mode: "service:{{ tailscale_service }}"
+    network_mode: "service:tailscale"
 
-  {{ tailscale_service }}:
-    # https://hub.docker.com/r/tailscale/tailscale/tags
-    image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ audiobookshelf_service_name }}-tailscale
-    restart: unless-stopped
-    env_file:
-      - ./secret.env
-      - ./main.env
-    volumes:
-      - '{{ audiobookshelf_conf_dir }}/tailscale:/var/lib/tailscale'
-      # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
-      - ./serve.json:/config/serve.json
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
+  tailscale:
+    <<: *tailscale
 {% endif %}{# audiobookshelf_tailscaled #}
     hostname: {{ audiobookshelf_hostname }}
+{% if web_ui_port | int > -1 %}
     ports:
       - {{ web_ui_port }}:{{ audiobookshelf_web_ui_port_int }}
+{% else %}
+    # ports:
+    #   - {{ web_ui_port }}:{{ audiobookshelf_web_ui_port_int }}
+{% endif %}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge
 {% else %}

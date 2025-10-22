@@ -24,6 +24,7 @@
   # noqa: jinja[spacing]
   vars:
     compose_dir: "{{ navidrome_compose_dir | default(bookshelf_const_compose_dir + '/navidrome', true) }}"
+    conf_dir: "{{ navidrome_conf_dir }}"
     conf_dir_abs: "{{ navidrome_dirs_create_info.results[0].path }}"
     data_dirs_abs: "{{ navidrome_dirs_create_info.results[1:] | map(attribute='path') }}"
     data_volumes_abs: "{{ data_dirs_abs | zip(
@@ -47,7 +48,7 @@
         dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
       loop:
-        - serve.json    # <- Must be first
+        - ts-serve.json    # <- Must be first
         - compose.yaml
         - main.env
         - secret.env

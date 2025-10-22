@@ -151,6 +151,10 @@
       tags: [joplin-server, upgradable]
       when: joplin_server_managed | default(false)
 
+    - role: jotty
+      tags: [jotty, upgradable]
+      when: jotty_managed | default(false)
+
     - role: mealie
       tags: [mealie, upgradable]
       when: mealie_managed | default(false)
@@ -194,10 +198,6 @@
     - role: qbittorrent
       tags: [qbittorrent, upgradable]
       when: qbittorrent_managed | default(false)
-
-    - role: rwmarkable
-      tags: [rwmarkable, upgradable]
-      when: rwmarkable_managed | default(false)
 
     - role: silverbullet
       tags: [silverbullet, upgradable]

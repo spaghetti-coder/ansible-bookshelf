@@ -1,12 +1,17 @@
 {% set version = (mealie_version | default(bookshelf_const_version.mealie, true)) %}
 {% set web_ui_port = (mealie_web_ui_port | default(bookshelf_const_port.mealie.web_ui, true)) %}
-{% set tailscale_version = (mealie_tailscale_version | default(bookshelf_const_version.mealie_tailscale, true)) %}
-{% set tailscale_service = 'mealie-tailscale' %}
+{% set tailscale_version = (mealie_ts_version | default(bookshelf_const_version.mealie_tailscale, true)) %}
 ---
 # https://www.youtube.com/watch?v=DDzKd9aNFX0
 # https://docs.techdox.nz/mealie/
+
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = mealie_ts_version | default(bookshelf_const_version.mealie_tailscale, true),
+  ts_name = mealie_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
 services:
-  mealie:
+  app:
     # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
     image: ghcr.io/mealie-recipes/mealie:{{ version }}
     container_name: {{ mealie_service_name }}
@@ -14,31 +19,21 @@ services:
     env_file:
       - ./main.env
     volumes:
-      - '{{ mealie_conf_dir }}/config:/app/data'
+      - '{{ conf_dir }}/config:/app/data'
 {% if mealie_tailscaled %}
-    network_mode: service:{{ tailscale_service }}
+    network_mode: service:tailscale
 
-  {{ tailscale_service }}:
-    # https://hub.docker.com/r/tailscale/tailscale/tags
-    image: tailscale/tailscale:{{ tailscale_version }}
-    container_name: {{ mealie_service_name }}-tailscale
-    restart: unless-stopped
-    env_file:
-      - ./secret.env
-      - ./main.env
-    volumes:
-      - '{{ mealie_conf_dir }}/tailscale:/var/lib/tailscale'
-      # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
-      - ./serve.json:/config/serve.json
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
+  tailscale:
+    <<: *tailscale
 {% endif %}{# mealie_tailscaled #}
     hostname: {{ mealie_hostname }}
+{% if web_ui_port | int > -1 %}
     ports:
       - "{{ web_ui_port }}:{{ mealie_web_ui_port_int }}"
+{% else %}
+    # ports:
+    #   - "{{ web_ui_port }}:{{ mealie_web_ui_port_int }}"
+{% endif %}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}

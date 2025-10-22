@@ -1,11 +1,17 @@
 {% set version = (nginx_proxy_manager_version | default(bookshelf_const_version.nginx_proxy_manager, true)) %}
-{% set web_ui_port = (nginx_proxy_manager_web_ui_port | default(bookshelf_const_port.nginx_proxy_manager.web_ui, true)) %}
-{% set http_port = (nginx_proxy_manager_http_port | default(bookshelf_const_port.nginx_proxy_manager.http, true)) %}
-{% set https_port = (nginx_proxy_manager_https_port | default(bookshelf_const_port.nginx_proxy_manager.https, true)) %}
+{% set web_ui_port = (nginx_proxy_manager_web_ui_port | default(bookshelf_const_port.nginx_proxy_manager.web_ui, true)) | int %}
+{% set http_port = (nginx_proxy_manager_http_port | default(bookshelf_const_port.nginx_proxy_manager.http, true)) | int %}
+{% set https_port = (nginx_proxy_manager_https_port | default(bookshelf_const_port.nginx_proxy_manager.https, true)) | int %}
 {% set proxy_enabled = (nginx_proxy_enabled | default(false)) %}
+{% set ports_enabled = (web_ui_port > -1 or http_port > -1 or https_port > -1) %}
 ---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = nginx_proxy_manager_ts_version | default(bookshelf_const_version.nginx_proxy_manager_tailscale, true),
+  ts_name = nginx_proxy_manager_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
 services:
-  nginx-proxy-manager:
+  app:
     # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
     image: jc21/nginx-proxy-manager:{{ version }}
     container_name: "{{ nginx_proxy_manager_service_name }}"
@@ -14,7 +20,14 @@ services:
       - "{{ conf_dir }}/data:/data"
       - "{{ conf_dir }}/letsencrypt:/etc/letsencrypt"
     env_file:
+      - ./secret.env
       - ./main.env
+{% if nginx_proxy_manager_tailscaled %}
+    network_mode: "service:tailscale"
+
+  tailscale:
+    <<: *tailscale
+{% endif %}{# nginx_proxy_manager_tailscaled #}
     hostname: "{{ nginx_proxy_manager_hostname }}"
 {% if nginx_proxy_manager_host_net %}
     network_mode: host          # <- Allows adding Stream ports without editting compose file
@@ -25,17 +38,21 @@ services:
 {% else %}
     network_mode: bridge
 {% endif %}{# proxy_enabled #}
+{% if ports_enabled %}
     ports:
-      - '{{ web_ui_port }}:81'  # Web UI port
-{% if http_port | int > -1 %}
+{% if web_ui_port > -1 %}
+      - '{{ web_ui_port }}:{{ nginx_proxy_manager_web_ui_port_int }}'  # Web UI port
+{% endif %}
+{% if http_port > -1 %}
       - '{{ http_port }}:80'     # HTTP Port
 {% endif %}
-{% if https_port | int > -1 %}
+{% if https_port > -1 %}
       - '{{ https_port }}:443'    # HTTPS Port
 {% endif %}
       # Add any other Stream port you want to expose
       # - '21:21'               # FTP
 {% endif %}{# nginx_proxy_manager_host_net #}
+{% endif %}{# ports_enabled #}
 {% if proxy_enabled %}
     environment:
       # Meta data for nginx-proxy

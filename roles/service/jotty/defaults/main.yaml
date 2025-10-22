@@ -1,0 +1,36 @@
+---
+# A simple, self-hosted app for your checklists and notes.
+#   https://jotty.page/
+# -----
+# VERSIONS:
+#   * https://github.com/fccview/jotty/pkgs/container/jotty
+#   * => See tailscale role versions
+# -----
+jotty_managed: false
+jotty_enabled: false
+jotty_version:            # Leave blank to leverage bookshelf configuration
+jotty_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
+jotty_owner: "{{ ansible_user_id }}"
+jotty_conf_dir: ~/conf/jotty
+jotty_service_name: jotty
+jotty_hostname: "{{ jotty_service_name }}"
+jotty_vhost: "{{ jotty_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+jotty_web_ui_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
+# Optional extra env vars, will affect both Jotty and Tailscale.
+jotty_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/jotty.env.j2') }}"
+  # References:
+  #   * https://github.com/fccview/jotty/blob/main/howto/DOCKER.md#environment-variables
+  # ----------
+  # SERVE_PUBLIC_IMAGES=yes
+# ----------
+# The following settings configure Jotty to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+jotty_tailscaled: false
+jotty_ts_version:          # Leave blank to leverage bookshelf configuration
+jotty_ts_service_name: "{{ jotty_service_name }}-ts"
+jotty_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+jotty_ts_hostname: "{{ jotty_service_name }}"
+jotty_ts_auth_key:
