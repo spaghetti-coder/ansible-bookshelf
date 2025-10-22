@@ -13,14 +13,14 @@ x-tailscale: &tailscale
   volumes:
     - '{{ conf_dir }}/tailscale:/var/lib/tailscale'
     # Demo: https://github.com/tailscale-dev/video-code-snippets/blob/main/2025-06-mealie/serve.json
-    - ./serve.json:/config/serve.json
+    - ./ts-serve.json:/config/serve.json
   devices:
     - /dev/net/tun:/dev/net/tun
   cap_add:
     - NET_ADMIN
     - SYS_MODULE
   healthcheck:  # Check Tailscale has a Tailnet IP and is operational
-    test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:6996/healthz"]
+    test: ["CMD", "wget", "--spider", "-q", "http://{{ gokapi_ts_local_addr_port }}/healthz"]
     interval: 1m
     timeout: 10s
     retries: 3
