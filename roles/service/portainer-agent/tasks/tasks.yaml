@@ -8,6 +8,7 @@
   become_user: "{{ portainer_agent_owner }}"
   vars:
     compose_dir: "{{ portainer_agent_compose_dir | default(bookshelf_const_compose_dir + '/portainer-agent', true) }}"
+    conf_dir: "{{ portainer_agent_conf_dir }}"
     service_state: "{{ portainer_agent_enabled | ternary('present', 'absent') }}"
   block:
     - name: Create compose directories
@@ -15,25 +16,40 @@
         path: "{{ item }}"
         state: directory
         mode: '0700'
-      loop: ["{{ compose_dir }}"]
+      loop: ["{{ compose_dir }}", "{{ conf_dir }}"]
 
     - name: Create compose files
       ansible.builtin.template:
         src: "{{ item }}.j2"
         dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
-      loop: [compose.yaml]
+      loop:
+        - ts-serve.json    # <- Must be first
+        - compose.yaml
+        - main.env
+        - secret.env
+      register: portainer_agent_compose_files_result
 
     - name: Apply service state
       community.docker.docker_compose_v2:
         project_src: "{{ compose_dir }}"
         state: "{{ service_state }}"
         remove_orphans: true
+      register: portainer_agent_service_state
+
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - portainer_agent_enabled and not portainer_agent_service_state.changed
+        - portainer_agent_tailscaled and portainer_agent_compose_files_result.results[0].changed
 
     - name: Create note
       ansible.builtin.import_role: { name: bookshelf-note }
       # noqa: var-naming[no-role-prefix]
-      vars: { src: notes.md, dest: portainer-agent-service.md, present: "{{ portainer_agent_enabled }}" }
+      vars: { src: notes.md.j2, dest: portainer-agent-service.md, present: "{{ portainer_agent_enabled }}" }
 
 - name: Mark done
   ansible.builtin.set_fact:

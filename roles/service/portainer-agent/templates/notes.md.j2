@@ -1,0 +1,11 @@
+## Portainer agent
+
+* Setup:
+  `Portainer Master > Environment > Docker Standalone > Start Wizard`  
+  Sources:
+    * [Video 1](https://www.youtube.com/watch?v=iX0HbrfRyvc)
+{% if portainer_agent_tailscaled %}
+* Disable tailscale machine expiry:
+  1. Go to https://tailscale.com/admin/machines
+  2. `{{ portainer_agent_ts_hostname }} *** > Disable key expiry`
+{% endif %}
