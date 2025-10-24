@@ -5,7 +5,7 @@
 ---
 services:
   uptime-kuma:
-    # https://hub.docker.com/r/louislam/uptime-kuma/tags?name=alpine
+    # https://hub.docker.com/r/louislam/uptime-kuma/tags
     image: louislam/uptime-kuma:{{ version }}
     container_name: {{ uptime_kuma_service_name }}
     restart: unless-stopped

@@ -1619,7 +1619,7 @@ twingate_extra_env:       # "{{ lookup('file', playbook_dir + '/resources/twinga
 #   https://github.com/louislam/uptime-kuma
 # -----
 # VERSIONS:
-#   * https://hub.docker.com/r/louislam/uptime-kuma/tags?name=alpine
+#   * https://hub.docker.com/r/louislam/uptime-kuma/tags
 #   * => See tailscale role versions
 # -----
 uptime_kuma_managed: false

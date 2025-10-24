@@ -47,3 +47,6 @@
 
 **`service/wg-easy`**:
   * `navidrome_extra_dir` is changed to `navidrome_extra_mounts`
+
+**`service/uptime-kuma`**:
+  * default bookshelf version is changed from 1.* to 2.*. Apart from that no changes in the role. See the github page on how to migrate
