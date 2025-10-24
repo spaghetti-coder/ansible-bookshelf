@@ -1,31 +1,50 @@
-{% set version = (portainer_version | default(bookshelf_const_version.portainer, true)) %}
-{% set web_ui_port = (portainer_web_ui_port | default(bookshelf_const_port.portainer.web_ui, true)) %}
-{% set tunnel_port = bookshelf_const_port.portainer.tunnel %}
+{% set version = portainer_version | default(bookshelf_const_version.portainer, true) %}
+{% set web_ui_port = portainer_web_ui_port | default(bookshelf_const_port.portainer.web_ui, true) | int %}
+{% set tunnel_port = bookshelf_const_port.portainer.tunnel | int %}
+{% set ports_exposed = (web_ui_port > -1 or portainer_expose_ssh_tunnel_port) %}
 ---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = portainer_ts_version | default(bookshelf_const_version.portainer_tailscale, true),
+  ts_name = portainer_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
 services:
-  portainer:
+  app:
     # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
     image: portainer/portainer-ce:{{ version }}
     container_name: {{ portainer_service_name }}
     restart: unless-stopped
+    env_file:
+      - ./secret.env
+      - ./main.env
     volumes:
       - '{{ conf_dir }}/config:/data'
       - '/var/run/docker.sock:/var/run/docker.sock'
+{% if portainer_tailscaled %}
+    network_mode: "service:tailscale"
+
+  tailscale:
+    <<: *tailscale
+{% endif %}{# portainer_tailscaled #}
     hostname: {{ portainer_hostname }}
+{% if ports_exposed %}
     ports:
-      - '{{ web_ui_port }}:9443'
-{% if portainer_agent_ready %}
+{% if web_ui_port > -1 %}
+      - '{{ web_ui_port }}:{{ portainer_web_ui_port_int }}'
+{% endif %}
+{% if portainer_expose_ssh_tunnel_port %}
       # SSH tunnel server, used to create a secure tunnel between
       # the agent and the Portainer instance.
       - '{{ tunnel_port }}:8000'
 {% endif %}
+{% endif %}{# ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}
     environment:
       VIRTUAL_HOST: {{ portainer_vhost }}
       # https://docs.portainer.io/advanced/reverse-proxy/nginx
-      VIRTUAL_PORT: 9443
+      VIRTUAL_PORT: {{ portainer_web_ui_port_int }}
       VIRTUAL_PROTO: https
     networks:
       - {{ nginx_proxy_net }}

@@ -8,7 +8,7 @@
 
 services:
   app:
-    # https://github.com/fccview/jotty/pkgs/container/jotty
+    # https://github.com/fccview/jotty/pkgsroles/service/jotty/templates/ts-serve.json.j2/container/jotty
     image: ghcr.io/fccview/jotty:{{ version }}
     container_name: {{ jotty_service_name }}
     restart: unless-stopped

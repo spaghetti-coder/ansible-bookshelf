@@ -1123,9 +1123,23 @@ portainer_conf_dir: ~/conf/portainer
 portainer_service_name: portainer
 portainer_hostname: "{{ portainer_service_name }}"
 portainer_vhost: "{{ portainer_service_name }}.domain.local"
-portainer_web_ui_port:    # Leave blank to leverage bookshelf configuration
-# Publish ssh tunnel server port
-portainer_agent_ready: true
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+portainer_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
+# Expose port for agents
+portainer_expose_ssh_tunnel_port: false
+# Optional extra env vars, will affect both Portainer and Tailscale.
+portainer_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/portainer.env.j2') }}"
+# ----------
+# The following settings configure Portainer to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+portainer_tailscaled: false
+portainer_ts_version:          # Leave blank to leverage bookshelf configuration
+portainer_ts_service_name: "{{ portainer_service_name }}-ts"
+portainer_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+portainer_ts_hostname: "{{ portainer_service_name }}"
+portainer_ts_auth_key:
 
 # =======================
 #       QBITTORRENT
