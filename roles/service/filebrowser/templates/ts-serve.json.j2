@@ -1,4 +1,4 @@
 {{ lookup('template', './../../tailscale/partial/sidecar-serve.json.j2', template_vars=dict(
   ts_web_proxy = 'http://127.0.0.1:' + (filebrowser_web_ui_port_int | string),
   ts_funnelled = filebrowser_ts_funnelled
-)) | to_nice_json }}
+)) }}

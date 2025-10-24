@@ -37,7 +37,7 @@ services:
       - SYS_MODULE
 {% endif %}{# torrserver_tailscaled #}
     hostname: {{ torrserver_hostname }}
-{% if gatus_web_ui_ports_exposed %}
+{% if torrserver_web_ui_ports_exposed %}
     ports:
       - '{{ web_ui_port }}:{{ torrserver_web_ui_port_int }}'
 {% else %}
