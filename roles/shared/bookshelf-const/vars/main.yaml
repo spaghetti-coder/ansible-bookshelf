@@ -82,7 +82,7 @@ bookshelf_const_version:    # <- Last update: 2025-10-25
   nginx_proxy_manager: 2.12.6
   nginx_proxy_manager_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/jamesread/olivetin/tags
-  olivetin: 3000.0.1
+  olivetin: 3000.1.2
   # https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
   pairdrop: v1.11.2-ls124
   pairdrop_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
