@@ -50,7 +50,7 @@
     - name: Restore public key
       ansible.builtin.shell:
         cmd: ssh-keygen -y -f {{ private_file }} > {{ public_file }}
-      changed_when: omit
+      changed_when: true
       when:
         - public_key | default('') | length < 1
         - bookshelf_ssh_key_bundle_private_state.changed
