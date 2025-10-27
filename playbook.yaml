@@ -358,3 +358,15 @@
     - role: whatsie
       tags: [whatsie]
       when: whatsie_managed | default(false)
+
+- name: DevBook
+  tags: [dev]
+  hosts: all
+  roles:
+    - role: golang
+      tags: [golang]
+      when: golang_managed | default(false)
+
+    - role: nodejs
+      tags: [nodejs]
+      when: nodejs_managed | default(false)

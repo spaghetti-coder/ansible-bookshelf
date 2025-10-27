@@ -1,0 +1,8 @@
+---
+- name: Load install
+  ansible.builtin.include_tasks:
+    file: install.{{ factum_os_like }}-like.yaml
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    nodejs_done: true

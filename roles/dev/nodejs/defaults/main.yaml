@@ -1,0 +1,9 @@
+---
+# NOTE:
+#   For Ubuntu see notes in snap role
+# ----------
+nodejs_managed: false   # "{{ factum_os_like in ['ubuntu', 'alpine'] }}"  # <- Only supported by these
+# Versions (better pick latest LTS) and channels lists:
+#   * https://nodejs.org/en/about/previous-releases#looking-for-the-latest-release-of-a-version-branch
+#   * https://snapcraft.io/node
+nodejs_snap_channel:    # Only applicable for Ubuntu. Leave blank to leverage bookshelf defaults

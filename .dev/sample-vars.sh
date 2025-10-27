@@ -4,7 +4,7 @@
 
 sample_vars_conf() {
   `# Relative to the project directory paths to roles`
-  ROLES_PATHS=(./roles/base ./roles/service ./roles/desktop)
+  ROLES_PATHS=(./roles/base ./roles/service ./roles/desktop ./roles/dev)
 }
 
 sample_vars() (

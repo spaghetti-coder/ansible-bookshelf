@@ -196,6 +196,11 @@ ps1_git_users:    # <- Existing users to have this PS1
 # =================
 #       SNAPD
 # =================
+# NOTE:
+#   Snap packages installation is not really supported in
+#   OpenVZ containers (https://askubuntu.com/a/1340844). Although
+#   snapd gets installed fine.
+# ----------
 snapd_managed: false  # "{{ factum_os_like in ['ubuntu'] }}"  # <- Only supported by Ubuntu like
 
 # ============================
@@ -2099,3 +2104,26 @@ whatsie_managed: false
 # * flatpak   # <- Forced for non-Ubuntu-like
 # * snap
 whatsie_install_method: flatpak
+
+
+
+#######################
+###       DEV       ###
+#######################
+
+# ==================
+#       GOLANG
+# ==================
+golang_managed: false   # "{{ factum_os_like in ['ubuntu'] }}"  # <- Only supported by Ubuntu like
+
+# ==================
+#       NODEJS
+# ==================
+# NOTE:
+#   For Ubuntu see notes in snap role
+# ----------
+nodejs_managed: false   # "{{ factum_os_like in ['ubuntu', 'alpine'] }}"  # <- Only supported by these
+# Versions (better pick latest LTS) and channels lists:
+#   * https://nodejs.org/en/about/previous-releases#looking-for-the-latest-release-of-a-version-branch
+#   * https://snapcraft.io/node
+nodejs_snap_channel:    # Only applicable for Ubuntu. Leave blank to leverage bookshelf defaults

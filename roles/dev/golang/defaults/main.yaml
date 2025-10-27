@@ -1,0 +1,2 @@
+---
+golang_managed: false   # "{{ factum_os_like in ['ubuntu'] }}"  # <- Only supported by Ubuntu like

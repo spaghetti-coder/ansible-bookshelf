@@ -1,0 +1,12 @@
+---
+# https://www.youtube.com/watch?v=GfpzxQMfEJA
+
+- name: Snapd
+  ansible.builtin.import_role: { name: snapd }
+
+- name: Install
+  community.general.snap:
+    name: node
+    classic: true
+    channel: "{{ nodejs_snap_channel | default(bookshelf_const_version.nodejs_snap_channel, true) }}"
+  become: true

@@ -1,0 +1,15 @@
+---
+- name: Load install repo
+  ansible.builtin.include_tasks:
+    file: repo.{{ factum_os_like }}-like.yaml
+  when: factum_os_like in ["ubuntu"]
+
+- name: Install
+  ansible.builtin.package:
+    name: golang-go
+    state: "{{ (golang_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
+  become: true
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    golang_done: true

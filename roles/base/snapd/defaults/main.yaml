@@ -1,2 +1,7 @@
 ---
+# NOTE:
+#   Snap packages installation is not really supported in
+#   OpenVZ containers (https://askubuntu.com/a/1340844). Although
+#   snapd gets installed fine.
+# ----------
 snapd_managed: false  # "{{ factum_os_like in ['ubuntu'] }}"  # <- Only supported by Ubuntu like

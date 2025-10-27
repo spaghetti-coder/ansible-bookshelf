@@ -6,11 +6,11 @@ collections:
 
   # https://galaxy.ansible.com/ui/repo/published/community/docker/
   - name: community.docker
-    version: 4.7.0
+    version: 4.8.2
 
   # https://galaxy.ansible.com/ui/repo/published/community/general/
   - name: community.general
-    version: 11.2.1
+    version: 11.4.0
 
   # # https://galaxy.ansible.com/ui/repo/published/community/mysql/
   # - name: community.mysql

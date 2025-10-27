@@ -16,6 +16,10 @@ bookshelf_const_version:    # <- Last update: 2025-10-25
   age: v1.2.1
   # https://github.com/junegunn/fzf/releases
   fzf: '0.66.0'
+  # Versions (better pick latest LTS) and channels lists:
+  # * https://nodejs.org/en/about/previous-releases#looking-for-the-latest-release-of-a-version-branch
+  # * https://snapcraft.io/node
+  nodejs_snap_channel: 22/stable
   #
   # SERVICE
   #
