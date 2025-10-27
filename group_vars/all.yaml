@@ -416,7 +416,7 @@ code_server_user_conf:      # "{{ lookup('template', 'sane.json.j2') }}"
 #   * https://github.com/fccview/cronmaster/pkgs/container/cronmaster
 #   * => See tailscale role versions
 # -----
-cronmaster_managed: true
+cronmaster_managed: "{{ factum_os_family in ['alpine'] }}"
 cronmaster_enabled: true
 cronmaster_version:             # Leave blank to leverage bookshelf configuration
 cronmaster_compose_dir:         # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -467,7 +467,7 @@ cronmaster_ts_auth_key:
 #   * https://hub.docker.com/r/linuxserver/duplicati/tags?name=-ls
 #   * => See tailscale role versions
 # -----
-duplicati_managed: true
+duplicati_managed: "{{ factum_os_family in ['alpine'] }}"
 duplicati_enabled: true
 duplicati_version:        # Leave blank to leverage bookshelf configuration
 duplicati_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -559,7 +559,7 @@ filebrowser_ts_auth_key:
 #   * https://hub.docker.com/_/postgres/tags?name=alpine
 #   * => See tailscale role versions
 # -----
-gatus_managed: true
+gatus_managed: "{{ factum_os_family in ['alpine'] }}"
 gatus_enabled: true
 gatus_version:            # Leave blank to leverage bookshelf configuration
 gatus_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -603,7 +603,7 @@ gatus_ts_auth_key:
 #   * https://hub.docker.com/r/f0rc3/gokapi/tags
 #   * => See tailscale role versions
 # -----
-gokapi_managed: true
+gokapi_managed: "{{ factum_os_family in ['alpine'] }}"
 gokapi_enabled: true
 gokapi_version:            # Leave blank to leverage bookshelf configuration
 gokapi_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -642,7 +642,7 @@ gokapi_ts_auth_key:
 # ==================
 # VERSIONS: https://hub.docker.com/r/gotify/server/tags
 # -----
-gotify_managed: "{{ factum_os_family in ['alpine'] }}"
+gotify_managed: false     # <- LOW INTEREST, no testing
 gotify_enabled: true
 gotify_version:       # Leave blank to leverage bookshelf configuration
 gotify_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -683,7 +683,7 @@ gotify_ts_auth_key:
 #     They can be overriden with extra_env
 #   * with restrictions in place users registration with ./bin/manage_users tool.
 # -----
-hedgedoc_managed: "{{ factum_os_family in ['alpine'] }}"
+hedgedoc_managed: false   # <- LOW INTEREST, no testing
 hedgedoc_enabled: true
 hedgedoc_version:       # Leave blank to leverage bookshelf configuration
 hedgedoc_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -780,7 +780,7 @@ jellyfin_ts_auth_key:
 #   * https://hub.docker.com/r/joplin/server/tags
 #   * https://hub.docker.com/_/postgres/tags?name=alpine
 # -----
-joplin_server_managed: "{{ factum_os_family in ['alpine'] }}"
+joplin_server_managed: false    # <- LOW INTEREST, no testing
 joplin_server_enabled: true
 joplin_server_version:              # Leave blank to leverage bookshelf configuration
 joplin_server_postgres_version:     # Leave blank to leverage bookshelf configuration
@@ -808,7 +808,7 @@ joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 #   * https://github.com/fccview/jotty/pkgs/container/jotty
 #   * => See tailscale role versions
 # -----
-jotty_managed: true
+jotty_managed: "{{ factum_os_family in ['alpine'] }}"
 jotty_enabled: true
 jotty_version:            # Leave blank to leverage bookshelf configuration
 jotty_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -1257,7 +1257,7 @@ silverbullet_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/
 #   * https://hub.docker.com/r/rnwood/smtp4dev/tags?name=v
 #   * => See tailscale role versions
 # -----
-smtp4dev_managed: true
+smtp4dev_managed: "{{ factum_os_family in ['alpine'] }}"
 smtp4dev_enabled: true
 smtp4dev_version:       # Leave blank to leverage bookshelf configuration
 smtp4dev_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -1379,7 +1379,7 @@ tailscale_health_check_schedule: '*/1 * * * *'   # <- Every minute
 #   * https://github.com/yourok/TorrServer/pkgs/container/torrserver
 #   * => See tailscale role versions
 # -----
-torrserver_managed: true
+torrserver_managed: "{{ factum_os_family in ['alpine'] }}"
 torrserver_enabled: true
 torrserver_version:            # Leave blank to leverage bookshelf configuration
 torrserver_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -1439,7 +1439,7 @@ twingate_extra_env: |     # "{{ lookup('file', playbook_dir + '/resources/twinga
 #   * https://hub.docker.com/r/louislam/uptime-kuma/tags
 #   * => See tailscale role versions
 # -----
-uptime_kuma_managed: "{{ factum_os_family in ['alpine'] }}"
+uptime_kuma_managed: false  # <- LOW INTEREST, no testing
 uptime_kuma_enabled: true
 uptime_kuma_version:        # Leave blank to leverage bookshelf configuration
 uptime_kuma_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -1565,7 +1565,7 @@ wg_easy_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/wg-e
 #   * https://hub.docker.com/_/postgres/tags?name=alpine
 #   * => See tailscale role versions
 # -----
-wikijs_managed: true
+wikijs_managed: "{{ factum_os_family in ['alpine'] }}"
 wikijs_enabled: true
 wikijs_version:             # Leave blank to leverage bookshelf configuration
 wikijs_postgres_version:    # Leave blank to leverage bookshelf configuration

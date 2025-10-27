@@ -21,4 +21,4 @@
 - name: Unsupported OS like
   ansible.builtin.fail:
     msg: "Unsupported distro: {{ ansible_os_family }}"
-  when: not factum_os_like
+  when: factum_os_like | default('', true) | length < 1

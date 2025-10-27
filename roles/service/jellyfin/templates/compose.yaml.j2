@@ -43,7 +43,7 @@ services:
       - '{{ web_ui_port }}:{{ jellyfin_web_ui_port_int }}'
       # - 8920:8920     # HTTPS traffic, optional
 {% else %}
-    #   - '{{ web_ui_port }}:{{ jellyfin_web_ui_port_int }}'
+    #   - '{{ bookshelf_const_port.jellyfin.web_ui }}:{{ jellyfin_web_ui_port_int }}'
     #   - 8920:8920     # HTTPS traffic, optional
 {% endif %}
 {% if jellyfin_discovery_ports_exposed %}

@@ -7,12 +7,12 @@
 - name: Git   # <- Prereq for tpm
   ansible.builtin.import_role:
     name: git
-  when: (tmux_sane_todo | length) > 0
+  when: tmux_sane_todo | length > 0
 
 - name: Load setup sane
   ansible.builtin.include_tasks:
     file: setup-sane.yaml
-  when: (tmux_sane_todo | length) > 0
+  when: tmux_sane_todo | length > 0
   loop: "{{ tmux_sane_todo }}"
   loop_control:
     loop_var: user

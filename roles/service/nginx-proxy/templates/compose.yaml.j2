@@ -1,6 +1,6 @@
 {% set version = (nginx_proxy_version | default(bookshelf_const_version.nginx_proxy, true)) %}
-{% set http_port = nginx_proxy_http_port %}
-{% set https_port = nginx_proxy_https_port %}
+{% set http_port = nginx_proxy_http_port | default(-1, true) | int %}
+{% set https_port = nginx_proxy_https_port | default(-1, true) | int %}
 ---
 services:
   app:
@@ -16,12 +16,12 @@ services:
     hostname: "{{ nginx_proxy_hostname }}"
     networks:
       - "{{ nginx_proxy_net }}"
-{% if http_port or https_port %}
+{% if (http_port > -1) or (https_port > -1) %}
     ports:
-{% if http_port %}
+{% if http_port > -1 %}
       - "{{ http_port }}:80"
 {% endif %}
-{% if https_port %}
+{% if https_port > -1 %}
       - "{{ https_port }}:443"
 {% endif %}
 {% endif %}{# http_port or https_port #}

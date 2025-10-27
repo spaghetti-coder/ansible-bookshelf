@@ -23,7 +23,7 @@ services:
       # Usage:
       #   qBittorrent UI -> Settings -> Downloads -> External ... on finished -> '/scripts/notify.sh "Downloaded" "%N"'
       - '{{ qbittorrent_conf_dir }}/scripts:/scripts:ro'
-{% if qbittorrent_notify_provider %}
+{% if qbittorrent_notify_provider | length > 0 %}
       - '{{ notify_sh_path }}:{{ notify_sh_path }}:ro'
 {% endif %}{# qbittorrent_notify_provider #}
     hostname: {{ qbittorrent_hostname }}

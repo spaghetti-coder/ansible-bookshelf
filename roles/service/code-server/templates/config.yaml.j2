@@ -1,7 +1,7 @@
 ---
 auth: password
 cert: false
-{% if code_server_hashed_pass %}
+{% if code_server_hashed_pass | length > 0 %}
 hashed-password: "{{ code_server_hashed_pass }}"
 {% else %}
 password: "{{ code_server_pass }}"

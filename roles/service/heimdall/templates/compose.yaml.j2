@@ -20,7 +20,7 @@ services:
       # - 443:443
 {% else %}
     # ports:
-    #   - '{{ heimdall_web_ui_port_ext }}:80'
+    #   - '{{ bookshelf_const_port.heimdall.web_ui }}:80'
     #   # - 443:443
 {% endif %}
 {% if not (nginx_proxy_enabled | default(false)) %}

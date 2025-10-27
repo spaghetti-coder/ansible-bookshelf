@@ -32,7 +32,7 @@ services:
       - {{ web_ui_port }}:{{ filebrowser_web_ui_port_int }}
 {% else %}
     # ports:
-    #   - {{ web_ui_port }}:{{ filebrowser_web_ui_port_int }}
+    #   - {{ bookshelf_const_port.filebrowser.web_ui }}:{{ filebrowser_web_ui_port_int }}
 {% endif %}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge

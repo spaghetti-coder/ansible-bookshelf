@@ -7,7 +7,7 @@
 - name: Load setup conf
   ansible.builtin.include_tasks:
     file: setup-conf.yaml
-  when: (tmuxp_conf_todo | length) > 0
+  when: tmuxp_conf_todo | length > 0
   loop: "{{ tmuxp_conf_todo }}"
   vars:
     user: "{{ the_conf.owner }}"

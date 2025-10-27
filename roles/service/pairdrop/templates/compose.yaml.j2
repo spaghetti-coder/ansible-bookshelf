@@ -27,7 +27,7 @@ services:
       - "{{ web_ui_port }}:{{ pairdrop_web_ui_port_int }}"
 {% else %}
     # ports:
-    #   - "{{ web_ui_port }}:{{ pairdrop_web_ui_port_int }}"
+    #   - "{{ bookshelf_const_port.pairdrop.web_ui }}:{{ pairdrop_web_ui_port_int }}"
 {% endif %}{# pairdrop_web_ui_ports_exposed #}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network

@@ -33,7 +33,7 @@ services:
       - '{{ web_ui_port }}:{{ jotty_web_ui_port_int }}'
 {% else %}
     # ports:
-    #   - '{{ web_ui_port }}:{{ jotty_web_ui_port_int }}'
+    #   - '{{ bookshelf_const_port.jotty.web_ui }}:{{ jotty_web_ui_port_int }}'
 {% endif %}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network

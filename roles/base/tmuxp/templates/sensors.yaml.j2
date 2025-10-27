@@ -4,19 +4,19 @@ windows:
   - window_name: {{ conf.window_name | default('sensors') }}
     focus: true
     layout: main-horizontal
-{% if conf.start_dir | default('', true) %}
+{% if conf.start_dir | default('', true) | length > 0 %}
     start_directory: "{{ conf.start_dir }}"
 {% endif %}
     panes:
       - focus: true
-{% if conf.pane1_start_dir | default('', true) %}
+{% if conf.pane1_start_dir | default('', true) | length > 0 %}
         start_directory: "{{ conf.pane1_start_dir }}"
 {% endif %}
       - shell_command: ['watch sensors']
-{% if conf.pane3_start_dir | default('', true) %}
+{% if conf.pane3_start_dir | default('', true) | length > 0 %}
         start_directory: "{{ conf.pane3_start_dir }}"
 {% endif %}
       - shell_command: ['htop']
-{% if conf.pane2_start_dir | default('', true) %}
+{% if conf.pane2_start_dir | default('', true) | length > 0 %}
         start_directory: "{{ conf.pane2_start_dir }}"
 {% endif %}

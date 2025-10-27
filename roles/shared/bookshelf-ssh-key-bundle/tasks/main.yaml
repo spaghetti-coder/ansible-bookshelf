@@ -45,14 +45,14 @@
           {{ public_key }}
         dest: "{{ public_file }}"
         mode: '0644'
-      when: (public_key | default(''))
+      when: public_key | default('') | length > 0
 
     - name: Restore public key
       ansible.builtin.shell:
         cmd: ssh-keygen -y -f {{ private_file }} > {{ public_file }}
       changed_when: omit
       when:
-        - not (public_key | default(''))
+        - public_key | default('') | length < 1
         - bookshelf_ssh_key_bundle_private_state.changed
 
     - name: Deploy config file

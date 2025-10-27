@@ -14,4 +14,4 @@
 - name: Unsupported Ubuntu codename
   ansible.builtin.fail:
     msg: "Unsupported distro: {{ ansible_os_family }}"
-  when: not factum_ubuntu_codename
+  when: factum_ubuntu_codename | default('', true) | length < 1
