@@ -1815,12 +1815,12 @@ whatsie_install_method: flatpak
 # ==================
 #       GOLANG
 # ==================
-golang_managed: "{{ factum_os_like in ['ubuntu'] }}"  # <- Only supported by Ubuntu like
+golang_managed: "{{ factum_os_like in ['alpine', 'ubuntu'] }}"  # <- Only supported
 
 # ==================
 #       NODEJS
 # ==================
-nodejs_managed: "{{ factum_os_like in ['alpine'] }}"  # "{{ factum_os_like in ['ubuntu', 'alpine'] }}"  # <- Only supported by these
+nodejs_managed: "{{ factum_os_like in ['alpine'] }}"  # "{{ factum_os_like in ['alpine', 'ubuntu'] }}"  # <- Only supported by these
 # Versions (better pick latest LTS) and channels lists:
 #   * https://nodejs.org/en/about/previous-releases#looking-for-the-latest-release-of-a-version-branch
 #   * https://snapcraft.io/node

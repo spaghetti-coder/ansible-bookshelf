@@ -6,8 +6,12 @@
 
 - name: Install
   ansible.builtin.package:
-    name: golang-go
+    name: "{{ pkg_map[factum_os_like] | default(pkg_map['_default']) }}"
     state: "{{ (golang_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
+  vars:
+    pkg_map:
+      _default: go
+      ubuntu: golang-go
   become: true
 
 - name: Mark dones

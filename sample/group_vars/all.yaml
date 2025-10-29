@@ -2114,7 +2114,7 @@ whatsie_install_method: flatpak
 # ==================
 #       GOLANG
 # ==================
-golang_managed: false   # "{{ factum_os_like in ['ubuntu'] }}"  # <- Only supported by Ubuntu like
+golang_managed: false   # "{{ factum_os_like in ['alpine', 'ubuntu'] }}"  # <- Only supported
 
 # ==================
 #       NODEJS
