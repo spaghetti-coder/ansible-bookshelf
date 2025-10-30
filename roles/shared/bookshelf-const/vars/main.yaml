@@ -6,16 +6,16 @@ bookshelf_const_version_shared:
   postgres: 16.9-alpine3.22
   # NOTE: With version update also update auth key: https://tailscale.com/admin/settings/keys
   # https://hub.docker.com/r/tailscale/tailscale/tags
-  tailscale: v1.88.4
+  tailscale: v1.90.5
 
-bookshelf_const_version:    # <- Last update: 2025-10-25
+bookshelf_const_version:    # <- Last update: 2025-10-30
   #
   # BASE
   #
   # https://github.com/FiloSottile/age/releases
   age: v1.2.1
   # https://github.com/junegunn/fzf/releases
-  fzf: '0.66.0'
+  fzf: '0.66.1'
   # Versions (better pick latest LTS) and channels lists:
   # * https://nodejs.org/en/about/previous-releases#looking-for-the-latest-release-of-a-version-branch
   # * https://snapcraft.io/node
@@ -24,7 +24,7 @@ bookshelf_const_version:    # <- Last update: 2025-10-25
   # SERVICE
   #
   # https://hub.docker.com/r/adguard/adguardhome/tags
-  adguard: v0.107.68
+  adguard: v0.107.69
   adguard_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/advplyr/audiobookshelf/tags
   audiobookshelf: 2.30.0
@@ -48,7 +48,7 @@ bookshelf_const_version:    # <- Last update: 2025-10-25
   gokapi: v2.1.0
   gokapi_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/twin/gatus/pkgs/container/gatus
-  gatus: v5.28.0
+  gatus: v5.30.0
   gatus_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/gotify/server/tags
   gotify: 2.7.3
@@ -56,15 +56,15 @@ bookshelf_const_version:    # <- Last update: 2025-10-25
   # https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
   hedgedoc: 1.10.3-alpine
   # https://hub.docker.com/r/linuxserver/heimdall/tags
-  heimdall: v2.7.6-ls325
+  heimdall: v2.7.6-ls326
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
-  jellyfin: 10.11.0
+  jellyfin: 10.11.1
   jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/joplin/server/tags
   joplin_server: 3.4.3
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # https://github.com/fccview/jotty/pkgs/container/jotty
-  jotty: 1.8.1
+  jotty: 1.9.2
   jotty_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
   mealie: v3.3.2
@@ -73,7 +73,7 @@ bookshelf_const_version:    # <- Last update: 2025-10-25
   # IMPORTANT:
   #   - Check release notes before update: https://github.com/usememos/memos/releases
   #   - Consider backup before upgrade: https://www.usememos.com/docs/install/upgrade
-  memos: 0.25.1
+  memos: 0.25.2
   memos_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
   metube: 2025.10.23
@@ -81,14 +81,14 @@ bookshelf_const_version:    # <- Last update: 2025-10-25
   navidrome: 0.58.0
   navidrome_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
-  nginx_proxy: 1.8.0-alpine
+  nginx_proxy: 1.9.0-alpine
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
   nginx_proxy_manager: 2.12.6
   nginx_proxy_manager_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/jamesread/olivetin/tags
-  olivetin: 3000.1.2
+  olivetin: 2025.10.30
   # https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
-  pairdrop: v1.11.2-ls124
+  pairdrop: v1.11.2-ls126
   pairdrop_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
   portainer: 2.35.0-alpine
@@ -97,14 +97,14 @@ bookshelf_const_version:    # <- Last update: 2025-10-25
   portainer_agent: 2.35.0-alpine
   portainer_agent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.2-r3-ls421
+  qbittorrent: 5.1.2-r3-ls422
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: 2.1.9
   # https://hub.docker.com/r/rnwood/smtp4dev/tags?name=v
   smtp4dev: v3.10
   smtp4dev_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
-  syncthing: v2.0.10-ls199
+  syncthing: v2.0.10-ls200
   syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # => See tailscale versions in the top
   tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
@@ -128,7 +128,7 @@ bookshelf_const_version:    # <- Last update: 2025-10-25
   # https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
   wg_easy: 15.1.0
   # https://hub.docker.com/r/linuxserver/wikijs/tags?name=-ls
-  wikijs: v2.5.308-ls196
+  wikijs: v2.5.308-ls197
   wikijs_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   wikijs_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
 
