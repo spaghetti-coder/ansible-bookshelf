@@ -222,6 +222,9 @@ tmux_sane_users:  # <- Existing users to source my preferred configuration
 # =================
 #       TMUXP
 # =================
+# IMPORTANT:
+#   The role doesn't support RHEL 10 family
+# -----
 tmuxp_managed: false  #  "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
 # See all available in templates/
 tmuxp_conf:
@@ -259,6 +262,10 @@ tmuxp_conf:
 # * wishlist  : The SSH directory (https://github.com/charmbracelet/wishlist).
 #               Disabled for Alpine, as it's not available in its repo
 # -----
+# IMPORTANT:
+#   The role speedtest tool is not supported in RHEL 10 family. I.e.:
+#   toolbelt_exclude: [speedtest]  # <- For RHEL 10 family
+# -----
 toolbelt_managed: false
 toolbelt_pick:      # <- Install only a fraction. Leave empty to install all
   # - nano            # <- nano will be installed
@@ -282,6 +289,10 @@ virt_manager_users:   # <- Existing users to be added to libvirt group
 # ==================
 # Console-based network traffic monitor that keeps a log of daily network
 # traffic for the selected interface(s)
+# -----
+# IMPORTANT:
+#   The role doesn't support RHEL 10 family
+# -----
 vnstat_managed: false
 
 

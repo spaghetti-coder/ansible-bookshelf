@@ -1,12 +1,12 @@
 ---
-- name: Ppa-deps    # <- 'import' because will need the role vars
-  ansible.builtin.import_role: { name: ppa-deps }
+- name: Software repos deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: software-repos-deps }
 
 - name: Charm repo
   become: true
   become_user: root
   vars:
-    keyfile: "{{ ppa_deps_keyrings_dir }}/charm.asc"
+    keyfile: "{{ software_repos_deps_keyrings_dir }}/charm.asc"
   block:
     - name: Install charm signing key
       ansible.builtin.get_url:

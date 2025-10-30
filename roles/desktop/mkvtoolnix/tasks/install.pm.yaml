@@ -1,11 +1,11 @@
 ---
-- name: Ppa-deps    # <- 'import' because will need the role vars
-  ansible.builtin.import_role: { name: ppa-deps }
+- name: Software repos deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: software-repos-deps }
 
 - name: Install
   become: true
   vars:
-    keyfile: "{{ ppa_deps_keyrings_dir }}/moritzbunkus.gpg"
+    keyfile: "{{ software_repos_deps_keyrings_dir }}/moritzbunkus.gpg"
     codename: "{{ factum_ubuntu_codename | default(ansible_distribution_release) }}"
     # NOTE:
     # Don't use LinuxMint (https://mkvtoolnix.download/downloads.html#linuxmint),

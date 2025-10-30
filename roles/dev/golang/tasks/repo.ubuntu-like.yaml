@@ -1,13 +1,13 @@
 ---
 # https://go.dev/wiki/Ubuntu
 
-- name: Ppa-deps    # <- 'import' because will need the role vars
-  ansible.builtin.import_role: { name: ppa-deps }
+- name: Software repos deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: software-repos-deps }
 
 - name: Golang repo
   become: true
   vars:
-    keyfile: "{{ ppa_deps_keyrings_dir }}/golang.asc"
+    keyfile: "{{ software_repos_deps_keyrings_dir }}/golang.asc"
     codename: "{{ factum_ubuntu_codename }}"
     repo_url: https://ppa.launchpadcontent.net/longsleep/golang-backports/{{ factum_os_like }}
   block:

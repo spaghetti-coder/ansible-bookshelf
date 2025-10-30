@@ -50,9 +50,9 @@ deploy_ve_config() {
     --rootfs=20
     --timezone=host
     --onboot=0
-    --memory=2048
+    --memory=4096             # <- Due to heavy testing
     --swap=512
-    --cores=1
+    --cores=2
     --tags='ansible;test.home'
   )
 

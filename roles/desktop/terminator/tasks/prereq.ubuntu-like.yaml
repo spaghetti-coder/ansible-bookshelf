@@ -1,11 +1,11 @@
 ---
-- name: Ppa-deps    # <- 'import' because will need the role vars
-  ansible.builtin.import_role: { name: ppa-deps }
+- name: Software repos deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: software-repos-deps }
 
 - name: Add repo
   become: true
   vars:
-    keyfile: "{{ ppa_deps_keyrings_dir }}/terminator.asc"
+    keyfile: "{{ software_repos_deps_keyrings_dir }}/terminator.asc"
     codename: "{{ factum_ubuntu_codename }}"
     repo_url: https://ppa.launchpadcontent.net/gnome-terminator/ppa/ubuntu
   block:

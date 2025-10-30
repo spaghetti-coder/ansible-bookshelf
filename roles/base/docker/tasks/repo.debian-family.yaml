@@ -1,11 +1,11 @@
 ---
-- name: Ppa-deps    # <- 'import' because will need the role vars
-  ansible.builtin.import_role: { name: ppa-deps }
+- name: Software repos deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: software-repos-deps }
 
 - name: Docker repo
   become: true
   vars:
-    keyfile: "{{ ppa_deps_keyrings_dir }}/docker.asc"
+    keyfile: "{{ software_repos_deps_keyrings_dir }}/docker.asc"
     arch: "{{ docker_apt_arch }}"
     codename: "{{ factum_ubuntu_codename | default(ansible_distribution_release) }}"
     repo_url: https://download.docker.com/linux/{{ factum_os_like }}

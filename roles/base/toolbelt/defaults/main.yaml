@@ -16,6 +16,10 @@
 # * wishlist  : The SSH directory (https://github.com/charmbracelet/wishlist).
 #               Disabled for Alpine, as it's not available in its repo
 # -----
+# IMPORTANT:
+#   The role speedtest tool is not supported in RHEL 10 family. I.e.:
+#   toolbelt_exclude: [speedtest]  # <- For RHEL 10 family
+# -----
 toolbelt_managed: false
 toolbelt_pick:      # <- Install only a fraction. Leave empty to install all
   # - nano            # <- nano will be installed

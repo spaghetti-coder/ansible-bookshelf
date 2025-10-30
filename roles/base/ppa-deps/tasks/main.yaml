@@ -1,7 +1,0 @@
----
-- name: Load tasks
-  ansible.builtin.include_tasks:
-    file: tasks.yaml
-  when:
-    not (ppa_deps_done | default(false))
-    and (factum_os_like in ['debian', 'ubuntu'])

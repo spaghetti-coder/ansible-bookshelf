@@ -1,4 +1,8 @@
 ---
 # Console-based network traffic monitor that keeps a log of daily network
 # traffic for the selected interface(s)
+# -----
+# IMPORTANT:
+#   The role doesn't support RHEL 10 family
+# -----
 vnstat_managed: false

@@ -1,0 +1,20 @@
+---
+################
+###   BASE   ###
+################
+
+# ===============
+#      TMUXP
+# ===============
+tmuxp_managed: false    # <- Not supported by rhel10 family
+
+# ====================
+#       TOOLBELT
+# ====================
+toolbelt_exclude:
+  - speedtest           # <- Not supported by rhel10 family
+
+# ==================
+#       VNSTAT
+# ==================
+vnstat_managed: false   # <- Not supported by rhel10 family

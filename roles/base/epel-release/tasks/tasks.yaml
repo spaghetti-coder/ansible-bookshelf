@@ -1,4 +1,7 @@
 ---
+- name: Software repos deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: software-repos-deps }
+
 - name: Epel release
   become: true
   vars:

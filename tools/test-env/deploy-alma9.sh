@@ -6,8 +6,8 @@
 # NOTE:
 #   * requires devenv with the following vars exported in the _devenv_config:
 #     * DEPLOY_VE_PVE_HOST
-#     * DEPLOY_VE_ROCKY_ID   # <- VE ID
-#     * DEPLOY_VE_ROCKY_IP   # <- Ex.: 192.168.0.20/24
+#     * DEPLOY_VE_ALMA_ID   # <- VE ID
+#     * DEPLOY_VE_ALMA_IP   # <- Ex.: 192.168.0.20/24
 #     * DEPLOY_VE_GW        # <- Ex.: 192.168.0.1
 #     * DEPLOY_VE_STORAGE   # <- Ex.: local-lvm
 #     * DEPLOY_VE_SNAPSHOT  # <- Ex.: Ansible1
@@ -38,15 +38,15 @@ deploy_ve_config() {
   PVE_HOST="${DEPLOY_VE_PVE_HOST}"
 
   # Best match from available templates: http://download.proxmox.com/images/system
-  VE_TEMPLATE=rockylinux-9
-  VE_ID="${DEPLOY_VE_ROCKY_ID}"
+  VE_TEMPLATE=almalinux-9
+  VE_ID="${DEPLOY_VE_ALMA_ID}"
 
   CREATE_FLAGS=(              # <- Create LXC flags, '--password' is autoappended with value from EXTRAS[root_pass]
     --unprivileged=1          # <- '0' if using bind mounts, or use boring workarounds for ownership
     --features='nesting=1,keyctl=1'   # <- ',keyctl=1' Not needed with privileged
-    --net0="name=eth0,bridge=vmbr0,ip=${DEPLOY_VE_ROCKY_IP},gw=${DEPLOY_VE_GW}"
+    --net0="name=eth0,bridge=vmbr0,ip=${DEPLOY_VE_ALMA_IP},gw=${DEPLOY_VE_GW}"
     --storage="${DEPLOY_VE_STORAGE}"
-    --hostname=ansible-rocky.test.home
+    --hostname=ansible-alma9.test.home
     --rootfs=20
     --timezone=host
     --onboot=0

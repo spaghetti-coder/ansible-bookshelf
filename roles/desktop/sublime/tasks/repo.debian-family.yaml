@@ -1,11 +1,11 @@
 ---
-- name: Ppa-deps
-  ansible.builtin.import_role: { name: ppa-deps }
+- name: Software repos deps
+  ansible.builtin.import_role: { name: software-repos-deps }
 
 - name: Repo
   become: true
   vars:
-    keyfile: "{{ ppa_deps_keyrings_dir }}/sublimehq-archive.asc"
+    keyfile: "{{ software_repos_deps_keyrings_dir }}/sublimehq-archive.asc"
   block:
     - name: Install signing key
       ansible.builtin.get_url:

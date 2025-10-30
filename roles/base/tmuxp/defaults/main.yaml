@@ -1,4 +1,7 @@
 ---
+# IMPORTANT:
+#   The role doesn't support RHEL 10 family
+# -----
 tmuxp_managed: false  #  "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
 # See all available in templates/
 tmuxp_conf:

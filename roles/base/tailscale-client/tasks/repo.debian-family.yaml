@@ -1,11 +1,11 @@
 ---
-- name: Ppa-deps    # <- 'import' because will need the role vars
-  ansible.builtin.import_role: { name: ppa-deps }
+- name: Software repos deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: software-repos-deps }
 
 - name: Tailscale client repo
   become: true
   vars:
-    keyfile: "{{ ppa_deps_keyrings_dir }}/tailscale.gpg"
+    keyfile: "{{ software_repos_deps_keyrings_dir }}/tailscale.gpg"
     codename: "{{ factum_ubuntu_codename | default(ansible_distribution_release) }}"
     repo_url: https://pkgs.tailscale.com/stable/{{ factum_os_like }}
     key_url: https://pkgs.tailscale.com/stable/{{ factum_os_like }}/{{ codename }}.noarmor.gpg
