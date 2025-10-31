@@ -119,7 +119,7 @@ deploy_ve() (
 # ==================== END OF CONFIGURATION ZONE ====================
 
 
-# shellcheck disable=SC2317
+# shellcheck disable=SC2317,SC2329
 deploy_ve_core() (
   local PVE_HOST VE_ID VE_TEMPLATE AGE_KEY
   declare -A EXTRAS
