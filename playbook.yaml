@@ -107,6 +107,10 @@
       tags: [blinko, upgradable]
       when: blinko_managed | default(false)
 
+    - role: caddy
+      tags: [caddy, upgradable]
+      when: caddy_managed | default(false)
+
     - role: code-server
       tags: [code-server, upgradable]
       when: code_server_managed | default(false)

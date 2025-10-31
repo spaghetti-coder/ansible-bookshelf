@@ -33,6 +33,8 @@ bookshelf_const_version:    # <- Last update: 2025-10-30
   blinko: 1.6.3
   blinko_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   blinko_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://hub.docker.com/_/caddy/tags
+  caddy: 2.10.2
   # https://github.com/coder/code-server/releases
   code_server: v4.105.1
   # https://github.com/fccview/cronmaster/pkgs/container/cronmaster
@@ -140,6 +142,9 @@ bookshelf_const_port:
     web_ui: 8095
   blinko:
     web_ui: 8102
+  caddy:
+    http: 80
+    https: 443
   code_server:
     web_ui: 8090
   cronmaster:

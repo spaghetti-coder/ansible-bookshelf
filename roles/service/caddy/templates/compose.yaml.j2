@@ -1,0 +1,44 @@
+{% set http_port = caddy_http_port | default(bookshelf_const_port.caddy.http, true) | int %}
+{% set https_port = caddy_https_port | default(bookshelf_const_port.caddy.https, true) | int %}
+{% set proxy_enabled = nginx_proxy_enabled | default(false) %}
+{% set ports_enabled = (not caddy_host_net) and (http_port > -1 or https_port > -1) %}
+---
+services:
+  caddy:
+    build:
+      context: "./{{ build_dir | basename }}"
+      dockerfile: Dockerfile
+    image: caddy:{{ caddy_version_int }}-bookshelf
+    container_name: "{{ caddy_service_name }}"
+    restart: unless-stopped
+    env_file:
+      - ./secret.env
+      - ./main.env
+    volumes:
+      - ./{{ certs_dir | basename }}:/etc/ssl/private
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - "{{ conf_dir }}/config:/config"
+      - "{{ conf_dir }}/config:/data"
+    user: "{{ user_uid }}:{{ user_gid }}"
+    hostname: "{{ caddy_hostname }}"
+{% if ports_enabled %}{#            <- PORTS START #}
+    ports:
+{% if http_port > -1 %}
+      - "{{ http_port }}:80"
+{% endif %}
+{% if https_port > -1 %}
+      - "{{ https_port }}:443"
+{% endif %}
+{% endif %}{#                       <- PORTS END #}
+{% if caddy_host_net %}{#           <- NETMODE START #}
+    network_mode: host
+{% elif not proxy_enabled %}
+    network_mode: bridge
+{% else %}{# <- i.e. nginx_proxy enabled #}
+    networks:
+      - {{ nginx_proxy_net }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{#                       <- NETMODE END #}

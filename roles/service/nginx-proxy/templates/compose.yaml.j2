@@ -3,7 +3,7 @@
 {% set https_port = nginx_proxy_https_port | default(-1, true) | int %}
 ---
 services:
-  app:
+  nginx-proxy:
     # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
     image: jwilder/nginx-proxy:{{ version }}
     container_name: "{{ nginx_proxy_service_name }}"

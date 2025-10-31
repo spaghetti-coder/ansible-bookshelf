@@ -1,0 +1,94 @@
+---
+- name: Docker
+  ansible.builtin.import_role: { name: docker }
+  vars: { docker_users: ["{{ caddy_owner }}"] }
+
+- name: Compose
+  become: true
+  become_user: "{{ caddy_owner }}"
+  vars:
+    compose_dir: "{{ caddy_compose_dir | default(bookshelf_const_compose_dir + '/caddy', true) }}"
+    conf_dir: "{{ caddy_conf_dir }}"
+    build_dir: "{{ compose_dir }}/build"
+    certs_dir: "{{ compose_dir }}/ssl"
+    service_state: "{{ caddy_enabled | ternary('present', 'absent') }}"
+    the_user: "{{ getent_passwd[caddy_owner] }}"
+    user_uid: "{{ the_user.1 }}"
+    user_gid: "{{ the_user.2 }}"
+  block:
+    - name: Create compose directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop: ["{{ compose_dir }}", "{{ conf_dir }}/config", "{{ build_dir }}", "{{ certs_dir }}"]
+
+    - name: Create compose files
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
+        mode: '0600'
+      loop:
+        - Caddyfile     # <- Must be first
+        - compose.yaml
+        - main.env
+        - secret.env
+      register: caddy_compose_files_result
+
+    - name: Create build files
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ build_dir }}/{{ item }}"
+        mode: '0600'
+      loop:
+        - Dockerfile    # <- Must be first
+      register: caddy_build_files_result
+
+    - name: Create certs
+      ansible.builtin.copy:
+        content: "{{ item.text }}"
+        dest: "{{ certs_dir }}/{{ item.name | basename }}"
+        mode: '0600'
+      loop: "{{ caddy_cert_bundles_int }}"
+      loop_control:
+        label: "{{ item.name }}"
+      register: caddy_certs_create_state
+
+    - name: List all cert files
+      ansible.builtin.command:
+        argv: [ls, -1A, "{{ certs_dir }}"]
+      changed_when: false
+      register: caddy_certs_current_state
+
+    - name: Certs cleanup
+      ansible.builtin.file:
+        path: "{{ certs_dir }}/{{ item }}"
+        state: absent
+      loop: "{{ obsolete }}"
+      vars:
+        wanted: "{{ caddy_certs_create_state.results | map(attribute='dest') | map('basename') }}"
+        obsolete: "{{ caddy_certs_current_state.stdout_lines | difference(wanted) | map('basename') }}"
+      register: caddy_certs_remove_state
+
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+        build: always
+      register: caddy_service_state
+
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - caddy_enabled and not caddy_service_state.changed
+        - caddy_compose_files_result.results[0].changed
+          or caddy_certs_create_state.changed
+          or caddy_certs_remove_state.changed
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    caddy_done: true

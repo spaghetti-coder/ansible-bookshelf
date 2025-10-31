@@ -459,6 +459,47 @@ blinko_ts_funnelled: false  # Expose to the world via TS funnel. Use with cautio
 blinko_ts_hostname: "{{ blinko_service_name }}"
 blinko_ts_auth_key:
 
+# =================
+#       CADDY
+# =================
+# Fast and extensible multi-platform HTTP/1-2-3 web server with automatic HTTPS
+#   https://caddyserver.com/
+# For basic scenarios see README.md in the role
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/_/caddy/tags
+# -----
+caddy_managed: false
+caddy_enabled: false
+caddy_version:          # Leave blank to leverage bookshelf configuration
+caddy_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
+caddy_owner: "{{ ansible_user_id }}"
+caddy_conf_dir: ~/conf/caddy
+caddy_service_name: caddy
+caddy_hostname: "{{ caddy_service_name }}"
+caddy_modules:          # https://caddyserver.com/docs/modules/
+  # - github.com/caddy-dns/desec
+  # - github.com/caddy-dns/duckdns
+  # - github.com/caddy-dns/dynu
+caddy_cert_bundles:
+  # - text: "{{ lookup('file', 'demo1.bundle.pem.b64') | b64decode }}"
+  #   name: test.local.pem    # <- Will land in /etc/ssl/private/test.local.pem
+caddy_caddyfile:        # (REQUIRED) Ex.: "{{ lookup('file', 'demo1.Caddyfile') }}"
+caddy_host_net: false
+# Port settings only get applied with caddy_host_net == false
+caddy_http_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
+caddy_https_port:       # Leave blank for bookshelf default, or '-1' to not expose the port
+caddy_vhost: "{{ caddy_service_name }}.domain.local"
+# Optional extra env vars
+caddy_extra_env: |      # "{{ lookup('template', playbook_dir + '/resources/caddy.env.j2') }}"
+  # Can be used to pass values to Caddyfile
+  # ----------
+  # DESEC_BASE=demo.dedyn.io
+caddy_secrets_env: |      # "{{ lookup('template', playbook_dir + '/resources/caddy.secret.env.j2') }}"
+  # Can be used to pass secret values to Caddyfile
+  # ----------
+  # DESEC_TOKEN=123qwerty456
+
 # =======================
 #       CODE-SERVER
 # =======================

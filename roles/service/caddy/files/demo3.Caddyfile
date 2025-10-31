@@ -1,0 +1,18 @@
+{env.DESEC_BASE}, *.{env.DESEC_BASE} {
+  tls {
+    dns desec {
+      token {env.DESEC_TOKEN}
+    }
+
+    # Depending on DNS provider the values below
+    # can be changed
+    propagation_timeout 600s
+    propagation_delay 120s
+  }
+
+  @nginxproxy host {env.DESEC_BASE} *.{env.DESEC_BASE}
+  handle @nginxproxy {
+    # Port 80 when they are in the same internal network
+    reverse_proxy nginx-proxy:80
+  }
+}

@@ -1,0 +1,14 @@
+# VERSIONS:
+#   * https://hub.docker.com/_/caddy/tags
+ARG BASE_TAG={{ caddy_version_int }}
+
+FROM caddy:${BASE_TAG}-builder AS builder
+RUN true \
+  && xcaddy build \
+{% for module in caddy_modules | default([], true) %}
+    --with {{ module }} \
+{% endfor %}
+  && true
+
+FROM caddy:${BASE_TAG}
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy
