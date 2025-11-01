@@ -3,7 +3,7 @@
 {% set https_port = caddy_https_port | default(bookshelf_const_port.caddy.https, true) | int %}
 ---
 services:
-  app:
+  caddy:
     build:
       context: ./docker
       dockerfile: ./docker/Dockerfile
