@@ -1,0 +1,2 @@
+---
+caddy_version_int: "{{ caddy_version | default(bookshelf_const_version.caddy, true) }}"

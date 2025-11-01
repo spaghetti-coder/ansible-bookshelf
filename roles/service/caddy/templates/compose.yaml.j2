@@ -1,4 +1,3 @@
-{% set version = caddy_version | default(bookshelf_const_version.caddy, true) %}
 {% set http_port = caddy_http_port | default(bookshelf_const_port.caddy.http, true) | int %}
 {% set https_port = caddy_https_port | default(bookshelf_const_port.caddy.https, true) | int %}
 ---
@@ -7,7 +6,7 @@ services:
     build:
       context: ./docker
       dockerfile: ./docker/Dockerfile
-    image: caddy:bookshelf-{{ version }}
+    image: caddy:{{ caddy_version_int }}-bookshelf
     container_name: "{{ caddy_service_name }}"
     restart: unless-stopped
     volumes:
@@ -31,15 +30,3 @@ services:
 {% else %}
     network_mode: bridge
 {% endif %}
-{% if proxy_enabled %}
-    environment:
-      # Meta data for nginx-proxy
-      - VIRTUAL_HOST={{ caddy_vhost }}
-      - VIRTUAL_PORT=81
-{% if not caddy_host_net %}
-
-networks:
-  "{{ nginx_proxy_net }}":
-    external: true
-{% endif %}{# caddy_host_net #}
-{% endif %}{# proxy_enabled #}
