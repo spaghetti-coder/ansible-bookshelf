@@ -1,0 +1,21 @@
+test.local, *.test.local {
+  tls /etc/ssl/private/test.local.pem /etc/ssl/private/test.local.pem
+
+  @api host api.test.local
+  handle @api {
+    reverse_proxy localhost:8081
+  }
+
+  @home host *.test.local test.local
+  handle @home {
+    reverse_proxy localhost:8080
+  }
+}
+
+:8080 {
+  respond ":8080 Fallback"
+}
+
+:8081 {
+  respond ":8081 I'm API"
+}

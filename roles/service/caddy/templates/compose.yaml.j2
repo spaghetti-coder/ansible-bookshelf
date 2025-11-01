@@ -1,8 +1,6 @@
-{% set version = (caddy_version | default(bookshelf_const_version.caddy, true)) %}
-{% set http_port = caddy_http_port | default(-1, true) | int %}
-{% set https_port = caddy_https_port | default(-1, true) | int %}
-{% set data_volumes = (caddy_user == caddy_owner)
-    | ternary(caddy_data_volumes, data_volumes_abs) | default([], true) %}
+{% set version = caddy_version | default(bookshelf_const_version.caddy, true) %}
+{% set http_port = caddy_http_port | default(bookshelf_const_port.caddy.http, true) | int %}
+{% set https_port = caddy_https_port | default(bookshelf_const_port.caddy.https, true) | int %}
 ---
 services:
   app:
@@ -13,17 +11,16 @@ services:
     container_name: "{{ caddy_service_name }}"
     restart: unless-stopped
     volumes:
-{% for volume in data_volumes %}
-      - '{{ volume }}'
-{% endfor %}
+{% if caddy_cert_bundles | default([], true) | length %}
+      - ./ssl:/etc/ssl/private
+{% endif %}
       - "{{ conf_dir }}/config:/config"
       - "{{ conf_dir }}/config:/data"
     user: "{{ user_uid }}:{{ user_gid }}"
-
-# TAILSCALE HERE
-
-    hostname: "{{ nginx_proxy_hostname }}"
-{% if (http_port > -1) or (https_port > -1) %}
+    hostname: "{{ caddy_hostname }}"
+{% if caddy_host_net %}
+    network_mode: host
+{% elif (http_port > -1) or (https_port > -1) %}
     ports:
 {% if http_port > -1 %}
       - "{{ http_port }}:80"
@@ -31,8 +28,18 @@ services:
 {% if https_port > -1 %}
       - "{{ https_port }}:443"
 {% endif %}
-{% endif %}{# http_port or https_port #}
+{% else %}
+    network_mode: bridge
+{% endif %}
+{% if proxy_enabled %}
+    environment:
+      # Meta data for nginx-proxy
+      - VIRTUAL_HOST={{ caddy_vhost }}
+      - VIRTUAL_PORT=81
+{% if not caddy_host_net %}
 
 networks:
   "{{ nginx_proxy_net }}":
-    name: "{{ nginx_proxy_net }}"
+    external: true
+{% endif %}{# caddy_host_net #}
+{% endif %}{# proxy_enabled #}
