@@ -1,0 +1,29 @@
+{
+  layer4 {
+		{env.DESEC_HOST}:3128 {
+      route {
+        proxy {env.PVE_IP}:3128
+      }
+		}
+  }
+}
+
+{env.DESEC_HOST} {
+  tls {
+    dns desec {
+      token {env.DESEC_TOKEN}
+    }
+
+    propagation_timeout 600s
+    propagation_delay 120s
+  }
+
+  handle {
+    reverse_proxy https://{env.PVE_IP}:8006 {
+      transport http {
+        tls
+        tls_insecure_skip_verify
+      }
+    }
+  }
+}

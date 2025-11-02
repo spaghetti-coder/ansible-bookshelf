@@ -142,9 +142,6 @@ bookshelf_const_port:
     web_ui: 8095
   blinko:
     web_ui: 8102
-  caddy:
-    http: 80
-    https: 443
   code_server:
     web_ui: 8090
   cronmaster:
@@ -179,8 +176,6 @@ bookshelf_const_port:
     web_ui: 8097
   nginx_proxy_manager:
     web_ui: 81
-    http: 80
-    https: 443
   olivetin:
     web_ui: 8096
   pairdrop:
@@ -217,12 +212,6 @@ bookshelf_const_port:
     web_ui: 8082
   wikijs:
     web_ui: 8107
-  # Reserved:
-  # * 80    # <- nginx-proxy or nginx-proxy-manager HTTP
-  # * 81    # <- nginx-proxy-manager.web_ui
-  # * 443   # <- nginx-proxy or nginx-proxy-manager HTTPS
-  # * 9080  # <- nginx-proxy HTTP
-  # * 9443  # <- nginx-proxy HTTP
 
 bookshelf_const_compose_dir: ~/docker
 # Not used within bookshelf space, but can be used to keep envar desks.

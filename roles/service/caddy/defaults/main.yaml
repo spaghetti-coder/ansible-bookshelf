@@ -24,8 +24,10 @@ caddy_cert_bundles:
 caddy_caddyfile:        # (REQUIRED) Ex.: "{{ lookup('file', 'demo1.Caddyfile') }}"
 caddy_host_net: false
 # Port settings only get applied with caddy_host_net == false
-caddy_http_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
-caddy_https_port:       # Leave blank for bookshelf default, or '-1' to not expose the port
+# NOTE: Avoid port conflicts with other reverse proxies
+caddy_ports:            # (OPTIONAL) HOST:CONTAINER ports mapping
+  - 80:80               # <- HTTP
+  - 443:443             # <- HTTPS
 caddy_vhost: "{{ caddy_service_name }}.domain.local"
 # Optional extra env vars
 caddy_extra_env: |      # "{{ lookup('template', playbook_dir + '/resources/caddy.env.j2') }}"

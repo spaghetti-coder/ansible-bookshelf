@@ -1,9 +1,8 @@
 {% set version = (nginx_proxy_manager_version | default(bookshelf_const_version.nginx_proxy_manager, true)) %}
 {% set web_ui_port = (nginx_proxy_manager_web_ui_port | default(bookshelf_const_port.nginx_proxy_manager.web_ui, true)) | int %}
-{% set http_port = (nginx_proxy_manager_http_port | default(bookshelf_const_port.nginx_proxy_manager.http, true)) | int %}
-{% set https_port = (nginx_proxy_manager_https_port | default(bookshelf_const_port.nginx_proxy_manager.https, true)) | int %}
+{% set extra_ports = nginx_proxy_manager_ports | default([], true) %}
 {% set proxy_enabled = (nginx_proxy_enabled | default(false)) %}
-{% set ports_enabled = (web_ui_port > -1 or http_port > -1 or https_port > -1) %}
+{% set ports_enabled = web_ui_port > -1 or extra_ports | length > 0 %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = nginx_proxy_manager_ts_version | default(bookshelf_const_version.nginx_proxy_manager_tailscale, true),
@@ -43,12 +42,9 @@ services:
 {% if web_ui_port > -1 %}
       - '{{ web_ui_port }}:{{ nginx_proxy_manager_web_ui_port_int }}'  # Web UI port
 {% endif %}
-{% if http_port > -1 %}
-      - '{{ http_port }}:80'     # HTTP Port
-{% endif %}
-{% if https_port > -1 %}
-      - '{{ https_port }}:443'    # HTTPS Port
-{% endif %}
+{% for port_kv in extra_ports %}
+      - "{{ port_kv }}"
+{% endfor %}
       # Add any other Stream port you want to expose
       # - '21:21'               # FTP
 {% endif %}{# nginx_proxy_manager_host_net #}

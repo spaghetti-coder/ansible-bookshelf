@@ -409,8 +409,10 @@ caddy_cert_bundles:
 caddy_caddyfile: "{{ lookup('file', 'demo1.Caddyfile') }}"
 caddy_host_net: false
 # Port settings only get applied with caddy_host_net == false
-caddy_http_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
-caddy_https_port:       # Leave blank for bookshelf default, or '-1' to not expose the port
+# NOTE: Avoid port conflicts with other reverse proxies
+caddy_ports:            # (OPTIONAL) HOST:CONTAINER ports mapping
+  - 80:80               # <- HTTP
+  - 443:443             # <- HTTPS
 caddy_vhost: "{{ caddy_service_name }}.domain.local"
 # Optional extra env vars
 caddy_extra_env: |      # "{{ lookup('template', playbook_dir + '/resources/caddy.env.j2') }}"
@@ -1036,8 +1038,10 @@ nginx_proxy_manager_hostname: "{{ nginx_proxy_manager_service_name }}"
 nginx_proxy_manager_host_net: false   # 'true' allows adding Stream ports without editting compose file
 # Port settings only get applied with nginx_proxy_manager_host_net == false
 nginx_proxy_manager_web_ui_port:      # Leave blank for bookshelf default, or '-1' to not expose the port
-nginx_proxy_manager_http_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
-nginx_proxy_manager_https_port:       # Leave blank for bookshelf default, or '-1' to not expose the port
+# NOTE: Avoid port conflicts with other reverse proxies
+nginx_proxy_manager_ports:            # (OPTIONAL) HOST:CONTAINER ports mapping
+  - 80:80                             # <- HTTP
+  - 443:443                           # <- HTTPS
 nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"
 nginx_proxy_manager_extra_env: |      # "{{ lookup('template', playbook_dir + '/resources/nginx-proxy-manager.env.j2') }}"
   FOO1=bar1
@@ -1069,8 +1073,10 @@ nginx_proxy_compose_dir:    # Unless you know ..., leave blank to leverage books
 nginx_proxy_owner: "{{ ansible_user_id }}"
 nginx_proxy_service_name: nginx-proxy
 nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
-nginx_proxy_http_port: "{{ service_port.nginx_proxy_http }}"     # Ex.: '80', no HTTP when empty
-nginx_proxy_https_port:     # Ex.: '443', no HTTPS when empty
+# NOTE: Avoid port conflicts with other reverse proxies
+nginx_proxy_ports:          # (OPTIONAL) HOST:CONTAINER ports mapping
+  - "{{ service_port.nginx_proxy_http }}:80"  # <- HTTP
+  # - 443:443                                   # <- HTTPS
 nginx_proxy_certs_dir:      # Path to certs on the managed machine. Works paired with HTTPS
 
 # ====================

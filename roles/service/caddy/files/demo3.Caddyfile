@@ -10,8 +10,8 @@
     propagation_delay 120s
   }
 
-  @nginxproxy host {env.DESEC_BASE} *.{env.DESEC_BASE}
-  handle @nginxproxy {
+  @nginxProxy host {env.DESEC_BASE} *.{env.DESEC_BASE}
+  handle @nginxProxy {
     # Port 80 when they are in the same internal network
     reverse_proxy nginx-proxy:80
   }

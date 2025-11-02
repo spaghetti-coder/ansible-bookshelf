@@ -43,7 +43,7 @@ caddy_secrets_env:
 # ...
 ```
 
-### Plus with [nginx-proxy](./../nginx-proxy)
+### Plus [nginx-proxy](./../nginx-proxy)
 
 ```yaml
 # variables
@@ -54,8 +54,33 @@ caddy_caddyfile: "{{ lookup('file', 'demo3.Caddyfile') }}"
 caddy_host_net:               # <- Not host network mode
 # ...
 nginx_proxy_enabled: true
-# External ports are disabled
-nginx_proxy_http_port:        
-nginx_proxy_https_port:
+# External ports are not required
+nginx_proxy_ports:
+# ...
+```
+
+## PVE SPICE
+
+Dog slow, by the way...
+
+```yaml
+# variables
+
+# ...
+# Caddy config same as above, excluding
+caddy_caddyfile: "{{ lookup('file', 'demo4.Caddyfile') }}"
+caddy_ports:
+  - 80:80
+  - 443:443
+  - 3128:3128                 # <- SPICE port
+caddy_extra_env:
+  DESEC_HOST=pve.dedyn.io     # <- PVE host
+  PVE_IP=192.168.1.10         # <- PVE IP
+caddy_secrets_env:
+  DESEC_TOKEN=123changeme456  # <- Of course it's a dummy, replace with a real one
+# ...
+nginx_proxy_enabled: true
+# External ports are not required
+nginx_proxy_ports:
 # ...
 ```

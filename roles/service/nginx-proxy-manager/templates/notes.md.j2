@@ -1,5 +1,4 @@
 {% set nginx_proxy_host = nginx_proxy_manager_host_net | ternary ('localhost', nginx_proxy_net) %}
-{% set nginx_proxy_port = nginx_proxy_manager_host_net | ternary(nginx_proxy_http_port | default('Not configured', true), '80') %}
 ## Ninx Proxy Manager
 
 {% if nginx_proxy_enabled | default(false) %}
@@ -8,7 +7,7 @@
   2.  ...
       - **Sheme**: `http`
       - **Forward Hostname**: `{{ nginx_proxy_host }}`
-      - **Forward Port**: `{{ nginx_proxy_port }}`
+      - **Forward Port**: `<NGINX-PROXY-PLACEHOLCER>`
 {% else %}
 * Nginx Proxy is not enabled, skip configuration
 {% endif %}{# nginx_proxy_enabled #}

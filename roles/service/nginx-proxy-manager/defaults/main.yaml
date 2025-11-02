@@ -16,7 +16,10 @@ nginx_proxy_manager_host_net: false   # 'true' allows adding Stream ports withou
 # Port settings only get applied with nginx_proxy_manager_host_net == false
 nginx_proxy_manager_web_ui_port:      # Leave blank for bookshelf default, or '-1' to not expose the port
 nginx_proxy_manager_http_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
-nginx_proxy_manager_https_port:       # Leave blank for bookshelf default, or '-1' to not expose the port
+# NOTE: Avoid port conflicts with other reverse proxies
+nginx_proxy_manager_ports:            # (OPTIONAL) HOST:CONTAINER ports mapping
+  - 80:80                             # <- HTTP
+  - 443:443                           # <- HTTPS
 nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"
 # Optional extra env vars
 nginx_proxy_manager_extra_env:        # "{{ lookup('template', playbook_dir + '/resources/nginx-proxy-manager.env.j2') }}"

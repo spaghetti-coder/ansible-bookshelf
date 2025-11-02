@@ -1,7 +1,6 @@
-{% set http_port = caddy_http_port | default(bookshelf_const_port.caddy.http, true) | int %}
-{% set https_port = caddy_https_port | default(bookshelf_const_port.caddy.https, true) | int %}
 {% set proxy_enabled = nginx_proxy_enabled | default(false) %}
-{% set ports_enabled = (not caddy_host_net) and (http_port > -1 or https_port > -1) %}
+{% set ports_map = caddy_ports | default([], true) %}
+{% set ports_enabled = (not caddy_host_net) and (ports_map | length > 0) %}
 ---
 services:
   caddy:
@@ -23,12 +22,9 @@ services:
     hostname: "{{ caddy_hostname }}"
 {% if ports_enabled %}{#            <- PORTS START #}
     ports:
-{% if http_port > -1 %}
-      - "{{ http_port }}:80"
-{% endif %}
-{% if https_port > -1 %}
-      - "{{ https_port }}:443"
-{% endif %}
+{% for port_kv in ports_map %}
+      - "{{ port_kv }}"
+{% endfor %}
 {% endif %}{#                       <- PORTS END #}
 {% if caddy_host_net %}{#           <- NETMODE START #}
     network_mode: host
