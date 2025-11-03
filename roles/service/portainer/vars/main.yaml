@@ -1,2 +1,3 @@
 ---
 portainer_web_ui_port_int: 9443
+portainer_web_ui_http_port_int: 9000  # <- Fixes https://stackoverflow.com/a/78925301
