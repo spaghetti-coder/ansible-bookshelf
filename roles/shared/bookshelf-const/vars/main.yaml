@@ -3,12 +3,12 @@ bookshelf_const_version_shared:
   # https://hub.docker.com/_/alpine
   alpine: 3.22.2
   # https://hub.docker.com/_/postgres/tags?name=alpine
-  postgres: 16.9-alpine3.22
+  postgres: 16.10-alpine
   # NOTE: With version update also update auth key: https://tailscale.com/admin/settings/keys
   # https://hub.docker.com/r/tailscale/tailscale/tags
-  tailscale: v1.90.5
+  tailscale: v1.90.6
 
-bookshelf_const_version:    # <- Last update: 2025-10-30
+bookshelf_const_version:    # <- Last update: 2025-11-03
   #
   # BASE
   #
@@ -41,10 +41,10 @@ bookshelf_const_version:    # <- Last update: 2025-10-30
   cronmaster: 1.4.2
   cronmaster_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/duplicati/tags?name=-ls
-  duplicati: v2.2.0.0_stable_2025-10-23-ls263
+  duplicati: v2.2.0.0_stable_2025-10-23-ls264
   duplicati_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-  filebrowser: v2.44.2-s6
+  filebrowser: v2.45.0-s6
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/f0rc3/gokapi/tags
   gokapi: v2.1.0
@@ -60,7 +60,7 @@ bookshelf_const_version:    # <- Last update: 2025-10-30
   # https://hub.docker.com/r/linuxserver/heimdall/tags
   heimdall: v2.7.6-ls326
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
-  jellyfin: 10.11.1
+  jellyfin: 10.11.2
   jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/joplin/server/tags
   joplin_server: 3.4.3
@@ -69,7 +69,7 @@ bookshelf_const_version:    # <- Last update: 2025-10-30
   jotty: 1.9.2
   jotty_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
-  mealie: v3.3.2
+  mealie: v3.4.0
   mealie_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/neosmemo/memos/tags
   # IMPORTANT:
@@ -99,9 +99,9 @@ bookshelf_const_version:    # <- Last update: 2025-10-30
   portainer_agent: 2.35.0-alpine
   portainer_agent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.2-r3-ls422
+  qbittorrent: 5.1.2-r3-ls423
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
-  silverbullet: 2.1.9
+  silverbullet: 2.2.1
   # https://hub.docker.com/r/rnwood/smtp4dev/tags?name=v
   smtp4dev: v3.10
   smtp4dev_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
