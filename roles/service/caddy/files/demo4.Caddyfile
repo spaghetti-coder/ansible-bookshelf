@@ -18,6 +18,8 @@
     propagation_delay 120s
   }
 
+  # ~~~~~ HANDLERS ~~~~~
+
   handle {
     reverse_proxy https://{env.PVE_IP}:8006 {
       transport http {

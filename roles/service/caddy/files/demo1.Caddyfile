@@ -1,6 +1,8 @@
 test.local, *.test.local {
   tls /etc/ssl/private/test.local.pem /etc/ssl/private/test.local.pem
 
+  # ~~~~~ HANDLERS ~~~~~
+
   @api host api.test.local
   handle @api {
     reverse_proxy localhost:8081

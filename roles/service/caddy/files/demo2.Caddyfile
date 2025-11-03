@@ -10,6 +10,8 @@
     propagation_delay 120s
   }
 
+  # ~~~~~ HANDLERS ~~~~~
+
   @api host api.{env.DESEC_BASE}
   handle @api {
     reverse_proxy localhost:8081

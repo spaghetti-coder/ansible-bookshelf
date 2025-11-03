@@ -10,6 +10,8 @@
     propagation_delay 120s
   }
 
+  # ~~~~~ HANDLERS ~~~~~
+
   @nginxProxy host {env.DESEC_BASE} *.{env.DESEC_BASE}
   handle @nginxProxy {
     # Port 80 when they are in the same internal network
