@@ -406,7 +406,12 @@ caddy_modules:          # https://caddyserver.com/docs/modules/
 caddy_cert_bundles:
   - text: "{{ lookup('file', 'demo1.bundle.pem.b64') | b64decode }}"
     name: test.local.pem    # <- Will land in /etc/ssl/private/test.local.pem
-caddy_caddyfile: "{{ lookup('file', 'demo1.Caddyfile') }}"
+# Can be string or list. Ex.:
+#   caddy_caddyfile: "{{ lookup('file', 'demo1.Caddyfile') }}"
+#   caddy_caddyfile: ["{{ lookup('file', 'demo1.Caddyfile') }}"]
+caddy_caddyfile:
+  - "{{ lookup('file', 'demo1.Caddyfile') }}"   # (REQUIRED) At least one
+  # - "{{ lookup('file', 'demo2.Caddyfile') }}"
 caddy_host_net: false
 # Port settings only get applied with caddy_host_net == false
 # NOTE: Avoid port conflicts with other reverse proxies
@@ -423,6 +428,17 @@ caddy_secrets_env: |      # "{{ lookup('template', playbook_dir + '/resources/ca
   # Can be used to pass secret values to Caddyfile
   # ----------
   # DESEC_TOKEN=123qwerty456
+# ----------
+# The following settings configure Caddy to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+caddy_tailscaled: false
+caddy_ts_version:          # Leave blank to leverage bookshelf configuration
+caddy_ts_service_name: "{{ caddy_service_name }}-ts"
+caddy_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+caddy_ts_hostname: "{{ caddy_service_name }}"
+caddy_ts_auth_key:
 
 # =======================
 #       CODE-SERVER
@@ -613,8 +629,9 @@ gatus_vhost: "{{ gatus_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 gatus_web_ui_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
 gatus_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
-# Can be string. Ex.:
+# Can be string or list. Ex.:
 #   gatus_config: "{{ lookup('file', 'demo.yaml') }}"
+#   gatus_config: ["{{ lookup('file', 'demo.yaml') }}"]
 gatus_config:
   - "{{ lookup('file', 'demo.yaml') }}"   # <- (REQUIRED) At least one@
   - |

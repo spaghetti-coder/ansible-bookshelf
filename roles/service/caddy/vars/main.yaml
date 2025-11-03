@@ -1,3 +1,4 @@
 ---
 caddy_version_int: "{{ caddy_version | default(bookshelf_const_version.caddy, true) }}"
 caddy_cert_bundles_int: "{{ caddy_cert_bundles | default([], true) }}"
+caddy_web_ui_port_int: 443

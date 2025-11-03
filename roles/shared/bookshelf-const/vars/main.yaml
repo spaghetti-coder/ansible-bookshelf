@@ -35,6 +35,7 @@ bookshelf_const_version:    # <- Last update: 2025-11-03
   blinko_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/_/caddy/tags
   caddy: 2.10.2
+  caddy_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
   code_server: v4.105.1
   # https://github.com/fccview/cronmaster/pkgs/container/cronmaster

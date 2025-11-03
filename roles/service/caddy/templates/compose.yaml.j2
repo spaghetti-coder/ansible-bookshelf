@@ -2,6 +2,11 @@
 {% set ports_map = caddy_ports | default([], true) %}
 {% set ports_enabled = (not caddy_host_net) and (ports_map | length > 0) %}
 ---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = caddy_ts_version | default(bookshelf_const_version.caddy_tailscale, true),
+  ts_name = caddy_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
 services:
   caddy:
     build:
@@ -16,9 +21,16 @@ services:
     volumes:
       - ./{{ certs_dir | basename }}:/etc/ssl/private
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./{{ caddies_dir | basename }}:/caddies
       - "{{ conf_dir }}/config:/config"
       - "{{ conf_dir }}/config:/data"
     user: "{{ user_uid }}:{{ user_gid }}"
+{% if caddy_tailscaled %}
+    network_mode: "service:tailscale"
+
+  tailscale:
+    <<: *tailscale
+{% endif %}{# caddy_tailscaled #}
     hostname: "{{ caddy_hostname }}"
 {% if ports_enabled %}{#            <- PORTS START #}
     ports:

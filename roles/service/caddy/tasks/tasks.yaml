@@ -11,6 +11,7 @@
     conf_dir: "{{ caddy_conf_dir }}"
     build_dir: "{{ compose_dir }}/build"
     certs_dir: "{{ compose_dir }}/ssl"
+    caddies_dir: "{{ compose_dir }}/caddies"
     service_state: "{{ caddy_enabled | ternary('present', 'absent') }}"
     the_user: "{{ getent_passwd[caddy_owner] }}"
     user_uid: "{{ the_user.1 }}"
@@ -21,7 +22,12 @@
         path: "{{ item }}"
         state: directory
         mode: '0700'
-      loop: ["{{ compose_dir }}", "{{ conf_dir }}/config", "{{ build_dir }}", "{{ certs_dir }}"]
+      loop:
+        - "{{ compose_dir }}"
+        - "{{ conf_dir }}/config"
+        - "{{ build_dir }}"
+        - "{{ certs_dir }}"
+        - "{{ caddies_dir }}"
 
     - name: Create compose files
       ansible.builtin.template:
@@ -29,7 +35,8 @@
         dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
       loop:
-        - Caddyfile     # <- Must be first
+        - Caddyfile
+        - ts-serve.json   # <- For the first 2 files order matters
         - compose.yaml
         - main.env
         - secret.env
@@ -44,15 +51,16 @@
         - Dockerfile    # <- Must be first
       register: caddy_build_files_result
 
+    # PROCESS CERTS
+
     - name: Create certs
       ansible.builtin.copy:
         content: "{{ item.text }}"
         dest: "{{ certs_dir }}/{{ item.name | basename }}"
         mode: '0600'
       loop: "{{ caddy_cert_bundles_int }}"
-      loop_control:
-        label: "{{ item.name }}"
-      register: caddy_certs_create_state
+      loop_control: { label: "{{ item.name }}" }
+      register: caddy_certs_create_result
 
     - name: List all cert files
       ansible.builtin.command:
@@ -66,9 +74,43 @@
         state: absent
       loop: "{{ obsolete }}"
       vars:
-        wanted: "{{ caddy_certs_create_state.results | map(attribute='dest') | map('basename') }}"
+        wanted: "{{ caddy_certs_create_result.results | map(attribute='dest') | map('basename') }}"
         obsolete: "{{ caddy_certs_current_state.stdout_lines | difference(wanted) | map('basename') }}"
-      register: caddy_certs_remove_state
+      register: caddy_certs_remove_result
+
+    # PROCESS CADDIES
+
+    - name: Create caddies
+      ansible.builtin.copy:
+        content: "{{ item }}"
+        dest: "{{ caddies_dir }}/{{ filename }}"
+        mode: '0600'
+      vars:
+        configs: "{{ (caddy_caddyfile | type_debug == 'list') | ternary(caddy_caddyfile, [caddy_caddyfile]) }}"
+        filename: "{{ '{:03}'.format(ix + 1) }}.Caddyfile"
+      loop: "{{ configs }}"
+      loop_control:
+        index_var: ix
+        label: "{{ filename }}"
+      register: caddy_caddies_create_result
+
+    - name: List all caddies
+      ansible.builtin.command:
+        argv: [ls, -1A, "{{ caddies_dir }}"]
+      changed_when: false
+      register: caddy_caddies_current_state
+
+    - name: Caddies cleanup
+      ansible.builtin.file:
+        path: "{{ caddies_dir }}/{{ item }}"
+        state: absent
+      loop: "{{ obsolete }}"
+      vars:
+        wanted: "{{ caddy_caddies_create_result.results | map(attribute='dest') | map('basename') }}"
+        obsolete: "{{ caddy_caddies_current_state.stdout_lines | difference(wanted) | map('basename') }}"
+      register: caddy_caddies_remove_result
+
+    # MANAGE SERVICE STATE
 
     - name: Apply service state
       community.docker.docker_compose_v2:
@@ -86,8 +128,11 @@
       when:
         - caddy_enabled and not caddy_service_state.changed
         - caddy_compose_files_result.results[0].changed
-          or caddy_certs_create_state.changed
-          or caddy_certs_remove_state.changed
+          or (caddy_tailscaled and caddy_compose_files_result.results[1].changed)
+          or caddy_certs_create_result.changed
+          or caddy_certs_remove_result.changed
+          or caddy_caddies_create_result.changed
+          or caddy_caddies_remove_result.changed
 
 - name: Mark done
   ansible.builtin.set_fact:
