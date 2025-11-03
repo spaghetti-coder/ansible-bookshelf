@@ -8,6 +8,7 @@
   become_user: "{{ gatus_owner }}"
   vars:
     compose_dir: "{{ gatus_compose_dir | default(bookshelf_const_compose_dir + '/gatus', true) }}"
+    yaml_dir: "{{ compose_dir }}/config"
     conf_dir: "{{ gatus_conf_dir }}"
     service_state: "{{ gatus_enabled | ternary('present', 'absent') }}"
   block:
@@ -16,7 +17,7 @@
         path: "{{ item }}"
         state: directory
         mode: '0700'
-      loop: ["{{ compose_dir }}", "{{ conf_dir }}"]
+      loop: ["{{ compose_dir }}", "{{ yaml_dir }}", "{{ conf_dir }}"]
 
     - name: Create compose files
       ansible.builtin.template:
@@ -25,11 +26,40 @@
         mode: '0600'
       loop:
         - ts-serve.json   # <- Must be first
-        - config.yaml     # <- Must be second
         - compose.yaml
         - main.env
         - secret.env
       register: gatus_compose_files_result
+
+    - name: Create config files
+      ansible.builtin.copy:
+        content: "{{ item }}"
+        dest: "{{ yaml_dir }}/{{ filename }}"
+        mode: '0600'
+      vars:
+        configs: "{{ (gatus_config | type_debug == 'list') | ternary(gatus_config, [gatus_config]) }}"
+        filename: "config-{{ '{:03}'.format(ix + 1) }}.yaml"
+      loop: "{{ configs }}"
+      loop_control:
+        index_var: ix
+        label: "{{ filename }}"
+      register: gatus_config_create_result
+
+    - name: List all config files
+      ansible.builtin.command:
+        argv: [ls, -1A, "{{ yaml_dir }}"]
+      changed_when: false
+      register: gatus_config_current_state
+
+    - name: Config cleanup
+      ansible.builtin.file:
+        path: "{{ yaml_dir }}/{{ item }}"
+        state: absent
+      loop: "{{ obsolete }}"
+      vars:
+        wanted: "{{ gatus_config_create_result.results | map(attribute='dest') | map('basename') }}"
+        obsolete: "{{ gatus_config_current_state.stdout_lines | difference(wanted) | map('basename') }}"
+      register: gatus_config_remove_result
 
     - name: Apply service state
       community.docker.docker_compose_v2:
@@ -46,7 +76,8 @@
       when:
         - gatus_enabled and not gatus_service_state.changed
         - (gatus_tailscaled and gatus_compose_files_result.results[0].changed)
-          or gatus_compose_files_result.results[1].changed
+          or gatus_config_create_result.changed
+          or gatus_config_remove_result.changed
 
     - name: Create note
       ansible.builtin.import_role: { name: bookshelf-note }

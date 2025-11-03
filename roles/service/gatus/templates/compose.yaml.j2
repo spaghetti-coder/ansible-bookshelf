@@ -17,7 +17,7 @@ services:
       - ./main.env
     volumes:
       - '{{ conf_dir }}/config:/data'
-      - ./config.yaml:/config/config.yaml
+      - "./{{ yaml_dir | basename }}:/config"
 {% if gatus_tailscaled %}
     network_mode: "service:tailscale"
 

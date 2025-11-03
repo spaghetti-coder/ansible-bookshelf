@@ -613,7 +613,16 @@ gatus_vhost: "{{ gatus_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 gatus_web_ui_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
 gatus_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
-gatus_config: "{{ lookup('file', 'demo.yaml') }}"   # <- (REQUIRED) Replace with yours
+# Can be string. Ex.:
+#   gatus_config: "{{ lookup('file', 'demo.yaml') }}"
+gatus_config:
+  - "{{ lookup('file', 'demo.yaml') }}"   # <- (REQUIRED) At least one@
+  - |
+    endpoints:
+      - name: Dahoo (demo)
+        group: Demos
+        url: "https://yahoo.com"
+        conditions: ["[STATUS] >= 200", "[STATUS] < 400"]
 # Optional extra env vars, will affect both Gatus and Tailscale.
 gatus_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/gatus.env.j2') }}"
   # Gatus allows $ENV_VAR in the config files
