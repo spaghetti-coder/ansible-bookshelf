@@ -25,7 +25,11 @@ services:
       - "{{ conf_dir }}/config:/config"
       - "{{ conf_dir }}/config:/data"
     user: "{{ user_uid }}:{{ user_gid }}"
-{% if caddy_tailscaled %}
+{% if not caddy_tailscaled %}
+    # https://hub.docker.com/_/caddy#linux-capabilities
+    cap_add:          # If tailscaled, net_admin will come from TS container
+      - NET_ADMIN
+{% else %}
     network_mode: "service:tailscale"
 
   tailscale:

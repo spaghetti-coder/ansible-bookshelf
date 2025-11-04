@@ -477,10 +477,10 @@ caddy_owner: "{{ ansible_user_id }}"
 caddy_conf_dir: ~/conf/caddy
 caddy_service_name: caddy
 caddy_hostname: "{{ caddy_service_name }}"
-caddy_modules:          # https://caddyserver.com/docs/modules/
+caddy_modules:          # (OPTIONAL) https://caddyserver.com/docs/modules/
   # - github.com/caddy-dns/desec
+  # - github.com/mholt/caddy-l4
   # - github.com/caddy-dns/duckdns
-  # - github.com/caddy-dns/dynu
 caddy_cert_bundles:
   # - text: "{{ lookup('file', 'demo1.bundle.pem.b64') | b64decode }}"
   #   name: test.local.pem    # <- Will land in /etc/ssl/private/test.local.pem
@@ -496,6 +496,7 @@ caddy_host_net: false
 caddy_ports:            # (OPTIONAL) HOST:CONTAINER ports mapping
   - 80:80               # <- HTTP
   - 443:443             # <- HTTPS
+  - 3128:3128           # <- SPICE port
 caddy_vhost: "{{ caddy_service_name }}.domain.local"
 # Optional extra env vars
 caddy_extra_env: |      # "{{ lookup('template', playbook_dir + '/resources/caddy.env.j2') }}"

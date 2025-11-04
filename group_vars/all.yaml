@@ -399,10 +399,10 @@ caddy_owner: "{{ ansible_user_id }}"
 caddy_conf_dir: ~/conf/caddy
 caddy_service_name: caddy
 caddy_hostname: "{{ caddy_service_name }}"
-caddy_modules:          # https://caddyserver.com/docs/modules/
-  - github.com/caddy-dns/desec
+caddy_modules:          # (OPTIONAL) https://caddyserver.com/docs/modules/
+  # - github.com/caddy-dns/desec
+  # - github.com/mholt/caddy-l4
   # - github.com/caddy-dns/duckdns
-  # - github.com/caddy-dns/dynu
 caddy_cert_bundles:
   - text: "{{ lookup('file', 'demo1.bundle.pem.b64') | b64decode }}"
     name: test.local.pem    # <- Will land in /etc/ssl/private/test.local.pem

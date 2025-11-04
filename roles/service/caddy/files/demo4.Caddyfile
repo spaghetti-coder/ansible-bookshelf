@@ -1,6 +1,6 @@
 {
   layer4 {
-		{env.DESEC_HOST}:3128 {
+		0.0.0.0:3128 {
       route {
         proxy {env.PVE_IP}:3128
       }
@@ -8,15 +8,8 @@
   }
 }
 
-{env.DESEC_HOST} {
-  tls {
-    dns desec {
-      token {env.DESEC_TOKEN}
-    }
-
-    propagation_timeout 600s
-    propagation_delay 120s
-  }
+{env.PVE_HOST} {
+  tls /etc/ssl/private/test.local.pem /etc/ssl/private/test.local.pem
 
   # ~~~~~ HANDLERS ~~~~~
 
