@@ -9,7 +9,7 @@
 }
 
 {env.PVE_HOST} {
-  tls /etc/ssl/private/test.local.pem /etc/ssl/private/test.local.pem
+  tls /etc/ssl/private/domain.local.pem /etc/ssl/private/domain.local.pem
 
   # ~~~~~ HANDLERS ~~~~~
 

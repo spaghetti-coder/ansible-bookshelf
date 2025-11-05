@@ -405,7 +405,7 @@ caddy_modules:          # (OPTIONAL) https://caddyserver.com/docs/modules/
   # - github.com/caddy-dns/duckdns
 caddy_cert_bundles:
   - text: "{{ lookup('file', 'demo1.bundle.pem.b64') | b64decode }}"
-    name: test.local.pem    # <- Will land in /etc/ssl/private/test.local.pem
+    name: domain.local.pem    # <- Will land in /etc/ssl/private/domain.local.pem
 # Can be string or list. Ex.:
 #   caddy_caddyfile: "{{ lookup('file', 'demo1.Caddyfile') }}"
 #   caddy_caddyfile: ["{{ lookup('file', 'demo1.Caddyfile') }}"]
@@ -1103,7 +1103,18 @@ nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
 nginx_proxy_ports:          # (OPTIONAL) HOST:CONTAINER ports mapping
   - "{{ service_port.nginx_proxy_http }}:80"  # <- HTTP
   # - 443:443                                   # <- HTTPS
-nginx_proxy_certs_dir:      # Path to certs on the managed machine. Works paired with HTTPS
+# See:
+#   * https://github.com/nginx-proxy/nginx-proxy/blob/main/docs/README.md#ssl-support
+#   * https://github.com/nginx-proxy/nginx-proxy/blob/main/docs/README.md#wildcard-certificates
+nginx_proxy_cert_bundles:   # (OPTIONAL)
+  - text: "{{ lookup('file', 'domain.local.bundle.pem.b64') | b64decode }}"
+    domain: domain.local
+# Optional extra env vars
+nginx_proxy_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/nginx-proxy.env.j2') }}"
+  # References:
+  #   * https://github.com/nginx-proxy/nginx-proxy/blob/main/docs/README.md#proxy-container
+  # ----------
+  HTTPS_METHOD=noredirect
 
 # ====================
 #       OLIVETIN

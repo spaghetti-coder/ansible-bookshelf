@@ -20,7 +20,7 @@ caddy_modules:          # (OPTIONAL) https://caddyserver.com/docs/modules/
   # - github.com/caddy-dns/duckdns
 caddy_cert_bundles:
   # - text: "{{ lookup('file', 'demo1.bundle.pem.b64') | b64decode }}"
-  #   name: test.local.pem    # <- Will land in /etc/ssl/private/test.local.pem
+  #   name: domain.local.pem    # <- Will land in /etc/ssl/private/domain.local.pem
 # Can be string or list. Ex.:
 #   caddy_caddyfile: "{{ lookup('file', 'demo1.Caddyfile') }}"
 #   caddy_caddyfile: ["{{ lookup('file', 'demo1.Caddyfile') }}"]

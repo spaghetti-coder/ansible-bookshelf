@@ -11,18 +11,18 @@ See referenced files in the role.
 caddy_modules:              # <- Not needed for cert files
 caddy_cert_bundles:
   - text: "{{ lookup('file', 'demo1.bundle.pem.b64') | b64decode }}"
-    name: test.local.pem    # <- Will land in /etc/ssl/private/test.local.pem
+    name: domain.local.pem  # <- Will land in /etc/ssl/private/domain.local.pem
 caddy_caddyfile: "{{ lookup('file', 'demo1.Caddyfile') }}"
 # ...
 ```
 
-Certificate is base64 encoded to avoid github security warnings for exposed key file. The command to generate:
+Certificate is base64 encoded to avoid github quacking for exposed key file. The command to generate:
 
 ```sh
 openssl req -x509 -days 3650 -noenc -keyout /dev/stdout -out /dev/stdout \
-  -subj "/CN=test.local" \
-  -addext "subjectAltName=DNS:test.local,DNS:*.test.local" \
-| base64 >./demo1.bundle.pem
+  -subj "/CN=domain.local" \
+  -addext "subjectAltName=DNS:domain.local,DNS:*.domain.local" \
+| base64 >./demo1.bundle.pem.b64
 ```
 
 ## Using some dns module (deSEC as example)
@@ -68,14 +68,14 @@ caddy_modules:
   - github.com/mholt/caddy-l4
 caddy_cert_bundles:
   - text: "{{ lookup('file', 'demo1.bundle.pem.b64') | b64decode }}"
-    name: test.local.pem
+    name: domain.local.pem
 caddy_caddyfile: "{{ lookup('file', 'demo4.Caddyfile') }}"
 caddy_ports:
   - 80:80
   - 443:443
   - 3128:3128                 # <- SPICE port
 caddy_extra_env:
-  PVE_HOST=pve.test.local
+  PVE_HOST=pve.domain.local
   PVE_IP=192.168.1.10
 # ...
 ```

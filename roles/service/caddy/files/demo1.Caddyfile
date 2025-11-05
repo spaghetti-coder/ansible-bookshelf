@@ -1,14 +1,14 @@
-test.local, *.test.local {
-  tls /etc/ssl/private/test.local.pem /etc/ssl/private/test.local.pem
+domain.local, *.domain.local {
+  tls /etc/ssl/private/domain.local.pem /etc/ssl/private/domain.local.pem
 
   # ~~~~~ HANDLERS ~~~~~
 
-  @api host api.test.local
+  @api host api.domain.local
   handle @api {
     reverse_proxy localhost:8081
   }
 
-  @home host *.test.local test.local
+  @home host *.domain.local domain.local
   handle @home {
     reverse_proxy localhost:8080
   }

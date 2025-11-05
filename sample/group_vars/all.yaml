@@ -483,7 +483,7 @@ caddy_modules:          # (OPTIONAL) https://caddyserver.com/docs/modules/
   # - github.com/caddy-dns/duckdns
 caddy_cert_bundles:
   # - text: "{{ lookup('file', 'demo1.bundle.pem.b64') | b64decode }}"
-  #   name: test.local.pem    # <- Will land in /etc/ssl/private/test.local.pem
+  #   name: domain.local.pem    # <- Will land in /etc/ssl/private/domain.local.pem
 # Can be string or list. Ex.:
 #   caddy_caddyfile: "{{ lookup('file', 'demo1.Caddyfile') }}"
 #   caddy_caddyfile: ["{{ lookup('file', 'demo1.Caddyfile') }}"]
@@ -1249,7 +1249,7 @@ nginx_proxy_manager_ts_auth_key:
 # Automated nginx proxy for Docker containers using docker-gen
 #   https://github.com/nginx-proxy/nginx-proxy
 # -----
-# VERSIONS: https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
+# VERSIONS: https://hub.docker.com/r/nginxproxy/nginx-proxy/tags?name=alpine
 # -----
 # Exposes:
 #   * nginx_proxy_net - proxy network name
@@ -1266,7 +1266,28 @@ nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
 nginx_proxy_ports:          # (OPTIONAL) HOST:CONTAINER ports mapping
   - 80:80                   # <- HTTP
   - 443:443                 # <- HTTPS
-nginx_proxy_certs_dir:      # Path to certs on the managed machine. Works paired with HTTPS
+# See:
+#   * https://github.com/nginx-proxy/nginx-proxy/blob/main/docs/README.md#ssl-support
+#   * https://github.com/nginx-proxy/nginx-proxy/blob/main/docs/README.md#wildcard-certificates
+nginx_proxy_cert_bundles:   # (OPTIONAL)
+  #   # Demo cert-key generated with:
+  #   #
+  #   #   openssl req -x509 -days 3650 -noenc -keyout /dev/stdout -out /dev/stdout \
+  #   #     -subj "/CN=domain.local" \
+  #   #     -addext "subjectAltName=DNS:domain.local,DNS:*.domain.local" \
+  #   #   | base64 >./domain.local.bundle.pem.b64
+  #   #
+  #   # The file is base64 encoded to avoid github quacking for exposed key file
+  # - text: "{{ lookup('file', 'domain.local.bundle.pem.b64') | b64decode }}"
+  #   # 2 copies of the same file will land in the certs directory
+  #   # under domain.local.crt and domain.local.key names
+  #   domain: domain.local
+# Optional extra env vars
+nginx_proxy_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/nginx-proxy.env.j2') }}"
+  # References:
+  #   * https://github.com/nginx-proxy/nginx-proxy/blob/main/docs/README.md#proxy-container
+  # ----------
+  # HTTPS_METHOD=noredirect
 
 # ====================
 #       OLIVETIN

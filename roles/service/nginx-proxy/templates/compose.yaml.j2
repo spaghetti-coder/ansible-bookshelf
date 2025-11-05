@@ -3,15 +3,15 @@
 ---
 services:
   nginx-proxy:
-    # https://hub.docker.com/r/jwilder/nginx-proxy/tags?name=alpine
-    image: jwilder/nginx-proxy:{{ version }}
+    # https://hub.docker.com/r/nginxproxy/nginx-proxy/tags?name=alpine
+    image: nginxproxy/nginx-proxy:{{ version }}
     container_name: "{{ nginx_proxy_service_name }}"
     restart: unless-stopped
+    env_file:
+      - ./main.env
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-{% if nginx_proxy_certs_dir %}
-      - {{ nginx_proxy_certs_dir }}:/etc/nginx/certs
-{% endif %}
+      - ./{{ certs_dir | basename }}:/etc/nginx/certs
     hostname: "{{ nginx_proxy_hostname }}"
     networks:
       - "{{ nginx_proxy_net }}"
