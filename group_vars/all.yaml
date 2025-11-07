@@ -1622,7 +1622,7 @@ vikunja_tailscale_auth_key:
 # * https://github.com/wg-easy/wg-easy/tree/production?tab=readme-ov-file#options
 # * https://github.com/wg-easy/wg-easy/blob/production/How_to_generate_an_bcrypt_hash.md
 # -----
-wg_easy_managed: "{{ factum_os_family in ['alpine'] }}"
+wg_easy_managed: true   # "{{ factum_os_family in ['alpine'] }}"
 wg_easy_enabled: true
 wg_easy_version:        # Leave blank to leverage bookshelf configuration
 wg_easy_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration

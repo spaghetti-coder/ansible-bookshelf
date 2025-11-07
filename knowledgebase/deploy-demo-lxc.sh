@@ -73,11 +73,10 @@ deploy_ve() (
     create_ve || return   # <- Create the VE
 
     # Configure VE (toggle with true / false)
-    true \
-      && profile_docker_ready  true \
-      && profile_vaapi         false \
-      && profile_vpn_ready     false \
-    || return
+    profile_disable_apparmor true || return  # <- Fix docker: https://github.com/opencontainers/runc/issues/4968
+    profile_docker_ready true || return
+    profile_vaapi false || return
+    profile_vpn_ready false || return
 
     # Provisioning
     start_ve || return
@@ -518,6 +517,24 @@ deploy_ve_core() (
     echo "Done profile: ${FUNCNAME[0]}" >&2
   }
 
+  profile_disable_apparmor() {
+    # USAGE:
+    #   profile_disable_apparmor [true|false]  # <- Defaults to false
+
+    ${1-false} || return 0
+
+    local -a entries=("lxc.apparmor.profile: unconfined")
+    get_ve_option ostype | grep -qix 'ubuntu' && {
+      entries+=("lxc.mount.entry: /dev/null sys/module/apparmor/parameters/enabled none bind 0 0")
+    }
+
+    echo "Do profile: ${FUNCNAME[0]} ..." >&2
+      printf -- '%s\n' "${entries[@]}" | (
+        set -x; tee -a "/etc/pve/lxc/${VE_ID}.conf" >/dev/null
+      ) || return
+    echo "Done profile: ${FUNCNAME[0]}" >&2
+  }
+
   #
   # PROVISIONERS
   #
@@ -549,10 +566,10 @@ deploy_ve_core() (
 
   fix_locale() {
     echo "Do provision: ${FUNCNAME[0]} ..." >&2
-      if get_ve_option ostype | grep -qix '\(ubuntu\)'; then
+      if get_ve_option ostype | grep -qix '\(ubuntu\|debian\)'; then
         lxc-attach -n "${VE_ID}" -- /bin/sh -c "
           set -x
-          sed -i "'s/^\s*#\s*\(en_US\.UTF-8\)/\1/'" /etc/locale.gen && locale-gen
+          sed -i '"'s/^\s*#\s*\(en_US\.UTF-8\)/\1/'"' /etc/locale.gen && locale-gen
         " || return
       fi
     echo "Done provision: ${FUNCNAME[0]}" >&2

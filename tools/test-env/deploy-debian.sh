@@ -82,11 +82,10 @@ deploy_ve() (
     create_ve || return   # <- Create the VE
 
     # Configure VE (toggle with true / false)
-    true \
-      && profile_docker_ready  true \
-      && profile_vaapi         true \
-      && profile_vpn_ready     true \
-    || return
+    profile_disable_apparmor true || return  # <- Fix docker: https://github.com/opencontainers/runc/issues/4968
+    profile_docker_ready true || return
+    profile_vaapi true || return
+    profile_vpn_ready true || return
 
     # Provisioning
     start_ve || return
