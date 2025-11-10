@@ -11,13 +11,16 @@
     yaml_dir: "{{ compose_dir }}/config"
     conf_dir: "{{ gatus_conf_dir }}"
     service_state: "{{ gatus_enabled | ternary('present', 'absent') }}"
+    the_user: "{{ getent_passwd[gatus_owner] }}"
+    user_uid: "{{ the_user.1 }}"
+    user_gid: "{{ the_user.2 }}"
   block:
     - name: Create compose directories
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
         mode: '0700'
-      loop: ["{{ compose_dir }}", "{{ yaml_dir }}", "{{ conf_dir }}"]
+      loop: ["{{ compose_dir }}", "{{ yaml_dir }}", "{{ conf_dir }}/config"]
 
     - name: Create compose files
       ansible.builtin.template:
@@ -37,6 +40,7 @@
         dest: "{{ yaml_dir }}/{{ filename }}"
         mode: '0600'
       vars:
+        # Default + User provided
         configs: "{{ (gatus_config | type_debug == 'list') | ternary(gatus_config, [gatus_config]) }}"
         filename: "config-{{ '{:03}'.format(ix + 1) }}.yaml"
       loop: "{{ configs }}"

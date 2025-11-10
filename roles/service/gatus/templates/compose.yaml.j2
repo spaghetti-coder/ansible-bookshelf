@@ -18,6 +18,7 @@ services:
     volumes:
       - '{{ conf_dir }}/config:/data'
       - "./{{ yaml_dir | basename }}:/config"
+    user: "{{ user_uid }}:{{ user_gid }}"
 {% if gatus_tailscaled %}
     network_mode: "service:tailscale"
 

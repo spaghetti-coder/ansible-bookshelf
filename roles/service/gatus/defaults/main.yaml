@@ -23,7 +23,8 @@ gatus_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
 #   gatus_config: "{{ lookup('file', 'demo.yaml') }}"
 #   gatus_config: ["{{ lookup('file', 'demo.yaml') }}"]
 gatus_config:
-  - "{{ lookup('file', 'demo.yaml') }}"   # <- (REQUIRED) At least one
+  - "{{ lookup('file', 'base.yaml') }}"   # <- (OPTIONAL) Base configuration
+  - "{{ lookup('file', 'demo.yaml') }}"   # <- (REQUIRED) At least one with endpoints
   # - |
   #   endpoints:
   #     - name: Dahoo (demo)

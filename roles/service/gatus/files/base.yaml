@@ -1,4 +1,4 @@
-{{ gatus_config }}
+---
 ui:
   default-sort-by: group
   dark-mode: true
