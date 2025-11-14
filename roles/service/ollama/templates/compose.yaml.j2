@@ -1,0 +1,44 @@
+{% set version = ollama_version | default(bookshelf_const_version.ollama, true) %}
+{% set tcp_port = ollama_tcp_port | default(bookshelf_const_port.ollama.tcp, true) %}
+---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = ollama_ts_version | default(bookshelf_const_version.ollama_tailscale, true),
+  ts_name = ollama_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
+services:
+  {{ ollama_service_name }}:
+    # https://hub.docker.com/r/ollama/ollama/tags
+    image: ollama/ollama:{{ version }}
+    container_name: {{ ollama_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./secret.env
+      - ./main.env
+    volumes:
+      - '{{ conf_dir }}/config:/root/.ollama'
+{% if ollama_tailscaled %}
+    network_mode: "service:{{ ollama_ts_service_name }}"
+
+  {{ ollama_ts_service_name }}:
+    <<: *tailscale
+{% endif %}
+    hostname: {{ ollama_hostname }}
+{% if tcp_port | int > -1 %}
+    ports: [{{ tcp_port }}:{{ ollama_tcp_port_int }}]
+{% else %}
+    # ports: [ {{ bookshelf_const_port.ollama.tcp }}:{{ ollama_tcp_port_int }} ]
+{% endif %}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge
+{% else %}
+    networks:
+      - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ ollama_vhost }}
+      - VIRTUAL_PORT={{ ollama_tcp_port_int }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{#                       <- NETMODE END #}

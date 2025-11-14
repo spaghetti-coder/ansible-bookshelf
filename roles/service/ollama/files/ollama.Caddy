@@ -1,0 +1,14 @@
+ollama.domain.local {
+  # Protect access to ollama with bearer token
+  #   https://github.com/ollama/ollama/issues/849#issuecomment-2879102916
+	@requireAuth {
+    # Generate token with:
+    #   echo VALUE | base64
+    # After deployment validate with
+    #   curl SITE_PLACEHOLDER -H "Authorization: Bearer OLLAMA_API_TOKEN_PLACEHOLDER"
+		not header Authorization "Bearer {env.API_KEY}"
+	}
+	respond @requireAuth "Unauthorized" 401
+
+	reverse_proxy ollama:11434    # <- Assuming Caddy in the same docker network
+}

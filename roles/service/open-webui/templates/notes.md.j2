@@ -1,0 +1,7 @@
+## Open WebUI
+{% if open_webui_tailscaled %}
+
+* Disable tailscale machine expiry:
+  1. Go to https://tailscale.com/admin/machines
+  2. `{{ open_webui_ts_hostname }} *** > Disable key expiry`
+{% endif %}

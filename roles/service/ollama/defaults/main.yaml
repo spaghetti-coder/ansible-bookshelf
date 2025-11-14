@@ -1,0 +1,38 @@
+---
+# Get up and running with OpenAI gpt-oss, DeepSeek-R1,
+# Gemma 3 and other models.
+#   https://ollama.com/
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/ollama/ollama/tags
+#   * => See tailscale role versions
+# -----
+# NOTE:
+#   Ollama doesn't support basic auth. It can be handled
+#   by Caddy (see in roles files):
+#   https://github.com/ollama/ollama/issues/849#issuecomment-2879102916
+# -----
+ollama_managed: false
+ollama_enabled: false
+ollama_version:         # Leave blank to leverage bookshelf configuration
+ollama_compose_dir:     # Unless you know ..., leave blank to leverage bookshelf configuration
+ollama_owner: "{{ ansible_user_id }}"
+ollama_conf_dir: ~/conf/ollama
+ollama_service_name: ollama
+ollama_hostname: "{{ ollama_service_name }}"
+ollama_vhost: "{{ ollama_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+ollama_tcp_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
+# Optional extra env vars, will affect both Ollama and Tailscale.
+ollama_extra_env:       # "{{ lookup('template', playbook_dir + '/resources/ollama.env.j2') }}"
+# ----------
+# The following settings configure Ollama to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+ollama_tailscaled: false
+ollama_ts_version:          # Leave blank to leverage bookshelf configuration
+ollama_ts_service_name: "{{ ollama_service_name }}-ts"
+ollama_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+ollama_ts_hostname: "{{ ollama_service_name }}"
+ollama_ts_auth_key:

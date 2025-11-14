@@ -1,0 +1,36 @@
+---
+# User-friendly AI Interface (Supports Ollama, OpenAI API, ...)
+#   https://openwebui.com/
+# -----
+# VERSIONS:
+#   * https://github.com/open-webui/open-webui/releases
+#   * => See tailscale role versions
+# -----
+open_webui_managed: false
+open_webui_enabled: false
+open_webui_version:         # Leave blank to leverage bookshelf configuration
+open_webui_compose_dir:     # Unless you know ..., leave blank to leverage bookshelf configuration
+open_webui_owner: "{{ ansible_user_id }}"
+open_webui_conf_dir: ~/conf/open-webui
+open_webui_service_name: open-webui
+open_webui_hostname: "{{ open_webui_service_name }}"
+open_webui_vhost: "{{ open_webui_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+open_webui_web_ui_port:     # Leave blank for bookshelf default, or '-1' to not expose the port
+# Optional extra env vars, will affect both Open WebUI and Tailscale.
+open_webui_extra_env: |     # "{{ lookup('template', playbook_dir + '/resources/open-webui.env.j2') }}"
+  # References:
+  #   * https://docs.openwebui.com/getting-started/env-configuration/
+  # ----------
+  # OLLAMA_BASE_URL=http://ollama.domain.local
+# ----------
+# The following settings configure Open WebUI to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+open_webui_tailscaled: false
+open_webui_ts_version:          # Leave blank to leverage bookshelf configuration
+open_webui_ts_service_name: "{{ open_webui_service_name }}-ts"
+open_webui_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+open_webui_ts_hostname: "{{ open_webui_service_name }}"
+open_webui_ts_auth_key:

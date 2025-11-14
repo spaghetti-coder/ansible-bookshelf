@@ -90,6 +90,12 @@ bookshelf_const_version:    # <- Last update: 2025-11-10
   nginx_proxy_manager_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/jamesread/olivetin/tags
   olivetin: 2025.11.06
+  # https://hub.docker.com/r/ollama/ollama/tags
+  ollama: 0.12.11
+  ollama_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://github.com/open-webui/open-webui/releases
+  open_webui: v0.6.36
+  open_webui_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
   pairdrop: v1.11.2-ls126
   pairdrop_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
@@ -154,7 +160,7 @@ bookshelf_const_port:
   gatus:
     web_ui: 8111
   gokapi:
-    web_ui: 8113        # <- Last (8081+)
+    web_ui: 8113
   gotify:
     web_ui: 8085
   hedgedoc:
@@ -179,6 +185,10 @@ bookshelf_const_port:
     web_ui: 81
   olivetin:
     web_ui: 8096
+  ollama:
+    tcp: 8114
+  open_webui:
+    web_ui: 8115        # <- Last (8081+)
   pairdrop:
     web_ui: 8104
   portainer:

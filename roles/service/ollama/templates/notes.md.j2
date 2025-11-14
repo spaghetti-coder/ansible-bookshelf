@@ -1,0 +1,7 @@
+## Ollama
+{% if ollama_tailscaled %}
+
+* Disable tailscale machine expiry:
+  1. Go to https://tailscale.com/admin/machines
+  2. `{{ ollama_ts_hostname }} *** > Disable key expiry`
+{% endif %}

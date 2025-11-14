@@ -187,6 +187,14 @@
       tags: [olivetin, upgradable]
       when: olivetin_managed | default(false)
 
+    - role: ollama
+      tags: [ollama, upgradable]
+      when: ollama_managed | default(false)
+
+    - role: open-webui
+      tags: [open-webui, upgradable]
+      when: open_webui_managed | default(false)
+
     - role: pairdrop
       tags: [pairdrop, upgradable]
       when: pairdrop_managed | default(false)

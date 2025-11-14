@@ -1,0 +1,44 @@
+{% set version = open_webui_version | default(bookshelf_const_version.open_webui, true) %}
+{% set web_ui_port = open_webui_web_ui_port | default(bookshelf_const_port.open_webui.web_ui, true) %}
+---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = open_webui_ts_version | default(bookshelf_const_version.open_webui_tailscale, true),
+  ts_name = open_webui_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
+services:
+  {{ open_webui_service_name }}:
+    # https://github.com/open-webui/open-webui/releases
+    image: ghcr.io/open-webui/open-webui:{{ version }}
+    container_name: {{ open_webui_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./secret.env
+      - ./main.env
+    volumes:
+      - '{{ conf_dir }}/config:/app/backend/data'
+{% if open_webui_tailscaled %}
+    network_mode: "service:{{ open_webui_ts_service_name }}"
+
+  {{ open_webui_ts_service_name }}:
+    <<: *tailscale
+{% endif %}
+    hostname: {{ open_webui_hostname }}
+{% if web_ui_port | int > -1 %}
+    ports: [{{ web_ui_port }}:{{ open_webui_web_ui_port_int }}]
+{% else %}
+    # ports: [ {{ bookshelf_const_port.open_webui.web_ui }}:{{ open_webui_web_ui_port_int }} ]
+{% endif %}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge
+{% else %}
+    networks:
+      - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ open_webui_vhost }}
+      - VIRTUAL_PORT={{ open_webui_web_ui_port_int }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{#                       <- NETMODE END #}
