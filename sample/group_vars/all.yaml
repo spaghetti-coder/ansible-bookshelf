@@ -913,6 +913,55 @@ heimdall_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 #   https://{{ heimdall_vhost }}
 heimdall_base_url:      # (REQUIRED)
 
+# =================
+#       HOMER
+# =================
+# A very simple static homepage for your server.
+#   https://github.com/bastienwirtz/homer
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/b4bz/homer/tags
+#   * => See tailscale role versions
+# -----
+homer_managed: false
+homer_enabled: false
+homer_version:          # Leave blank to leverage bookshelf configuration
+homer_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
+homer_conf_dir: ~/conf/homer
+homer_owner: "{{ ansible_user_id }}"
+homer_service_name: homer
+homer_hostname: "{{ homer_service_name }}"
+homer_vhost: "{{ homer_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+homer_web_ui_port:      # Leave blank for bookshelf default, or '-1' to not expose the port
+# Names extensions must be 'yml', not 'yaml'
+homer_conffiles:
+  # - "{{ lookup('file', 'demo1.yaml') }}"        # <- First will always land in /www/assets/config.yml
+  # - text: "{{ lookup('file', 'demo2.yaml') }}"  # <- After first required to bo dict
+  #   name: page2.yml                             # <- Will land in /www/assets/page2.yml
+# Optional extra env vars, will affect both Homer and Tailscale.
+homer_extra_env: |      # "{{ lookup('template', playbook_dir + '/resources/homer.env.j2') }}"
+  # References:
+  #   * https://github.com/bastienwirtz/homer#get-started
+  # NOTE: INIT_ASSETS is internally on, better not touch it
+  # ----------
+  # PORT=1984
+homer_secrets_env: |      # "{{ lookup('template', playbook_dir + '/resources/homer.secret.env.j2') }}"
+  # Can be used to pass secret values to the config file
+  # ----------
+  # MY_SECRET=123
+# ----------
+# The following settings configure Homer to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+homer_tailscaled: false
+homer_ts_version:          # Leave blank to leverage bookshelf configuration
+homer_ts_service_name: "{{ homer_service_name }}-ts"
+homer_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+homer_ts_hostname: "{{ homer_service_name }}"
+homer_ts_auth_key:
+
 # ====================
 #       JELLYFIN
 # ====================

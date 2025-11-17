@@ -1,0 +1,48 @@
+{% set version = homer_version | default(bookshelf_const_version.homer, true) %}
+{% set web_ui_port = homer_web_ui_port | default(bookshelf_const_port.homer.web_ui, true) %}
+---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = homer_ts_version | default(bookshelf_const_version.homer_tailscale, true),
+  ts_name = homer_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
+services:
+  {{ homer_service_name }}:
+    # https://hub.docker.com/r/b4bz/homer/tags
+    image: b4bz/homer:{{ version }}
+    container_name: {{ homer_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./secret.env
+      - ./main.env
+{% if configs | length > 0 %}
+    volumes:
+{% for config in configs %}
+      - ./config/{{ config.name }}:/www/assets/{{ config.name }}
+{% endfor %}
+{% endif %}
+{% if homer_tailscaled %}
+    network_mode: "service:{{ homer_ts_service_name }}"
+
+  {{ homer_ts_service_name }}:
+    <<: *tailscale
+{% endif %}
+    hostname: {{ homer_hostname }}
+{% if web_ui_port | int > -1 %}
+    ports: [{{ web_ui_port }}:{{ homer_web_ui_port_int }}]
+{% else %}
+    # ports: [ {{ bookshelf_const_port.homer.web_ui }}:{{ homer_web_ui_port_int }} ]
+{% endif %}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge
+{% else %}
+    networks:
+      - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ homer_vhost }}
+      - VIRTUAL_PORT={{ homer_web_ui_port_int }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{#                       <- NETMODE END #}

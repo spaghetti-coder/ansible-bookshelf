@@ -147,6 +147,10 @@
       tags: [heimdall, upgradable]
       when: heimdall_managed | default(false)
 
+    - role: homer
+      tags: [homer, upgradable]
+      when: homer_managed | default(false)
+
     - role: jellyfin
       tags: [jellyfin, upgradable]
       when: jellyfin_managed | default(false)

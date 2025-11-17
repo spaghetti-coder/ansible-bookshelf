@@ -1,0 +1,96 @@
+---
+- name: Docker
+  ansible.builtin.import_role: { name: docker }
+  vars: { docker_users: ["{{ homer_owner }}"] }
+
+- name: Compose
+  become: true
+  become_user: "{{ homer_owner }}"
+  vars:
+    compose_dir: "{{ homer_compose_dir | default(bookshelf_const_compose_dir + '/homer', true) }}"
+    conf_dir: "{{ homer_conf_dir }}"
+    service_state: "{{ homer_enabled | ternary('present', 'absent') }}"
+    # Normalize conffiles
+    confs_tmp1: "{{ homer_conffiles | default([], true) }}"
+    configs: "{{ (confs_tmp1 | length < 1) | ternary([],
+      [
+        (confs_tmp1[0] is mapping) | ternary(confs_tmp1[0], {'text': confs_tmp1[0]})
+        | combine({'name': 'config.yml'})
+      ] + confs_tmp1[1:] ) }}"
+  block:
+    - name: Create compose directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop: ["{{ compose_dir }}", "{{ conf_dir }}", "{{ compose_dir }}/config"]
+
+    - name: Create compose files
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
+        mode: '0600'
+      loop:
+        - ts-serve.json   # <- For the first 2 files order matters
+        - compose.yaml
+        - main.env
+        - secret.env
+      register: homer_compose_files_result
+
+    # PROCESS CONFFILES
+
+    - name: Create conffiles
+      ansible.builtin.copy:
+        content: "{{ item.text }}"
+        dest: "{{ compose_dir }}/config/{{ item.name }}"
+        mode: '0644'          # <- Must be readable by in-container user
+      loop: "{{ configs }}"
+      loop_control: { label: "{{ item.name }}" }
+      register: homer_conffiles_create_result
+
+    - name: List all conffiles
+      ansible.builtin.command:
+        argv: [ls, -1A, "{{ compose_dir }}/config"]
+      changed_when: false
+      register: homer_conffiles_current_state
+
+    - name: Conffiles cleanup
+      ansible.builtin.file:
+        path: "{{ compose_dir }}/config/{{ item }}"
+        state: absent
+      loop: "{{ obsolete }}"
+      vars:
+        wanted: "{{ homer_conffiles_create_result.results | map(attribute='dest') | map('basename') }}"
+        obsolete: "{{ homer_conffiles_current_state.stdout_lines | difference(wanted) | map('basename') }}"
+      register: homer_conffiles_remove_result
+
+    # MANAGE SERVICE STATE
+
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+        build: always
+      register: homer_service_state
+
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - homer_enabled and not homer_service_state.changed
+        - homer_compose_files_result.results[0].changed
+          or (homer_tailscaled and homer_compose_files_result.results[1].changed)
+          or homer_conffiles_create_result.changed
+          or homer_conffiles_remove_result.changed
+
+    - name: Create note
+      ansible.builtin.import_role: { name: bookshelf-note }
+      # noqa: var-naming[no-role-prefix]
+      vars: { src: notes.md.j2, dest: homer-service.md, present: "{{ homer_enabled }}" }
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    homer_done: true

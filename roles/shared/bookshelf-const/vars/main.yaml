@@ -60,6 +60,9 @@ bookshelf_const_version:    # <- Last update: 2025-11-15
   hedgedoc: 1.10.3-alpine
   # https://hub.docker.com/r/linuxserver/heimdall/tags
   heimdall: v2.7.6-ls327
+  # https://hub.docker.com/r/b4bz/homer/tags
+  homer: v25.11.1
+  homer_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
   jellyfin: 10.11.2
   jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
@@ -167,6 +170,8 @@ bookshelf_const_port:
     web_ui: 8101
   heimdall:
     web_ui: 8087
+  homer:
+    web_ui: 8116        # <- Last (8081+)
   jellyfin:
     web_ui: 8081
     service_discovery: 1900
@@ -188,7 +193,7 @@ bookshelf_const_port:
   ollama:
     tcp: 8114
   open_webui:
-    web_ui: 8115        # <- Last (8081+)
+    web_ui: 8115
   pairdrop:
     web_ui: 8104
   portainer:
