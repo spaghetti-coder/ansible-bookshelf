@@ -10,7 +10,7 @@
 services:
   syncthing:
     # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
-    image: linuxserver/syncthing:{{ version }}
+    image: lscr.io/linuxserver/syncthing:{{ version }}
     container_name: {{ syncthing_service_name }}
     restart: unless-stopped
     env_file:

@@ -9,7 +9,8 @@
 services:
   app:
     # https://hub.docker.com/r/gotify/server/tags
-    image: gotify/server:{{ version }}
+    # image: gotify/server:{{ version }}
+    image: ghcr.io/gotify/server:{{ version }}
     container_name: {{ gotify_service_name }}
     restart: unless-stopped
     env_file:

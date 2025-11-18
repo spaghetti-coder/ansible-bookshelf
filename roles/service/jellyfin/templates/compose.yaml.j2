@@ -12,7 +12,8 @@
 services:
   app:
     # https://hub.docker.com/r/linuxserver/jellyfin/tags
-    image: linuxserver/jellyfin:{{ version }}
+    # image: linuxserver/jellyfin:{{ version }}
+    image: lscr.io/linuxserver/jellyfin:{{ version }}
     container_name: {{ jellyfin_service_name }}
     restart: unless-stopped
     env_file:

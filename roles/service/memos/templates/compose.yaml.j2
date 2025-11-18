@@ -9,7 +9,8 @@
 services:
   app:
     # https://hub.docker.com/r/neosmemo/memos/tags
-    image: neosmemo/memos:{{ version }}
+    # image: neosmemo/memos:{{ version }}
+    image: ghcr.io/usememos/memos:{{ version }}
     container_name: {{ memos_service_name }}
     restart: unless-stopped
     env_file:

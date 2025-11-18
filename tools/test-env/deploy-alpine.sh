@@ -14,13 +14,6 @@
 #   * _devenv_config function itself must be exported
 #
 
-#
-# REQUIREMENTS:
-# * PVE host must have age installed
-# * For remote deployment execution host must have SSH access to PVE_HOST and
-#   age installed
-#
-
 . "$(dirname -- "${BASH_SOURCE[0]}")/../../knowledgebase/deploy-demo-lxc.sh"
 
 deploy_ve_config() {
@@ -29,13 +22,10 @@ deploy_ve_config() {
   # More config:
   # * deploy_ve.main   # <- Deployment flow + customizations
 
-  # Generate with:
-  #   THE_SCRIPT gen-age  # <- Prompts for passphrase
-  # Internally in the script decrypt encrypted by this AGE_KEY secrets with:
-  #   echo PLAIN_SECRET | THE_SCRIPT encrypt-secret `# => AGE_ENCRYPTED_SECRET` | decrypt_secret `# => PLAIN_SECRET`
-  AGE_KEY=""
-
-  PVE_HOST="${DEPLOY_VE_PVE_HOST}"
+  PVE_HOST="${DEPLOY_VE_PVE_HOST}"  # <- Only REQUIRED for remote deployment
+  REMOTE_EXPORTS+=(                 # <- Functions to be exported to remote PVE
+    _devenv_config
+  )
 
   # Best match from available templates: http://download.proxmox.com/images/system
   VE_TEMPLATE=alpine-3
@@ -47,10 +37,10 @@ deploy_ve_config() {
     --net0="name=eth0,bridge=vmbr0,ip=${DEPLOY_VE_ALPINE_IP},gw=${DEPLOY_VE_GW}"
     --storage="${DEPLOY_VE_STORAGE}"
     --hostname=ansible-alpine.test.home
-    --rootfs=20
+    --rootfs=40               # <- It's most space loaded
     --timezone=host
     --onboot=0
-    --memory=4096             # <- Due to heavy testing
+    --memory=6144             # <- Due to heavy testing
     --swap=512
     --cores=2
     --tags='ansible;test.home'
@@ -68,11 +58,6 @@ deploy_ve_config() {
     [user2_pass]="$(openssl passwd -6 -stdin <<< "${ANSIBLE_USER_PASS}")"
     [snapshot]="${DEPLOY_VE_SNAPSHOT}"
   )
-
-  # In case of remote deployment, the script copies only functions from the
-  # current script to PVE_HOST and executes them. In case you need to export
-  # more functions to use them here, add them to this array
-  PVE_COPY_FUNC=(_devenv_config)
 }
 
 deploy_ve() (
@@ -85,7 +70,7 @@ deploy_ve() (
     create_ve || return   # <- Create the VE
 
     # Configure VE (toggle with true / false)
-    profile_disable_apparmor true || return  # <- Fix docker: https://github.com/opencontainers/runc/issues/4968
+    # profile_disable_apparmor false || return  # <- Fix docker: https://github.com/opencontainers/runc/issues/4968
     profile_docker_ready true || return
     profile_vaapi true || return
     profile_vpn_ready true || return
@@ -96,54 +81,26 @@ deploy_ve() (
       install_ansible_prereqs || return
 
       # Custom provisioning
-      create_lxc_user1 || return
-      create_lxc_user2 || return
-    stop_ve || return   # <- To ensure changes applied on the next start
+      create_lxc_user "${EXTRAS[user1_name]}" "${EXTRAS[user1_uid]}" "${EXTRAS[user1_pass]}" || return
+      create_lxc_user "${EXTRAS[user2_name]}" "${EXTRAS[user2_uid]}" "${EXTRAS[user2_pass]}" || return
+    stop_ve || return     # <- To ensure changes applied on the next start
 
-    (set -x; pct snapshot "${VE_ID}" "${EXTRAS[snapshot]}") || return
-
-    # # To start VE immediately
-    # start_ve || return
+    (set -x; pct snapshot "${VE_ID}" "${EXTRAS[snapshot]}" >/dev/null) || return
+    # start_ve || return    # <- To start the VE immediately
   }
 
-  create_lxc_user1() {
-    # Demo provisioner
-    #
-    # * $VE_ID - LXC IC
-
-    local name="${EXTRAS[user1_name]}"
-    local pass; pass="$(decrypt_secret <<< "${EXTRAS[user1_pass]}")" || return
-
-    echo "Do provision: ${FUNCNAME[0]} ..." >&2
+  create_lxc_user() {
+    local name="${1}" uid="${2}" pass="${3}"
+    log_info "${FUNCNAME[0]} (${name}) ..."
       cat <<< "${name}:${pass}" | lxc-attach -n "${VE_ID}" -- /bin/sh -c "
         set -x
         apk add -q --update --no-cache shadow sudo \
-        && groupadd -g '${EXTRAS[user1_uid]}' '${name}' \
-        && useradd -g '${EXTRAS[user1_uid]}' -G wheel -u '${EXTRAS[user1_uid]}' -m '${name}' \
+        && groupadd -g '${uid}' '${name}' \
+        && useradd -g '${uid}' -G wheel -u '${uid}' -m '${name}' \
         && { echo '%wheel ALL=(ALL) ALL' | tee /etc/sudoers.d/wheel >/dev/null; } \
         && chpasswd -e
       " || return
-    echo "Done provision: ${FUNCNAME[0]}" >&2
-  }
-
-  create_lxc_user2() {
-    # Demo provisioner
-    #
-    # * $VE_ID - LXC IC
-
-    local name="${EXTRAS[user2_name]}"
-    local pass; pass="$(decrypt_secret <<< "${EXTRAS[user2_pass]}")" || return
-
-    echo "Do provision: ${FUNCNAME[0]} ..." >&2
-      cat <<< "${name}:${pass}" | lxc-attach -n "${VE_ID}" -- /bin/sh -c "
-        set -x
-        apk add -q --update --no-cache shadow sudo \
-        && groupadd -g '${EXTRAS[user2_uid]}' '${name}' \
-        && useradd -g '${EXTRAS[user2_uid]}' -G wheel -u '${EXTRAS[user2_uid]}' -m '${name}' \
-        && { echo '%wheel ALL=(ALL) ALL' | tee /etc/sudoers.d/wheel >/dev/null; } \
-        && chpasswd -e
-      " || return
-    echo "Done provision: ${FUNCNAME[0]}" >&2
+    log_info "${FUNCNAME[0]} DONE"
   }
 
   main

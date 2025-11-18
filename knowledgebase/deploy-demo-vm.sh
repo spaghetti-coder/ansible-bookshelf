@@ -16,7 +16,8 @@ deploy_ve_config() {
   PVE_HOST=pve.local        # <- Only REQUIRED for remote deployment
   REMOTE_EXPORTS+=()        # <- Functions to be exported to remote PVE
 
-  VE_ID=6001
+  VE_ID=6001                # <- Make sure >= 100
+  # VE_ID="$(pvesh get /cluster/nextid 2>/dev/null)"  # <- Not recommended, not idempotent
   VE_NAME=ubuntu2404-demo1
   IMAGE_URL=https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
   STORAGE=local-lvm
@@ -90,7 +91,8 @@ mk_snapshot() {
 
 # shellcheck disable=SC2317,SC2329
 deploy_ve_core() (
-  local SELF_NAME; SELF_NAME="$(basename -- "${0}")"
+  local SELF_SCRIPT=pve-deploy-vm.sh
+  grep -q '.\+' -- "${0}" 2>/dev/null && SELF_SCRIPT="$(basename -- "${0}" 2>/dev/null)"
 
   local PVE_HOST
   local VE_ID \
@@ -137,64 +139,7 @@ deploy_ve_core() (
     [--help]=print_help
   )
 
-  print_usage() {
-    echo "
-      USAGE:
-      ~~~~~~
-      ${SELF_NAME} local|remote [PROFILE]   # <- Deploy PVE VM
-      ${SELF_NAME} profiles                 # <- List all profiles
-      ${SELF_NAME} profile [PROFILE]        # <- View profile
-    " | sed -e 's/^\s*//' -e 's/\s*$//' -e '/^$/d' -e 's/^,//'
-  }
-
-  print_demo() {
-    echo "
-      DEMO:
-      ~~~~~
-      # Deployment target must be PVE
-      # Assuming 2 config functions present:
-      #   deploy_ve_config() { \`# Default profile\`; }
-      #   deploy_ve_config_nas_server() { \`# NAS server profile\`; }
-      ${SELF_NAME} local      # <- Default profile targets current machine
-      ${SELF_NAME} local ''   # <- Same as previous
-      ${SELF_NAME} remote     # <- Same, but targets \$PVE_HOST machine via SSH
-      ${SELF_NAME} local nas-server   # <- NAS server profile. NOTE: '_' -> '-'
-     ,
-      # View profile:
-      ${SELF_NAME} profile              # <- View default profile
-      ${SELF_NAME} profile nas-server   # <- View NAS server profile
-    " | sed -e 's/^\s*//' -e 's/\s*$//' -e '/^$/d' -e 's/^,//'
-  }
-
-  print_help() {
-    print_usage
-    echo
-    print_demo
-  }
-
-  trap_remote() {
-    ! [ "${1}" = remote ] && return
-
-    [ -n "${PVE_HOST:+x}" ] || {
-      log_fatal "PVE_HOST is not configured$"
-      exit 1
-    }
-
-    local profile="${2}"
-    local profile_func; profile_func="$(profile_name_to_func "${profile}")" || return
-
-    log_info "Remote deployment to ${PVE_HOST}"
-
-    local -a copy_func=(deploy_ve_core "${profile_func}" "${REMOTE_EXPORTS[@]}" "${ON_CREATED[@]}")
-    ssh -- "${PVE_HOST}" "/bin/bash -c '
-      $(
-        set -o pipefail
-        (set -x; declare -f -- "${copy_func[@]}") | escape_single_quote
-      ) || exit
-      deploy_ve_core local $(escape_single_quote "${profile}")
-    '"
-    exit
-  }
+  # ~~~~~ HELPERS ~~~~~
 
   profile_name_to_func() {
     local profile="${1}"
@@ -230,6 +175,8 @@ deploy_ve_core() (
     return 1
   }
 
+  # ~~~~~ LIB ~~~~~
+
   log_info()  { echo -e "${T_BOLD}${T_GREEN}INFO: ${T_RESET}${1}" >&2; }
   log_fatal() { echo -e "${T_RED}${T_BOLD}FATAL: ${T_RESET}${T_RED}${1}${T_RESET}" >&2; }
 
@@ -238,24 +185,35 @@ deploy_ve_core() (
   # shellcheck disable=SC2001,SC2120,SC2329,SC2317
   escape_double_quote() { sed 's/"/"\\&"/g' <<< "${1-$(cat)}"; }
 
-  list_profiles() {
-    declare -F | rev | cut -d ' ' -f1 | rev       `# <- Get funcs names` \
-    | sed -e 's/$/_/' | grep '^deploy_ve_config_' `# <- Get profilish ones` \
-    | sed -e 's/^deploy_ve_config_//' -e '/^_$/d' \
-          -e 's/_$//' -e 's/_/-/g'                `# <- Get profile names` \
-    | sort \
-    | sed -e 's/^/* /'
-  }
+  # ~~~~~ COMMANDS ~~~~~
 
-  show_profile() {
-    local profile="${1}"
-    local func; func="$(profile_name_to_func "${profile}")" || return
-    declare -f "${func}"
+  trap_remote() {
+    ! [ "${1}" = remote ] && return
+
+    [ -n "${PVE_HOST:+x}" ] || {
+      log_fatal "PVE_HOST is not configured"
+      exit 1
+    }
+
+    local profile="${2}"
+    local profile_func; profile_func="$(profile_name_to_func "${profile}")" || return
+
+    log_info "Remote deployment to ${PVE_HOST}"
+
+    local -a copy_func=(deploy_ve_core "${profile_func}" "${REMOTE_EXPORTS[@]}" "${ON_CREATED[@]}")
+    ssh -- "${PVE_HOST}" "/bin/bash -c '
+      $(
+        set -o pipefail
+        (set -x; declare -f -- "${copy_func[@]}") | escape_single_quote
+      ) || exit
+      deploy_ve_core local $(escape_single_quote "${profile}")
+    '"
+    exit
   }
 
   deploy_local() {
     if qm config "${VE_ID}" &>/dev/null \
-      ||  pct config "${VE_ID}" &>/dev/null \
+      || pct config "${VE_ID}" &>/dev/null \
     ; then
       log_fatal "VE #${VE_ID} exists"
       return 1
@@ -357,7 +315,56 @@ deploy_ve_core() (
     if [ "${AUTOSTART}" -eq 1 ]; then
       (set -x; qm start "${VE_ID}" >/dev/null) || return
     fi
+  }
 
+  list_profiles() {
+    declare -F | rev | cut -d ' ' -f1 | rev       `# <- Get funcs names` \
+    | sed -e 's/$/_/' | grep '^deploy_ve_config_' `# <- Get profilish ones` \
+    | sed -e 's/^deploy_ve_config_//' -e '/^_$/d' \
+          -e 's/_$//' -e 's/_/-/g'                `# <- Get profile names` \
+    | sort \
+    | sed -e 's/^/* /'
+  }
+
+  show_profile() {
+    local profile="${1}"
+    local func; func="$(profile_name_to_func "${profile}")" || return
+    declare -f "${func}"
+  }
+
+  print_usage() {
+    echo "
+      USAGE:
+      ~~~~~~
+      ${SELF_SCRIPT} local|remote [PROFILE]   # <- Deploy PVE VM
+      ${SELF_SCRIPT} profiles                 # <- List all profiles
+      ${SELF_SCRIPT} profile [PROFILE]        # <- View profile
+    " | sed -e 's/^\s*//' -e 's/\s*$//' -e '/^$/d' -e 's/^,//'
+  }
+
+  print_demo() {
+    echo "
+      DEMO:
+      ~~~~~
+      # Deployment target must be PVE
+      # Assuming 2 config functions present:
+      #   deploy_ve_config() { \`# Default profile\`; }
+      #   deploy_ve_config_nas_server() { \`# NAS server profile\`; }
+      ${SELF_SCRIPT} local      # <- Default profile targets current machine
+      ${SELF_SCRIPT} local ''   # <- Same as previous
+      ${SELF_SCRIPT} remote     # <- Same, but targets \$PVE_HOST machine via SSH
+      ${SELF_SCRIPT} local nas-server   # <- NAS server profile. NOTE: '_' -> '-'
+     ,
+      # View profile:
+      ${SELF_SCRIPT} profile              # <- View default profile
+      ${SELF_SCRIPT} profile nas-server   # <- View NAS server profile
+    " | sed -e 's/^\s*//' -e 's/\s*$//' -e '/^$/d' -e 's/^,//'
+  }
+
+  print_help() {
+    print_usage
+    echo
+    print_demo
   }
 
   main() {

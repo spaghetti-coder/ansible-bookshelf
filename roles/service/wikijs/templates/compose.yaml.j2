@@ -26,7 +26,8 @@ services:
 
   wikijs:
     # https://hub.docker.com/r/linuxserver/wikijs/tags?name=-ls
-    image: linuxserver/wikijs:{{ version }}
+    # image: linuxserver/wikijs:{{ version }}
+    image: lscr.io/linuxserver/wikijs:{{ version }}
     container_name: {{ wikijs_service_name }}
     restart: unless-stopped
     env_file:

@@ -4,7 +4,7 @@
 services:
   silverbullet:
     # https://hub.docker.com/r/zefhemel/silverbullet/tags
-    image: zefhemel/silverbullet:{{ version }}
+    image: ghcr.io/silverbulletmd/silverbullet:{{ version }}
     container_name: {{ silverbullet_service_name }}
     restart: unless-stopped
     env_file:

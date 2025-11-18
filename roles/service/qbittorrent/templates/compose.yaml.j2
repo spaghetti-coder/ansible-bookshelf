@@ -10,7 +10,7 @@ services:
   qbittorrent:
     # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
     # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
-    image: linuxserver/qbittorrent:{{ version }}
+    image: lscr.io/linuxserver/qbittorrent:{{ version }}
     container_name: {{ qbittorrent_service_name }}
     restart: unless-stopped
     env_file:

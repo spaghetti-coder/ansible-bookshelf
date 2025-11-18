@@ -11,7 +11,8 @@
 services:
   app:
     # https://hub.docker.com/r/deluan/navidrome/tags
-    image: deluan/navidrome:{{ version }}
+    # image: deluan/navidrome:{{ version }}
+    image: ghcr.io/navidrome/navidrome:{{ version }}
     container_name: {{ navidrome_service_name }}
     restart: unless-stopped
     env_file:

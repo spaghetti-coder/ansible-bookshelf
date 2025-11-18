@@ -9,7 +9,7 @@
 services:
   app:
     # https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
-    image: linuxserver/pairdrop:{{ version }}
+    image: lscr.io/linuxserver/pairdrop:{{ version }}
     container_name: {{ pairdrop_service_name }}
     restart: unless-stopped
     env_file:

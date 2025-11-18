@@ -3,7 +3,8 @@
 services:
   app:
     # https://hub.docker.com/r/linuxserver/heimdall/tags
-    image: linuxserver/heimdall:{{ version }}
+    # image: linuxserver/heimdall:{{ version }}
+    image: lscr.io/linuxserver/heimdall:{{ version }}
     container_name: {{ heimdall_service_name }}
     restart: unless-stopped
     env_file:

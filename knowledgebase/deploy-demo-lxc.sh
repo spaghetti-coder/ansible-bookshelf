@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
 
-#
-# REQUIREMENTS:
-# * PVE host must have age installed
-# * For remote deployment execution host must have SSH access to PVE_HOST and
-#   age installed
-#
-
+# shellcheck disable=SC2016
 deploy_ve_config() {
   #
   # NOTES:
@@ -16,17 +10,12 @@ deploy_ve_config() {
   # More config:
   # * deploy_ve.main   # <- Deployment flow + customizations
 
-  # Generate with:
-  #   THE_SCRIPT gen-age  # <- Prompts for passphrase
-  # Internally in the script decrypt encrypted by this AGE_KEY secrets with:
-  #   echo PLAIN_SECRET | THE_SCRIPT encrypt-secret `# => AGE_ENCRYPTED_SECRET` | decrypt_secret `# => PLAIN_SECRET`
-  AGE_KEY='YWdlMWw4N2Y2NXRqcjM3ZGd2cTlhZzZxN3d6ZWF2MjhheXN0c2FkMGp4NmU0NnY2NjgybmVheHN1cHJ5dWMKWVdkbExXVnVZM0o1Y0hScGIyNHViM0puTDNZeENpMCtJSE5qY25sd2RDQXJUWGRIY2t4WFpIUlJSRGRFTlhaS05tRldNVE5CSURFNENsWlNaMVJIZFVZNU9HWlhaVnBTV2l0VWQyd3dXV0p5V0RsWVMwVktaMHRGV214Uk1URlphVlYwTVc4S0xTMHRJSFI1YjNsUVYxaDJiMU5vTUVsSWRrWlpabU00Y2sxRVMwMDBVRU5vUjA1MU9XVXhSQzgzUkhadWRUQUs2dDVJUE1KS1RKZWtidnVzS0VlVUF2QXhjd29oc3N0U05ramlaNEpKUWhLZTZ6blFiKzVPRVE0a3BJb09NeGlGOHBsNUlnUmplSDNJeERXRnlJNWIxVytwVlQ2b1ZVbkxyRm9McUhiZmwybHJaUEI5Y2h5TUlOUlE2SHQyRkpNTU1vV0ZrZFovTTh6YmFZRGl6eXIwUmVZSFhIRlFPVGJETk9aSEJmYTB6eGpteDFFMjE0YTBuOXkzbC9xbW9RYnczanlJamZZYk05ZGpMdVdiZkpHbmNxQ3Z0NzJlZlhhWEpuNWlHTzMybmMxd1NpZkExaG1RWndUMWFualBUV01MVDNPVm9JYVEvejZqam5xRnRnYkltSDdiaFhVS2dJNU5uWlBhc3lFPQo='
-
-  PVE_HOST=pve.home           # <- Remote PVE ssh host for deploy-remote command
+  PVE_HOST=pve.local          # <- Only REQUIRED for remote deployment
+  REMOTE_EXPORTS+=()          # <- Functions to be exported to remote PVE
 
   # Best match from available templates: http://download.proxmox.com/images/system
   VE_TEMPLATE=alpine-3
-  VE_ID=1085                  # <- Make sure >= 100
+  VE_ID=6101                  # <- Make sure >= 100
   # VE_ID="$(pvesh get /cluster/nextid 2>/dev/null)"  # <- Not recommended, not idempotent
 
   CREATE_FLAGS=(              # <- Create LXC flags, '--password' is autoappended with value from EXTRAS[root_pass]
@@ -36,10 +25,10 @@ deploy_ve_config() {
     # --net0="name=eth0,bridge=vmbr0,ip=192.168.0.20/24,gw=192.168.0.1"   # <- Alternatively configure IP
     --storage=local-lvm       # <- Select your storage
     --hostname=test.home      # <- Ensure corrent hostname
-    --rootfs=20
+    --rootfs=10
     --timezone=host
     --onboot=1
-    --memory=1024
+    --memory=1024             # <- In MB
     --swap=512
     --cores=1
     --tags='test.home;testing'
@@ -47,20 +36,17 @@ deploy_ve_config() {
 
   EXTRAS=(
     # Linux user password encryption:
-    #   openssl passwd -6 -stdin < PASSWORD_FILE | THE_SCRIPT encrypt-secret
-    [root_pass]='YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBHRjdzODdQOE4rRTdoRzJxdTRsQXpjNUhuVlFBWGkvYXY4YTVSNEo3RXlvClN4NkREVExQVjVwVmpuWjYwKzlrWkhFZkppcXp2cE9YSS96NEpZbEJueWsKLS0tIEhuUGFRRjNHUGtHc1YyY1oyNEF3cWZ0dlg2dUF1NDRTQ2V1eGMvRkpnMzAKKFh2HclcGuFZDTjrOGtZ3em3pGvfvTcPLqPFMsPhQQPSW/bELPK2/a/yKxPLjJRIeDhESyhxk4A5G0nv0Q5Lwps4l/rZcoyd+p42pMQ6pU6n9uZjvVFg9H2Yq1kEb7yy5sgZmwrvvIWcoVMqaQ5DX2ZLmMdOX3aunnpMNuIr2mxNMwAoIoRgEolkEA=='
+    #   openssl passwd -6 -stdin < PASSWORD_FILE
+    # Or generate random pass and login via ssh (use `--ssh-public-keys FILE` create option)
+    #   tr -dc 'A-Za-z0-9' </dev/urandom | head -c 20 | openssl passwd -6 -stdin
+    [root_pass]='$6$Ayj0X9RVknuCsFPQ$PJjtQmanIN2F5nC/Eca4m.ZLAImxkiJGOwajIYVOyIxnOg5u9fv7IyjvkC5SB9HoMi5cpXuhjCfijizd.IbH70'
     # Used by custom provisioners
     [user1_name]=user1
     [user1_uid]=1000
     # Use chpasswd tool to set the password
     #   echo "${EXTRAS[user1_name]}:${EXTRAS[user1_pass]}" | chpasswd -e
-    [user1_pass]='YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBPMnRmQ3dPOFh2MUdlYVlBOXplUFUwc0R5Nm4vN1VIbmw5R1QwaXhJd0JNCjhad2JsNUlmZ0ZaQzZBWVBVV3ZSbHRsRTV3VHhhaDNKYWhET2pRcnp5d28KLS0tIHBDYllLVnhzVDJQQ1Q0dWZzd3VtcUFhMXpGcmZUMXAwbSt2SEd1VzhOY1EKJwl23NNALO0ilgEI42K442jOs92RykmDNCFwbc6QlEA0Kxsdy+L4e0S6t399dXs/596andORxAh9eCOVqEqeSOy5RNgrSYO27TNTWJeyF9nNOlvlyqoYrZOjF9SMEbIIZDqm/r1AzwOzgA6Df9vvMc+LdIwtv+B/pKc1ErQvNOTrA0i1IL3JIFfqYA=='
+    [user1_pass]='$6$iD2MkmDVv79CVg7m$H6tKPEPF77SusBOaXiKai9ZOCPJssx.TjcB.lkE2msqTDP/1yVH9QOfsDT7G/cEcGv7EA.cv33LMJVTFQlG6u0'
   )
-
-  # In case of remote deployment, the script copies only functions from the
-  # current script to PVE_HOST and executes them. In case you need to export
-  # more functions to use them here, add them to this array
-  PVE_COPY_FUNC=()
 }
 
 deploy_ve() (
@@ -73,7 +59,7 @@ deploy_ve() (
     create_ve || return   # <- Create the VE
 
     # Configure VE (toggle with true / false)
-    profile_disable_apparmor true || return  # <- Fix docker: https://github.com/opencontainers/runc/issues/4968
+    # profile_disable_apparmor false || return  # <- Fix docker: https://github.com/opencontainers/runc/issues/4968
     profile_docker_ready true || return
     profile_vaapi false || return
     profile_vpn_ready false || return
@@ -84,31 +70,29 @@ deploy_ve() (
       install_ansible_prereqs || return
 
       # Custom provisioning
-      create_lxc_user || return
-    stop_ve || return   # <- To ensure changes applied on the next start
+      create_lxc_user "${EXTRAS[user1_name]}" "${EXTRAS[user1_uid]}" "${EXTRAS[user1_pass]}" || return
+    stop_ve || return     # <- To ensure changes applied on the next start
 
-    # To start VE immediately
-    start_ve || return
+    # (set -x; pct snapshot "${VE_ID}" Init1 >/dev/null) || return    # <- Create snapshot
+    start_ve || return    # <- To start the VE immediately
   }
 
   create_lxc_user() {
     # Demo provisioner
     #
-    # * $VE_ID - LXC IC
+    # * $VE_ID - LXC ID
 
-    local name="${EXTRAS[user1_name]}"
-    local pass; pass="$(decrypt_secret <<< "${EXTRAS[user1_pass]}")" || return
-
-    echo "Do provision: ${FUNCNAME[0]} ..." >&2
+    local name="${1}" uid="${2}" pass="${3}"
+    log_info "${FUNCNAME[0]} ..."
       cat <<< "${name}:${pass}" | lxc-attach -n "${VE_ID}" -- /bin/sh -c "
         set -x
         apk add -q --update --no-cache shadow sudo \
-        && groupadd -g '${EXTRAS[user1_uid]}' '${name}' \
-        && useradd -g '${EXTRAS[user1_uid]}' -G wheel -u '${EXTRAS[user1_uid]}' -m '${name}' \
+        && groupadd -g '${uid}' '${name}' \
+        && useradd -g '${uid}' -G wheel -u '${uid}' -m '${name}' \
         && { echo '%wheel ALL=(ALL) ALL' | tee /etc/sudoers.d/wheel >/dev/null; } \
         && chpasswd -e
       " || return
-    echo "Done provision: ${FUNCNAME[0]}" >&2
+    log_info "${FUNCNAME[0]} DONE"
   }
 
   main
@@ -120,14 +104,22 @@ deploy_ve() (
 
 # shellcheck disable=SC2317,SC2329
 deploy_ve_core() (
-  local PVE_HOST VE_ID VE_TEMPLATE AGE_KEY
-  declare -A EXTRAS
-  declare -a CREATE_FLAGS PVE_COPY_FUNC
-  declare -i START_DELAY=15
-  local AGE_SECRET
-
-  local SELF_SCRIPT=pve-deploy-ve.sh
+  local SELF_SCRIPT=pve-deploy-lxc.sh
   grep -q '.\+' -- "${0}" 2>/dev/null && SELF_SCRIPT="$(basename -- "${0}" 2>/dev/null)"
+
+  local PVE_HOST VE_ID VE_TEMPLATE
+  declare -A EXTRAS
+  declare -a CREATE_FLAGS REMOTE_EXPORTS
+  declare -i START_DELAY=15
+
+  declare -A CMD_MAP=(
+    [local]=deploy_local
+    [remote]='<DUMMY>' # Handled by trap_remote
+    # Primitives
+    [-?]=print_demo
+    [-h]=print_demo
+    [--help]=print_demo
+  )
 
   # https://stackoverflow.com/a/42449998
   # shellcheck disable=SC2034
@@ -135,199 +127,9 @@ deploy_ve_core() (
         T_DIM='\033[2m' \
         T_ITALIC='\033[3m' \
         T_UNDER='\033[4m' \
+        T_RED='\033[31m' \
+        T_GREEN='\033[32m' \
         T_RESET='\033[0m'
-
-  main() {
-    local command; command="$(get_command "${@:1:1}")" || return
-
-    deploy_ve_config || return    # <- Populate configuration
-
-    "${command}" "${@:2}"
-  }
-
-  get_command() {
-    [ -n "${1+x}" ] || {
-      echo -e "${T_BOLD}FATAL${T_RESET}: Command required. Try --help" >&2
-      return 1
-    }
-
-    declare CMD="${1}"
-
-    # Check if help
-    case "${CMD}" in
-      -\?|-h|--help ) echo print_help; return ;;
-      --short       ) echo print_help_short; return ;;
-      --usage       ) echo print_help_usage; return ;;
-    esac
-
-    # Check if one of map commands
-    declare -A commands_map=(
-      [deploy]=deploy_any
-      [deploy-local]=deploy_local
-      [deploy-remote]=deploy_remote
-      [gen-age]=gen_age
-      [encrypt-secret]=encrypt_secret
-      [age-pub]=get_age_pub
-      [age-secret]=get_age_secret
-      [decrypt-secret]=decrypt_secret
-    )
-    declare commands_rex
-    commands_rex="$(printf -- '%s\|' "${!commands_map[@]}" | sed 's/\\|$//')"
-    grep -qx "\(${commands_rex}\)" <<< "${CMD}" && { echo "${commands_map[${CMD}]}"; return; }
-
-    echo -e "${T_BOLD}FATAL${T_RESET}: Invalid command: '${CMD}'. Try --help" >&2
-    return 1
-  }
-
-  #
-  # COMMANDS
-  #
-
-  print_help_short() {
-    print_nice "
-      COMMANDS:
-      ========
-      gen-age         # Generate passphrase protected age key to stdout
-      encrypt-secret  # Encrypt something with age key
-      deploy          # deploy-local if current machine is PVE, otherwise deploy-remote
-      deploy-local    # Deploy VE on the current machine assuming it's PVE
-      deploy-remote   # Deploy to host configured in PVE_HOST
-      # For private and development needs mostly:
-      age-pub         # Print age public key
-      age-secret      # Print age secret key. Wants passphrase
-      decrypt-secret  # Decrypt a secret encrypted with 'encrypt-secret' from stdin
-    "
-  }
-
-  print_help_usage() {
-    print_nice "
-      USAGE:
-      =====
-      # For insecure scenario, place root pass to EXTRAS[root_pass] in plain, add
-      # other configuration as you need, make sure AGE_KEY empty. And just run:
-      ${SELF_SCRIPT} deploy
-     ,
-      #
-      # Secure scenario (adviced)
-      #
-     ,
-      # Generate passphrase encrypted age public / secret key bundle and put it
-      # to AGE_KEY in the config section of the current script
-      ${SELF_SCRIPT} gen-age
-     ,
-      # Encrypt desired root pass and put it to EXTRAS[root_pass] in the config
-      # section of the current script. Same command can be used to encrypt other
-      # sensitive data, for decryption see config section of the current script
-      echo PASSWORD | ${SELF_SCRIPT} encrypt-secret    # <- From stdin
-      ${SELF_SCRIPT} encrypt-secret ./PASSWORD_FILE    # <- From file
-     ,
-      # Edit the rest of config section of the current script and deploy the VE
-      # with the following command. Prompts for AGE_KEY passphrase
-      ${SELF_SCRIPT} deploy
-    "
-  }
-
-  print_help() {
-    print_nice "
-      --short     Print only commands
-      --usage     Print only usage section
-    "; echo
-
-    print_help_short; echo
-    print_help_usage
-  }
-
-  deploy_any() {
-    pveversion &>/dev/null && { deploy_local; return; }
-
-    echo -e "${T_BOLD}INFO${T_RESET}: Not PVE host, attempting remote" >&2
-    deploy_remote
-  }
-
-  deploy_local() {
-    pveversion &>/dev/null || {
-      echo -e "${T_BOLD}ERR${T_RESET}: Not PVE host" >&2
-      return 1
-    }
-
-    pct config "${VE_ID}" --current &>/dev/null && {
-      echo -e "${T_BOLD}INFO${T_RESET}: VE #${VE_ID} exists. Skipping" >&2
-      return
-    }
-
-    [ -z "${AGE_KEY}" ] && { echo -e "${T_BOLD}WARN${T_RESET}: AGE_KEY not set. Insecure deployment" >&2; }
-    propagate_age_secret || return
-
-    deploy_ve || return
-  }
-
-  deploy_remote() {
-    [ -n "${PVE_HOST:+x}" ] || {
-      echo -e "${T_BOLD}ERR${T_RESET}: PVE_HOST is not configured" >&2
-      return 1
-    }
-
-    echo -e "${T_BOLD}INFO${T_RESET}: Remote deployment to ${PVE_HOST}" >&2
-
-    local -a copy_func=(deploy_ve_core deploy_ve deploy_ve_config)
-    if declare -p PVE_COPY_FUNC 2>/dev/null | grep -q '^declare -a'; then
-      copy_func+=("${PVE_COPY_FUNC[@]}")
-    fi
-
-    ssh -t -t -- "${PVE_HOST}" "/bin/bash -c '
-      $(declare -f "${copy_func[@]}" | escape_single_quote)
-      deploy_ve_core deploy-local
-    '"
-  }
-
-  gen_age() {
-    local pub_key_rex='public\s\+key\s*:'
-    local age_secret; age_secret="$( (
-      # shellcheck disable=SC2092
-      `# https://stackoverflow.com/a/16126777`
-      set -o pipefail; (age-keygen 3>&2 2>&1 1>&3) | sed -e '1!b' -e '/^\s*'"${pub_key_rex}"'/Id'
-    ) 3>&2 2>&1 1>&3 )" || return
-    local age_public; age_public="$(
-      grep -i '^#\s*'"${pub_key_rex}" <<< "${age_secret}" | sed -e 's/^[^:]\+:\s*//'
-    )" || return
-
-    # By lines:
-    # 1. Age public plain
-    # 2. Age secret       | age-password-encode       | base64-single-line-encode
-    # And all thes lines  | base64-single-line-encode
-
-    local lines="${age_public}" \
-      && lines+=$'\n'"$(set -o pipefail; age -e -p <<< "${age_secret}" | base64 --wrap=0)" \
-    || return
-
-    base64 --wrap=0 <<< "${lines}" || return
-    echo
-  }
-
-  get_age_pub() (set -o pipefail; get_age_lines | sed -n '1p')
-
-  get_age_secret() {
-    [ -n "${AGE_SECRET}" ] && { cat <<< "${AGE_SECRET}"; return; }
-    local line; line="$(set -o pipefail; get_age_lines | sed -n '2p')" || return
-    [ -z "${line}" ] && return
-    (set -o pipefail; base64 -d <<< "${line}" | age -d) || return
-  }
-
-  encrypt_secret() {
-    local pub_key; pub_key="$(get_age_pub)" || return
-    [ -z "${pub_key}" ] && { cat -- "${@:1:1}"; return; }
-    (set -o pipefail; age -e -r "${pub_key}" "${@:1:1}" | base64 --wrap=0) || return
-    echo
-  }
-
-  decrypt_secret() {
-    # USAGE:
-    #   echo SECRET | decrypt_secret
-
-    local secret; secret="$(get_age_secret)"
-    [ -z "${secret}" ] && { cat; return; }
-    base64 -d | age -d -i <(cat <<< "${secret}") || return
-  }
 
   #
   # CORE
@@ -347,7 +149,7 @@ deploy_ve_core() (
   # shellcheck disable=SC2317
   create_ve() {
     local template; template="$(get_template_file "${VE_TEMPLATE}")" || return
-    local pass; pass="$(decrypt_secret <<< "${EXTRAS[root_pass]}")" || return
+    local pass="${EXTRAS[root_pass]}"
 
     local -a THE_CMD=(
       pct create "${VE_ID}" "${template}"
@@ -359,16 +161,6 @@ deploy_ve_core() (
       (set -x; "${THE_CMD[@]}" >/dev/null) 3>&1 1>&2 2>&3 \
       | sed -e 's/\(--password[= ]\)[^ ]\+/\1*****/g'
     ) 3>&1 1>&2 2>&3 || return
-  }
-
-  get_age_lines() {
-    [ -z "${AGE_KEY}" ] && return
-    base64 -d <<< "${AGE_KEY}"
-  }
-
-  propagate_age_secret() {
-    [ -n "${AGE_SECRET+x}" ] && return
-    AGE_SECRET="$(get_age_secret)" || return
   }
 
   get_template_file() {
@@ -390,16 +182,29 @@ deploy_ve_core() (
     echo "${templates_home}/${template}"
   }
 
-  print_nice() { sed -e 's/^\s*$//' -e '/^$/d' -e 's/^\s*//' -e 's/^,//' <<< "${1-$(cat)}"; }
+  get_ve_option() {
+    # USAGE:
+    #   ostype="$(get_ve_option ostype)" || `# Process setting not found`
+    #   echo "${ostype}"  # Sample output: alpine
 
-  # shellcheck disable=SC2001,SC2120
-  escape_single_quote() { sed 's/'\''/'\''\\&'\''/g' <<< "${1-$(cat)}"; }
-  # shellcheck disable=SC2001,SC2120
-  escape_double_quote() { sed 's/"/"\\&"/g' <<< "${1-$(cat)}"; }
+    local opt="${1}"
+    local opt_rex; opt_rex="$(sed -e 's/[]\/$*.^[]/\\&/g' <<< "${opt}")"
 
-  #
-  # PROFILES
-  #
+    ( set -o pipefail
+      grep -m 1 '^\s*'"${opt_rex}"'\s*[:=]\s*' "/etc/pve/lxc/${VE_ID}.conf" \
+      | sed -e 's/^[^:=]\+[:=]\s*\(.*\)/\1/' -e 's/\s*$//'
+    )
+  }
+
+  is_privileged() {
+    # USAGE:
+    #   is_privileged && `# Do for privileged` || `# Do for unprivileged`
+
+    local unprivileged_opt; unprivileged_opt="$(get_ve_option unprivileged || echo 0)"
+    [ "${unprivileged_opt}" -eq 0 ]
+  }
+
+  # ~~~~~ PROFILES ~~~~~
 
   profile_attach_hookscripts() {
     # USAGE:
@@ -415,7 +220,7 @@ deploy_ve_core() (
     local dest_file="/var/lib/vz/snippets/${VE_ID}.hook.sh"
     local dest_fname; dest_fname="$(basename -- "${dest_file}")"
 
-    echo "Do profile: ${FUNCNAME[0]} ..." >&2
+    log_info "${FUNCNAME[0]} ..."
       local -a func_names func_bodies
 
       local cbk; for cbk in "${@}"; do
@@ -435,7 +240,7 @@ deploy_ve_core() (
         && chmod +x "${dest_file}" \
         && pct set "${VE_ID}" --hookscript "local:snippets/${dest_fname}"
       ) || return
-    echo "Done profile: ${FUNCNAME[0]}" >&2
+    log_info "${FUNCNAME[0]} DONE"
   }
 
   profile_vpn_ready() {
@@ -444,7 +249,7 @@ deploy_ve_core() (
 
     ${1-false} || return 0
 
-    echo "Do profile: ${FUNCNAME[0]} ..." >&2
+    log_info "${FUNCNAME[0]} ..."
       local cap_drop_entry=''
 
       (set -o pipefail; get_ve_option 'lxc.cap.drop' | grep -qx '\s*') \
@@ -458,7 +263,7 @@ deploy_ve_core() (
         set -o pipefail
         sed -e 's/^\s*//' -e '/^\s*$/d' | (set -x; tee -a "/etc/pve/lxc/${VE_ID}.conf" >/dev/null)
       ) || return
-    echo "Done profile: ${FUNCNAME[0]}" >&2
+    log_info "${FUNCNAME[0]} DONE"
   }
 
   profile_docker_ready() {
@@ -467,7 +272,7 @@ deploy_ve_core() (
 
     ${1-false} || return 0
 
-    echo "Do profile: ${FUNCNAME[0]} ..." >&2
+    log_info "${FUNCNAME[0]} ..."
       if is_privileged; then
         (set -o pipefail; get_ve_option 'lxc.cap.drop' | grep -qx '\s*') \
         || {
@@ -476,7 +281,7 @@ deploy_ve_core() (
           || return
         }
       fi
-    echo "Done profile: ${FUNCNAME[0]}" >&2
+    log_info "${FUNCNAME[0]} DONE"
   }
 
   profile_vaapi() {
@@ -485,7 +290,7 @@ deploy_ve_core() (
 
     ${1-false} || return 0
 
-    echo "Do profile: ${FUNCNAME[0]} ..." >&2
+    log_info "${FUNCNAME[0]} ..."
       declare drm_dev=/dev/dri/renderD128
 
       if ! [[ -e "${drm_dev}" ]]; then
@@ -514,7 +319,7 @@ deploy_ve_core() (
           sed -e 's/^\s*//' -e '/^\s*$/d' | (set -x; tee -a "/etc/pve/lxc/${VE_ID}.conf" >/dev/null)
         ) || return
       fi
-    echo "Done profile: ${FUNCNAME[0]}" >&2
+    log_info "${FUNCNAME[0]} DONE"
   }
 
   profile_disable_apparmor() {
@@ -528,16 +333,14 @@ deploy_ve_core() (
       entries+=("lxc.mount.entry: /dev/null sys/module/apparmor/parameters/enabled none bind 0 0")
     }
 
-    echo "Do profile: ${FUNCNAME[0]} ..." >&2
+    log_info "${FUNCNAME[0]} ..."
       printf -- '%s\n' "${entries[@]}" | (
         set -x; tee -a "/etc/pve/lxc/${VE_ID}.conf" >/dev/null
       ) || return
-    echo "Done profile: ${FUNCNAME[0]}" >&2
+    log_info "${FUNCNAME[0]} DONE"
   }
 
-  #
-  # PROVISIONERS
-  #
+  # ~~~~~ PROVISIONERS ~~~~~
 
   user_bind_mounts() {
     # USAGE:
@@ -549,7 +352,7 @@ deploy_ve_core() (
 
     local owner="${1}"
 
-    echo "Do provision: ${FUNCNAME[0]} ..." >&2
+    log_info "${FUNCNAME[0]} ..."
       declare src dest
       local kv; for kv in "${@:2}"; do
         src="${kv%%:*}" dest="${kv#*:}"
@@ -561,18 +364,18 @@ deploy_ve_core() (
         echo "lxc.mount.entry: ${src} ${dest} none bind,create=dir 0 0" \
         | (set -x; tee -a "/etc/pve/lxc/${VE_ID}.conf" >/dev/null)
       done
-    echo "Done provision: ${FUNCNAME[0]}" >&2
+    log_info "${FUNCNAME[0]} DONE"
   }
 
   fix_locale() {
-    echo "Do provision: ${FUNCNAME[0]} ..." >&2
+    log_info "${FUNCNAME[0]} ..."
       if get_ve_option ostype | grep -qix '\(ubuntu\|debian\)'; then
         lxc-attach -n "${VE_ID}" -- /bin/sh -c "
           set -x
-          sed -i '"'s/^\s*#\s*\(en_US\.UTF-8\)/\1/'"' /etc/locale.gen && locale-gen
+          sed -i '"'s/^\s*#\s*\(en_US\.UTF-8\)/\1/'"' /etc/locale.gen && locale-gen >/dev/null
         " || return
       fi
-    echo "Done provision: ${FUNCNAME[0]}" >&2
+    log_info "${FUNCNAME[0]} DONE"
   }
 
   install_ansible_prereqs() {
@@ -590,7 +393,7 @@ deploy_ve_core() (
     if get_ve_option ostype | grep -qix '\(ubuntu\|debian\)'; then
       cmds="
         apt-get update -q >/dev/null \
-        && apt-get install -q -y openssh-server python3 sudo >/dev/null \
+        && DEBIAN_FRONTEND=noninteractive apt-get install -q -y openssh-server python3 sudo >/dev/null \
         && systemctl enable -q --now ssh
       "
     elif get_ve_option ostype | grep -qix 'centos'; then
@@ -600,38 +403,98 @@ deploy_ve_core() (
       "
     fi
 
-    echo "Do provision: ${FUNCNAME[0]} ..." >&2
+    log_info "${FUNCNAME[0]} ..."
       lxc-attach -n "${VE_ID}" -- /bin/sh -c "set -x; ${cmds}" || return
-    echo "Done provision: ${FUNCNAME[0]}" >&2
+    log_info "${FUNCNAME[0]} DONE"
   }
 
-  #
-  # HELPERS
-  #
+  # ~~~~~ HELPERS ~~~~~
 
-  get_ve_option() {
-    # USAGE:
-    #   ostype="$(get_ve_option ostype)" || `# Process setting not found`
-    #   echo "${ostype}"  # Sample output: alpine
-
-    local opt="${1}"
-    local opt_rex; opt_rex="$(sed -e 's/[]\/$*.^[]/\\&/g' <<< "${opt}")"
-
-    ( set -o pipefail
-      grep -m 1 '^\s*'"${opt_rex}"'\s*[:=]\s*' "/etc/pve/lxc/${VE_ID}.conf" \
-      | sed -e 's/^[^:=]\+[:=]\s*\(.*\)/\1/' -e 's/\s*$//'
-    )
+  check_pve_host() {
+    pveversion &>/dev/null && return
+    log_fatal "Not PVE host"
+    return 1
   }
 
-  is_privileged() {
-    # USAGE:
-    #   is_privileged && `# Do for privileged` || `# Do for unprivileged`
-
-    local unprivileged_opt; unprivileged_opt="$(get_ve_option unprivileged || echo 0)"
-    [ "${unprivileged_opt}" -eq 0 ]
+  validate_command() {
+    { [ -n "${CMD_MAP[${1}]}" ]; } &>/dev/null && return
+    log_fatal "Invalid command: '${1}'"
+    echo >&2
+    print_demo
+    return 1
   }
 
-  main "${@}"   # <- Passthrough all input params
+  # ~~~~~ LIB ~~~~~
+
+  log_info()  { echo -e "${T_BOLD}${T_GREEN}INFO: ${T_RESET}${1}" >&2; }
+  log_fatal() { echo -e "${T_RED}${T_BOLD}FATAL: ${T_RESET}${T_RED}${1}${T_RESET}" >&2; }
+
+  # shellcheck disable=SC2001,SC2120
+  escape_single_quote() { sed 's/'\''/'\''\\&'\''/g' <<< "${1-$(cat)}"; }
+  # shellcheck disable=SC2001,SC2120
+  escape_double_quote() { sed 's/"/"\\&"/g' <<< "${1-$(cat)}"; }
+
+  # ~~~~~ COMMANDS ~~~~~
+
+  trap_remote() {
+    ! [ "${1}" = remote ] && return
+
+    [ -n "${PVE_HOST:+x}" ] || {
+      log_fatal "PVE_HOST is not configured"
+      exit 1
+    }
+
+    log_info "Remote deployment to ${PVE_HOST}"
+
+    local -a copy_func=(deploy_ve_core deploy_ve deploy_ve_config "${REMOTE_EXPORTS[@]}")
+    ssh -- "${PVE_HOST}" "/bin/bash -c '
+      $(
+        set -o pipefail
+        (set -x; declare -f -- "${copy_func[@]}") | escape_single_quote
+      ) || exit
+      deploy_ve_core local
+    '"
+    exit
+  }
+
+  print_demo() {
+    echo "
+      DEMO:
+      ~~~~~
+      # Deployment target must be PVE
+      ${SELF_SCRIPT} local      # <- Targets current machine
+      ${SELF_SCRIPT} remote     # <- Targets \$PVE_HOST machine via SSH
+    " | sed -e 's/^\s*//' -e 's/\s*$//' -e '/^$/d' -e 's/^,//'
+  }
+
+  deploy_local() {
+    if qm config "${VE_ID}" &>/dev/null \
+      || pct config "${VE_ID}" &>/dev/null \
+    ; then
+      log_fatal "VE #${VE_ID} exists"
+      return 1
+    fi
+
+    deploy_ve || return
+  }
+
+  main() {
+    validate_command "${@}" || exit
+
+    local -a deployment=(local remote)
+    if ! printf -- '%s\n' "${deployment[@]}" \
+      | grep -qFx -- "${1}" \
+    ; then
+      "${CMD_MAP[${1}]}" "${@:2}"; return
+    fi
+
+    deploy_ve_config
+    trap_remote "${@}"  # || exit # <- It handles all exits
+    check_pve_host || exit
+    "${CMD_MAP[${1}]}" "${@:2}" || exit
+  }
+
+  main "${@}"
 )
 
 (return 2>/dev/null) || { deploy_ve_core "${@}"; exit; }

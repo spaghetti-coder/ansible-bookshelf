@@ -3,7 +3,8 @@
 services:
   app:
     # https://hub.docker.com/r/jamesread/olivetin/tags
-    image: jamesread/olivetin:{{ version }}
+    # image: jamesread/olivetin:{{ version }}
+    image: ghcr.io/olivetin/olivetin:{{ version }}
     container_name: {{ olivetin_service_name }}
     volumes:
       - '{{ conf_dir_config }}:/config'

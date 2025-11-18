@@ -4,7 +4,8 @@
 services:
   vaultwarden:
     # https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
-    image: vaultwarden/server:{{ version }}
+    # image: vaultwarden/server:{{ version }}
+    image: ghcr.io/dani-garcia/vaultwarden:{{ version }}
     container_name: {{ vaultwarden_service_name }}
     restart: unless-stopped
     env_file:

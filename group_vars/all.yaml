@@ -298,7 +298,7 @@ adguard_ts_auth_key:
 #   * https://hub.docker.com/r/advplyr/audiobookshelf/tags
 #   * => See tailscale role versions
 # -----
-audiobookshelf_managed: "{{ factum_os_family in ['alpine'] }}"
+audiobookshelf_managed: true  # <- TEST ON ALL PLATFORMS (to check acl)
 audiobookshelf_enabled: true
 audiobookshelf_version:       # Leave blank to leverage bookshelf configuration
 audiobookshelf_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -711,7 +711,7 @@ gokapi_ts_auth_key:
 # ==================
 # VERSIONS: https://hub.docker.com/r/gotify/server/tags
 # -----
-gotify_managed: false     # <- LOW INTEREST, no testing
+gotify_managed: "{{ factum_os_family in ['alpine'] }}"
 gotify_enabled: true
 gotify_version:       # Leave blank to leverage bookshelf configuration
 gotify_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -801,7 +801,7 @@ homer_ts_auth_key:
 #     They can be overriden with extra_env
 #   * with restrictions in place users registration with ./bin/manage_users tool.
 # -----
-hedgedoc_managed: false   # <- LOW INTEREST, no testing
+hedgedoc_managed: "{{ factum_os_family in ['alpine'] }}"
 hedgedoc_enabled: true
 hedgedoc_version:       # Leave blank to leverage bookshelf configuration
 hedgedoc_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -898,7 +898,7 @@ jellyfin_ts_auth_key:
 #   * https://hub.docker.com/r/joplin/server/tags
 #   * https://hub.docker.com/_/postgres/tags?name=alpine
 # -----
-joplin_server_managed: false    # <- LOW INTEREST, no testing
+joplin_server_managed: "{{ factum_os_family in ['alpine'] }}"
 joplin_server_enabled: true
 joplin_server_version:              # Leave blank to leverage bookshelf configuration
 joplin_server_postgres_version:     # Leave blank to leverage bookshelf configuration
@@ -1103,7 +1103,7 @@ navidrome_ts_auth_key:
 # =======================
 # VERSIONS: https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
 # -----
-nginx_proxy_manager_managed: false
+nginx_proxy_manager_managed: "{{ factum_os_family in ['alpine'] }}"
 nginx_proxy_manager_enabled: true
 nginx_proxy_manager_version:          # Leave blank to leverage bookshelf configuration
 nginx_proxy_manager_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -1116,8 +1116,8 @@ nginx_proxy_manager_host_net: false   # 'true' allows adding Stream ports withou
 nginx_proxy_manager_web_ui_port:      # Leave blank for bookshelf default, or '-1' to not expose the port
 # NOTE: Avoid port conflicts with other reverse proxies
 nginx_proxy_manager_ports:            # (OPTIONAL) HOST:CONTAINER ports mapping
-  - 80:80                             # <- HTTP
-  - 443:443                           # <- HTTPS
+  - 1080:80                             # <- HTTP
+  - 10443:443                           # <- HTTPS
 nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"
 nginx_proxy_manager_extra_env: |      # "{{ lookup('template', playbook_dir + '/resources/nginx-proxy-manager.env.j2') }}"
   FOO1=bar1
@@ -1640,7 +1640,7 @@ twingate_extra_env: |     # "{{ lookup('file', playbook_dir + '/resources/twinga
 #   * https://hub.docker.com/r/louislam/uptime-kuma/tags
 #   * => See tailscale role versions
 # -----
-uptime_kuma_managed: false  # <- LOW INTEREST, no testing
+uptime_kuma_managed: "{{ factum_os_family in ['alpine'] }}"
 uptime_kuma_enabled: true
 uptime_kuma_version:        # Leave blank to leverage bookshelf configuration
 uptime_kuma_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
@@ -1740,7 +1740,7 @@ vikunja_tailscale_auth_key:
 # * https://github.com/wg-easy/wg-easy/tree/production?tab=readme-ov-file#options
 # * https://github.com/wg-easy/wg-easy/blob/production/How_to_generate_an_bcrypt_hash.md
 # -----
-wg_easy_managed: true   # "{{ factum_os_family in ['alpine'] }}"
+wg_easy_managed: "{{ factum_os_family in ['alpine'] }}"
 wg_easy_enabled: true
 wg_easy_version:        # Leave blank to leverage bookshelf configuration
 wg_easy_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
