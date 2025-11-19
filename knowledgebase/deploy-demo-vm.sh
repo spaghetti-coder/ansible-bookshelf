@@ -1,12 +1,23 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2016
-deploy_ve_config() {
-  # Required for remote
-  PVE_HOST=pve.local
+#
+# NOTE:
+#   To add multiple profiles support rename deploy_ve_config function to
+#   for example deploy_ve_config_foo and create deploy_ve_config_bar with
+#   different configuration. This way the script will be able to handle
+#   both profiles.
+#   deploy_ve_config      <- correct
+#   deploy_ve_config_foo  <- correct
+#   deploy_ve_config_     <- will be ignored
+#
 
-  VE_ID=6000
-  VE_NAME=ubuntu2404
+# Default demo profile
+deploy_ve_config() {
+  PVE_HOST=pve.local        # <- Only REQUIRED for remote deployment
+  REMOTE_EXPORTS+=()        # <- Functions to be exported to remote PVE
+
+  VE_ID=6001
+  VE_NAME=ubuntu2404-demo1
   IMAGE_URL=https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
   STORAGE=local-lvm
 
@@ -43,6 +54,28 @@ deploy_ve_config() {
   VIRTIOFS=(            # Format: 'MAPPING_ID:IN_VM_MOUNT_POINT'
     # 'my-mapping-id:/home/user/share'    # <- /home/user/share will be auto created
   )
+
+  ON_CREATED+=(         # Functions to be executed when the VM is created
+    mk_snapshot
+  )
+}
+
+# One more demo profile
+deploy_ve_config_demo_2() {
+  deploy_ve_config
+
+  REMOTE_EXPORTS+=(
+    # Current profile depends on the default one => export default to remote PVE
+    deploy_ve_config
+  )
+
+  # Default profile overrides
+  VE_ID=6002
+  VE_NAME=ubuntu2404-demo2
+}
+
+mk_snapshot() {
+  (set -x; qm snapshot "${VE_ID}" Init1 --description "Initial snapshot" >/dev/null)
 }
 
 
@@ -75,7 +108,9 @@ deploy_ve_core() (
         CLOUD_PASSWORD \
         SSH_PUB_KEY
   local -a  CUSTOMIZE_ARGS \
-            VIRTIOFS
+            VIRTIOFS \
+            REMOTE_EXPORTS \
+            ON_CREATED
 
   # https://stackoverflow.com/a/42449998
   # shellcheck disable=SC2034
@@ -90,19 +125,51 @@ deploy_ve_core() (
   local TMP_FILE="/tmp/pve-deploy-vm.img"
 
   declare -A CMD_MAP=(
-    ['local']=deploy_local
-    ['remote']='<DUMMY>' # Handled by trap_remote
+    [local]=deploy_local
+    [remote]='<DUMMY>' # Handled by trap_remote
+    # Primitives
+    [profile]=show_profile
+    [profiles]=list_profiles
+    [--usage]=print_usage
+    [--demo]=print_demo
+    [-?]=print_help
+    [-h]=print_help
+    [--help]=print_help
   )
 
   print_usage() {
     echo "
       USAGE:
       ~~~~~~
-      # Deployment target must be PVE
-     ,
-      ${SELF_NAME} local      # <- Targets current machine
-      ${SELF_NAME} remote     # <- Targets \$PVE_HOST machine via SSH
+      ${SELF_NAME} local|remote [PROFILE]   # <- Deploy PVE VM
+      ${SELF_NAME} profiles                 # <- List all profiles
+      ${SELF_NAME} profile [PROFILE]        # <- View profile
     " | sed -e 's/^\s*//' -e 's/\s*$//' -e '/^$/d' -e 's/^,//'
+  }
+
+  print_demo() {
+    echo "
+      DEMO:
+      ~~~~~
+      # Deployment target must be PVE
+      # Assuming 2 config functions present:
+      #   deploy_ve_config() { \`# Default profile\`; }
+      #   deploy_ve_config_nas_server() { \`# NAS server profile\`; }
+      ${SELF_NAME} local      # <- Default profile targets current machine
+      ${SELF_NAME} local ''   # <- Same as previous
+      ${SELF_NAME} remote     # <- Same, but targets \$PVE_HOST machine via SSH
+      ${SELF_NAME} local nas-server   # <- NAS server profile. NOTE: '_' -> '-'
+     ,
+      # View profile:
+      ${SELF_NAME} profile              # <- View default profile
+      ${SELF_NAME} profile nas-server   # <- View NAS server profile
+    " | sed -e 's/^\s*//' -e 's/\s*$//' -e '/^$/d' -e 's/^,//'
+  }
+
+  print_help() {
+    print_usage
+    echo
+    print_demo
   }
 
   trap_remote() {
@@ -113,14 +180,40 @@ deploy_ve_core() (
       exit 1
     }
 
+    local profile="${2}"
+    local profile_func; profile_func="$(profile_name_to_func "${profile}")" || return
+
     log_info "Remote deployment to ${PVE_HOST}"
 
-    local -a copy_func=(deploy_ve_core deploy_ve_config)
-    ssh -t -t -- "${PVE_HOST}" "/bin/bash -c '
-      $(declare -f "${copy_func[@]}" | escape_single_quote)
-      deploy_ve_core local
+    local -a copy_func=(deploy_ve_core "${profile_func}" "${REMOTE_EXPORTS[@]}" "${ON_CREATED[@]}")
+    ssh -- "${PVE_HOST}" "/bin/bash -c '
+      $(
+        set -o pipefail
+        (set -x; declare -f -- "${copy_func[@]}") | escape_single_quote
+      ) || exit
+      deploy_ve_core local $(escape_single_quote "${profile}")
     '"
     exit
+  }
+
+  profile_name_to_func() {
+    local profile="${1}"
+    local prefix=deploy_ve_config
+
+    head -n 1 -- <<< "${profile}" | grep -qFxf <(list_profiles | sed -e 's/^*\s*//') || {
+      log_fatal "Profile not defined: '${profile}'"
+      return 1
+    }
+
+    local profile_func="${prefix}"
+    if [ -n "${profile}" ]; then
+      profile_func="$(
+        printf -- '%s\n' "${profile}" \
+        | sed -e 's/-/_/g' -e 's/^/'"${prefix}_"'/'
+      )"
+    fi
+
+    declare -F -- "${profile_func}"
   }
 
   check_pve_host() {
@@ -131,7 +224,7 @@ deploy_ve_core() (
 
   validate_command() {
     { [ -n "${CMD_MAP[${1}]}" ]; } &>/dev/null && return
-    log_fatal "Invalid command '${1}'"
+    log_fatal "Invalid command: '${1}'"
     echo >&2
     print_usage
     return 1
@@ -145,6 +238,21 @@ deploy_ve_core() (
   # shellcheck disable=SC2001,SC2120,SC2329,SC2317
   escape_double_quote() { sed 's/"/"\\&"/g' <<< "${1-$(cat)}"; }
 
+  list_profiles() {
+    declare -F | rev | cut -d ' ' -f1 | rev       `# <- Get funcs names` \
+    | sed -e 's/$/_/' | grep '^deploy_ve_config_' `# <- Get profilish ones` \
+    | sed -e 's/^deploy_ve_config_//' -e '/^_$/d' \
+          -e 's/_$//' -e 's/_/-/g'                `# <- Get profile names` \
+    | sort \
+    | sed -e 's/^/* /'
+  }
+
+  show_profile() {
+    local profile="${1}"
+    local func; func="$(profile_name_to_func "${profile}")" || return
+    declare -f "${func}"
+  }
+
   deploy_local() {
     if qm config "${VE_ID}" &>/dev/null \
       ||  pct config "${VE_ID}" &>/dev/null \
@@ -153,16 +261,16 @@ deploy_ve_core() (
       return 1
     fi
 
-    # Install PVE prereqs
+    log_info "Installing prereqs on PVE host"
     ( set -x
       apt-get update -q >/dev/null \
       && apt-get install -qy libguestfs-tools dhcpcd-base >/dev/null
     ) || return
 
-    # Get cloud image
+    log_info "Getting cloud image"
     (set -x; curl -fsSL -o "${TMP_FILE}" "${IMAGE_URL}") || return
 
-    # Customize the image
+    log_info "Customizing the image"
     (
       local -a extra_args
       local ctr=0
@@ -186,19 +294,15 @@ deploy_ve_core() (
       >/dev/null
     ) || return
 
-    # Create VM
+    log_info "Creating the VM"
     (set -x; qm create "${VE_ID}") || return
 
     # Import the cloud image as a disk
     (set -x; qm importdisk "${VE_ID}" "${TMP_FILE}" "${STORAGE}" >/dev/null) || return
 
-    # Configure VM
+    log_info "Configuring the VM"
     (
       local -a extra_args
-
-      if [ -n "${CLOUD_USER}" ] && [ -n "${CLOUD_PASSWORD}" ]; then
-        extra_args+=(--ciuser "${CLOUD_USER}" --cipassword "${CLOUD_PASSWORD}")
-      fi
 
       local entry
       local ix; for ix in "${!VIRTIOFS[@]}"; do
@@ -206,44 +310,71 @@ deploy_ve_core() (
         extra_args+=("--virtiofs${ix}" "${entry%%:*},direct-io=1,expose-xattr=1" )
       done
 
-      set -x
-      qm set "${VE_ID}" --scsihw virtio-scsi-single \
-        --name "${VE_NAME}" \
-        --net0 virtio,bridge="${NET_BRIDGE}" \
-        --ostype l26 --cpu cputype="${CPU_TYPE}" --cores "${CORES}" --memory "${MEMORY}" \
-        --scsi0 "${STORAGE}:vm-${VE_ID}-disk-0,cache=writethrough,discard=on,iothread=1,ssd=1" \
-        --efidisk0 "${STORAGE}:0,efitype=4m,,pre-enrolled-keys=1,size=1M" \
-        --scsi1 "${STORAGE}:cloudinit" \
-        --rng0 source=/dev/urandom \
-        --boot order=scsi0 \
-        --tablet 0 \
-        --ipconfig0 ip="${NET_IP}" \
-        --onboot="${AUTOSTART}" \
-        "${extra_args[@]}" \
-      >/dev/null || return
+      if [ -n "${CLOUD_USER}" ] && [ -n "${CLOUD_PASSWORD}" ]; then
+        # --cipassword must be last in the row, to mask it properly
+        extra_args+=(--ciuser "${CLOUD_USER}" --cipassword "${CLOUD_PASSWORD}")
+      fi
 
-      qm cloudinit update "${VE_ID}" >/dev/null \
-      && qm resize "${VE_ID}" scsi0 "${DISK_SIZE}" >/dev/null || return
-    )
+      local -a the_cmd=(
+        qm set "${VE_ID}" --scsihw virtio-scsi-single
+          --name "${VE_NAME}"
+          --net0 "virtio,bridge=${NET_BRIDGE}"
+          --ostype l26 --cpu cputype="${CPU_TYPE}" --cores "${CORES}" --memory "${MEMORY}"
+          --scsi0 "${STORAGE}:vm-${VE_ID}-disk-0,cache=writethrough,discard=on,iothread=1,ssd=1"
+          --efidisk0 "${STORAGE}:0,efitype=4m,,pre-enrolled-keys=1,size=1M"
+          --scsi1 "${STORAGE}:cloudinit"
+          --agent 1
+          --rng0 source=/dev/urandom
+          --boot order=scsi0
+          --tablet 0
+          --ipconfig0 ip="${NET_IP}"
+          --onboot="${AUTOSTART}"
+          "${extra_args[@]}"
+      )
+      ( set -o pipefail
+        (set -x; "${the_cmd[@]}" >/dev/null) 3>&1 1>&2 2>&3 \
+        | sed -e 's/\(--cipassword[= ]\).\+/\1*****/g'
+      ) 3>&1 1>&2 2>&3 || return
+
+      ( set -x
+        qm cloudinit update "${VE_ID}" >/dev/null \
+        && qm resize "${VE_ID}" scsi0 "${DISK_SIZE}" >/dev/null
+      ) || return
+    ) || return
 
     if [ -n "${SSH_PUB_KEY}" ]; then
       printf -- '%s\n' "${SSH_PUB_KEY}" | (set -x; qm set "${VE_ID}" --sshkeys <(cat) >/dev/null) || return
     fi
 
+    local hook; for hook in "${ON_CREATED[@]}"; do
+      log_info "Executing ${hook} hook"
+      "${hook}" || exit
+    done
+
+    log_info "Cleanup"
+    (set -x; rm -f "${TMP_FILE}")
+
     if [ "${AUTOSTART}" -eq 1 ]; then
       (set -x; qm start "${VE_ID}" >/dev/null) || return
     fi
 
-    (set -x; rm -f "${TMP_FILE}")
   }
 
   main() {
     validate_command "${@}" || exit
-    deploy_ve_config
-    trap_remote "${@}"
-    check_pve_host || exit
 
-    "${CMD_MAP[${1}]}" "${@}"
+    local -a deployment=(local remote)
+    if ! printf -- '%s\n' "${deployment[@]}" \
+      | grep -qFx -- "${1}" \
+    ; then
+      "${CMD_MAP[${1}]}" "${@:2}"; return
+    fi
+
+    local profile_func; profile_func="$(profile_name_to_func "${@:2}")" || exit
+    "${profile_func}"
+    trap_remote "${@}"  # || exit # <- It handles all exits
+    check_pve_host || exit
+    "${CMD_MAP[${1}]}" "${@:2}" || exit
   }
 
   main "${@}"
