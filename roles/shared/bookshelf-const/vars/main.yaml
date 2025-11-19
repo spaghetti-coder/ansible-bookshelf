@@ -6,16 +6,16 @@ bookshelf_const_version_shared:
   postgres: 16.10-alpine3.22
   # NOTE: With version update also update auth key: https://tailscale.com/admin/settings/keys
   # https://hub.docker.com/r/tailscale/tailscale/tags
-  tailscale: v1.90.6
+  tailscale: v1.90.8
 
-bookshelf_const_version:    # <- Last update: 2025-11-15
+bookshelf_const_version:    # <- Last update: 2025-11-20
   #
   # BASE
   #
   # https://github.com/FiloSottile/age/releases
   age: v1.2.1
   # https://github.com/junegunn/fzf/releases
-  fzf: '0.66.1'
+  fzf: '0.67.0'
   # Versions (better pick latest LTS) and channels lists:
   # * https://nodejs.org/en/about/previous-releases#looking-for-the-latest-release-of-a-version-branch
   # * https://snapcraft.io/node
@@ -30,28 +30,28 @@ bookshelf_const_version:    # <- Last update: 2025-11-15
   audiobookshelf: 2.30.0
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/blinkospace/blinko/tags
-  blinko: 1.6.5
+  blinko: 1.6.6
   blinko_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   blinko_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/_/caddy/tags
   caddy: 2.10.2
   caddy_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
-  code_server: v4.105.1
+  code_server: v4.106.0
   # https://github.com/fccview/cronmaster/pkgs/container/cronmaster
-  cronmaster: 1.4.2     # <- Update later considering https://github.com/fccview/cronmaster/releases/tag/1.5.0
+  cronmaster: 1.5.2     # <- Update later considering https://github.com/fccview/cronmaster/releases/tag/1.5.0
   cronmaster_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/duplicati/tags?name=-ls
   duplicati: v2.2.0.1_stable_2025-11-09-ls267
   duplicati_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-  filebrowser: v2.46.1-s6
+  filebrowser: v2.48.2-s6
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/f0rc3/gokapi/tags
   gokapi: v2.1.0
   gokapi_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/twin/gatus/pkgs/container/gatus
-  gatus: v5.31.0
+  gatus: v5.32.0
   gatus_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/gotify/server/tags
   gotify: 2.7.3
@@ -64,13 +64,13 @@ bookshelf_const_version:    # <- Last update: 2025-11-15
   homer: v25.11.1
   homer_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
-  jellyfin: 10.11.2
+  jellyfin: 10.11.3
   jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/joplin/server/tags
   joplin_server: 3.4.3
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # https://github.com/fccview/jotty/pkgs/container/jotty
-  jotty: 1.11.0
+  jotty: 1.11.1
   jotty_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
   mealie: v3.5.0
@@ -82,19 +82,19 @@ bookshelf_const_version:    # <- Last update: 2025-11-15
   memos: 0.25.2
   memos_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
-  metube: 2025.11.13
+  metube: 2025.11.16
   # https://hub.docker.com/r/deluan/navidrome/tags
   navidrome: 0.58.5
   navidrome_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/nginxproxy/nginx-proxy/tags?name=alpine
   nginx_proxy: 1.9.0-alpine
   # https://hub.docker.com/r/jc21/nginx-proxy-manager/tags
-  nginx_proxy_manager: 2.13.4
+  nginx_proxy_manager: 2.13.5
   nginx_proxy_manager_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/jamesread/olivetin/tags
   olivetin: 2025.11.11
   # https://hub.docker.com/r/ollama/ollama/tags
-  ollama: 0.12.11
+  ollama: 0.13.0
   ollama_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/open-webui/open-webui/releases
   open_webui: v0.6.36
@@ -109,7 +109,7 @@ bookshelf_const_version:    # <- Last update: 2025-11-15
   portainer_agent: 2.35.0-alpine
   portainer_agent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.2-r4-ls425
+  qbittorrent: 5.1.2-r4-ls426
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: 2.2.1
   # https://hub.docker.com/r/rnwood/smtp4dev/tags?name=v
