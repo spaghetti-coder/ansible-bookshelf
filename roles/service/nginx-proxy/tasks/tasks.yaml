@@ -9,6 +9,8 @@
   vars:
     compose_dir: "{{ nginx_proxy_compose_dir | default(bookshelf_const_compose_dir + '/nginx-proxy', true) }}"
     certs_dir: "{{ compose_dir }}/ssl"
+    conffiles_dir: "{{ compose_dir }}/conf"
+    conffiles: "{{ nginx_proxy_conffiles | default([], true) }}"
     service_state: "{{ nginx_proxy_enabled | ternary('present', 'absent') }}"
   block:
     - name: Create compose directories
@@ -16,13 +18,51 @@
         path: "{{ item }}"
         state: directory
         mode: '0700'
-      loop: ["{{ compose_dir }}", "{{ certs_dir }}"]
+      loop: ["{{ compose_dir }}", "{{ certs_dir }}", "{{ conffiles_dir }}"]
+
+    # PROCESS CONFFILES
+
+    - name: Create conffiles
+      ansible.builtin.copy:
+        content: "{{ item }}"
+        dest: "{{ conffiles_dir }}/{{ filename }}"
+        mode: '0600'
+      vars:
+        # Names are important
+        # https://github.com/nginx-proxy/nginx-proxy/tree/main/docs#proxy-wide
+        filename: "zzz-{{ '{:03}'.format(ix + 1) }}.conf"
+      loop: "{{ conffiles }}"
+      loop_control:
+        index_var: ix
+        label: "{{ filename }}"
+      register: nginx_proxy_conffiles_create_result
+
+    - name: List all conffiles
+      ansible.builtin.command:
+        argv: [ls, -1A, "{{ conffiles_dir }}"]
+      changed_when: false
+      register: nginx_proxy_conffiles_current_state
+
+    - name: Conffiles cleanup
+      ansible.builtin.file:
+        path: "{{ conffiles_dir }}/{{ item }}"
+        state: absent
+      loop: "{{ obsolete }}"
+      vars:
+        wanted: "{{ nginx_proxy_conffiles_create_result.results | map(attribute='dest') | map('basename') }}"
+        obsolete: "{{ nginx_proxy_conffiles_current_state.stdout_lines | difference(wanted) | map('basename') }}"
+      register: nginx_proxy_conffiles_remove_result
+
+    # BASIC COMPOSE MANAGEMENT
 
     - name: Create compose files
       ansible.builtin.template:
         src: "{{ item }}.j2"
         dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
+      vars:
+        # Required for compose
+        conffiles: "{{ nginx_proxy_conffiles_create_result.results | map(attribute='dest') | map('basename') }}"
       loop:
         - compose.yaml
         - main.env
@@ -79,6 +119,8 @@
         - nginx_proxy_enabled and not nginx_proxy_service_state.changed
         - nginx_proxy_certs_create_result.changed
           or nginx_proxy_certs_remove_result.changed
+          or nginx_proxy_conffiles_create_result.changed
+          or nginx_proxy_conffiles_remove_result.changed
 
 - name: Mark done
   ansible.builtin.set_fact:

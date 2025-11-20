@@ -12,6 +12,10 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./{{ certs_dir | basename }}:/etc/nginx/certs
+      # https://github.com/nginx-proxy/nginx-proxy/tree/main/docs#proxy-wide
+{% for file in conffiles %}
+      - ./{{ conffiles_dir | basename }}/{{ file }}:/etc/nginx/conf.d/{{ file }}
+{% endfor %}
     hostname: "{{ nginx_proxy_hostname }}"
     networks:
       - "{{ nginx_proxy_net }}"

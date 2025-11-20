@@ -1316,6 +1316,8 @@ nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
 nginx_proxy_ports:          # (OPTIONAL) HOST:CONTAINER ports mapping
   - 80:80                   # <- HTTP
   - 443:443                 # <- HTTPS
+nginx_proxy_conffiles:
+  # - "{{ lookup('file', 'demo1.conf') }}"
 # See:
 #   * https://github.com/nginx-proxy/nginx-proxy/blob/main/docs/README.md#ssl-support
 #   * https://github.com/nginx-proxy/nginx-proxy/blob/main/docs/README.md#wildcard-certificates
