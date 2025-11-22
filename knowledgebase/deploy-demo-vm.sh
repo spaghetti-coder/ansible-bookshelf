@@ -42,12 +42,14 @@ deploy_ve_config() {
   CLOUD_PASSWORD="$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 20 | openssl passwd -6 -stdin)"
 
   CUSTOMIZE_ARGS=(      # <- https://libguestfs.org/virt-customize.1.html
+    # Fix $CLOUD_USER HOME ownership (probably due to Virtiofs directories creation)
+    --firstboot-command "chown ${CLOUD_USER}:${CLOUD_USER} /home/${CLOUD_USER}"
     # Guest agent + ansible target prereqs
     --update --install "qemu-guest-agent,openssh-server,python3,sudo"
     # Disable passwordless sudo for ${CLOUD_USER}
     --firstboot-command 'rm -f /etc/sudoers.d/*-cloud-init-*'
-    # Fix $CLOUD_USER HOME ownership (probably due to Virtiofs directories creation)
-    --firstboot-command "chown ${CLOUD_USER}:${CLOUD_USER} /home/${CLOUD_USER}"
+    # Allow password SSH
+    # --firstboot-command 'rm -f /etc/ssh/sshd_config.d/*-cloudimg-*'
   )
 
   # Mappings must be created in advance:

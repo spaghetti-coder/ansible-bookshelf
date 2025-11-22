@@ -511,10 +511,12 @@ caddy_secrets_env: |      # "{{ lookup('template', playbook_dir + '/resources/ca
 # The following settings configure Caddy to run as a part of tailnet
 #
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
+# IMPORTANT 2: Unlike other tailscaled services, this one is not
+#   available via TS Magic DNS and can't be configured to be funneled.
+#   But it's still reachable via tailnet IP
 caddy_tailscaled: false
 caddy_ts_version:          # Leave blank to leverage bookshelf configuration
 caddy_ts_service_name: "{{ caddy_service_name }}-ts"
-caddy_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
 # Hostname within tailnet
 caddy_ts_hostname: "{{ caddy_service_name }}"
 caddy_ts_auth_key:

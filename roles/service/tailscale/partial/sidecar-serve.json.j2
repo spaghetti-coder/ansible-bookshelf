@@ -1,7 +1,13 @@
 {#
 
+# Instruction for generating:
+#   https://tailscale.com/blog/docker-tailscale-guide#configuring-serve-and-funnel
+
 # USAGE:
 # -----
+# Just place it to you ts-serve.json
+#   ts_web_proxy = 'https+insecure://127.0.0.1:8443'   # <- For self-signed SSL
+
 {{ lookup('template', './../../tailscale/partial/sidecar-serve.json.j2', template_vars=dict(
   ts_web_proxy = 'http://127.0.0.1:' + (<SERVICE_INT_WEB_UI_PORT> | string),
   ts_funnelled = <BOOL_FUNNEL_ENABLED>
