@@ -1,19 +1,24 @@
 {% set version = qbittorrent_version | default(bookshelf_const_version.qbittorrent, true) %}
-{% set vuetorrent_version = qbittorrent_vuetorrent_version | default(bookshelf_const_version.vuetorrent, true) %}
-{% set web_ui_port = qbittorrent_web_ui_port | default(bookshelf_const_port.qbittorrent.web_ui, true) %}
-{% set torrenting_port = bookshelf_const_port.qbittorrent.torrenting %}
+{% set web_ui_port = qbittorrent_web_ui_port_int %}
+{% set torrenting_port = qbittorrent_torrenting_port_int %}
 {% set data_volumes = (qbittorrent_user == qbittorrent_owner)
     | ternary(qbittorrent_data_volumes, data_volumes_abs) | default([], true) %}
 ---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = qbittorrent_ts_version | default(bookshelf_const_version.qbittorrent_tailscale, true),
+  ts_name = qbittorrent_ts_service_name, ts_conf_dir = qbittorrent_conf_dir + '/tailscale'
+)) }}
+
 # Temporary password for the admin user will be printed to the container log on startup
 services:
-  qbittorrent:
+  {{ qbittorrent_service_name }}:
     # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
     # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
     image: lscr.io/linuxserver/qbittorrent:{{ version }}
     container_name: {{ qbittorrent_service_name }}
     restart: unless-stopped
     env_file:
+      - ./secret.env
       - ./main.env
     volumes:
 {% for volume in data_volumes %}
@@ -26,20 +31,21 @@ services:
 {% if qbittorrent_notify_provider | length > 0 %}
       - '{{ notify_sh_path }}:{{ notify_sh_path }}:ro'
 {% endif %}{# qbittorrent_notify_provider #}
+{% if qbittorrent_tailscaled %}
+    network_mode: "service:{{ qbittorrent_ts_service_name }}"
+
+  {{ qbittorrent_ts_service_name }}:
+    <<: *tailscale
+{% endif %}{# adguard_tailscaled #}
     hostname: {{ qbittorrent_hostname }}
     ports:
       - '{{ web_ui_port }}:{{ web_ui_port }}'
       - '{{ torrenting_port }}:{{ torrenting_port }}'
       - '{{ torrenting_port }}:{{ torrenting_port }}/udp'
-    environment:
-      # Enable VueTorrent mod
-      # https://github.com/VueTorrent/VueTorrent/wiki/Installation#using-lsio-docker-mod
-      - DOCKER_MODS=ghcr.io/vuetorrent/vuetorrent-lsio-mod:{{ vuetorrent_version }}
-      - WEBUI_PORT={{ web_ui_port }}   # <- Due to issues with CSRF port mapping must be explicit
-      - TORRENTING_PORT={{ torrenting_port }}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge    # <- Avoid creating default compose network
 {% else %}
+    environment:
       - VIRTUAL_HOST={{ qbittorrent_vhost }}
       - VIRTUAL_PORT={{ web_ui_port }}
     networks:

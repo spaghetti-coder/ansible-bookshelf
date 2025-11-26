@@ -5,6 +5,14 @@
   1. `Settings > WebUI`
   2. Check **Use alternative WebUI**
   3. **Files location**: `/vuetorrent`
+* To fix "Unauthorized" error when redirected from a dashboard, go to
+  1. `qBittorrent UI > Settings > WebUI`
+  2. Under Security disable CSRF and Host Header validation
+{% if qbittorrent_tailscaled %}
+* Disable tailscale machine expiry:
+  1. Go to https://tailscale.com/admin/machines
+  2. `{{ qbittorrent_ts_hostname }} *** > Disable key expiry`
+{% endif %}
 {% if qbittorrent_notify_provider %}
 * Configure "downloaded" notification:
   1. `qBittorrent UI > Settings > Downloads`

@@ -110,6 +110,7 @@ bookshelf_const_version:    # <- Last update: 2025-11-25
   portainer_agent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
   qbittorrent: 5.1.4-r0-ls427
+  qbittorrent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: 2.2.1
   # https://hub.docker.com/r/rnwood/smtp4dev/tags?name=v

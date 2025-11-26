@@ -1590,6 +1590,9 @@ portainer_ts_auth_key:
 #
 # NOTE 3: Switch to alternative UI
 #   Settings > WebUI > check Use alternative WebUI, Files location: /vuetorrent
+#
+# NOTE 4: To fix "Unauthorized" error when redirected from a dashboard, go to
+#   Settings > WebUI > under Security disable CSRF and Host Header validation
 # -----
 qbittorrent_managed: false
 qbittorrent_enabled: false
@@ -1619,6 +1622,17 @@ qbittorrent_notify_server:    # (REQUIRED for gotify)
 qbittorrent_notify_chat_id:   # (REQUIRED for telegram)
 # Optional extra env vars
 qbittorrent_extra_env:        # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"
+# ----------
+# The following settings configure qBittorrent to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+qbittorrent_tailscaled: false
+qbittorrent_ts_version:           # Leave blank to leverage bookshelf configuration
+qbittorrent_ts_service_name: "{{ qbittorrent_service_name }}-ts"
+qbittorrent_ts_funnelled: false   # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+qbittorrent_ts_hostname: "{{ qbittorrent_service_name }}"
+qbittorrent_ts_auth_key:
 
 # ========================
 #       SILVERBULLET

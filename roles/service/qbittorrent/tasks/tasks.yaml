@@ -57,8 +57,11 @@
         dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
       loop:
+        - ts-serve.json    # <- Must be first
         - compose.yaml
         - main.env
+        - secret.env
+      register: qbittorrent_compose_files_result
 
     - name: Ensure service user directories ownership
       ansible.builtin.file:
@@ -74,6 +77,16 @@
         project_src: "{{ compose_dir }}"
         state: "{{ service_state }}"
         remove_orphans: true
+      register: qbittorrent_service_state
+
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - qbittorrent_enabled and not qbittorrent_service_state.changed
+        - qbittorrent_tailscaled and qbittorrent_compose_files_result.results[0].changed
 
     - name: Create note
       ansible.builtin.import_role: { name: bookshelf-note }
