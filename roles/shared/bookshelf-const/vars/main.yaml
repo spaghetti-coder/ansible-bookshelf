@@ -8,7 +8,7 @@ bookshelf_const_version_shared:
   # https://hub.docker.com/r/tailscale/tailscale/tags
   tailscale: v1.90.8
 
-bookshelf_const_version:    # <- Last update: 2025-11-22
+bookshelf_const_version:    # <- Last update: 2025-11-25
   #
   # BASE
   #
@@ -45,7 +45,7 @@ bookshelf_const_version:    # <- Last update: 2025-11-22
   duplicati: v2.2.0.1_stable_2025-11-09-ls268
   duplicati_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-  filebrowser: v2.48.2-s6
+  filebrowser: v2.49.0-s6
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/f0rc3/gokapi/tags
   gokapi: v2.1.0
@@ -92,7 +92,7 @@ bookshelf_const_version:    # <- Last update: 2025-11-22
   nginx_proxy_manager: 2.13.5
   nginx_proxy_manager_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/jamesread/olivetin/tags
-  olivetin: 2025.11.11
+  olivetin: 2025.11.25
   # https://hub.docker.com/r/ollama/ollama/tags
   ollama: 0.13.0
   ollama_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
