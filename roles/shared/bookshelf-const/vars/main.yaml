@@ -6,9 +6,9 @@ bookshelf_const_version_shared:
   postgres: 16.11-alpine3.22
   # NOTE: With version update also update auth key: https://tailscale.com/admin/settings/keys
   # https://hub.docker.com/r/tailscale/tailscale/tags
-  tailscale: v1.90.8
+  tailscale: v1.90.9
 
-bookshelf_const_version:    # <- Last update: 2025-11-25
+bookshelf_const_version:    # <- Last update: 2025-11-27
   #
   # BASE
   #
@@ -79,7 +79,7 @@ bookshelf_const_version:    # <- Last update: 2025-11-25
   # IMPORTANT:
   #   - Check release notes before update: https://github.com/usememos/memos/releases
   #   - Consider backup before upgrade: https://www.usememos.com/docs/install/upgrade
-  memos: 0.25.2
+  memos: 0.25.3
   memos_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
   metube: 2025.11.16
@@ -97,22 +97,22 @@ bookshelf_const_version:    # <- Last update: 2025-11-25
   ollama: 0.13.0
   ollama_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/open-webui/open-webui/releases
-  open_webui: v0.6.36
+  open_webui: v0.6.40
   open_webui_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
   pairdrop: v1.11.2-ls126
   pairdrop_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
-  portainer: 2.35.0-alpine
+  portainer: 2.36.0-alpine
   portainer_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
-  portainer_agent: 2.35.0-alpine
+  portainer_agent: 2.36.0-alpine
   portainer_agent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
   qbittorrent: 5.1.4-r0-ls427
   qbittorrent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
-  silverbullet: 2.2.1
+  silverbullet: 2.3.0
   # https://hub.docker.com/r/rnwood/smtp4dev/tags?name=v
   smtp4dev: v3.10
   smtp4dev_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
