@@ -37,6 +37,9 @@ duplicati_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/du
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # CLI_ARGS=--server-datafolder=/root/.config/Duplicati
+# WUD settings
+duplicati_wudded: true    # Watched by WUD
+duplicati_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Duplicati to run as a part of tailnet
 #

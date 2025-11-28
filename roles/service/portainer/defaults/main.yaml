@@ -21,6 +21,9 @@ portainer_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not ex
 portainer_expose_ssh_tunnel_port: false
 # Optional extra env vars, will affect both Portainer and Tailscale.
 portainer_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/portainer.env.j2') }}"
+# WUD settings
+portainer_wudded: true    # Watched by WUD
+portainer_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Portainer to run as a part of tailnet
 #

@@ -21,3 +21,6 @@ heimdall_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 #   http://{{ ansible_default_ipv4.address }}:{{ heimdall_web_ui_port_ext }}
 #   https://{{ heimdall_vhost }}
 heimdall_base_url:      # (REQUIRED)
+# WUD settings
+heimdall_wudded: true   # Watched by WUD
+heimdall_tag_rex:       # Leave blank to leverage bookshelf configuration

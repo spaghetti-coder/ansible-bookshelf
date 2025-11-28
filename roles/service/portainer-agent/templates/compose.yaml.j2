@@ -1,5 +1,6 @@
 {% set version = (portainer_agent_version | default(bookshelf_const_version.portainer_agent, true)) %}
 {% set tcp_port = (portainer_agent_tcp_port | default(bookshelf_const_port.portainer_agent.tcp_port, true)) %}
+{% set tag_rex = portainer_agent_tag_rex | default(bookshelf_const_version.portainer_agent_tag_rex, true) %}
 ---
 # Tutorials:
 # * https://www.youtube.com/watch?v=iX0HbrfRyvc
@@ -15,6 +16,9 @@ services:
     image: portainer/agent:{{ version }}
     container_name: {{ portainer_agent_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ portainer_agent_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

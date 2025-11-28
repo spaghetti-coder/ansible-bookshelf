@@ -15,7 +15,7 @@ torrserver_conf_dir: ~/conf/torrserver
 torrserver_service_name: torrserver
 torrserver_hostname: "{{ torrserver_service_name }}"
 torrserver_vhost: "{{ torrserver_service_name }}.domain.local"
-torrserver_web_ui_port:        # Leave blank to leverage bookshelf configuration
+torrserver_web_ui_port:        # Leave blank to leverage bookshelf configuration, or '-1' to not expose the port
 # Optional extra env vars, will affect both TorrServer and Tailscale.
 torrserver_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/torrserver.env.j2') }}"
   # References:
@@ -23,9 +23,9 @@ torrserver_extra_env: |        # "{{ lookup('template', playbook_dir + '/resourc
   # ----------
   # Auth seems to break the server
   # TS_HTTPAUTH=1   # <- Enable auth. https://github.com/YouROK/TorrServer/#authentication
-# ----------
-# Disable if plan to access only via tailnet or reverse-proxy
-torrserver_web_ui_ports_exposed: true
+# WUD settings
+torrserver_wudded: true       # Watched by WUD
+torrserver_tag_rex:           # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure TorrServer to run as a part of tailnet
 #

@@ -2,6 +2,7 @@
 {% set web_ui_port = adguard_web_ui_port | default(bookshelf_const_port.adguard.web_ui, true) | int %}
 {% set init_ui_port = adguard_init_ui_port | default(bookshelf_const_port.adguard.init_ui, true) | int %}
 {% set ports_exposed = (web_ui_port > -1 or init_ui_port > -1 or adguard_dns_ports_exposed) %}
+{% set tag_rex = adguard_tag_rex | default(bookshelf_const_version.adguard_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = adguard_ts_version | default(bookshelf_const_version.adguard_tailscale, true),
@@ -14,6 +15,9 @@ services:
     image: adguard/adguardhome:{{ version }}
     container_name: {{ adguard_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ adguard_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

@@ -1,6 +1,7 @@
 {% set version = torrserver_version | default(bookshelf_const_version.torrserver, true) %}
 {% set web_ui_port = torrserver_web_ui_port | default(bookshelf_const_port.torrserver.web_ui, true) %}
 {% set tailscale_version = torrserver_ts_version | default(bookshelf_const_version.torrserver_tailscale, true) %}
+{% set tag_rex = torrserver_tag_rex | default(bookshelf_const_version.torrserver_tag_rex, true) %}
 ---
 services:
   {{ torrserver_service_name }}:
@@ -8,6 +9,9 @@ services:
     image: ghcr.io/yourok/torrserver:{{ version }}
     container_name: {{ torrserver_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ torrserver_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env
@@ -37,12 +41,12 @@ services:
       - SYS_MODULE
 {% endif %}{# torrserver_tailscaled #}
     hostname: {{ torrserver_hostname }}
-{% if torrserver_web_ui_ports_exposed %}
+{% if web_ui_port | int > -1 %}
     ports:
       - '{{ web_ui_port }}:{{ torrserver_web_ui_port_int }}'
 {% else %}
     # ports:
-    #   - '{{ web_ui_port }}:{{ torrserver_web_ui_port_int }}'
+    #   - '{{ bookshelf_const_port.torrserver.web_ui }}:{{ torrserver_web_ui_port_int }}'
 {% endif %}
 {% if not (nginx_proxy_enabled | default(false)) %}
     network_mode: bridge

@@ -28,6 +28,9 @@ pairdrop_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/pair
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # RATE_LIMIT=true
+# WUD settings
+pairdrop_wudded: true     # Watched by WUD
+pairdrop_tag_rex:         # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure PairDrop to run as a part of tailnet
 #

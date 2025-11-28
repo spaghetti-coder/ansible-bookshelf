@@ -1,5 +1,6 @@
 {% set version = (jotty_version | default(bookshelf_const_version.jotty, true)) %}
 {% set web_ui_port = (jotty_web_ui_port | default(bookshelf_const_port.jotty.web_ui, true)) %}
+{% set tag_rex = jotty_tag_rex | default(bookshelf_const_version.jotty_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = jotty_ts_version | default(bookshelf_const_version.jotty_tailscale, true),
@@ -12,6 +13,9 @@ services:
     image: ghcr.io/fccview/jotty:{{ version }}
     container_name: {{ jotty_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ jotty_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

@@ -40,6 +40,9 @@ audiobookshelf_extra_env: |   # "{{ lookup('template', playbook_dir + '/resource
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # PORT=5555
+# WUD settings
+audiobookshelf_wudded: true   # Watched by WUD
+audiobookshelf_tag_rex:       # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Audiobookshelf to run as a part of tailnet
 #

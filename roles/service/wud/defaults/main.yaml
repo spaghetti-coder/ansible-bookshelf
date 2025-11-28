@@ -1,0 +1,51 @@
+---
+# Keep your containers up-to-date!
+#   https://getwud.github.io/wud/
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/vikunja/vikunja/tags
+#   * => See tailscale role versions
+# -----
+wud_managed: false
+wud_enabled: false
+wud_version:            # Leave blank to leverage bookshelf configuration
+wud_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
+wud_owner: "{{ ansible_user_id }}"
+wud_conf_dir: ~/conf/wud
+wud_service_name: wud
+wud_hostname: "{{ wud_service_name }}"
+wud_vhost: "{{ wud_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+wud_web_ui_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
+wud_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+# Optional extra env vars, will affect both wud and Tailscale.
+wud_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/wud.env.j2') }}"
+  # References:
+  #   https://getwud.github.io/wud/
+  # ----------
+  # WUD_WATCHER_LOCAL_WATCHBYDEFAULT=false
+  # WUD_WATCHER_LOCAL_CRON='0 3 * * *'
+  WUD_SERVER_FEATURE_DELETE=false
+wud_secrets_env: |      # "{{ lookup('template', playbook_dir + '/resources/wud.secret.env.j2') }}"
+  # References:
+  #   https://getwud.github.io/wud/
+  # ----------
+  # Hash generation:
+  #   docker run --rm httpd htpasswd -nib USERNAME PASSOWRD | cut -d':' -f2-
+  #   docker run --rm httpd htpasswd -nib john changeme | cut -d':' -f2-
+  # WUD_AUTH_BASIC_JOHN_USER=john
+  # WUD_AUTH_BASIC_JOHN_HASH='...'
+# WUD settings
+wud_wudded: true        # Watched by WUD
+wud_tag_rex:            # Leave blank to leverage bookshelf configuration
+# ----------
+# The following settings configure wud to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+wud_tailscaled: false
+wud_ts_version:           # Leave blank to leverage bookshelf configuration
+wud_ts_service_name: "{{ wud_service_name }}-ts"
+wud_ts_funnelled: false   # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+wud_ts_hostname: "{{ wud_service_name }}"
+wud_ts_auth_key:

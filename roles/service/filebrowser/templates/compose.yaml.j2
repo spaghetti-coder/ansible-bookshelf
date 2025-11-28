@@ -1,6 +1,7 @@
 {% set version = (filebrowser_version | default(bookshelf_const_version.filebrowser, true)) %}
 {% set web_ui_port = (filebrowser_web_ui_port | default(bookshelf_const_port.filebrowser.web_ui, true)) %}
 {% set data_dir = ((filebrowser_user == filebrowser_owner) | ternary(filebrowser_data_dir, data_dir_abs)) %}
+{% set tag_rex = filebrowser_tag_rex | default(bookshelf_const_version.filebrowser_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = filebrowser_ts_version | default(bookshelf_const_version.filebrowser_tailscale, true),
@@ -13,6 +14,9 @@ services:
     image: filebrowser/filebrowser:{{ version }}
     container_name: {{ filebrowser_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ filebrowser_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

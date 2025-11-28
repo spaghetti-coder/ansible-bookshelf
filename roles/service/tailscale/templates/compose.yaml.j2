@@ -1,6 +1,7 @@
 {% set version = (tailscale_version | default(bookshelf_const_version.tailscale, true)) %}
 {% set routed_traffic = true if (tailscale_routes or tailscale_exit_node) else false %}
 {% set health_version = (tailscale_health_alpine_version | default(bookshelf_const_version.tailscale_alpine, true)) %}
+{% set tag_rex = tailscale_tag_rex | default(bookshelf_const_version.tailscale_tag_rex, true) %}
 ---
 # This one is supposed to work as an exit node
 # and provide access to local network routes
@@ -13,6 +14,9 @@ services:
     image: tailscale/tailscale:{{ version }}
     container_name: {{ tailscale_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ tailscale_wudded }}
+      - wud.tag.include={{ tag_rex }}
     volumes:
       - '{{ conf_dir }}/config:/var/lib/tailscale'
     devices:

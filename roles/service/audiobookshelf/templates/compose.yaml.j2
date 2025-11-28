@@ -2,6 +2,7 @@
 {% set web_ui_port = audiobookshelf_web_ui_port | default(bookshelf_const_port.audiobookshelf.web_ui, true) %}
 {% set data_volumes = (audiobookshelf_user == audiobookshelf_owner)
     | ternary(audiobookshelf_data_volumes, data_volumes_abs) | default([], true) %}
+{% set tag_rex = audiobookshelf_tag_rex | default(bookshelf_const_version.audiobookshelf_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = audiobookshelf_ts_version | default(bookshelf_const_version.audiobookshelf_tailscale, true),
@@ -15,6 +16,9 @@ services:
     image: ghcr.io/advplyr/audiobookshelf:{{ version }}
     container_name: {{ audiobookshelf_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ audiobookshelf_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

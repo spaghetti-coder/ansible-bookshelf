@@ -28,3 +28,6 @@ metube_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/metube
   #   * https://github.com/alexta69/metube#%EF%B8%8F-configuration-via-environment-variables
   # ----------
   DEFAULT_THEME=dark
+# WUD settings
+metube_wudded: true   # Watched by WUD
+metube_tag_rex:       # Leave blank to leverage bookshelf configuration

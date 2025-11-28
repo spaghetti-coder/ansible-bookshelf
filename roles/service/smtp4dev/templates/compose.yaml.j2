@@ -2,6 +2,7 @@
 {% set web_ui_port = (smtp4dev_web_ui_port | default(bookshelf_const_port.smtp4dev.web_ui, true)) %}
 {% set tailscale_version = (smtp4dev_tailscale_version | default(bookshelf_const_version.smtp4dev_tailscale, true)) %}
 {% set tailscale_service = 'smtp4dev-tailscale' %}
+{% set tag_rex = smtp4dev_tag_rex | default(bookshelf_const_version.smtp4dev_tag_rex, true) %}
 ---
 services:
   smtp4dev:
@@ -9,6 +10,9 @@ services:
     image: rnwood/smtp4dev:{{ version }}
     container_name: {{ smtp4dev_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ smtp4dev_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

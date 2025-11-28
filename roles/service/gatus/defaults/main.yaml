@@ -40,6 +40,9 @@ gatus_secrets_env: |      # "{{ lookup('template', playbook_dir + '/resources/ga
   # Same as extra env, but for secrets
   # ----------
   # SOME_SECRET_VAR=some-secret
+# WUD settings
+gatus_wudded: true        # Watched by WUD
+gatus_tag_rex:            # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Gatus to run as a part of tailnet
 #

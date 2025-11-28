@@ -1,5 +1,6 @@
 {% set version = homer_version | default(bookshelf_const_version.homer, true) %}
 {% set web_ui_port = homer_web_ui_port | default(bookshelf_const_port.homer.web_ui, true) %}
+{% set tag_rex = homer_tag_rex | default(bookshelf_const_version.homer_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = homer_ts_version | default(bookshelf_const_version.homer_tailscale, true),
@@ -12,6 +13,9 @@ services:
     image: b4bz/homer:{{ version }}
     container_name: {{ homer_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ homer_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

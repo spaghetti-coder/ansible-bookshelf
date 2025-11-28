@@ -23,6 +23,9 @@ open_webui_extra_env: |     # "{{ lookup('template', playbook_dir + '/resources/
   #   * https://docs.openwebui.com/getting-started/env-configuration/
   # ----------
   # OLLAMA_BASE_URL=http://ollama.domain.local
+# WUD settings
+open_webui_wudded: true     # Watched by WUD
+open_webui_tag_rex:         # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Open WebUI to run as a part of tailnet
 #

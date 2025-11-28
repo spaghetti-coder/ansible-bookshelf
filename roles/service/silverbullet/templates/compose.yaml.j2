@@ -1,5 +1,6 @@
 {% set version = (silverbullet_version | default(bookshelf_const_version.silverbullet, true)) %}
 {% set web_ui_port = (silverbullet_web_ui_port | default(bookshelf_const_port.silverbullet.web_ui, true)) %}
+{% set tag_rex = silverbullet_tag_rex | default(bookshelf_const_version.silverbullet_tag_rex, true) %}
 ---
 services:
   silverbullet:
@@ -7,6 +8,9 @@ services:
     image: ghcr.io/silverbulletmd/silverbullet:{{ version }}
     container_name: {{ silverbullet_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ silverbullet_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

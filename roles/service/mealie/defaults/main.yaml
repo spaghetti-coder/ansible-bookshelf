@@ -29,6 +29,9 @@ mealie_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/mealie
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # ALLOW_SIGNUP=false
+# WUD settings
+mealie_wudded: true   # Watched by WUD
+mealie_tag_rex:       # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Mealie to run as a part of tailnet
 #

@@ -259,6 +259,10 @@
       tags: [wikijs, upgradable]
       when: wikijs_managed | default(false)
 
+    - role: wud
+      tags: [wud, upgradable]
+      when: wud_managed | default(false)
+
 - name: DesktopBook
   tags: [desktops]
   hosts: all

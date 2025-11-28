@@ -18,6 +18,9 @@ uptime_kuma_vhost: "{{ uptime_kuma_service_name }}.domain.local"
 uptime_kuma_web_ui_port:    # Leave blank to leverage bookshelf configuration
 # Optional extra env vars, will affect both Uptime Kuma and tailscale.
 uptime_kuma_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/uptime-kuma.env.j2') }}"
+# WUD settings
+uptime_kuma_wudded: true    # Watched by WUD
+uptime_kuma_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Uptime Kuma to run as a part of tailnet
 #

@@ -22,3 +22,6 @@ silverbullet_auth_pass:     # (REQUIRED when non-empty user) If user not set, us
 # silverbullet_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # Optional extra env vars
 silverbullet_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/silverbullet.env.j2') }}"
+# WUD settings
+silverbullet_wudded: true   # Watched by WUD
+silverbullet_tag_rex:       # Leave blank to leverage bookshelf configuration

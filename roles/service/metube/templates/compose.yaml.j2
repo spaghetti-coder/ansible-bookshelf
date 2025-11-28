@@ -1,6 +1,7 @@
 {% set version = (metube_version | default(bookshelf_const_version.metube, true)) %}
 {% set web_ui_port = (metube_web_ui_port | default(bookshelf_const_port.metube.web_ui, true)) %}
 {% set data_dir = ((metube_user == metube_owner) | ternary(metube_data_dir, data_dir_abs)) %}
+{% set tag_rex = metube_tag_rex | default(bookshelf_const_version.metube_tag_rex, true) %}
 ---
 services:
   app:
@@ -8,6 +9,9 @@ services:
     image: ghcr.io/alexta69/metube:{{ version }}
     container_name: {{ metube_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ metube_wudded }}
+      - wud.tag.include={{ tag_rex }}
     hostname: {{ metube_hostname }}
     env_file:
       - ./main.env

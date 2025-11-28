@@ -26,6 +26,9 @@ memos_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/memos.
   # ----------
   # MEMOS_MAX_LOGIN_ATTEMPTS=5
   # MEMOS_LOCKOUT_DURATION=900
+# WUD settings
+memos_wudded: true    # Watched by WUD
+memos_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Memos to run as a part of tailnet
 #

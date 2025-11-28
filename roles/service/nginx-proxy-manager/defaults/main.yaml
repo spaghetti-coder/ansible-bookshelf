@@ -23,6 +23,9 @@ nginx_proxy_manager_ports:            # (OPTIONAL) HOST:CONTAINER ports mapping
 nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"
 # Optional extra env vars
 nginx_proxy_manager_extra_env:        # "{{ lookup('template', playbook_dir + '/resources/nginx-proxy-manager.env.j2') }}"
+# WUD settings
+nginx_proxy_manager_wudded: true      # Watched by WUD
+nginx_proxy_manager_tag_rex:          # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Nginx-Proxy-Manager to run as a part of tailnet
 #

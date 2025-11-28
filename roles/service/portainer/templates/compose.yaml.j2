@@ -2,6 +2,7 @@
 {% set web_ui_port = portainer_web_ui_port | default(bookshelf_const_port.portainer.web_ui, true) | int %}
 {% set tunnel_port = bookshelf_const_port.portainer.tunnel | int %}
 {% set ports_exposed = (web_ui_port > -1 or portainer_expose_ssh_tunnel_port) %}
+{% set tag_rex = portainer_tag_rex | default(bookshelf_const_version.portainer_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = portainer_ts_version | default(bookshelf_const_version.portainer_tailscale, true),
@@ -14,6 +15,9 @@ services:
     image: portainer/portainer-ce:{{ version }}
     container_name: {{ portainer_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ portainer_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

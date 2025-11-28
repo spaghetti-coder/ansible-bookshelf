@@ -1,5 +1,6 @@
 {% set version = open_webui_version | default(bookshelf_const_version.open_webui, true) %}
 {% set web_ui_port = open_webui_web_ui_port | default(bookshelf_const_port.open_webui.web_ui, true) %}
+{% set tag_rex = open_webui_tag_rex | default(bookshelf_const_version.open_webui_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = open_webui_ts_version | default(bookshelf_const_version.open_webui_tailscale, true),
@@ -12,6 +13,9 @@ services:
     image: ghcr.io/open-webui/open-webui:{{ version }}
     container_name: {{ open_webui_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ open_webui_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

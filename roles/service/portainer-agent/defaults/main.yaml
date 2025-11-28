@@ -17,6 +17,9 @@ portainer_agent_host_management: false
 portainer_agent_tcp_port:       # Leave blank for bookshelf default, or '-1' to not expose the port
 # Optional extra env vars, will affect both Portainer agent and Tailscale.
 portainer_agent_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/portainer-agent.env.j2') }}"
+# WUD settings
+portainer_agent_wudded: true    # Watched by WUD
+portainer_agent_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Portainer agent to run as a part of tailnet
 #

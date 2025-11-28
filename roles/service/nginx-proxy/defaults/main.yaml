@@ -43,3 +43,6 @@ nginx_proxy_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/
   #   * https://github.com/nginx-proxy/nginx-proxy/blob/main/docs/README.md#proxy-container
   # ----------
   # HTTPS_METHOD=noredirect
+# WUD settings
+nginx_proxy_wudded: true    # Watched by WUD
+nginx_proxy_tag_rex:        # Leave blank to leverage bookshelf configuration

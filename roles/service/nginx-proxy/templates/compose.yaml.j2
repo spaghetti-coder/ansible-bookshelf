@@ -1,5 +1,6 @@
 {% set version = (nginx_proxy_version | default(bookshelf_const_version.nginx_proxy, true)) %}
 {% set ports_map = nginx_proxy_ports | default([], true) %}
+{% set tag_rex = nginx_proxy_tag_rex | default(bookshelf_const_version.nginx_proxy_tag_rex, true) %}
 ---
 services:
   nginx-proxy:
@@ -7,6 +8,9 @@ services:
     image: nginxproxy/nginx-proxy:{{ version }}
     container_name: "{{ nginx_proxy_service_name }}"
     restart: unless-stopped
+    labels:
+      - wud.watch={{ nginx_proxy_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./main.env
     volumes:

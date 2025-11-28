@@ -1,5 +1,6 @@
 {% set version = gatus_version | default(bookshelf_const_version.gatus, true) %}
 {% set web_ui_port = gatus_web_ui_port | default(bookshelf_const_port.gatus.web_ui, true) %}
+{% set tag_rex = gatus_tag_rex | default(bookshelf_const_version.gatus_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = gatus_ts_version | default(bookshelf_const_version.gatus_tailscale, true),
@@ -12,6 +13,9 @@ services:
     image: ghcr.io/twin/gatus:{{ version }}
     container_name: {{ gatus_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ gatus_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

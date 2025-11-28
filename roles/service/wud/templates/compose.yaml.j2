@@ -1,0 +1,50 @@
+{% set version = wud_version | default(bookshelf_const_version.wud, true) %}
+{% set web_ui_port = wud_web_ui_port | default(bookshelf_const_port.wud.web_ui, true) %}
+{% set tag_rex = wud_tag_rex | default(bookshelf_const_version.wud_tag_rex, true) %}
+---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = wud_ts_version | default(bookshelf_const_version.wud_tailscale, true),
+  ts_name = wud_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
+services:
+  {{ wud_service_name }}:
+    # https://ghcr.io/getwud/wud
+    image: ghcr.io/getwud/wud:{{ version }}
+    container_name: {{ wud_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./secret.env
+      - ./main.env
+    labels:
+      - wud.watch={{ wud_wudded }}
+      - wud.tag.include={{ tag_rex }}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+{% if wud_tailscaled %}
+    network_mode: "service:{{ wud_ts_service_name }}"
+
+  {{ wud_ts_service_name }}:
+    <<: *tailscale
+{% endif %}{# wud_tailscaled #}
+    hostname: {{ wud_hostname }}
+{% if web_ui_port | int > -1 %}
+    ports:
+      - "{{ web_ui_port }}:{{ wud_web_ui_port_int }}"
+{% else %}
+    # ports:
+    #   - "{{ bookshelf_const_port.wud.web_ui }}:{{ wud_web_ui_port_int }}"
+{% endif %}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge
+{% else %}
+    networks:
+      - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ wud_vhost }}
+      - VIRTUAL_PORT={{ wud_web_ui_port_int }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

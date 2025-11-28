@@ -27,6 +27,9 @@ smtp4dev_smtp_port:     # Leave blank to leverage bookshelf configuration
 smtp4dev_imap_port:     # Leave blank to leverage bookshelf configuration
 # Optional extra env vars, will affect both smtp4dev and tailscale.
 smtp4dev_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/smtp4dev.env.j2') }}"
+# WUD settings
+smtp4dev_wudded: true   # Watched by WUD
+smtp4dev_tag_rex:       # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure smtp4dev to run as a part of tailnet
 #

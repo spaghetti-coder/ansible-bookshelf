@@ -22,3 +22,6 @@ wg_easy_udp_port: 51820   # Must match the UDP port configured in Admin panel ->
 wg_easy_insecure: 'false' # Allow login via plain http
 # Optional extra env vars
 wg_easy_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/wg-easy.env.j2') }}"
+# WUD settings
+wg_easy_wudded: true    # Watched by WUD
+wg_easy_tag_rex:        # Leave blank to leverage bookshelf configuration

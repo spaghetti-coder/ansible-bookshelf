@@ -29,3 +29,6 @@ olivetin_volumes:       # ['~:/app/home:ro', '/etc:/app/etc:ro']
 # Custom config. See the default one in files/config.yaml.
 # templates/config.base.yaml.j2 is always appended in the end.
 olivetin_config:        # "{{ lookup('file', 'config.yaml') }}"
+# WUD settings
+olivetin_wudded: true   # Watched by WUD
+olivetin_tag_rex:       # Leave blank to leverage bookshelf configuration

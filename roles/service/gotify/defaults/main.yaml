@@ -25,6 +25,9 @@ gotify_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/gotif
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # GOTIFY_REGISTRATION=false
+# WUD settings
+gotify_wudded: true    # Watched by WUD
+gotify_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Gotify to run as a part of tailnet
 #

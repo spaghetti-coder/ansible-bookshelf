@@ -272,6 +272,9 @@ adguard_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/adgu
   #   * Adguard is not really configurable via env vars
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
+# WUD settings
+adguard_wudded: true    # Watched by WUD
+adguard_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Adguard to run as a part of tailnet. This
 # allows to configure adguard for a tailnet DNS server under
@@ -322,6 +325,9 @@ audiobookshelf_extra_env: |   # "{{ lookup('template', playbook_dir + '/resource
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # PORT=5555
+# WUD settings
+audiobookshelf_wudded: true   # Watched by WUD
+audiobookshelf_tag_rex:       # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Audiobookshelf to run as a part of tailnet
 #
@@ -370,6 +376,9 @@ blinko_extra_env: |         # "{{ lookup('template', playbook_dir + '/resources/
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # NEXTAUTH_URL=...
+# WUD settings
+blinko_wudded: true         # Watched by WUD
+blinko_tag_rex:             # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Blinko to run as a part of tailnet
 #
@@ -508,6 +517,9 @@ cronmaster_extra_env: |         # "{{ lookup('template', playbook_dir + '/resour
   #   * https://hub.docker.com/_/postgres#environment-variables
   # ----------
   # NEXT_PUBLIC_CLOCK_UPDATE_INTERVAL=60000
+# WUD settings
+cronmaster_wudded: true    # Watched by WUD
+cronmaster_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure CronMaster to run as a part of tailnet
 #
@@ -558,6 +570,9 @@ duplicati_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/du
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # CLI_ARGS=--server-datafolder=/root/.config/Duplicati
+# WUD settings
+duplicati_wudded: true    # Watched by WUD
+duplicati_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Duplicati to run as a part of tailnet
 #
@@ -596,6 +611,9 @@ filebrowser_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/
   #   * FileBrowser is not really configurable via env vars
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
+# WUD settings
+filebrowser_wudded: true    # Watched by WUD
+filebrowser_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure FileBrowser to run as a part of tailnet
 #
@@ -652,6 +670,9 @@ gatus_secrets_env: |      # "{{ lookup('template', playbook_dir + '/resources/ga
   # Same as extra env, but for secrets
   # ----------
   # SOME_SECRET_VAR=some-secret
+# WUD settings
+gatus_wudded: true        # Watched by WUD
+gatus_tag_rex:            # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Gatus to run as a part of tailnet
 #
@@ -696,6 +717,9 @@ gokapi_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/g
   #     * GOKAPI_PORT
   # ----------
   # GOKAPI_CHUNK_SIZE_MB=80
+# WUD settings
+gokapi_wudded: true    # Watched by WUD
+gokapi_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Gokapi to run as a part of tailnet
 #
@@ -732,6 +756,9 @@ gotify_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/gotif
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # GOTIFY_REGISTRATION=false
+# WUD settings
+gotify_wudded: true    # Watched by WUD
+gotify_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Gotify to run as a part of tailnet
 #
@@ -743,6 +770,68 @@ gotify_ts_funnelled: false   # Expose to the world via TS funnel. Use with cauti
 # Hostname within tailnet
 gotify_ts_hostname: "{{ gotify_service_name }}"
 gotify_ts_auth_key:
+
+# ====================
+#       HEDGEDOC
+# ====================
+# VERSIONS: https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
+# -----
+# NOTES:
+#   * container is quite restricted. See restrictions in the main.env.j2 tempate.
+#     They can be overriden with extra_env
+#   * with restrictions in place users registration with ./bin/manage_users tool.
+# -----
+hedgedoc_managed: "{{ factum_os_family in ['alpine'] }}"
+hedgedoc_enabled: true
+hedgedoc_version:       # Leave blank to leverage bookshelf configuration
+hedgedoc_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
+hedgedoc_owner: "{{ ansible_user_id }}"
+hedgedoc_conf_dir: ~/conf/hedgedoc
+hedgedoc_service_name: hedgedoc
+hedgedoc_hostname: "{{ hedgedoc_service_name }}"
+hedgedoc_vhost: "{{ hedgedoc_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+hedgedoc_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
+hedgedoc_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# HedgeDoc domain. Ex.: {{ hedgedoc_vhost }} or {{ ansible_default_ipv4.address }}
+hedgedoc_domain: "{{ ansible_default_ipv4.address }}"       # (REQUIRED)
+# Optional extra env vars
+hedgedoc_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/hedgedoc.env.j2') }}"
+  # References:
+  #   * https://docs.hedgedoc.org/guides/reverse-proxy/#hedgedoc-config
+  # ----------
+  # CMD_URL_ADDPORT=false
+  # CMD_PROTOCOL_USESSL=true
+  # CMD_ALLOW_EMAIL_REGISTER=true   # <- Allow users registration
+# WUD settings
+hedgedoc_wudded: true    # Watched by WUD
+hedgedoc_tag_rex:        # Leave blank to leverage bookshelf configuration
+
+# ====================
+#       HEIMDALL
+# ====================
+# VERSIONS: https://hub.docker.com/r/linuxserver/heimdall/tags
+# -----
+heimdall_managed: "{{ factum_os_family in ['alpine'] }}"
+heimdall_enabled: true
+heimdall_version:       # Leave blank to leverage bookshelf configuration
+heimdall_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
+heimdall_owner: "{{ ansible_user_id }}"
+heimdall_conf_dir: ~/conf/heimdall
+heimdall_service_name: heimdall
+heimdall_hostname: "{{ heimdall_service_name }}"
+heimdall_vhost: "{{ heimdall_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+heimdall_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
+heimdall_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# Ex.:
+#   # heimdall_web_ui_port_ext - contains actual external port
+#   http://{{ ansible_default_ipv4.address }}:{{ heimdall_web_ui_port_ext }}
+#   https://{{ heimdall_vhost }}
+heimdall_base_url: http://{{ ansible_default_ipv4.address }}:{{ heimdall_web_ui_port_ext }}     # (REQUIRED)
+# WUD settings
+heimdall_wudded: true   # Watched by WUD
+heimdall_tag_rex:       # Leave blank to leverage bookshelf configuration
 
 # =================
 #       HOMER
@@ -781,6 +870,9 @@ homer_secrets_env: |      # "{{ lookup('template', playbook_dir + '/resources/ho
   # Can be used to pass secret values to the config file
   # ----------
   # MY_SECRET=123
+# WUD settings
+homer_wudded: true        # Watched by WUD
+homer_tag_rex:            # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Homer to run as a part of tailnet
 #
@@ -792,62 +884,6 @@ homer_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
 # Hostname within tailnet
 homer_ts_hostname: "{{ homer_service_name }}"
 homer_ts_auth_key:
-
-# ====================
-#       HEDGEDOC
-# ====================
-# VERSIONS: https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
-# -----
-# NOTES:
-#   * container is quite restricted. See restrictions in the main.env.j2 tempate.
-#     They can be overriden with extra_env
-#   * with restrictions in place users registration with ./bin/manage_users tool.
-# -----
-hedgedoc_managed: "{{ factum_os_family in ['alpine'] }}"
-hedgedoc_enabled: true
-hedgedoc_version:       # Leave blank to leverage bookshelf configuration
-hedgedoc_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-hedgedoc_owner: "{{ ansible_user_id }}"
-hedgedoc_conf_dir: ~/conf/hedgedoc
-hedgedoc_service_name: hedgedoc
-hedgedoc_hostname: "{{ hedgedoc_service_name }}"
-hedgedoc_vhost: "{{ hedgedoc_service_name }}.domain.local"
-# Can disable ports if plan to access only via tailnet or reverse-proxy
-hedgedoc_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-hedgedoc_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# HedgeDoc domain. Ex.: {{ hedgedoc_vhost }} or {{ ansible_default_ipv4.address }}
-hedgedoc_domain: "{{ ansible_default_ipv4.address }}"       # (REQUIRED)
-# Optional extra env vars
-hedgedoc_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/hedgedoc.env.j2') }}"
-  # References:
-  #   * https://docs.hedgedoc.org/guides/reverse-proxy/#hedgedoc-config
-  # ----------
-  # CMD_URL_ADDPORT=false
-  # CMD_PROTOCOL_USESSL=true
-  # CMD_ALLOW_EMAIL_REGISTER=true   # <- Allow users registration
-
-# ====================
-#       HEIMDALL
-# ====================
-# VERSIONS: https://hub.docker.com/r/linuxserver/heimdall/tags
-# -----
-heimdall_managed: "{{ factum_os_family in ['alpine'] }}"
-heimdall_enabled: true
-heimdall_version:       # Leave blank to leverage bookshelf configuration
-heimdall_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-heimdall_owner: "{{ ansible_user_id }}"
-heimdall_conf_dir: ~/conf/heimdall
-heimdall_service_name: heimdall
-heimdall_hostname: "{{ heimdall_service_name }}"
-heimdall_vhost: "{{ heimdall_service_name }}.domain.local"
-# Can disable ports if plan to access only via tailnet or reverse-proxy
-heimdall_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-heimdall_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# Ex.:
-#   # heimdall_web_ui_port_ext - contains actual external port
-#   http://{{ ansible_default_ipv4.address }}:{{ heimdall_web_ui_port_ext }}
-#   https://{{ heimdall_vhost }}
-heimdall_base_url: http://{{ ansible_default_ipv4.address }}:{{ heimdall_web_ui_port_ext }}     # (REQUIRED)
 
 # ====================
 #       JELLYFIN
@@ -881,6 +917,9 @@ jellyfin_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/jell
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # JELLYFIN_PublishedServerUrl=https://{{ jellyfin_vhost }}
+# WUD settings
+jellyfin_wudded: true   # Watched by WUD
+jellyfin_tag_rex:       # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Jellyfin to run as a part of tailnet
 #
@@ -920,6 +959,9 @@ joplin_server_base_url: http://{{ ansible_default_ipv4.address }}:{{ joplin_serv
 joplin_server_db_service_name: "{{ joplin_server_service_name }}-db"
 joplin_server_db_pass: changeme
 joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# WUD settings
+joplin_server_wudded: true   # Watched by WUD
+joplin_server_tag_rex:       # Leave blank to leverage bookshelf configuration
 
 # =================
 #       JOTTY
@@ -945,6 +987,9 @@ jotty_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/jo
   #   * https://github.com/fccview/jotty/blob/main/howto/DOCKER.md#environment-variables
   # ----------
   # SERVE_PUBLIC_IMAGES=yes
+# WUD settings
+jotty_wudded: true        # Watched by WUD
+jotty_tag_rex:            # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Jotty to run as a part of tailnet
 #
@@ -984,6 +1029,9 @@ mealie_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/mealie
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   ALLOW_SIGNUP=false
+# WUD settings
+mealie_wudded: true   # Watched by WUD
+mealie_tag_rex:       # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Mealie to run as a part of tailnet
 #
@@ -1021,6 +1069,9 @@ memos_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/memos.
   # ----------
   # MEMOS_MAX_LOGIN_ATTEMPTS=5
   # MEMOS_LOCKOUT_DURATION=900
+# WUD settings
+memos_wudded: true    # Watched by WUD
+memos_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Memos to run as a part of tailnet
 #
@@ -1058,6 +1109,9 @@ metube_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/metube
   #   * https://github.com/alexta69/metube#%EF%B8%8F-configuration-via-environment-variables
   # ----------
   DEFAULT_THEME=dark
+# WUD settings
+metube_wudded: true   # Watched by WUD
+metube_tag_rex:       # Leave blank to leverage bookshelf configuration
 
 # =====================
 #       NAVIDROME
@@ -1088,6 +1142,9 @@ navidrome_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/na
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # ND_ENABLEINSIGHTSCOLLECTOR=true
+# WUD settings
+navidrome_wudded: true    # Watched by WUD
+navidrome_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Navidrome to run as a part of tailnet
 #
@@ -1124,6 +1181,9 @@ nginx_proxy_manager_vhost: "{{ nginx_proxy_manager_service_name }}.domain.local"
 nginx_proxy_manager_extra_env: |      # "{{ lookup('template', playbook_dir + '/resources/nginx-proxy-manager.env.j2') }}"
   FOO1=bar1
   FOO2=bar2
+# WUD settings
+nginx_proxy_manager_wudded: true      # Watched by WUD
+nginx_proxy_manager_tag_rex:          # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Nginx-Proxy-Manager to run as a part of tailnet
 #
@@ -1169,6 +1229,9 @@ nginx_proxy_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/
   #   * https://github.com/nginx-proxy/nginx-proxy/blob/main/docs/README.md#proxy-container
   # ----------
   HTTPS_METHOD=noredirect
+# WUD settings
+nginx_proxy_wudded: true    # Watched by WUD
+nginx_proxy_tag_rex:        # Leave blank to leverage bookshelf configuration
 
 # ====================
 #       OLIVETIN
@@ -1189,6 +1252,9 @@ olivetin_scripts:
 olivetin_volumes:
   - '~:/app/home:ro'
 olivetin_config: "{{ lookup('file', 'config.yaml') }}"
+# WUD settings
+olivetin_wudded: true   # Watched by WUD
+olivetin_tag_rex:       # Leave blank to leverage bookshelf configuration
 
 # ==================
 #       OLLAMA
@@ -1210,6 +1276,9 @@ ollama_vhost: "{{ ollama_service_name }}.domain.local"
 ollama_tcp_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
 # Optional extra env vars, will affect both Ollama and Tailscale.
 ollama_extra_env:       # "{{ lookup('template', playbook_dir + '/resources/ollama.env.j2') }}"
+# WUD settings
+ollama_wudded: true     # Watched by WUD
+ollama_tag_rex:         # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Ollama to run as a part of tailnet
 #
@@ -1246,6 +1315,9 @@ open_webui_extra_env: |     # "{{ lookup('template', playbook_dir + '/resources/
   #   * https://docs.openwebui.com/getting-started/env-configuration/
   # ----------
   # OLLAMA_BASE_URL=http://ollama.domain.local
+# WUD settings
+open_webui_wudded: true     # Watched by WUD
+open_webui_tag_rex:         # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Open WebUI to run as a part of tailnet
 #
@@ -1286,6 +1358,9 @@ pairdrop_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/pair
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # RATE_LIMIT=true
+# WUD settings
+pairdrop_wudded: true     # Watched by WUD
+pairdrop_tag_rex:         # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure PairDrop to run as a part of tailnet
 #
@@ -1316,6 +1391,9 @@ portainer_agent_host_management: true
 portainer_agent_tcp_port: 9002  # Leave blank for bookshelf default, or '-1' to not expose the port
 # Optional extra env vars, will affect both Portainer agent and Tailscale.
 portainer_agent_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/portainer-agent.env.j2') }}"
+# WUD settings
+portainer_agent_wudded: true    # Watched by WUD
+portainer_agent_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Portainer agent to run as a part of tailnet
 #
@@ -1348,6 +1426,9 @@ portainer_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not ex
 portainer_expose_ssh_tunnel_port: false
 # Optional extra env vars, will affect both Portainer and Tailscale.
 portainer_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/portainer.env.j2') }}"
+# WUD settings
+portainer_wudded: true    # Watched by WUD
+portainer_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Portainer to run as a part of tailnet
 #
@@ -1406,6 +1487,9 @@ qbittorrent_notify_chat_id:                     # (REQUIRED for telegram)
 qbittorrent_extra_env: |          # "{{ lookup('template', playbook_dir + '/resources/qbittorrent.env.j2') }}"
   FOO1=bar1
   FOO2=bar2
+# WUD settings
+qbittorrent_wudded: true      # Watched by WUD
+qbittorrent_tag_rex:          # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure qBittorrent to run as a part of tailnet
 #
@@ -1465,6 +1549,9 @@ silverbullet_auth_pass: changeme # (REQUIRED when non-empty user) If user not se
 silverbullet_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/silverbullet.env.j2') }}"
   FOO1=bar1
   FOO2=bar2
+# WUD settings
+silverbullet_wudded: true   # Watched by WUD
+silverbullet_tag_rex:       # Leave blank to leverage bookshelf configuration
 
 # ====================
 #       SMTP4DEV
@@ -1489,6 +1576,9 @@ smtp4dev_imap_port:     # Leave blank to leverage bookshelf configuration
 smtp4dev_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/smtp4dev.env.j2') }}"
   FOO1=bar1
   FOO2=bar2
+# WUD settings
+smtp4dev_wudded: true   # Watched by WUD
+smtp4dev_tag_rex:       # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure smtp4dev to run as a part of tailnet
 #
@@ -1524,6 +1614,9 @@ syncthing_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 syncthing_extra_env: |          # "{{ lookup('template', playbook_dir + '/resources/syncthing.env.j2') }}"
   FOO1=bar1
   FOO2=bar2
+# WUD settings
+syncthing_wudded: true    # Watched by WUD
+syncthing_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Syncthing to run as a part of tailnet
 #
@@ -1576,6 +1669,9 @@ tailscale_secrets_env: |     # "{{ lookup('file', playbook_dir + '/resources/tai
   # Same as extra env, but for secrets
   # ----------
   GATUS_TOKEN=changeme
+# WUD settings
+tailscale_wudded: true        # Watched by WUD
+tailscale_tag_rex:            # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure healthcheck reporter sidecar container.
 # The container will start if tailscale_health_script not empty.
@@ -1604,7 +1700,7 @@ torrserver_conf_dir: ~/conf/torrserver
 torrserver_service_name: torrserver
 torrserver_hostname: "{{ torrserver_service_name }}"
 torrserver_vhost: "{{ torrserver_service_name }}.domain.local"
-torrserver_web_ui_port:        # Leave blank to leverage bookshelf configuration
+torrserver_web_ui_port:        # Leave blank to leverage bookshelf configuration, or '-1' to not expose the port
 # Optional extra env vars, will affect both TorrServer and Tailscale.
 torrserver_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/torrserver.env.j2') }}"
   # References:
@@ -1612,9 +1708,9 @@ torrserver_extra_env: |        # "{{ lookup('template', playbook_dir + '/resourc
   # ----------
   # Auth seems to break the server
   # TS_HTTPAUTH=1   # <- Enable auth. https://github.com/YouROK/TorrServer/#authentication
-# ----------
-# Disable if plan to access only via tailnet or reverse-proxy
-torrserver_web_ui_ports_exposed: true
+# WUD settings
+torrserver_wudded: true       # Watched by WUD
+torrserver_tag_rex:           # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure TorrServer to run as a part of tailnet
 #
@@ -1647,6 +1743,9 @@ twingate_refresh_token:   # Required
 twingate_extra_env: |     # "{{ lookup('file', playbook_dir + '/resources/twingate.env') }}"
   FOO1=bar1
   FOO2=bar2
+# WUD settings
+twingate_wudded: true     # Watched by WUD
+twingate_tag_rex:         # Leave blank to leverage bookshelf configuration
 
 # =======================
 #       UPTIME-KUMA
@@ -1669,6 +1768,9 @@ uptime_kuma_web_ui_port:    # Leave blank to leverage bookshelf configuration
 uptime_kuma_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/uptime-kuma.env.j2') }}"
   FOO1=bar1
   FOO2=bar2
+# WUD settings
+uptime_kuma_wudded: true    # Watched by WUD
+uptime_kuma_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Uptime Kuma to run as a part of tailnet
 #
@@ -1713,6 +1815,9 @@ vaultwarden_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 vaultwarden_extra_env: |    # "{{ lookup('file', playbook_dir + '/resources/vaultwarden.env') }}"
   FOO1=bar1
   FOO2=bar2
+# WUD settings
+vaultwarden_wudded: true    # Watched by WUD
+vaultwarden_tag_rex:        # Leave blank to leverage bookshelf configuration
 
 # ===================
 #       VIKUNJA
@@ -1735,6 +1840,9 @@ vikunja_jwtsecret: changeme   # (REQUIRED) Something hard and random
 vikunja_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/vikunja.env.j2') }}"
   FOO1=bar1
   FOO2=bar2
+# WUD settings
+vikunja_wudded: true        # Watched by WUD
+vikunja_tag_rex:            # Leave blank to leverage bookshelf configuration
 # ----------
 # IMPORTANT 1: See IMPORTANTs in tailscale service description
 vikunja_tailscaled: false
@@ -1769,6 +1877,9 @@ wg_easy_udp_port: 51820 # Must match the UDP port configured in UI
 wg_easy_insecure: 'true'  # Allow login via plain http
 # Optional extra env vars
 wg_easy_extra_env:      # "{{ lookup('template', playbook_dir + '/resources/wg-easy.env.j2') }}"
+# WUD settings
+wg_easy_wudded: true    # Watched by WUD
+wg_easy_tag_rex:        # Leave blank to leverage bookshelf configuration
 
 # ==================
 #       WIKIJS
@@ -1796,6 +1907,9 @@ wikijs_db_pass: changeme    # (REQUIRED) Something hard and random
 wikijs_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # Optional extra env vars, will affect both Wiki.js and tailscale.
 wikijs_extra_env:           # "{{ lookup('template', playbook_dir + '/resources/wikijs.env.j2') }}"
+# WUD settings
+wikijs_wudded: true         # Watched by WUD
+wikijs_tag_rex:             # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Wiki.js to run as a part of tailnet
 #
@@ -1805,6 +1919,57 @@ wikijs_tailscale_version:   # Leave blank to leverage bookshelf configuration
 # Hostname within tailnet
 wikijs_tailscale_ts_hostname: "{{ wikijs_service_name }}-tailscale"
 wikijs_tailscale_auth_key:
+
+# ===============
+#       WUD
+# ===============
+# VERSIONS:
+#   * https://hub.docker.com/r/vikunja/vikunja/tags
+#   * => See tailscale role versions
+# -----
+wud_managed: true
+wud_enabled: true
+wud_version:            # Leave blank to leverage bookshelf configuration
+wud_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
+wud_owner: "{{ ansible_user_id }}"
+wud_conf_dir: ~/conf/wud
+wud_service_name: wud
+wud_hostname: "{{ wud_service_name }}"
+wud_vhost: "{{ wud_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+wud_web_ui_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
+wud_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+# Optional extra env vars, will affect both wud and Tailscale.
+wud_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/wud.env.j2') }}"
+  # References:
+  #   https://getwud.github.io/wud/
+  # ----------
+  # WUD_WATCHER_LOCAL_WATCHBYDEFAULT=false
+  # WUD_WATCHER_LOCAL_CRON='0 3 * * *'
+  WUD_SERVER_FEATURE_DELETE=false
+wud_secrets_env: |      # "{{ lookup('template', playbook_dir + '/resources/wud.secret.env.j2') }}"
+  # References:
+  #   https://getwud.github.io/wud/
+  # ----------
+  # Hash generation:
+  #   docker run --rm httpd htpasswd -nib USERNAME PASSOWRD | cut -d':' -f2-
+  #   docker run --rm httpd htpasswd -nib john changeme | cut -d':' -f2-
+  # WUD_AUTH_BASIC_JOHN_USER=john
+  # WUD_AUTH_BASIC_JOHN_HASH='...'
+# WUD settings
+wud_wudded: true        # Watched by WUD
+wud_tag_rex:            # Leave blank to leverage bookshelf configuration
+# ----------
+# The following settings configure wud to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+wud_tailscaled: false
+wud_ts_version:           # Leave blank to leverage bookshelf configuration
+wud_ts_service_name: "{{ wud_service_name }}-ts"
+wud_ts_funnelled: false   # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+wud_ts_hostname: "{{ wud_service_name }}"
+wud_ts_auth_key:
 
 
 

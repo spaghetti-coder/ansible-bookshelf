@@ -18,3 +18,6 @@ twingate_access_token:    # (REQUIRED)
 twingate_refresh_token:   # (REQUIRED)
 # Optional extra env vars
 twingate_extra_env:       # "{{ lookup('file', playbook_dir + '/resources/twingate.env') }}"
+# WUD settings
+twingate_wudded: true     # Watched by WUD
+twingate_tag_rex:         # Leave blank to leverage bookshelf configuration

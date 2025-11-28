@@ -25,6 +25,9 @@ ollama_vhost: "{{ ollama_service_name }}.domain.local"
 ollama_tcp_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
 # Optional extra env vars, will affect both Ollama and Tailscale.
 ollama_extra_env:       # "{{ lookup('template', playbook_dir + '/resources/ollama.env.j2') }}"
+# WUD settings
+ollama_wudded: true     # Watched by WUD
+ollama_tag_rex:         # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Ollama to run as a part of tailnet
 #

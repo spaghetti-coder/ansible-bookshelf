@@ -3,6 +3,7 @@
 {% set extra_ports = nginx_proxy_manager_ports | default([], true) %}
 {% set proxy_enabled = (nginx_proxy_enabled | default(false)) %}
 {% set ports_enabled = web_ui_port > -1 or extra_ports | length > 0 %}
+{% set tag_rex = nginx_proxy_manager_tag_rex | default(bookshelf_const_version.nginx_proxy_manager_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = nginx_proxy_manager_ts_version | default(bookshelf_const_version.nginx_proxy_manager_tailscale, true),
@@ -15,6 +16,9 @@ services:
     image: jc21/nginx-proxy-manager:{{ version }}
     container_name: "{{ nginx_proxy_manager_service_name }}"
     restart: unless-stopped
+    labels:
+      - wud.watch={{ nginx_proxy_manager_wudded }}
+      - wud.tag.include={{ tag_rex }}
     volumes:
       - "{{ conf_dir }}/data:/data"
       - "{{ conf_dir }}/letsencrypt:/etc/letsencrypt"

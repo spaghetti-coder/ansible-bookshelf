@@ -2,6 +2,7 @@
 {% set web_ui_port = (uptime_kuma_web_ui_port | default(bookshelf_const_port.uptime_kuma.web_ui, true)) %}
 {% set tailscale_version = (uptime_kuma_tailscale_version | default(bookshelf_const_version.uptime_kuma_tailscale, true)) %}
 {% set tailscale_service = 'uptime-kuma-tailscale' %}
+{% set tag_rex = uptime_kuma_tag_rex | default(bookshelf_const_version.uptime_kuma_tag_rex, true) %}
 ---
 services:
   uptime-kuma:
@@ -10,6 +11,9 @@ services:
     image: ghcr.io/louislam/uptime-kuma:{{ version }}
     container_name: {{ uptime_kuma_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ uptime_kuma_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./main.env
     volumes:

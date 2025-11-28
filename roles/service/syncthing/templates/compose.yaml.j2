@@ -6,13 +6,17 @@
     | ternary(syncthing_data_volumes, data_volumes_abs) | default([], true) %}
 {% set tailscale_version = (syncthing_tailscale_version | default(bookshelf_const_version.syncthing_tailscale, true)) %}
 {% set tailscale_service = 'syncthing-tailscale' %}
+{% set tag_rex = syncthing_tag_rex | default(bookshelf_const_version.syncthing_tag_rex, true) %}
 ---
 services:
   syncthing:
     # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
-    image: lscr.io/linuxserver/syncthing:{{ version }}
+    image: ghcr.io/linuxserver/syncthing:{{ version }}
     container_name: {{ syncthing_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ syncthing_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

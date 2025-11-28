@@ -1,5 +1,6 @@
 {% set version = gokapi_version | default(bookshelf_const_version.gokapi, true) %}
 {% set web_ui_port = gokapi_web_ui_port | default(bookshelf_const_port.gokapi.web_ui, true) %}
+{% set tag_rex = gokapi_tag_rex | default(bookshelf_const_version.gokapi_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = gokapi_ts_version | default(bookshelf_const_version.gokapi_tailscale, true),
@@ -12,6 +13,9 @@ services:
     image: f0rc3/gokapi:{{ version }}
     container_name: {{ gokapi_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ gokapi_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

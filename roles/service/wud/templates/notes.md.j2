@@ -1,0 +1,7 @@
+## What's up Docker
+{% if wud_tailscaled %}
+
+* Disable tailscale machine expiry:
+  1. Go to https://tailscale.com/admin/machines
+  2. `{{ wud_ts_hostname }} *** > Disable key expiry`
+{% endif %}

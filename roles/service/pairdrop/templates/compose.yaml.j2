@@ -1,5 +1,6 @@
 {% set version = (pairdrop_version | default(bookshelf_const_version.pairdrop, true)) %}
 {% set web_ui_port = (pairdrop_web_ui_port | default(bookshelf_const_port.pairdrop.web_ui, true)) %}
+{% set tag_rex = pairdrop_tag_rex | default(bookshelf_const_version.pairdrop_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = pairdrop_ts_version | default(bookshelf_const_version.pairdrop_tailscale, true),
@@ -9,9 +10,12 @@
 services:
   app:
     # https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
-    image: lscr.io/linuxserver/pairdrop:{{ version }}
+    image: ghcr.io/linuxserver/pairdrop:{{ version }}
     container_name: {{ pairdrop_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ pairdrop_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

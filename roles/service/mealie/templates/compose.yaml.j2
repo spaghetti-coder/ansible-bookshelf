@@ -1,6 +1,7 @@
 {% set version = (mealie_version | default(bookshelf_const_version.mealie, true)) %}
 {% set web_ui_port = (mealie_web_ui_port | default(bookshelf_const_port.mealie.web_ui, true)) %}
 {% set tailscale_version = (mealie_ts_version | default(bookshelf_const_version.mealie_tailscale, true)) %}
+{% set tag_rex = mealie_tag_rex | default(bookshelf_const_version.mealie_tag_rex, true) %}
 ---
 # https://www.youtube.com/watch?v=DDzKd9aNFX0
 # https://docs.techdox.nz/mealie/
@@ -16,6 +17,9 @@ services:
     image: ghcr.io/mealie-recipes/mealie:{{ version }}
     container_name: {{ mealie_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ mealie_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./main.env
     volumes:

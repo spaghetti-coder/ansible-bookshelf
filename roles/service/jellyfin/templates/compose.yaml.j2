@@ -3,6 +3,7 @@
 {% set data_volumes = (jellyfin_user == jellyfin_owner)
     | ternary(jellyfin_data_volumes, data_volumes_abs) | default([], true) %}
 {% set ports_exposed = (web_ui_port > -1 or jellyfin_discovery_ports_exposed) %}
+{% set tag_rex = jellyfin_tag_rex | default(bookshelf_const_version.jellyfin_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = jellyfin_ts_version | default(bookshelf_const_version.jellyfin_tailscale, true),
@@ -13,9 +14,12 @@ services:
   app:
     # https://hub.docker.com/r/linuxserver/jellyfin/tags
     # image: linuxserver/jellyfin:{{ version }}
-    image: lscr.io/linuxserver/jellyfin:{{ version }}
+    image: ghcr.io/linuxserver/jellyfin:{{ version }}
     container_name: {{ jellyfin_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ jellyfin_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

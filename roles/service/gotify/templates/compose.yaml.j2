@@ -1,5 +1,6 @@
 {% set version = (gotify_version | default(bookshelf_const_version.gotify, true)) %}
 {% set web_ui_port = (gotify_web_ui_port | default(bookshelf_const_port.gotify.web_ui, true)) %}
+{% set tag_rex = gotify_tag_rex | default(bookshelf_const_version.gotify_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = gotify_ts_version | default(bookshelf_const_version.gotify_tailscale, true),
@@ -13,6 +14,9 @@ services:
     image: ghcr.io/gotify/server:{{ version }}
     container_name: {{ gotify_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ gotify_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

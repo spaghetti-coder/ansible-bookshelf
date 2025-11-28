@@ -1,5 +1,6 @@
 {% set version = (memos_version | default(bookshelf_const_version.memos, true)) %}
 {% set web_ui_port = (memos_web_ui_port | default(bookshelf_const_port.memos.web_ui, true)) %}
+{% set tag_rex = memos_tag_rex | default(bookshelf_const_version.memos_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = memos_ts_version | default(bookshelf_const_version.memos_tailscale, true),
@@ -13,6 +14,9 @@ services:
     image: ghcr.io/usememos/memos:{{ version }}
     container_name: {{ memos_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ memos_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./main.env
     volumes:

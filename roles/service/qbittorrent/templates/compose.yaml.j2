@@ -3,6 +3,7 @@
 {% set torrenting_port = qbittorrent_torrenting_port_int %}
 {% set data_volumes = (qbittorrent_user == qbittorrent_owner)
     | ternary(qbittorrent_data_volumes, data_volumes_abs) | default([], true) %}
+{% set tag_rex = qbittorrent_tag_rex | default(bookshelf_const_version.qbittorrent_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = qbittorrent_ts_version | default(bookshelf_const_version.qbittorrent_tailscale, true),
@@ -14,9 +15,12 @@ services:
   {{ qbittorrent_service_name }}:
     # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
     # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
-    image: lscr.io/linuxserver/qbittorrent:{{ version }}
+    image: ghcr.io/linuxserver/qbittorrent:{{ version }}
     container_name: {{ qbittorrent_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ qbittorrent_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

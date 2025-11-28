@@ -1,5 +1,6 @@
 {% set version = (hedgedoc_version | default(bookshelf_const_version.hedgedoc, true)) %}
 {% set web_ui_port = (hedgedoc_web_ui_port | default(bookshelf_const_port.hedgedoc.web_ui, true)) %}
+{% set tag_rex = hedgedoc_tag_rex | default(bookshelf_const_version.hedgedoc_tag_rex, true) %}
 ---
 services:
   app:
@@ -9,6 +10,9 @@ services:
     restart: unless-stopped
     env_file:
       - main.env
+    labels:
+      - wud.watch={{ hedgedoc_wudded }}
+      - wud.tag.include={{ tag_rex }}
     volumes:
       - '{{ hedgedoc_conf_dir }}/config:/hedgedoc/config'           # Must be owned by user_uid:user_gid
       - '{{ hedgedoc_conf_dir }}/uploads:/hedgedoc/public/uploads'  # Must be owned by user_uid:user_gid

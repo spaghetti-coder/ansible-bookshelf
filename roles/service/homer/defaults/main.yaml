@@ -33,6 +33,9 @@ homer_secrets_env: |      # "{{ lookup('template', playbook_dir + '/resources/ho
   # Can be used to pass secret values to the config file
   # ----------
   # MY_SECRET=123
+# WUD settings
+homer_wudded: true        # Watched by WUD
+homer_tag_rex:            # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Homer to run as a part of tailnet
 #

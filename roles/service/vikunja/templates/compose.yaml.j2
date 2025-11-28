@@ -4,6 +4,7 @@
 {% set tailscale_version = (vikunja_tailscale_version | default(bookshelf_const_version.vikunja_tailscale, true)) %}
 {% set tailscale_service = (vikunja_service_name + '-tailscale') %}
 {% set self_net = 'vikunja' %}
+{% set tag_rex = vikunja_tag_rex | default(bookshelf_const_version.vikunja_tag_rex, true) %}
 ---
 services:
   {{ vikunja_db_service }}:
@@ -29,6 +30,9 @@ services:
     image: vikunja/vikunja:{{ version }}
     container_name: {{ vikunja_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ vikunja_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - secret.env
       - main.env

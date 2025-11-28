@@ -38,6 +38,9 @@ cronmaster_extra_env: |         # "{{ lookup('template', playbook_dir + '/resour
   #   * https://hub.docker.com/_/postgres#environment-variables
   # ----------
   # NEXT_PUBLIC_CLOCK_UPDATE_INTERVAL=60000
+# WUD settings
+cronmaster_wudded: true    # Watched by WUD
+cronmaster_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure CronMaster to run as a part of tailnet
 #

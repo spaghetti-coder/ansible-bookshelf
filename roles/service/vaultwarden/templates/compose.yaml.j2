@@ -1,5 +1,6 @@
 {% set version = (vaultwarden_version | default(bookshelf_const_version.vaultwarden, true)) %}
 {% set web_ui_port = (vaultwarden_web_ui_port | default(bookshelf_const_port.vaultwarden.web_ui, true)) %}
+{% set tag_rex = vaultwarden_tag_rex | default(bookshelf_const_version.vaultwarden_tag_rex, true) %}
 ---
 services:
   vaultwarden:
@@ -8,6 +9,9 @@ services:
     image: ghcr.io/dani-garcia/vaultwarden:{{ version }}
     container_name: {{ vaultwarden_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ vaultwarden_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

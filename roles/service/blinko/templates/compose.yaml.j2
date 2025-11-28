@@ -1,5 +1,6 @@
 {% set version = (blinko_version | default(bookshelf_const_version.blinko, true)) %}
 {% set web_ui_port = (blinko_web_ui_port | default(bookshelf_const_port.blinko.web_ui, true)) %}
+{% set tag_rex = blinko_tag_rex | default(bookshelf_const_version.blinko_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = blinko_ts_version | default(bookshelf_const_version.blinko_tailscale, true),
@@ -16,6 +17,9 @@ services:
     image: blinkospace/blinko:{{ version }}
     container_name: {{ blinko_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ blinko_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - secret.env
       - main.env    # <- Relies on values from secret.env

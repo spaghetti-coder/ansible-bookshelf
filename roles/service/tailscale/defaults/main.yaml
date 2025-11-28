@@ -47,6 +47,9 @@ tailscale_secrets_env: |     # "{{ lookup('file', playbook_dir + '/resources/tai
   # Same as extra env, but for secrets
   # ----------
   GATUS_TOKEN=changeme
+# WUD settings
+tailscale_wudded: true        # Watched by WUD
+tailscale_tag_rex:            # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure healthcheck reporter sidecar container.
 # The container will start if tailscale_health_script not empty.

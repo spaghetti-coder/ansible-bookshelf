@@ -25,6 +25,9 @@ vikunja_db_pass:            # (REQUIRED) Something hard and random
 vikunja_jwtsecret:          # (REQUIRED) Something hard and random
 # Optional extra env vars, will affect both Vikunja and Tailscale.
 vikunja_extra_env:          # "{{ lookup('template', playbook_dir + '/resources/vikunja.env.j2') }}"
+# WUD settings
+vikunja_wudded: true        # Watched by WUD
+vikunja_tag_rex:            # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Vikunja to run as a part of tailnet
 #

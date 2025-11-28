@@ -22,6 +22,9 @@ wikijs_db_pass:             # (REQUIRED) Something hard and random
 wikijs_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # Optional extra env vars, will affect both Wiki.js and tailscale.
 wikijs_extra_env:           # "{{ lookup('template', playbook_dir + '/resources/wikijs.env.j2') }}"
+# WUD settings
+wikijs_wudded: true         # Watched by WUD
+wikijs_tag_rex:             # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Wiki.js to run as a part of tailnet
 #

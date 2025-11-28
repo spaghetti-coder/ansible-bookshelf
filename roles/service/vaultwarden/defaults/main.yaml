@@ -27,3 +27,6 @@ vaultwarden_tz: "{{ ansible_date_time.tz | default('UTC') }}"
 # https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
 # Optional extra env vars
 vaultwarden_extra_env:      # "{{ lookup('file', playbook_dir + '/resources/vaultwarden.env') }}"
+# WUD settings
+vaultwarden_wudded: true    # Watched by WUD
+vaultwarden_tag_rex:        # Leave blank to leverage bookshelf configuration

@@ -32,6 +32,9 @@ blinko_extra_env: |         # "{{ lookup('template', playbook_dir + '/resources/
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
   # NEXTAUTH_URL=...
+# WUD settings
+blinko_wudded: true         # Watched by WUD
+blinko_tag_rex:             # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Blinko to run as a part of tailnet
 #

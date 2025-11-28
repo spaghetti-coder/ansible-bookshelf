@@ -1,5 +1,6 @@
 {% set version = duplicati_version | default(bookshelf_const_version.duplicati, true) %}
 {% set web_ui_port = duplicati_web_ui_port | default(bookshelf_const_port.duplicati.web_ui, true) %}
+{% set tag_rex = duplicati_tag_rex | default(bookshelf_const_version.duplicati_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = duplicati_ts_version | default(bookshelf_const_version.duplicati_tailscale, true),
@@ -9,9 +10,12 @@
 services:
   app:
     # https://hub.docker.com/r/linuxserver/duplicati/tags?name=-ls
-    image: lscr.io/linuxserver/duplicati:{{ version }}
+    image: ghcr.io/linuxserver/duplicati:{{ version }}
     container_name: {{ duplicati_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ duplicati_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./secret.env
       - ./main.env

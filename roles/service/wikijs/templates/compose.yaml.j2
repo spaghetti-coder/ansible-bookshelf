@@ -4,6 +4,7 @@
 {% set tailscale_version = (wikijs_tailscale_version | default(bookshelf_const_version.wikijs_tailscale, true)) %}
 {% set tailscale_service = 'wikijs-tailscale' %}
 {% set self_net = 'wikijs' %}
+{% set tag_rex = wikijs_tag_rex | default(bookshelf_const_version.wikijs_tag_rex, true) %}
 ---
 services:
   {{ wikijs_db_service }}:
@@ -27,9 +28,12 @@ services:
   wikijs:
     # https://hub.docker.com/r/linuxserver/wikijs/tags?name=-ls
     # image: linuxserver/wikijs:{{ version }}
-    image: lscr.io/linuxserver/wikijs:{{ version }}
+    image: ghcr.io/linuxserver/wikijs:{{ version }}
     container_name: {{ wikijs_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ wikijs_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - secret.env
       - main.env

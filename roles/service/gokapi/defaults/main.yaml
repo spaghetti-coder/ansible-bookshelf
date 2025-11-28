@@ -28,6 +28,9 @@ gokapi_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/g
   #     * GOKAPI_PORT
   # ----------
   # GOKAPI_CHUNK_SIZE_MB=80
+# WUD settings
+gokapi_wudded: true    # Watched by WUD
+gokapi_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure Gokapi to run as a part of tailnet
 #

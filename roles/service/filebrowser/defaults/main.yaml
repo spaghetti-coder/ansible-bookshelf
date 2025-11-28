@@ -34,6 +34,9 @@ filebrowser_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/
   #   * FileBrowser is not really configurable via env vars
   #   * https://tailscale.com/kb/1282/docker#parameters
   # ----------
+# WUD settings
+filebrowser_wudded: true    # Watched by WUD
+filebrowser_tag_rex:        # Leave blank to leverage bookshelf configuration
 # ----------
 # The following settings configure FileBrowser to run as a part of tailnet
 #

@@ -26,3 +26,6 @@ joplin_server_base_url:             # (REQUIRED)
 joplin_server_db_service_name: "{{ joplin_server_service_name }}-db"
 joplin_server_db_pass:              # (REQUIRED)
 joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# WUD settings
+joplin_server_wudded: true   # Watched by WUD
+joplin_server_tag_rex:       # Leave blank to leverage bookshelf configuration

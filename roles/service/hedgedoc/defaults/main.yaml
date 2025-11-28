@@ -31,3 +31,6 @@ hedgedoc_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/hed
   # CMD_URL_ADDPORT=false
   # CMD_PROTOCOL_USESSL=true
   # CMD_ALLOW_EMAIL_REGISTER=true   # <- Allow users registration
+# WUD settings
+hedgedoc_wudded: true    # Watched by WUD
+hedgedoc_tag_rex:        # Leave blank to leverage bookshelf configuration

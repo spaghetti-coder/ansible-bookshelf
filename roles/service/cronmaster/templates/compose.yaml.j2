@@ -1,5 +1,6 @@
 {% set version = (cronmaster_version | default(bookshelf_const_version.cronmaster, true)) %}
 {% set web_ui_port = (cronmaster_web_ui_port | default(bookshelf_const_port.cronmaster.web_ui, true)) %}
+{% set tag_rex = cronmaster_tag_rex | default(bookshelf_const_version.cronmaster_tag_rex, true) %}
 ---
 {{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
   ts_version = cronmaster_ts_version | default(bookshelf_const_version.cronmaster_tailscale, true),
@@ -12,6 +13,9 @@ services:
     image: ghcr.io/fccview/cronmaster:{{ version }}
     container_name: {{ cronmaster_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ cronmaster_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - secret.env
       - main.env

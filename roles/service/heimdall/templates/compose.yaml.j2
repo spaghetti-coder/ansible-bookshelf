@@ -1,12 +1,16 @@
 {% set version = (heimdall_version | default(bookshelf_const_version.heimdall, true)) %}
+{% set tag_rex = heimdall_tag_rex | default(bookshelf_const_version.heimdall_tag_rex, true) %}
 ---
 services:
   app:
     # https://hub.docker.com/r/linuxserver/heimdall/tags
     # image: linuxserver/heimdall:{{ version }}
-    image: lscr.io/linuxserver/heimdall:{{ version }}
+    image: ghcr.io/linuxserver/heimdall:{{ version }}
     container_name: {{ heimdall_service_name }}
     restart: unless-stopped
+    labels:
+      - wud.watch={{ heimdall_wudded }}
+      - wud.tag.include={{ tag_rex }}
     env_file:
       - ./main.env
     volumes:
