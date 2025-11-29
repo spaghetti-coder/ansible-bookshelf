@@ -71,7 +71,6 @@
         project_src: "{{ compose_dir }}"
         state: "{{ service_state }}"
         remove_orphans: true
-        build: always
       register: homer_service_state
 
     - name: Restart service

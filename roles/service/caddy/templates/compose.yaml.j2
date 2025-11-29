@@ -8,7 +8,7 @@
 )) }}
 
 services:
-  caddy:
+  {{ caddy_service_name }}:
     build:
       context: "./{{ build_dir | basename }}"
       dockerfile: Dockerfile
@@ -30,9 +30,9 @@ services:
     cap_add:          # If tailscaled, net_admin will come from TS container
       - NET_ADMIN
 {% else %}
-    network_mode: "service:tailscale"
+    network_mode: "service:{{ caddy_ts_service_name }}"
 
-  tailscale:
+  {{ caddy_ts_service_name }}:
     <<: *tailscale
 {% endif %}{# caddy_tailscaled #}
     hostname: "{{ caddy_hostname }}"
