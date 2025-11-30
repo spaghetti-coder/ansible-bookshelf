@@ -10,7 +10,7 @@
 )) }}
 
 services:
-  app:
+  {{ audiobookshelf_service_name }}:
     # https://hub.docker.com/r/advplyr/audiobookshelf/tags
     # image: advplyr/audiobookshelf:{{ version }}
     image: ghcr.io/advplyr/audiobookshelf:{{ version }}
@@ -30,9 +30,9 @@ services:
       - '{{ conf_dir }}/config:/metadata'
     user: "{{ user_uid }}:{{ user_gid }}"
 {% if audiobookshelf_tailscaled %}
-    network_mode: "service:tailscale"
+    network_mode: "service:{{ audiobookshelf_ts_service_name }}"
 
-  tailscale:
+  {{ audiobookshelf_ts_service_name }}:
     <<: *tailscale
 {% endif %}{# audiobookshelf_tailscaled #}
     hostname: {{ audiobookshelf_hostname }}

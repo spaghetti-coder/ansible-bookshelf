@@ -12,7 +12,7 @@
 )) }}
 
 services:
-  app:
+  {{ blinko_service_name }}:
     # https://hub.docker.com/r/blinkospace/blinko/tags
     image: blinkospace/blinko:{{ version }}
     container_name: {{ blinko_service_name }}
@@ -37,13 +37,13 @@ services:
       retries: 5
       start_period: 30s
     depends_on:
-      db:
+      {{ blinko_db_service_name }}:
         condition: service_healthy
         restart: true
 {% if blinko_tailscaled %}
-    network_mode: "service:tailscale"
+    network_mode: "service:{{ blinko_ts_service_name }}"
 
-  tailscale:
+  {{ blinko_ts_service_name }}:
     <<: *tailscale
 {% endif %}{# blinko_tailscaled #}
     hostname: {{ blinko_hostname }}
@@ -63,7 +63,7 @@ services:
       - VIRTUAL_PORT={{ blinko_web_ui_port_int }}
 {% endif %}{# nginx_proxy_enabled #}
 
-  db: *postgres
+  {{ blinko_db_service_name }}: *postgres
 
 networks:
   {{ blinko_service_name }}:

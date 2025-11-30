@@ -10,7 +10,7 @@
 )) }}
 
 services:
-  app:
+  {{ adguard_service_name }}:
     # https://hub.docker.com/r/adguard/adguardhome/tags
     image: adguard/adguardhome:{{ version }}
     container_name: {{ adguard_service_name }}
@@ -25,9 +25,9 @@ services:
       - '{{ conf_dir }}/config:/opt/adguardhome/conf'
       - '{{ conf_dir }}/config:/opt/adguardhome/work'
 {% if adguard_tailscaled %}
-    network_mode: "service:tailscale"
+    network_mode: "service:{{ adguard_ts_service_name }}"
 
-  tailscale:
+  {{ adguard_ts_service_name }}:
     <<: *tailscale
 {% endif %}{# adguard_tailscaled #}
     hostname: "{{ adguard_hostname }}"
