@@ -3,7 +3,7 @@
 #   https://getwud.github.io/wud/
 # -----
 # VERSIONS:
-#   * https://hub.docker.com/r/vikunja/vikunja/tags
+#   * https://ghcr.io/getwud/wud
 #   * => See tailscale role versions
 # -----
 wud_managed: false

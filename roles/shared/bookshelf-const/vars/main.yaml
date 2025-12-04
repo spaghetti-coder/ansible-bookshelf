@@ -1,15 +1,15 @@
 ---
 bookshelf_const_version_shared:
   # https://hub.docker.com/_/alpine
-  alpine: 3.22.2
+  alpine: 3.23.2
   # https://hub.docker.com/_/postgres/tags?name=alpine
-  postgres: 16.11-alpine3.22
+  postgres: 16.11-alpine3.23
   # NOTE: With version update also update auth key: https://tailscale.com/admin/settings/keys
   # https://hub.docker.com/r/tailscale/tailscale/tags
-  tailscale: v1.90.9
+  tailscale: v1.92.3
   tailscale_tag_rex: '^v\d+\.\d+\.\d+$$'
 
-bookshelf_const_version:    # <- Last update: 2025-11-29
+bookshelf_const_version:    # <- Last update: 2025-12-18
   #
   # BASE
   #
@@ -25,15 +25,15 @@ bookshelf_const_version:    # <- Last update: 2025-11-29
   # SERVICE
   #
   # https://hub.docker.com/r/adguard/adguardhome/tags
-  adguard: v0.107.69
+  adguard: v0.107.71
   adguard_tag_rex: '^v\d+\.\d+\.\d+$$'
   adguard_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/advplyr/audiobookshelf/tags
-  audiobookshelf: 2.30.0
+  audiobookshelf: 2.31.0
   audiobookshelf_tag_rex: '^\d+\.\d+\.\d+$$'
   audiobookshelf_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/blinkospace/blinko/tags
-  blinko: 1.6.6
+  blinko: 1.7.1
   blinko_tag_rex: '^\d+\.\d+\.\d+$$'
   blinko_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   blinko_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
@@ -41,21 +41,21 @@ bookshelf_const_version:    # <- Last update: 2025-11-29
   caddy: 2.10.2
   caddy_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
-  code_server: v4.106.2
+  code_server: v4.107.0
   # https://github.com/fccview/cronmaster/pkgs/container/cronmaster
-  cronmaster: 1.5.3
+  cronmaster: 1.5.4
   cronmaster_tag_rex: '^\d+\.\d+\.\d+$$'
   cronmaster_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/duplicati/tags?name=-ls
-  duplicati: v2.2.0.1_stable_2025-11-09-ls268
+  duplicati: v2.2.0.1_stable_2025-11-09-ls271
   duplicati_tag_rex: '^v\d+\.\d+\.\d+.\d+.*-ls\d+$$'
   duplicati_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-  filebrowser: v2.49.0-s6
+  filebrowser: v2.52.0-s6
   filebrowser_tag_rex: '^v\d+\.\d+\.\d+-s6$$'
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/twin/gatus/pkgs/container/gatus
-  gatus: v5.33.0
+  gatus: v5.33.1
   gatus_tag_rex: '^v\d+\.\d+\.\d+$$'
   gatus_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/f0rc3/gokapi/tags
@@ -67,29 +67,29 @@ bookshelf_const_version:    # <- Last update: 2025-11-29
   gotify_tag_rex: '^\d+\.\d+\.\d+$$'
   gotify_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://quay.io/repository/hedgedoc/hedgedoc?tab=tags
-  hedgedoc: 1.10.3-alpine
+  hedgedoc: 1.10.5-alpine
   hedgedoc_tag_rex: '^\d+\.\d+\.\d+-alpine$$'
   # https://hub.docker.com/r/linuxserver/heimdall/tags
-  heimdall: v2.7.6-ls329
+  heimdall: v2.7.6-ls330
   heimdall_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
   # https://hub.docker.com/r/b4bz/homer/tags
   homer: v25.11.1
   homer_tag_rex: '^v\d+\.\d+\.\d+$$'
   homer_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
-  jellyfin: 10.11.3ubu2404-ls9
+  jellyfin: 10.11.5ubu2404-ls13
   jellyfin_tag_rex: '^\d+\.\d+\.\d+.+-ls\d+$$'
   jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/joplin/server/tags
-  joplin_server: 3.4.3
+  joplin_server: 3.5.1
   joplin_server_tag_rex: '^\d+\.\d+\.\d+$$'
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # https://github.com/fccview/jotty/pkgs/container/jotty
-  jotty: 1.11.1
+  jotty: 1.14.0
   jotty_tag_rex: '^\d+\.\d+\.\d+$$'
   jotty_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
-  mealie: v3.5.0
+  mealie: v3.7.0
   mealie_tag_rex: '^v\d+\.\d+\.\d+$$'
   mealie_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/neosmemo/memos/tags
@@ -100,10 +100,10 @@ bookshelf_const_version:    # <- Last update: 2025-11-29
   memos_tag_rex: '^\d+\.\d+\.\d+$$'
   memos_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
-  metube: 2025.11.29
+  metube: 2025.12.14
   metube_tag_rex: '^\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/deluan/navidrome/tags
-  navidrome: 0.58.5
+  navidrome: 0.59.0
   navidrome_tag_rex: '^\d+\.\d+\.\d+$$'
   navidrome_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/nginxproxy/nginx-proxy/tags?name=alpine
@@ -117,11 +117,11 @@ bookshelf_const_version:    # <- Last update: 2025-11-29
   olivetin: 2025.11.25                      # <- TODO: switch to 3k some day before 2028
   olivetin_tag_rex: '^20\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/ollama/ollama/tags
-  ollama: 0.13.0
+  ollama: 0.13.4
   ollama_tag_rex: '^\d+\.\d+\.\d+$$'
   ollama_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/open-webui/open-webui/releases
-  open_webui: v0.6.40
+  open_webui: v0.6.41
   open_webui_tag_rex: '^v\d+\.\d+\.\d+$$'
   open_webui_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
@@ -129,26 +129,26 @@ bookshelf_const_version:    # <- Last update: 2025-11-29
   pairdrop_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
   pairdrop_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
-  portainer: 2.36.0-alpine
+  portainer: 2.37.0-alpine
   portainer_tag_rex: '^\d+\.\d+\.\d+-alpine$$'
   portainer_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/portainer/agent/tags?name=alpine
-  portainer_agent: 2.36.0-alpine
+  portainer_agent: 2.37.0-alpine
   portainer_agent_tag_rex: '^\d+\.\d+\.\d+-alpine$$'
   portainer_agent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.4-r0-ls428
+  qbittorrent: 5.1.4-r1-ls431
   qbittorrent_tag_rex: '^\d+\.\d+\.\d{1,2}-.*-ls\d+$$'
   qbittorrent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: 2.3.0
   silverbullet_tag_rex: '^\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/rnwood/smtp4dev/tags?name=v
-  smtp4dev: v3.10
+  smtp4dev: v3.12
   smtp4dev_tag_rex: '^v\d+\.\d+$$'
   smtp4dev_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
-  syncthing: v2.0.11-ls202
+  syncthing: v2.0.12-ls204
   syncthing_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
   syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # => See tailscale versions in the top
@@ -160,7 +160,7 @@ bookshelf_const_version:    # <- Last update: 2025-11-29
   torrserver_tag_rex: '^.*\d+$$'
   torrserver_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/twingate/connector/tags
-  twingate: 1.80.0
+  twingate: 1.82.0
   twingate_tag_rex: '^\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/louislam/uptime-kuma/tags
   uptime_kuma: 2.0.2
@@ -175,7 +175,7 @@ bookshelf_const_version:    # <- Last update: 2025-11-29
   vikunja_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   vikunja_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/VueTorrent/VueTorrent/pkgs/container/vuetorrent-lsio-mod/versions
-  vuetorrent: 2.31.0
+  vuetorrent: 2.31.1
   # https://github.com/wg-easy/wg-easy/pkgs/container/wg-easy/versions?filters%5Bversion_type%5D=tagged
   wg_easy: 15.1.0
   wg_easy_tag_rex: '^\d+\.\d+\.\d+$$'
@@ -184,7 +184,7 @@ bookshelf_const_version:    # <- Last update: 2025-11-29
   wikijs_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
   wikijs_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   wikijs_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
-  # https://hub.docker.com/r/vikunja/vikunja/tags
+  # https://ghcr.io/getwud/wud
   wud: 8.1.1
   wud_tag_rex: '^\d+\.\d+\.\d+$$'
   wud_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"

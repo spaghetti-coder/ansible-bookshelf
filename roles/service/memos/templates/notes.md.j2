@@ -5,3 +5,27 @@
   1. Go to https://tailscale.com/admin/machines
   2. `{{ memos_ts_hostname }} *** > Disable key expiry`
 {% endif %}
+* Disable caching to avoid editing in different browser issue (https://github.com/usememos/memos/issues/5318)
+  
+  Admin account > Settings > System > Additional script
+  ```javascript
+  const kv1_timeoutNotesCache = (timeout) => {
+    setInterval(() => {
+      Object.keys(localStorage).forEach((k) => {
+        if (k.startsWith('users/')) localStorage.removeItem(k);
+      });
+    }, timeout || 1000);
+  };
+
+  // ~~~~~~~~~~~~~~~~~~~~
+  kv1_timeoutNotesCache(500);
+  ```
+* Monospace text input
+  
+  Admin account > Settings > System > Additional style
+  ```css
+  textarea {
+    font-family: monospace;
+    white-space: nowrap;
+  }
+  ```
