@@ -104,6 +104,13 @@ do_install_curl() {
 }
 
 
+do_install_tar() {
+  ${DONE_INSTALL_TAR:-false} && return
+  do_pm_update && (set -x; apt-get install -qy tar >/dev/null) || return
+  DONE_INSTALL_TAR=true
+}
+
+
 do_upgrade() {
   log_doing "Upgrade ..."
 
@@ -239,13 +246,12 @@ do_setup_fzf() {
   local tgz_url="https://github.com/junegunn/fzf/releases/download/v${FZF_VERSION}/fzf-${FZF_VERSION}-linux_amd64.tar.gz"
   local profile_url="https://raw.githubusercontent.com/spaghetti-coder/ansible-bookshelf/master/roles/base/fzf/templates/fzf.bash.sh.j2"
 
-  do_pm_update \
-  && do_install_curl \
+  do_install_curl \
+  && do_install_tar \
   && do_setup_envar \
   && (
     set -o pipefail; set -x
-    apt-get install -qy tar >/dev/null \
-    && mkdir -p /opt/junegunn/fzf \
+    mkdir -p /opt/junegunn/fzf \
     && curl -fsSL -- "${tgz_url}" | tar -xzf - -C /opt/junegunn/fzf \
     && ln -fs /opt/junegunn/fzf/fzf /usr/bin/fzf \
     && curl -fsSL -o /etc/envar/fzf.skip.sh -- "${profile_url}" \
@@ -266,7 +272,7 @@ do_setup_tmux() {
   do_pm_update \
   && do_install_curl \
   && echo 'source-file /etc/tmux/default.conf' | (
-    set -o pipefail; set -x
+    set -x
     apt-get install -qy tmux >/dev/null \
     && mkdir -p /etc/tmux \
     && curl -fsSL -o /etc/tmux/default.conf -- "${profile_url}" \
@@ -299,6 +305,55 @@ init_user_vals() {
 }
 
 
+do_init_setup() {
+  # Defaults
+  local NOPASS=false
+
+  if [[ "${1}" =~ ^(-\?|-h|--help|help)$ ]]; then
+    print_help; exit
+  fi
+
+  # Parse args
+  local -a invals=()
+  for opt in "${@}"; do
+    case "${opt}" in
+      nopass  ) NOPASS=true ;;
+      *       ) invals+=("${opt}")
+    esac
+  done
+  [ ${#invals[@]} -lt 1 ] || {
+    log_fatal "Invalid args"
+    printf -- '  %s\n' "${invals[@]}"
+    exit 1
+  }
+
+  check_env       || exit
+  init_user_vals  || exit
+
+  log_info "Target user: ${TARGET_USER}"
+  do_upgrade                  || crash Error
+  do_install_guest_agent      || crash Error
+  do_install_brave            || crash Error
+  do_nopass_sudo "${NOPASS}"  || crash Error
+  do_setup_envar              || crash Error
+  do_setup_ps1                || crash Error
+  do_setup_fzf                || crash Error
+  do_setup_tmux               || crash Error
+  do_cleanup                  || crash Error
+
+  echo >&2
+  echo '~~~~~~~~~~~~~~~~~~~~' >&2
+  log_info "Optional additional steps:"
+  echo >&2
+  log_comment "# Apply bash related changes:" >&2
+  echo ". ~/.bashrc" >&2
+  echo >&2
+  log_comment "# Cleanup bash history:" >&2
+  echo "rm ~/.bash_history 2>/dev/null" >&2
+  echo "history -c 0" >&2
+}
+
+
 
 
 
@@ -306,56 +361,4 @@ init_user_vals() {
 # execution if running as a script
 (return 2>/dev/null) && return
 
-
-if [[ "${1}" =~ ^(-\?|-h|--help|help)$ ]]; then
-  print_help; exit
-fi
-
-
-# Defaults
-{
-  NOPASS=false
-}
-
-
-# Parse args
-invals=()
-for opt in "${@}"; do
-  case "${opt}" in
-    nopass  ) NOPASS=true ;;
-    *       ) invals+=("${opt}")
-  esac
-done
-[ ${#invals[@]} -lt 1 ] || {
-  log_fatal "Invalid args"
-  printf -- '  %s\n' "${invals[@]}"
-  exit 1
-}
-
-
-check_env       || exit
-init_user_vals  || exit
-
-
-log_info "Target user: ${TARGET_USER}"
-do_upgrade                  || crash Error
-do_install_guest_agent      || crash Error
-do_install_brave            || crash Error
-do_nopass_sudo "${NOPASS}"  || crash Error
-do_setup_envar              || crash Error
-do_setup_ps1                || crash Error
-do_setup_fzf                || crash Error
-do_setup_tmux               || crash Error
-do_cleanup                  || crash Error
-
-
-echo >&2
-echo '~~~~~~~~~~~~~~~~~~~~' >&2
-log_info "Optional additional steps:"
-echo >&2
-log_comment "# Apply bash related changes:" >&2
-echo ". ~/.bashrc" >&2
-echo >&2
-log_comment "# Cleanup bash history:" >&2
-echo "rm ~/.bash_history 2>/dev/null" >&2
-echo "history -c 0" >&2
+do_init_setup "${@}"

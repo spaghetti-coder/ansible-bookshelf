@@ -130,18 +130,55 @@ do_provision_ctl() {
   ) || return
 
   # Install ansible and ansible-lint
-  do_pm_update \
+  { DONE_PM_UPDATE=false do_pm_update; } \
+  && (
+    set -x
+    apt-get install -qy ansible >/dev/null \
+    && apt-get install -qy pipx >/dev/null
+  ) \
   && (
     set -x
     export PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin
-    apt-get install -qy ansible >/dev/null \
-    && apt-get install -qy pipx >/dev/null \
-    && pipx install -q ansible-lint >/dev/null \
+    pipx install -q ansible-lint >/dev/null \
     && pipx upgrade -q ansible-lint >/dev/null
   ) || return
 
   log_done "Install ansible control machine prereqs"
 }
+
+
+do_ansible_prereqs() {
+  # Defaults
+  local CTL=false
+  local TARGET=false
+
+  if [[ "${1}" =~ ^(-\?|-h|--help|help)$ ]]; then
+    print_help; exit
+  fi
+
+  [ $# -gt 0 ] || { crash "Command required"; }
+
+  # Parse args
+  local -a invals=()
+  for opt in "${@}"; do
+    case "${opt}" in
+      ctl     ) CTL=true ;;
+      target  ) TARGET=true ;;
+      *       ) invals+=("${opt}")
+    esac
+  done
+  [ ${#invals[@]} -lt 1 ] || {
+    log_fatal "Invalid args"
+    printf -- '  %s\n' "${invals[@]}"
+    exit 1
+  }
+
+  check_env || exit
+
+  do_provision_target "${TARGET}"   || exit
+  do_provision_ctl "${CTL}"         || exit
+}
+
 
 
 
@@ -150,38 +187,4 @@ do_provision_ctl() {
 # execution if running as a script
 (return 2>/dev/null) && return
 
-
-if [[ "${1}" =~ ^(-\?|-h|--help|help)$ ]]; then
-  print_help; exit
-fi
-
-
-# Defaults
-{
-  CTL=false
-  TARGET=false
-}
-
-
-# Parse args
-invals=()
-for opt in "${@}"; do
-  case "${opt}" in
-    ctl     ) CTL=true ;;
-    target  ) TARGET=true ;;
-    *       ) invals+=("${opt}")
-  esac
-done
-[ $# -gt 0 ] || { crash "Command required"; }
-[ ${#invals[@]} -lt 1 ] || {
-  log_fatal "Invalid args"
-  printf -- '  %s\n' "${invals[@]}"
-  exit 1
-}
-
-
-check_env || exit
-
-
-do_provision_target "${TARGET}"   || exit
-do_provision_ctl "${CTL}"         || exit
+do_ansible_prereqs "${@}"
