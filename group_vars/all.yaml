@@ -180,7 +180,8 @@ tailscale_client_managed: true
 #      TMUX
 # ==============
 tmux_managed: true
-tmux_sane_users:   # <- Existing users to source my preferred configuration
+tmux_version:       # Leave blank to leverage bookshelf configuration
+tmux_sane_users:    # <- Existing users to source my preferred configuration
   - "{{ ansible_user_id }}"
 
 # ===============

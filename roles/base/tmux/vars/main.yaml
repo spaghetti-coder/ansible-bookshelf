@@ -2,3 +2,12 @@
 tmux_conf_dir: /etc/tmux
 tmux_user_conf_dir: ~/.tmux
 tmux_user_plugins_dir: "{{ tmux_user_conf_dir }}/plugins"
+
+# For static binary installation
+_tmux_version: "{{ tmux_version | default(bookshelf_const_version.tmux, true) }}"
+tmux_dir: /opt/tmux/tmux
+# noqa: jinja[spacing]
+tmux_arch: "{{ {
+    'aarch64': 'arm64',
+    'x86_64': 'x86_64',
+  }[ansible_architecture] | default(false, true) }}"

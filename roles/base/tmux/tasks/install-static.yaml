@@ -1,0 +1,48 @@
+---
+- name: Toolbelt
+  ansible.builtin.import_role: { name: toolbelt }
+  vars:
+    toolbelt_pick: ['tar']  # <- 'unarchive' module requirement
+    toolbelt_exclude: []    # <- Ensure it's not excluded somewhere else
+
+- name: Get currently installed version
+  ansible.builtin.command:
+    argv: ["{{ tmux_dir }}/tmux", '-V']
+  register: tmux_version_result
+  failed_when: false
+  changed_when: false
+
+- name: Privileged
+  become: true
+  vars:
+    dl_url: https://github.com/tmux/tmux-builds/releases/download/v{{ _tmux_version }}/tmux-{{ _tmux_version }}-linux-{{ tmux_arch }}.tar.gz
+  block:
+    - name: Remove package installation # <- Avoid conflict with "manual" installation
+      ansible.builtin.package: { name: tmux, state: absent }
+
+    - name: Create directory
+      ansible.builtin.file:
+        path: "{{ tmux_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Install
+      ansible.builtin.unarchive:
+        src: "{{ dl_url }}"
+        dest: "{{ tmux_dir }}"
+        owner: root
+        group: root
+        # extra_opts:
+        #   - --strip-components=1
+        remote_src: true
+      vars:
+        stdout_version: " {{ tmux_version_result.stdout_lines | first | default('') }} " # <- Embrace with spaces
+        desired_version: " {{ _tmux_version }} "
+      when: 'desired_version not in stdout_version'
+
+    - name: Create symlinks
+      ansible.builtin.file:
+        path: /usr/bin/{{ item }}
+        src: "{{ tmux_dir }}/{{ item }}"
+        state: link
+      loop: [tmux]

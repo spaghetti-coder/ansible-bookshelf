@@ -215,7 +215,14 @@ tailscale_client_managed: false
 # ================
 #       TMUX
 # ================
+# VERSIONS: https://github.com/tmux/tmux-builds/releases
+# NOTES:
+#   * versioning is not currently supported, as tmux is tmuxp dependency
+#   * not prefixed with 'v' ('3.6a', not 'v3.6a')
+#   * only applied to arm64 or amd64, otherwise attempt to install with PM
+# -----
 tmux_managed: false
+tmux_version:     # Leave blank to leverage bookshelf configuration
 tmux_sane_users:  # <- Existing users to source my preferred configuration
   # - "{{ ansible_user_id }}"
 

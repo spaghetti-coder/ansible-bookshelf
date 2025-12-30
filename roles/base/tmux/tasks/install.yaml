@@ -1,4 +1,10 @@
 ---
+- name: Load install type
+  ansible.builtin.include_tasks:
+    file: install-pkg.yaml # install-{{ type }}.yaml    # <- tmux package gets installed as tmuxp dep
+  vars:
+    type: "{{ 'static' if tmux_arch else 'pkg' }}"
+
 - name: Privileged
   become: true
   vars:
@@ -6,10 +12,6 @@
       - default.conf
       - plugins.conf
   block:
-    - name: Install
-      ansible.builtin.package:
-        name: tmux
-
     - name: Create conf directory
       ansible.builtin.file:
         path: "{{ tmux_conf_dir }}"

@@ -21,6 +21,8 @@ bookshelf_const_version:    # <- Last update: 2025-12-28
   # * https://nodejs.org/en/about/previous-releases#looking-for-the-latest-release-of-a-version-branch
   # * https://snapcraft.io/node
   nodejs_snap_channel: 24/stable
+  # https://github.com/tmux/tmux-builds/releases
+  tmux: '3.6a'
   #
   # SERVICE
   #
