@@ -1,0 +1,9 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  vars:
+    cheatsheet_users_todo: "{{ cheatsheet_users | default([], true) | difference(cheatsheet_users_done | default([])) }}"
+  when: |
+    not (cheatsheet_install_done | default(false))
+    or (cheatsheet_users_todo | length) > 0

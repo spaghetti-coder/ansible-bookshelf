@@ -1,0 +1,32 @@
+---
+- name: Envar
+  ansible.builtin.import_role: { name: envar }
+  vars:
+    envar_users: "{{ cheatsheet_users_todo }}"
+
+- name: Bash sane
+  vars:
+    cheatsheet_path: "{{ envar_etc_dir }}/cheatsheet.skip.sh"
+    cheatsheet_user_link: "{{ envar_user_dir }}/500-cheatsheet.sh"
+  block:
+    - name: Install
+      ansible.builtin.copy:
+        src: cheatsheet.sh
+        dest: "{{ cheatsheet_path }}"
+        mode: '0644'
+      become: true
+
+    - name: Setup users
+      ansible.builtin.file:
+        src: "{{ cheatsheet_path }}"
+        dest: "{{ cheatsheet_user_link }}"
+        state: link
+        force: true
+      become: true
+      become_user: "{{ item }}"
+      loop: "{{ cheatsheet_users_todo }}"
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    cheatsheet_install_done: true
+    cheatsheet_users_done: "{{ (cheatsheet_users_done | default([])) + cheatsheet_users_todo }}"
