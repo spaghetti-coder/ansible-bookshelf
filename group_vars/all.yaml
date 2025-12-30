@@ -79,6 +79,13 @@ bash_completion: true
 bash_users:   # <- Existing users to use bash by default
   - "{{ ansible_user_id }}"
 
+# ======================
+#       CHEATSHEET
+# ======================
+cheatsheet_managed: true
+cheatsheet_users:     # <- Existing users to have cheat-* commands
+  - "{{ ansible_user_id }}"
+
 # ========================
 #       DOCKER-CLEAN
 # ========================

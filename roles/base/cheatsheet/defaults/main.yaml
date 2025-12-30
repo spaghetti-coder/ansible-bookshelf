@@ -1,0 +1,5 @@
+---
+# Bash cheatsheets launched in browser
+cheatsheet_managed: false
+cheatsheet_users:     # <- Existing users to have cheat-* commands
+  # - "{{ ansible_user_id }}"

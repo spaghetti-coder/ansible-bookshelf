@@ -28,6 +28,10 @@
       tags: [bash-sane]
       when: bash_sane_managed | default(false)
 
+    - role: cheatsheet
+      tags: [cheatsheet]
+      when: cheatsheet_managed | default(false)
+
     - role: docker
       tags: [docker]
       when: docker_managed | default(false)
