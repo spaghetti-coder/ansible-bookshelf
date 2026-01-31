@@ -21,7 +21,7 @@
     compose_dir: "{{ silverbullet_compose_dir | default(bookshelf_const_compose_dir + '/silverbullet', true) }}"
     service_state: "{{ silverbullet_enabled | ternary('present', 'absent') }}"
     conf_dir_abs: "{{ silverbullet_dirs.results[0].path }}"
-    the_user: "{{ getent_passwd[silverbullet_owner] }}"
+    the_user: "{{ ansible_facts.getent_passwd[silverbullet_owner] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:

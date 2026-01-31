@@ -12,7 +12,7 @@ nginx_proxy_managed: false
 nginx_proxy_enabled: false
 nginx_proxy_version:        # Leave blank to leverage bookshelf configuration
 nginx_proxy_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-nginx_proxy_owner: "{{ ansible_user_id }}"
+nginx_proxy_owner: "{{ ansible_facts.user_id }}"
 nginx_proxy_service_name: nginx-proxy
 nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
 # NOTE: Avoid port conflicts with other reverse proxies

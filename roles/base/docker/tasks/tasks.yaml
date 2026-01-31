@@ -7,8 +7,8 @@
 - name: Acl
   ansible.builtin.import_role: { name: acl }
   when:
-    - ansible_user_id != 'root'
-    - docker_users_todo | difference(['root', ansible_user_id]) | length > 0
+    - ansible_facts.user_id != 'root'
+    - docker_users_todo | difference(['root', ansible_facts.user_id]) | length > 0
 
 - name: Load setup users
   ansible.builtin.include_tasks:

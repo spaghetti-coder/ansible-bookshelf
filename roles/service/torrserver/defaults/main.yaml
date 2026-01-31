@@ -10,7 +10,7 @@ torrserver_managed: false
 torrserver_enabled: false
 torrserver_version:            # Leave blank to leverage bookshelf configuration
 torrserver_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
-torrserver_owner: "{{ ansible_user_id }}"
+torrserver_owner: "{{ ansible_facts.user_id }}"
 torrserver_conf_dir: ~/conf/torrserver
 torrserver_service_name: torrserver
 torrserver_hostname: "{{ torrserver_service_name }}"

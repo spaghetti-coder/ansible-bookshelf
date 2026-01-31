@@ -2,4 +2,4 @@
 bash_managed: false
 bash_completion: false
 bash_users:       # <- Existing users to use bash by default
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"

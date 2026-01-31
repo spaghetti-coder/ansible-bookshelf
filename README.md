@@ -149,7 +149,7 @@ The goal of all these `*_done` variables is to reduce noise in the ansible-playb
 A lot of roles depend on data collected by `factum`, so it's better to be the first role in the playbook. It provides the following:
 
 ```yaml
-getent_passwd:
+ansible_facts.getent_passwd:
   root:
     - ...   # <- Useless
     - UID   # [1]
@@ -159,7 +159,7 @@ getent_passwd:
     - SHELL # [5]
   # ...  # <- Other users
 
-factum_os_family:         # <- Lowercase ansible_os_family
+factum_os_family:         # <- Lowercase ansible_facts.os_family
 factum_os_like:           # <- More prioritized OS like
 factum_ubuntu_codename:   # <- Ubuntu code name for Ubuntu-like distros
 ```

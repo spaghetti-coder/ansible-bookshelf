@@ -1,6 +1,6 @@
 ---
 _age_version: "{{ age_version | default(bookshelf_const_version.age, true) }}"
 
-age_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+age_arch: "{{ 'arm64' if ansible_facts.architecture == 'aarch64' else 'amd64' }}"
 age_dl_url: https://github.com/FiloSottile/age/releases/download/{{ _age_version }}/age-{{ _age_version }}-linux-{{ age_arch }}.tar.gz
 age_dir: "/opt/FiloSottile/age"

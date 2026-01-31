@@ -7,5 +7,5 @@
 # -----
 envar_managed: false
 envar_users:    # <- Existing users to have access to envar
-#   - "{{ ansible_user_id }}"
+#   - "{{ ansible_facts.user_id }}"
 #   - root

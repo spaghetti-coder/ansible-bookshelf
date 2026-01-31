@@ -26,7 +26,7 @@ tailscale_managed: false
 tailscale_enabled: false
 tailscale_version:          # Leave blank to leverage bookshelf configuration
 tailscale_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
-tailscale_owner: "{{ ansible_user_id }}"
+tailscale_owner: "{{ ansible_facts.user_id }}"
 tailscale_conf_dir: ~/conf/tailscale
 tailscale_service_name: tailscale
 tailscale_hostname: "{{ tailscale_service_name }}"
@@ -35,7 +35,7 @@ tailscale_ts_hostname: "{{ tailscale_service_name }}"
 tailscale_auth_key:         # (REQUIRED)
 tailscale_routes:           # '192.168.0.0/24,192.168.2.0/24'
 tailscale_exit_node: false  # Advertise exit node
-tailscale_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+tailscale_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars
 tailscale_extra_env: |      # "{{ lookup('file', playbook_dir + '/resources/tailscale.env') }}"
   # These are used in demo gatus.sh healthcheck script.

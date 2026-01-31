@@ -21,7 +21,7 @@ services:
     network_mode: host    # <- Explicitely give it access to the host net
     # ports:              # <- Ignored with 'host' network
     #   - "{{ olivetin_web_ui_port_ext }}:{{ olivetin_web_ui_port_ext }}"
-    user: "{{ getent_passwd[olivetin_owner].1 }}"
+    user: "{{ ansible_facts.getent_passwd[olivetin_owner].1 }}"
 {% if nginx_proxy_enabled | default(false) %}
     # networks:           # <- Conflicts with 'host' network
     #   - {{ nginx_proxy_net }}

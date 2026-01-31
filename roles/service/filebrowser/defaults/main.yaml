@@ -18,7 +18,7 @@ filebrowser_managed: false
 filebrowser_enabled: false
 filebrowser_version:        # Leave blank to leverage bookshelf configuration
 filebrowser_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-filebrowser_owner: "{{ ansible_user_id }}"    # <- Who runs the container
+filebrowser_owner: "{{ ansible_facts.user_id }}"    # <- Who runs the container
 filebrowser_user: "{{ filebrowser_owner }}"   # <- The in-container user and data filesystem owner
 filebrowser_conf_dir: ~/conf/filebrowser
 filebrowser_data_dir: ~/data
@@ -27,7 +27,7 @@ filebrowser_hostname: "{{ filebrowser_service_name }}"
 filebrowser_vhost: "{{ filebrowser_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 filebrowser_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
-filebrowser_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+filebrowser_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both filebrowser and tailscale.
 filebrowser_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/filebrowser.env.j2') }}"
   # References:

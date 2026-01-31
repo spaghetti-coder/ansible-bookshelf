@@ -14,14 +14,14 @@ mealie_managed: false
 mealie_enabled: false
 mealie_version:       # Leave blank to leverage bookshelf configuration
 mealie_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-mealie_owner: "{{ ansible_user_id }}"
+mealie_owner: "{{ ansible_facts.user_id }}"
 mealie_conf_dir: ~/conf/mealie
 mealie_service_name: mealie
 mealie_hostname: "{{ mealie_service_name }}"
 mealie_vhost: "{{ mealie_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 mealie_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-mealie_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+mealie_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Mealie and tailscale.
 mealie_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/mealie.env.j2') }}"
   # References:

@@ -7,5 +7,5 @@
 fzf_managed: false
 fzf_version:    # Leave blank to leverage bookshelf configuration
 fzf_users:      # <- Existing users to have fzf integrated
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
   # - root

@@ -10,7 +10,7 @@
     compose_dir: "{{ pairdrop_compose_dir | default(bookshelf_const_compose_dir + '/pairdrop', true) }}"
     conf_dir: "{{ pairdrop_conf_dir }}"
     service_state: "{{ pairdrop_enabled | ternary('present', 'absent') }}"
-    the_user: "{{ getent_passwd[pairdrop_owner] }}"
+    the_user: "{{ ansible_facts.getent_passwd[pairdrop_owner] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:

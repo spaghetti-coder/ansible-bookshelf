@@ -10,7 +10,7 @@ silverbullet_managed: false
 silverbullet_enabled: false
 silverbullet_version:       # Leave blank to leverage bookshelf configuration
 silverbullet_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-silverbullet_owner: "{{ ansible_user_id }}"   # <- Who runs the container
+silverbullet_owner: "{{ ansible_facts.user_id }}"   # <- Who runs the container
 silverbullet_conf_dir: ~/conf/silverbullet
 silverbullet_service_name: silverbullet
 silverbullet_hostname: "{{ silverbullet_service_name }}"
@@ -19,7 +19,7 @@ silverbullet_web_ui_port:   # Leave blank to leverage bookshelf configuration
 # Auth
 silverbullet_auth_user:     # (OPTIONAL)
 silverbullet_auth_pass:     # (REQUIRED when non-empty user) If user not set, user defaults to 'admin'
-# silverbullet_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# silverbullet_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 # Optional extra env vars
 silverbullet_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/silverbullet.env.j2') }}"
 # WUD settings

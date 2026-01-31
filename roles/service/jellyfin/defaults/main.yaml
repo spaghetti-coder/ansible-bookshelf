@@ -14,7 +14,7 @@ jellyfin_managed: false
 jellyfin_enabled: false
 jellyfin_version:       # Leave blank to leverage bookshelf configuration
 jellyfin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-jellyfin_owner: "{{ ansible_user_id }}"   # <- Who runs the container
+jellyfin_owner: "{{ ansible_facts.user_id }}"   # <- Who runs the container
 jellyfin_user: "{{ jellyfin_owner }}"     # <- The in-container user and data filesystem owner
 jellyfin_conf_dir: ~/conf/jellyfin
 jellyfin_data_volumes:    # <- Volumes for data
@@ -27,7 +27,7 @@ jellyfin_vhost: "{{ jellyfin_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 jellyfin_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
 jellyfin_discovery_ports_exposed: true
-jellyfin_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+jellyfin_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both jellyfin and tailscale.
 jellyfin_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/jellyfin.env.j2') }}"
   # References:

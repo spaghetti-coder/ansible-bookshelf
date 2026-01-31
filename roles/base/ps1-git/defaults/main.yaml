@@ -4,5 +4,5 @@
 # -----
 ps1_git_managed: false
 ps1_git_users:    # <- Existing users to have this PS1
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
   # - root

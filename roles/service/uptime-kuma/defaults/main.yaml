@@ -10,7 +10,7 @@ uptime_kuma_managed: false
 uptime_kuma_enabled: false
 uptime_kuma_version:        # Leave blank to leverage bookshelf configuration
 uptime_kuma_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-uptime_kuma_owner: "{{ ansible_user_id }}"
+uptime_kuma_owner: "{{ ansible_facts.user_id }}"
 uptime_kuma_conf_dir: ~/conf/uptime-kuma
 uptime_kuma_service_name: uptime-kuma
 uptime_kuma_hostname: "{{ uptime_kuma_service_name }}"

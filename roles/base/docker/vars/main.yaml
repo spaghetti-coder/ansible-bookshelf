@@ -1,5 +1,5 @@
 ---
-docker_apt_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'armhf' if ansible_architecture == 'armv7l' else 'amd64' }}"
+docker_apt_arch: "{{ 'arm64' if ansible_facts.architecture == 'aarch64' else 'armhf' if ansible_facts.architecture == 'armv7l' else 'amd64' }}"
 docker_rhel_distro_url_segment: "{{ (factum_os_like == 'centos') | ternary('centos', 'rhel') }}"
 docker_packages:
   alpine:   # <- factum_os_like

@@ -6,16 +6,17 @@
   become: true
   vars:
     keyfile: "{{ software_repos_deps_keyrings_dir }}/moritzbunkus.gpg"
-    codename: "{{ factum_ubuntu_codename | default(ansible_distribution_release) }}"
+    codename: "{{ factum_ubuntu_codename | default(ansible_facts.distribution_release) }}"
     # NOTE:
     # Don't use LinuxMint (https://mkvtoolnix.download/downloads.html#linuxmint),
     # because not all its codenames are supported
     repo_url: https://mkvtoolnix.download/{{ factum_os_like }}/
-    arch_map:
-      _default: amd64
-      aarch64: arm64
-      armv7l: armhf
-    arch: "{{ arch_map[ansible_architecture] | default(arch_map['_default']) }}"
+    # noqa: jinja[spacing]
+    arch: "{{ {
+        'aarch64': 'arm64',
+        'armv7l': 'armhf',
+        'x86_64': 'amd64',
+      }[ansible_facts.architecture] }}"
   block:
     - name: Install signing key
       ansible.builtin.get_url:

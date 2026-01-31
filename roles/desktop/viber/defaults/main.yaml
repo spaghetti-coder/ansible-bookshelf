@@ -1,4 +1,4 @@
 ---
 viber_managed: false
 viber_starters:   # <- Existing users to have viber autostarted
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"

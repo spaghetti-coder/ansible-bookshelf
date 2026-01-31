@@ -11,7 +11,7 @@
     yaml_dir: "{{ compose_dir }}/config"
     conf_dir: "{{ gatus_conf_dir }}"
     service_state: "{{ gatus_enabled | ternary('present', 'absent') }}"
-    the_user: "{{ getent_passwd[gatus_owner] }}"
+    the_user: "{{ ansible_facts.getent_passwd[gatus_owner] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:

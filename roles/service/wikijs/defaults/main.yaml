@@ -12,14 +12,14 @@ wikijs_enabled: false
 wikijs_version:             # Leave blank to leverage bookshelf configuration
 wikijs_postgres_version:    # Leave blank to leverage bookshelf configuration
 wikijs_compose_dir:         # Unless you know ..., leave blank to leverage bookshelf configuration
-wikijs_owner: "{{ ansible_user_id }}"
+wikijs_owner: "{{ ansible_facts.user_id }}"
 wikijs_conf_dir: ~/conf/wikijs
 wikijs_service_name: wikijs
 wikijs_hostname: "{{ wikijs_service_name }}"
 wikijs_vhost: "{{ wikijs_service_name }}.domain.local"
 wikijs_web_ui_port:         # Leave blank to leverage bookshelf configuration
 wikijs_db_pass:             # (REQUIRED) Something hard and random
-wikijs_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+wikijs_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 # Optional extra env vars, will affect both Wiki.js and tailscale.
 wikijs_extra_env:           # "{{ lookup('template', playbook_dir + '/resources/wikijs.env.j2') }}"
 # WUD settings

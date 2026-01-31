@@ -11,14 +11,14 @@ gatus_managed: false
 gatus_enabled: false
 gatus_version:            # Leave blank to leverage bookshelf configuration
 gatus_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
-gatus_owner: "{{ ansible_user_id }}"
+gatus_owner: "{{ ansible_facts.user_id }}"
 gatus_conf_dir: ~/conf/gatus
 gatus_service_name: gatus
 gatus_hostname: "{{ gatus_service_name }}"
 gatus_vhost: "{{ gatus_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 gatus_web_ui_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
-gatus_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+gatus_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Can be string or list. Ex.:
 #   gatus_config: "{{ lookup('file', 'demo.yaml') }}"
 #   gatus_config: ["{{ lookup('file', 'demo.yaml') }}"]

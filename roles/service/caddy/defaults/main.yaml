@@ -10,7 +10,7 @@ caddy_managed: false
 caddy_enabled: false
 caddy_version:          # Leave blank to leverage bookshelf configuration
 caddy_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
-caddy_owner: "{{ ansible_user_id }}"
+caddy_owner: "{{ ansible_facts.user_id }}"
 caddy_conf_dir: ~/conf/caddy
 caddy_service_name: caddy
 caddy_hostname: "{{ caddy_service_name }}"

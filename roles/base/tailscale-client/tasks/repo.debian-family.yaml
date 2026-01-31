@@ -6,7 +6,7 @@
   become: true
   vars:
     keyfile: "{{ software_repos_deps_keyrings_dir }}/tailscale.gpg"
-    codename: "{{ factum_ubuntu_codename | default(ansible_distribution_release) }}"
+    codename: "{{ factum_ubuntu_codename | default(ansible_facts.distribution_release) }}"
     repo_url: https://pkgs.tailscale.com/stable/{{ factum_os_like }}
     key_url: https://pkgs.tailscale.com/stable/{{ factum_os_like }}/{{ codename }}.noarmor.gpg
   block:

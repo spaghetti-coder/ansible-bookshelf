@@ -2,7 +2,7 @@
 - name: Setup user shell
   ansible.builtin.command:
     argv: ['chsh', '-s', '/bin/bash', "{{ user }}"]
-  changed_when: getent_passwd[user].5 != '/bin/bash'
+  changed_when: ansible_facts.getent_passwd[user].5 != '/bin/bash'
   register: bash_user_state
   become: true
   become_user: root

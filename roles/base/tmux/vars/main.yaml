@@ -10,4 +10,4 @@ tmux_dir: /opt/tmux/tmux
 tmux_arch: "{{ {
     'aarch64': 'arm64',
     'x86_64': 'x86_64',
-  }[ansible_architecture] | default(false, true) }}"
+  }[ansible_facts.architecture] | default(false, true) }}"

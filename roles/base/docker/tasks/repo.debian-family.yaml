@@ -7,7 +7,7 @@
   vars:
     keyfile: "{{ software_repos_deps_keyrings_dir }}/docker.asc"
     arch: "{{ docker_apt_arch }}"
-    codename: "{{ factum_ubuntu_codename | default(ansible_distribution_release) }}"
+    codename: "{{ factum_ubuntu_codename | default(ansible_facts.distribution_release) }}"
     repo_url: https://download.docker.com/linux/{{ factum_os_like }}
   block:
     - name: Install signing key

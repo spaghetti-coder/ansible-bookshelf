@@ -21,7 +21,7 @@
     compose_dir: "{{ vikunja_compose_dir | default(bookshelf_const_compose_dir + '/vikunja', true) }}"
     conf_dir_abs: "{{ vikunja_dirs.results[0].path }}"
     service_state: "{{ vikunja_enabled | ternary('present', 'absent') }}"
-    the_user: "{{ getent_passwd[vikunja_owner] }}"
+    the_user: "{{ ansible_facts.getent_passwd[vikunja_owner] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:

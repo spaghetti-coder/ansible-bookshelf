@@ -31,7 +31,7 @@
         navidrome_data_volumes | default([], true) | map('regex_replace', '^[^:]*:', '')
       ) | map('join', ':') }}"
     service_state: "{{ navidrome_enabled | ternary('present', 'absent') }}"
-    the_user: "{{ getent_passwd[navidrome_user] }}"
+    the_user: "{{ ansible_facts.getent_passwd[navidrome_user] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:

@@ -8,4 +8,4 @@ copyq_managed: false
 # * flatpak   # <- Forced for non-Ubuntu-like
 copyq_install_method: pm
 copyq_starters:         # <- Existing users to have copyq autostarted
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"

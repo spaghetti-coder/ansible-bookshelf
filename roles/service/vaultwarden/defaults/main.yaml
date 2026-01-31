@@ -8,7 +8,7 @@ vaultwarden_managed: false
 vaultwarden_enabled: false
 vaultwarden_version:        # Leave blank to leverage bookshelf configuration
 vaultwarden_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-vaultwarden_owner: "{{ ansible_user_id }}"
+vaultwarden_owner: "{{ ansible_facts.user_id }}"
 vaultwarden_conf_dir: ~/conf/vaultwarden
 vaultwarden_service_name: vaultwarden
 vaultwarden_hostname: "{{ vaultwarden_service_name }}"
@@ -23,7 +23,7 @@ vaultwarden_vdomain:
 #   docker container run -it --rm vaultwarden/server:latest /vaultwarden hash
 vaultwarden_admin_token_hash:
 vaultwarden_web_ui_port:    # Leave blank to leverage bookshelf configuration
-vaultwarden_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+vaultwarden_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 # https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
 # Optional extra env vars
 vaultwarden_extra_env:      # "{{ lookup('file', playbook_dir + '/resources/vaultwarden.env') }}"

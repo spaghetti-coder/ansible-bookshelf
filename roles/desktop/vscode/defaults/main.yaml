@@ -5,7 +5,7 @@ vscode_managed: false
 # * flatpak   # <- Forced for non-Ubuntu-like
 vscode_install_method: snap
 vscode_extensions:      # <- Per user extensions
-  # - owner: "{{ ansible_user_id }}"  # <- Existing user. Must be unique
+  # - owner: "{{ ansible_facts.user_id }}"  # <- Existing user. Must be unique
   #   extensions:
   #     - editorconfig.editorconfig
   #     - mads-hartmann.bash-ide-vscode

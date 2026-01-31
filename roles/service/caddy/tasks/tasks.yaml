@@ -13,7 +13,7 @@
     certs_dir: "{{ compose_dir }}/ssl"
     caddies_dir: "{{ compose_dir }}/caddies"
     service_state: "{{ caddy_enabled | ternary('present', 'absent') }}"
-    the_user: "{{ getent_passwd[caddy_owner] }}"
+    the_user: "{{ ansible_facts.getent_passwd[caddy_owner] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:

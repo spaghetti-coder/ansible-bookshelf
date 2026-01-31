@@ -5,4 +5,4 @@ teams_managed: false
 # * snap
 teams_install_method: flatpak
 teams_starters:   # <- Existing users to have teams autostarted
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"

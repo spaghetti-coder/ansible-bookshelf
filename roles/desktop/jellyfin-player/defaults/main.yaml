@@ -4,4 +4,4 @@
 # -----
 jellyfin_player_managed: false
 jellyfin_player_starters:   # <- Existing users to have jellyfin player autostarted
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"

@@ -4,4 +4,4 @@
 # -----
 input_leap_managed: false
 input_leap_starters:  # <- Existing users to have InputLeap autostarted
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"

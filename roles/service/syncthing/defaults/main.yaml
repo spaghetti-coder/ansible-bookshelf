@@ -14,7 +14,7 @@ syncthing_managed: false
 syncthing_enabled: false
 syncthing_version:              # Leave blank to leverage bookshelf configuration
 syncthing_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
-syncthing_owner: "{{ ansible_user_id }}"  # <- Who runs the container
+syncthing_owner: "{{ ansible_facts.user_id }}"  # <- Who runs the container
 syncthing_user: "{{ syncthing_owner }}"   # <- The in-container user and data filesystem owner
 syncthing_conf_dir: ~/conf/syncthing
 syncthing_data_volumes:   # <- Volumes for data
@@ -25,7 +25,7 @@ syncthing_service_name: syncthing
 syncthing_hostname: "{{ syncthing_service_name }}"
 syncthing_vhost: "{{ syncthing_service_name }}.domain.local"
 syncthing_web_ui_port:          # Leave blank to leverage bookshelf configuration
-syncthing_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+syncthing_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 # Optional extra env vars, will affect both syncthing and tailscale.
 syncthing_extra_env:            # "{{ lookup('template', playbook_dir + '/resources/syncthing.env.j2') }}"
 # WUD settings

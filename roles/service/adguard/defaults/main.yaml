@@ -15,7 +15,7 @@ adguard_managed: false
 adguard_enabled: false
 adguard_version:        # Leave blank to leverage bookshelf configuration
 adguard_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-adguard_owner: "{{ ansible_user_id }}"
+adguard_owner: "{{ ansible_facts.user_id }}"
 adguard_conf_dir: ~/conf/adguard
 adguard_service_name: adguard
 adguard_hostname: "{{ adguard_service_name }}"
@@ -24,7 +24,7 @@ adguard_vhost: "{{ adguard_service_name }}.domain.local"
 adguard_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
 adguard_init_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
 adguard_dns_ports_exposed: true
-adguard_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+adguard_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both adguard and tailscale.
 adguard_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/adguard.env.j2') }}"
   # References:

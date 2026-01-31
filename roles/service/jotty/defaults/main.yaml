@@ -10,7 +10,7 @@ jotty_managed: false
 jotty_enabled: false
 jotty_version:            # Leave blank to leverage bookshelf configuration
 jotty_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
-jotty_owner: "{{ ansible_user_id }}"
+jotty_owner: "{{ ansible_facts.user_id }}"
 jotty_conf_dir: ~/conf/jotty
 jotty_service_name: jotty
 jotty_hostname: "{{ jotty_service_name }}"

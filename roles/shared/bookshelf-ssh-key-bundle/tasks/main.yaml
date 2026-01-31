@@ -16,7 +16,7 @@
 #     conffile:
 #   # Optionally ensure applied to a specific user
 #   become: true
-#   become_user: "{{ ansible_user_id }}"
+#   become_user: "{{ ansible_facts.user_id }}"
 
 - name: SSH key bundle
   vars:

@@ -20,7 +20,7 @@ audiobookshelf_managed: false
 audiobookshelf_enabled: false
 audiobookshelf_version:       # Leave blank to leverage bookshelf configuration
 audiobookshelf_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-audiobookshelf_owner: "{{ ansible_user_id }}"       # <- Who runs the container
+audiobookshelf_owner: "{{ ansible_facts.user_id }}"       # <- Who runs the container
 audiobookshelf_user: "{{ audiobookshelf_owner }}"   # <- The in-container user and data filesystem owner
 audiobookshelf_conf_dir: ~/conf/audiobookshelf
 audiobookshelf_data_volumes:  # <- Volumes for data
@@ -32,7 +32,7 @@ audiobookshelf_hostname: "{{ audiobookshelf_service_name }}"
 audiobookshelf_vhost: "{{ audiobookshelf_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 audiobookshelf_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-audiobookshelf_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+audiobookshelf_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both audiobookshelf and tailscale.
 audiobookshelf_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/audiobookshelf.env.j2') }}"
   # References:

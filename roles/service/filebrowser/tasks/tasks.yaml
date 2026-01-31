@@ -24,7 +24,7 @@
     conf_dir_abs: "{{ filebrowser_dirs.results[0].path }}"
     data_dir_abs: "{{ filebrowser_dirs.results[1].path }}"
     service_state: "{{ filebrowser_enabled | ternary('present', 'absent') }}"
-    the_user: "{{ getent_passwd[filebrowser_user] }}"
+    the_user: "{{ ansible_facts.getent_passwd[filebrowser_user] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:

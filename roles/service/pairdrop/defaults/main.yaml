@@ -13,14 +13,14 @@ pairdrop_managed: false
 pairdrop_enabled: false
 pairdrop_version:       # Leave blank to leverage bookshelf configuration
 pairdrop_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-pairdrop_owner: "{{ ansible_user_id }}"
+pairdrop_owner: "{{ ansible_facts.user_id }}"
 pairdrop_conf_dir: ~/conf/pairdrop
 pairdrop_service_name: pairdrop
 pairdrop_hostname: "{{ pairdrop_service_name }}"
 pairdrop_vhost: "{{ pairdrop_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 pairdrop_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-pairdrop_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+pairdrop_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both PairDrop and tailscale.
 pairdrop_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/pairdrop.env.j2') }}"
   # References:

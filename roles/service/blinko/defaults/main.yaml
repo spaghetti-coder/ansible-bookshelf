@@ -13,7 +13,7 @@ blinko_enabled: false
 blinko_version:             # Leave blank to leverage bookshelf configuration
 blinko_postgres_version:    # Leave blank to leverage bookshelf configuration
 blinko_compose_dir:         # Unless you know ..., leave blank to leverage bookshelf configuration
-blinko_owner: "{{ ansible_user_id }}"
+blinko_owner: "{{ ansible_facts.user_id }}"
 blinko_conf_dir: ~/conf/blinko
 blinko_service_name: blinko
 blinko_hostname: "{{ blinko_service_name }}"
@@ -23,7 +23,7 @@ blinko_web_ui_port:         # Leave blank for bookshelf default, or '-1' to not 
 blinko_db_service_name: "{{ blinko_service_name }}-db"
 blinko_db_pass:             # (REQUIRED) Something hard and random
 blinko_nextauth_secret:     # (REQUIRED) Something hard and random
-blinko_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+blinko_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Blinko and Tailscale.
 blinko_extra_env: |         # "{{ lookup('template', playbook_dir + '/resources/blinko.env.j2') }}"
   # References:

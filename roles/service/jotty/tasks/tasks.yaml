@@ -22,7 +22,7 @@
     conf_dir: "{{ jotty_conf_dir }}"
     conf_dir_abs: "{{ jotty_dirs.results[0].path }}"
     service_state: "{{ jotty_enabled | ternary('present', 'absent') }}"
-    the_user: "{{ getent_passwd[jotty_owner] }}"
+    the_user: "{{ ansible_facts.getent_passwd[jotty_owner] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:

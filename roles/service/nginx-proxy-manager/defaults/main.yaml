@@ -8,7 +8,7 @@ nginx_proxy_manager_managed: false
 nginx_proxy_manager_enabled: false
 nginx_proxy_manager_version:          # Leave blank to leverage bookshelf configuration
 nginx_proxy_manager_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
-nginx_proxy_manager_owner: "{{ ansible_user_id }}"
+nginx_proxy_manager_owner: "{{ ansible_facts.user_id }}"
 nginx_proxy_manager_conf_dir: ~/conf/nginx-proxy-manager
 nginx_proxy_manager_service_name: nginx-proxy-manager
 nginx_proxy_manager_hostname: "{{ nginx_proxy_manager_service_name }}"

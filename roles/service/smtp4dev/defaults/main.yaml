@@ -17,7 +17,7 @@ smtp4dev_managed: false
 smtp4dev_enabled: false
 smtp4dev_version:       # Leave blank to leverage bookshelf configuration
 smtp4dev_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-smtp4dev_owner: "{{ ansible_user_id }}"
+smtp4dev_owner: "{{ ansible_facts.user_id }}"
 smtp4dev_conf_dir: ~/conf/smtp4dev
 smtp4dev_service_name: smtp4dev
 smtp4dev_hostname: "{{ smtp4dev_service_name }}"

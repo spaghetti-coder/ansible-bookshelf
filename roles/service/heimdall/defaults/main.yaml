@@ -8,17 +8,17 @@ heimdall_managed: false
 heimdall_enabled: false
 heimdall_version:       # Leave blank to leverage bookshelf configuration
 heimdall_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-heimdall_owner: "{{ ansible_user_id }}"
+heimdall_owner: "{{ ansible_facts.user_id }}"
 heimdall_conf_dir: ~/conf/heimdall
 heimdall_service_name: heimdall
 heimdall_hostname: "{{ heimdall_service_name }}"
 heimdall_vhost: "{{ heimdall_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 heimdall_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-heimdall_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+heimdall_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 # Ex.:
 #   # heimdall_web_ui_port_ext - contains actual external port
-#   http://{{ ansible_default_ipv4.address }}:{{ heimdall_web_ui_port_ext }}
+#   http://{{ ansible_facts.default_ipv4.address }}:{{ heimdall_web_ui_port_ext }}
 #   https://{{ heimdall_vhost }}
 heimdall_base_url:      # (REQUIRED)
 # WUD settings

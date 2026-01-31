@@ -5,4 +5,4 @@
 doublecmd_managed: false    # "{{ factum_os_family in ['debian'] }}"  # <- Only supported by Debian family
 doublecmd_ui_lib: gtk       # <- 'gtk' for Gnome or 'qt' for KDE
 doublecmd_starters:         # <- Existing users to have doublecmd autostarted
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"

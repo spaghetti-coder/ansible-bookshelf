@@ -9,7 +9,7 @@ olivetin_managed: false
 olivetin_enabled: false
 olivetin_version:       # Leave blank to leverage bookshelf configuration
 olivetin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-olivetin_owner: "{{ ansible_user_id }}"
+olivetin_owner: "{{ ansible_facts.user_id }}"
 olivetin_conf_dir: ~/conf/olivetin
 olivetin_service_name: olivetin
 olivetin_hostname: "{{ olivetin_service_name }}"

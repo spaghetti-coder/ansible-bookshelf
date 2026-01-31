@@ -3,4 +3,4 @@
 # -----
 bash_sane_managed: false
 bash_sane_users:    # <- Existing users to use bash set settings
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"

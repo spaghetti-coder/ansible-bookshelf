@@ -10,7 +10,7 @@
 # -----
 code_server_managed: false  # "{{ factum_os_family not in ['alpine'] }}"  # <- Not supported by Alpine
 code_server_version:      # Leave blank to leverage bookshelf configuration
-code_server_owner: "{{ ansible_user_id }}"
+code_server_owner: "{{ ansible_facts.user_id }}"
 code_server_web_ui_port:  # Leave blank to leverage bookshelf configuration
 code_server_extensions:   # <- List of extension
   # - editorconfig.editorconfig

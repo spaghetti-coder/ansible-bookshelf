@@ -10,7 +10,7 @@ duplicati_managed: false
 duplicati_enabled: false
 duplicati_version:        # Leave blank to leverage bookshelf configuration
 duplicati_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-duplicati_owner: "{{ ansible_user_id }}"    # <- Who runs the container
+duplicati_owner: "{{ ansible_facts.user_id }}"    # <- Who runs the container
 duplicati_conf_dir: ~/conf/duplicati
 duplicati_backup_volumes:                   # <- Mounts for backups, at least one entry required
   - ~/backup/Main:/backups                  # <- One of data volumes must be mounted to '/backups'
@@ -29,7 +29,7 @@ duplicati_vhost: "{{ duplicati_service_name }}.domain.local"
 duplicati_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
 duplicati_enc_key:        # (REQUIRED) Min 8 symbols
 duplicati_pass:           # (OPTIONAL)
-duplicati_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+duplicati_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Duplicati and tailscale.
 duplicati_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/duplicati.env.j2') }}"
   # References:

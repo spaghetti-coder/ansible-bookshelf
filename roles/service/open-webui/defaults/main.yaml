@@ -10,7 +10,7 @@ open_webui_managed: false
 open_webui_enabled: false
 open_webui_version:         # Leave blank to leverage bookshelf configuration
 open_webui_compose_dir:     # Unless you know ..., leave blank to leverage bookshelf configuration
-open_webui_owner: "{{ ansible_user_id }}"
+open_webui_owner: "{{ ansible_facts.user_id }}"
 open_webui_conf_dir: ~/conf/open-webui
 open_webui_service_name: open-webui
 open_webui_hostname: "{{ open_webui_service_name }}"

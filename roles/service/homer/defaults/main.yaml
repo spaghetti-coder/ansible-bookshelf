@@ -11,7 +11,7 @@ homer_enabled: false
 homer_version:          # Leave blank to leverage bookshelf configuration
 homer_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
 homer_conf_dir: ~/conf/homer
-homer_owner: "{{ ansible_user_id }}"
+homer_owner: "{{ ansible_facts.user_id }}"
 homer_service_name: homer
 homer_hostname: "{{ homer_service_name }}"
 homer_vhost: "{{ homer_service_name }}.domain.local"

@@ -10,7 +10,7 @@ portainer_managed: false
 portainer_enabled: false
 portainer_version:        # Leave blank to leverage bookshelf configuration
 portainer_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-portainer_owner: "{{ ansible_user_id }}"
+portainer_owner: "{{ ansible_facts.user_id }}"
 portainer_conf_dir: ~/conf/portainer
 portainer_service_name: portainer
 portainer_hostname: "{{ portainer_service_name }}"

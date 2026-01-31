@@ -7,7 +7,7 @@
 
 - name: Set OS family
   ansible.builtin.set_fact:
-    factum_os_family: "{{ ansible_os_family | lower }}"
+    factum_os_family: "{{ ansible_facts.os_family | lower }}"
 
 - name: Detect OS like
   ansible.builtin.include_tasks:

@@ -10,7 +10,7 @@ cronmaster_managed: false
 cronmaster_enabled: false
 cronmaster_version:             # Leave blank to leverage bookshelf configuration
 cronmaster_compose_dir:         # Unless you know ..., leave blank to leverage bookshelf configuration
-cronmaster_owner: "{{ ansible_user_id }}"
+cronmaster_owner: "{{ ansible_facts.user_id }}"
 cronmaster_conf_dir: ~/conf/cronmaster
 cronmaster_service_name: cronmaster
 cronmaster_hostname: "{{ cronmaster_service_name }}"
@@ -20,7 +20,7 @@ cronmaster_web_ui_port:         # Leave blank for bookshelf default, or '-1' to 
 cronmaster_auth_pass:           # (REQUIRED)
 cronmaster_crontab_users:       # List of crontab users (from host)
   # - root
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 cronmaster_scripts:
   # - text: "{{ lookup('template', 'demo-script.sh.j2') }}"  # <- See this one for demo, uses demo-secret.txt
   #   filename: demo-script.sh        # Destination filename, should not intersect with existing scripts
@@ -30,7 +30,7 @@ cronmaster_snippets:  # <- Guide: https://github.com/fccview/cronmaster/blob/mai
 cronmaster_secrets:
   # - text: "{{ lookup('file', 'demo-secret.txt') }}"
   #   filename: demo-secret.txt       # See demo-script.sh.j2 to see how to reference the secret
-  #   # owner: "{{ ansible_user_id }}"  # Optional, defaults to root. The file is only RW by the owner
+  #   # owner: "{{ ansible_facts.user_id }}"  # Optional, defaults to root. The file is only RW by the owner
 # Optional extra env vars, will affect both CronMaster and Tailscale.
 cronmaster_extra_env: |         # "{{ lookup('template', playbook_dir + '/resources/cronmaster.env.j2') }}"
   # References:

@@ -22,7 +22,7 @@
     conf_dir: "{{ gokapi_conf_dir }}"
     conf_dir_abs: "{{ gokapi_dirs.results[0].path }}"
     service_state: "{{ gokapi_enabled | ternary('present', 'absent') }}"
-    the_user: "{{ getent_passwd[gokapi_owner] }}"
+    the_user: "{{ ansible_facts.getent_passwd[gokapi_owner] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:

@@ -30,7 +30,7 @@
         qbittorrent_data_volumes | default([], true) | map('regex_replace', '^[^:]*:', '')
       ) | map('join', ':') }}"
     service_state: "{{ qbittorrent_enabled | ternary('present', 'absent') }}"
-    the_user: "{{ getent_passwd[qbittorrent_user] }}"
+    the_user: "{{ ansible_facts.getent_passwd[qbittorrent_user] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:

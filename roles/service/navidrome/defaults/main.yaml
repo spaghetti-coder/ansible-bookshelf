@@ -15,7 +15,7 @@ navidrome_managed: false
 navidrome_enabled: false
 navidrome_version:        # Leave blank to leverage bookshelf configuration
 navidrome_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-navidrome_owner: "{{ ansible_user_id }}"    # <- Who runs the container
+navidrome_owner: "{{ ansible_facts.user_id }}"    # <- Who runs the container
 navidrome_user: "{{ navidrome_owner }}"     # <- The in-container user and data filesystem owner
 navidrome_conf_dir: ~/conf/navidrome
 navidrome_data_volumes:     # <- Volumes for data, NOTE: navidrome needs only to read it
@@ -27,7 +27,7 @@ navidrome_hostname: "{{ navidrome_service_name }}"
 navidrome_vhost: "{{ navidrome_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 navidrome_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
-navidrome_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+navidrome_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both navidrome and tailscale.
 navidrome_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/navidrome.env.j2') }}"
   # References:

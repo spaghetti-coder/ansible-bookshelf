@@ -5,7 +5,7 @@
 tmuxp_managed: false  #  "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
 # See all available in templates/
 tmuxp_conf:
-  # - owner: "{{ ansible_user_id }}"  # <- Existing user. Must be unique
+  # - owner: "{{ ansible_facts.user_id }}"  # <- Existing user. Must be unique
   #   conf:
   #       # Required
   #     - source: sensors.yaml.j2     # <- In-role, handled as template due to '*.j2'

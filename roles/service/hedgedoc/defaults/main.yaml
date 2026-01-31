@@ -13,15 +13,15 @@ hedgedoc_managed: false
 hedgedoc_enabled: false
 hedgedoc_version:       # Leave blank to leverage bookshelf configuration
 hedgedoc_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-hedgedoc_owner: "{{ ansible_user_id }}"
+hedgedoc_owner: "{{ ansible_facts.user_id }}"
 hedgedoc_conf_dir: ~/conf/hedgedoc
 hedgedoc_service_name: hedgedoc
 hedgedoc_hostname: "{{ hedgedoc_service_name }}"
 hedgedoc_vhost: "{{ hedgedoc_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 hedgedoc_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-hedgedoc_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# HedgeDoc domain. Ex.: {{ hedgedoc_vhost }} or {{ ansible_default_ipv4.address }}
+hedgedoc_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
+# HedgeDoc domain. Ex.: {{ hedgedoc_vhost }} or {{ ansible_facts.default_ipv4.address }}
 hedgedoc_domain:        # (REQUIRED)
 # Optional extra env vars
 hedgedoc_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/hedgedoc.env.j2') }}"

@@ -11,7 +11,7 @@ memos_managed: false
 memos_enabled: false
 memos_version:        # Leave blank to leverage bookshelf configuration
 memos_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-memos_owner: "{{ ansible_user_id }}"
+memos_owner: "{{ ansible_facts.user_id }}"
 memos_conf_dir: ~/conf/memos
 memos_service_name: memos
 memos_hostname: "{{ memos_service_name }}"

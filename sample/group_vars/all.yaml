@@ -70,7 +70,7 @@ alert_ssh_chat_id:         # (REQUIRED for telegram)
 # -----
 bash_sane_managed: false
 bash_sane_users:    # <- Existing users to use bash set settings
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 
 # ================
 #       BASH
@@ -78,7 +78,7 @@ bash_sane_users:    # <- Existing users to use bash set settings
 bash_managed: false
 bash_completion: false
 bash_users:       # <- Existing users to use bash by default
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 
 # ======================
 #       CHEATSHEET
@@ -86,7 +86,7 @@ bash_users:       # <- Existing users to use bash by default
 # Bash cheatsheets launched in browser
 cheatsheet_managed: false
 cheatsheet_users:     # <- Existing users to have cheat-* commands
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 
 # ========================
 #       DOCKER-CLEAN
@@ -100,7 +100,7 @@ docker_clean_prune_images: false    # <- Weekly prune unused images
 # ==================
 docker_managed: false
 docker_users:     # <- Existing users to be added to docker group
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 
 # =========================
 #       DYDNS-UPDATER
@@ -146,7 +146,7 @@ dydns_updater_alert_chat_id:        # (REQUIRED for telegram)
 # -----
 envar_managed: false
 envar_users:    # <- Existing users to have access to envar
-#   - "{{ ansible_user_id }}"
+#   - "{{ ansible_facts.user_id }}"
 #   - root
 
 # ===============
@@ -160,7 +160,7 @@ envar_users:    # <- Existing users to have access to envar
 fzf_managed: false
 fzf_version:    # Leave blank to leverage bookshelf configuration
 fzf_users:      # <- Existing users to have fzf integrated
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
   # - root
 
 # ===============
@@ -169,7 +169,7 @@ fzf_users:      # <- Existing users to have fzf integrated
 git_managed: false
 git_extraconf:
   #   # Required
-  # - owner: "{{ ansible_user_id }}"    # <- Existing user. Must be unique
+  # - owner: "{{ ansible_facts.user_id }}"    # <- Existing user. Must be unique
   #   source: gitconfig.extra.ini.j2    # <- In-role, handled as template due to '*.j2'
   #   # Optional variables, can be addressed in the template via 'conf' map in case of template source
   #   user_name: Foo                    # <- 'conf.user_name' in the template
@@ -198,7 +198,7 @@ notify_sh_prereqs: false  # Install notify.sh prepreqs
 # -----
 ps1_git_managed: false
 ps1_git_users:    # <- Existing users to have this PS1
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
   # - root
 
 # =================
@@ -232,7 +232,7 @@ tailscale_client_managed: false
 tmux_managed: false
 tmux_version:     # Leave blank to leverage bookshelf configuration
 tmux_sane_users:  # <- Existing users to source my preferred configuration
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 
 # =================
 #       TMUXP
@@ -243,7 +243,7 @@ tmux_sane_users:  # <- Existing users to source my preferred configuration
 tmuxp_managed: false  #  "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
 # See all available in templates/
 tmuxp_conf:
-  # - owner: "{{ ansible_user_id }}"  # <- Existing user. Must be unique
+  # - owner: "{{ ansible_facts.user_id }}"  # <- Existing user. Must be unique
   #   conf:
   #       # Required
   #     - source: sensors.yaml.j2     # <- In-role, handled as template due to '*.j2'
@@ -297,7 +297,7 @@ toolbelt_exclude:   # <- Opposed to toolbelt_pick, higher priority than toolbelt
 # -----
 virt_manager_managed: false   # "{{ factum_os_family in ['debian'] }}"  # <- Only Debian family is supported
 virt_manager_users:   # <- Existing users to be added to libvirt group
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 
 # ==================
 #       VNSTAT
@@ -335,7 +335,7 @@ adguard_managed: false
 adguard_enabled: false
 adguard_version:        # Leave blank to leverage bookshelf configuration
 adguard_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-adguard_owner: "{{ ansible_user_id }}"
+adguard_owner: "{{ ansible_facts.user_id }}"
 adguard_conf_dir: ~/conf/adguard
 adguard_service_name: adguard
 adguard_hostname: "{{ adguard_service_name }}"
@@ -344,7 +344,7 @@ adguard_vhost: "{{ adguard_service_name }}.domain.local"
 adguard_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
 adguard_init_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
 adguard_dns_ports_exposed: true
-adguard_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+adguard_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both adguard and tailscale.
 adguard_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/adguard.env.j2') }}"
   # References:
@@ -397,7 +397,7 @@ audiobookshelf_managed: false
 audiobookshelf_enabled: false
 audiobookshelf_version:       # Leave blank to leverage bookshelf configuration
 audiobookshelf_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-audiobookshelf_owner: "{{ ansible_user_id }}"       # <- Who runs the container
+audiobookshelf_owner: "{{ ansible_facts.user_id }}"       # <- Who runs the container
 audiobookshelf_user: "{{ audiobookshelf_owner }}"   # <- The in-container user and data filesystem owner
 audiobookshelf_conf_dir: ~/conf/audiobookshelf
 audiobookshelf_data_volumes:  # <- Volumes for data
@@ -409,7 +409,7 @@ audiobookshelf_hostname: "{{ audiobookshelf_service_name }}"
 audiobookshelf_vhost: "{{ audiobookshelf_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 audiobookshelf_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-audiobookshelf_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+audiobookshelf_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both audiobookshelf and tailscale.
 audiobookshelf_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/audiobookshelf.env.j2') }}"
   # References:
@@ -449,7 +449,7 @@ blinko_enabled: false
 blinko_version:             # Leave blank to leverage bookshelf configuration
 blinko_postgres_version:    # Leave blank to leverage bookshelf configuration
 blinko_compose_dir:         # Unless you know ..., leave blank to leverage bookshelf configuration
-blinko_owner: "{{ ansible_user_id }}"
+blinko_owner: "{{ ansible_facts.user_id }}"
 blinko_conf_dir: ~/conf/blinko
 blinko_service_name: blinko
 blinko_hostname: "{{ blinko_service_name }}"
@@ -459,7 +459,7 @@ blinko_web_ui_port:         # Leave blank for bookshelf default, or '-1' to not 
 blinko_db_service_name: "{{ blinko_service_name }}-db"
 blinko_db_pass:             # (REQUIRED) Something hard and random
 blinko_nextauth_secret:     # (REQUIRED) Something hard and random
-blinko_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+blinko_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Blinko and Tailscale.
 blinko_extra_env: |         # "{{ lookup('template', playbook_dir + '/resources/blinko.env.j2') }}"
   # References:
@@ -497,7 +497,7 @@ caddy_managed: false
 caddy_enabled: false
 caddy_version:          # Leave blank to leverage bookshelf configuration
 caddy_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
-caddy_owner: "{{ ansible_user_id }}"
+caddy_owner: "{{ ansible_facts.user_id }}"
 caddy_conf_dir: ~/conf/caddy
 caddy_service_name: caddy
 caddy_hostname: "{{ caddy_service_name }}"
@@ -559,7 +559,7 @@ caddy_ts_auth_key:
 # -----
 code_server_managed: false  # "{{ factum_os_family not in ['alpine'] }}"  # <- Not supported by Alpine
 code_server_version:      # Leave blank to leverage bookshelf configuration
-code_server_owner: "{{ ansible_user_id }}"
+code_server_owner: "{{ ansible_facts.user_id }}"
 code_server_web_ui_port:  # Leave blank to leverage bookshelf configuration
 code_server_extensions:   # <- List of extension
   # - editorconfig.editorconfig
@@ -593,7 +593,7 @@ cronmaster_managed: false
 cronmaster_enabled: false
 cronmaster_version:             # Leave blank to leverage bookshelf configuration
 cronmaster_compose_dir:         # Unless you know ..., leave blank to leverage bookshelf configuration
-cronmaster_owner: "{{ ansible_user_id }}"
+cronmaster_owner: "{{ ansible_facts.user_id }}"
 cronmaster_conf_dir: ~/conf/cronmaster
 cronmaster_service_name: cronmaster
 cronmaster_hostname: "{{ cronmaster_service_name }}"
@@ -603,7 +603,7 @@ cronmaster_web_ui_port:         # Leave blank for bookshelf default, or '-1' to 
 cronmaster_auth_pass:           # (REQUIRED)
 cronmaster_crontab_users:       # List of crontab users (from host)
   # - root
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 cronmaster_scripts:
   # - text: "{{ lookup('template', 'demo-script.sh.j2') }}"  # <- See this one for demo, uses demo-secret.txt
   #   filename: demo-script.sh        # Destination filename, should not intersect with existing scripts
@@ -613,7 +613,7 @@ cronmaster_snippets:  # <- Guide: https://github.com/fccview/cronmaster/blob/mai
 cronmaster_secrets:
   # - text: "{{ lookup('file', 'demo-secret.txt') }}"
   #   filename: demo-secret.txt       # See demo-script.sh.j2 to see how to reference the secret
-  #   # owner: "{{ ansible_user_id }}"  # Optional, defaults to root. The file is only RW by the owner
+  #   # owner: "{{ ansible_facts.user_id }}"  # Optional, defaults to root. The file is only RW by the owner
 # Optional extra env vars, will affect both CronMaster and Tailscale.
 cronmaster_extra_env: |         # "{{ lookup('template', playbook_dir + '/resources/cronmaster.env.j2') }}"
   # References:
@@ -650,7 +650,7 @@ duplicati_managed: false
 duplicati_enabled: false
 duplicati_version:        # Leave blank to leverage bookshelf configuration
 duplicati_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-duplicati_owner: "{{ ansible_user_id }}"    # <- Who runs the container
+duplicati_owner: "{{ ansible_facts.user_id }}"    # <- Who runs the container
 duplicati_conf_dir: ~/conf/duplicati
 duplicati_backup_volumes:                   # <- Mounts for backups, at least one entry required
   - ~/backup/Main:/backups                  # <- One of data volumes must be mounted to '/backups'
@@ -669,7 +669,7 @@ duplicati_vhost: "{{ duplicati_service_name }}.domain.local"
 duplicati_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
 duplicati_enc_key:        # (REQUIRED) Min 8 symbols
 duplicati_pass:           # (OPTIONAL)
-duplicati_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+duplicati_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Duplicati and tailscale.
 duplicati_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/duplicati.env.j2') }}"
   # References:
@@ -714,7 +714,7 @@ filebrowser_managed: false
 filebrowser_enabled: false
 filebrowser_version:        # Leave blank to leverage bookshelf configuration
 filebrowser_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-filebrowser_owner: "{{ ansible_user_id }}"    # <- Who runs the container
+filebrowser_owner: "{{ ansible_facts.user_id }}"    # <- Who runs the container
 filebrowser_user: "{{ filebrowser_owner }}"   # <- The in-container user and data filesystem owner
 filebrowser_conf_dir: ~/conf/filebrowser
 filebrowser_data_dir: ~/data
@@ -723,7 +723,7 @@ filebrowser_hostname: "{{ filebrowser_service_name }}"
 filebrowser_vhost: "{{ filebrowser_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 filebrowser_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
-filebrowser_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+filebrowser_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both filebrowser and tailscale.
 filebrowser_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/filebrowser.env.j2') }}"
   # References:
@@ -760,14 +760,14 @@ gatus_managed: false
 gatus_enabled: false
 gatus_version:            # Leave blank to leverage bookshelf configuration
 gatus_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
-gatus_owner: "{{ ansible_user_id }}"
+gatus_owner: "{{ ansible_facts.user_id }}"
 gatus_conf_dir: ~/conf/gatus
 gatus_service_name: gatus
 gatus_hostname: "{{ gatus_service_name }}"
 gatus_vhost: "{{ gatus_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 gatus_web_ui_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
-gatus_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+gatus_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Can be string or list. Ex.:
 #   gatus_config: "{{ lookup('file', 'demo.yaml') }}"
 #   gatus_config: ["{{ lookup('file', 'demo.yaml') }}"]
@@ -818,14 +818,14 @@ gokapi_managed: false
 gokapi_enabled: false
 gokapi_version:            # Leave blank to leverage bookshelf configuration
 gokapi_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
-gokapi_owner: "{{ ansible_user_id }}"
+gokapi_owner: "{{ ansible_facts.user_id }}"
 gokapi_conf_dir: ~/conf/gokapi
 gokapi_service_name: gokapi
 gokapi_hostname: "{{ gokapi_service_name }}"
 gokapi_vhost: "{{ gokapi_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 gokapi_web_ui_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
-gokapi_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+gokapi_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Gokapi and Tailscale.
 gokapi_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/gokapi.env.j2') }}"
   # References:
@@ -865,14 +865,14 @@ gotify_managed: false
 gotify_enabled: false
 gotify_version:       # Leave blank to leverage bookshelf configuration
 gotify_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-gotify_owner: "{{ ansible_user_id }}"
+gotify_owner: "{{ ansible_facts.user_id }}"
 gotify_conf_dir: ~/conf/gotify
 gotify_service_name: gotify
 gotify_hostname: "{{ gotify_service_name }}"
 gotify_vhost: "{{ gotify_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 gotify_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-gotify_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+gotify_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Gotify and tailscale.
 gotify_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/gotify.env.j2') }}"
   # References:
@@ -912,15 +912,15 @@ hedgedoc_managed: false
 hedgedoc_enabled: false
 hedgedoc_version:       # Leave blank to leverage bookshelf configuration
 hedgedoc_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-hedgedoc_owner: "{{ ansible_user_id }}"
+hedgedoc_owner: "{{ ansible_facts.user_id }}"
 hedgedoc_conf_dir: ~/conf/hedgedoc
 hedgedoc_service_name: hedgedoc
 hedgedoc_hostname: "{{ hedgedoc_service_name }}"
 hedgedoc_vhost: "{{ hedgedoc_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 hedgedoc_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-hedgedoc_tz: "{{ ansible_date_time.tz | default('UTC') }}"
-# HedgeDoc domain. Ex.: {{ hedgedoc_vhost }} or {{ ansible_default_ipv4.address }}
+hedgedoc_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
+# HedgeDoc domain. Ex.: {{ hedgedoc_vhost }} or {{ ansible_facts.default_ipv4.address }}
 hedgedoc_domain:        # (REQUIRED)
 # Optional extra env vars
 hedgedoc_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/hedgedoc.env.j2') }}"
@@ -946,17 +946,17 @@ heimdall_managed: false
 heimdall_enabled: false
 heimdall_version:       # Leave blank to leverage bookshelf configuration
 heimdall_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-heimdall_owner: "{{ ansible_user_id }}"
+heimdall_owner: "{{ ansible_facts.user_id }}"
 heimdall_conf_dir: ~/conf/heimdall
 heimdall_service_name: heimdall
 heimdall_hostname: "{{ heimdall_service_name }}"
 heimdall_vhost: "{{ heimdall_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 heimdall_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-heimdall_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+heimdall_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 # Ex.:
 #   # heimdall_web_ui_port_ext - contains actual external port
-#   http://{{ ansible_default_ipv4.address }}:{{ heimdall_web_ui_port_ext }}
+#   http://{{ ansible_facts.default_ipv4.address }}:{{ heimdall_web_ui_port_ext }}
 #   https://{{ heimdall_vhost }}
 heimdall_base_url:      # (REQUIRED)
 # WUD settings
@@ -978,7 +978,7 @@ homer_enabled: false
 homer_version:          # Leave blank to leverage bookshelf configuration
 homer_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
 homer_conf_dir: ~/conf/homer
-homer_owner: "{{ ansible_user_id }}"
+homer_owner: "{{ ansible_facts.user_id }}"
 homer_service_name: homer
 homer_hostname: "{{ homer_service_name }}"
 homer_vhost: "{{ homer_service_name }}.domain.local"
@@ -1033,7 +1033,7 @@ jellyfin_managed: false
 jellyfin_enabled: false
 jellyfin_version:       # Leave blank to leverage bookshelf configuration
 jellyfin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-jellyfin_owner: "{{ ansible_user_id }}"   # <- Who runs the container
+jellyfin_owner: "{{ ansible_facts.user_id }}"   # <- Who runs the container
 jellyfin_user: "{{ jellyfin_owner }}"     # <- The in-container user and data filesystem owner
 jellyfin_conf_dir: ~/conf/jellyfin
 jellyfin_data_volumes:    # <- Volumes for data
@@ -1046,7 +1046,7 @@ jellyfin_vhost: "{{ jellyfin_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 jellyfin_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
 jellyfin_discovery_ports_exposed: true
-jellyfin_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+jellyfin_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both jellyfin and tailscale.
 jellyfin_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/jellyfin.env.j2') }}"
   # References:
@@ -1084,7 +1084,7 @@ joplin_server_enabled: false
 joplin_server_version:              # Leave blank to leverage bookshelf configuration
 joplin_server_postgres_version:     # Leave blank to leverage bookshelf configuration
 joplin_server_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
-joplin_server_owner: "{{ ansible_user_id }}"
+joplin_server_owner: "{{ ansible_facts.user_id }}"
 joplin_server_conf_dir: ~/conf/joplin-server
 joplin_server_service_name: joplin-server
 joplin_server_hostname: "{{ joplin_server_service_name }}"
@@ -1094,11 +1094,11 @@ joplin_server_web_ui_port:          # Leave blank for bookshelf default, or '-1'
 # Joplin base url. Ex.:
 #   # joplin_server_web_ui_port_ext - contains actual external port
 #   https://{{ joplin_server_vhost }}
-#   http://{{ ansible_default_ipv4.address }}:{{ joplin_server_web_ui_port_ext }}
+#   http://{{ ansible_facts.default_ipv4.address }}:{{ joplin_server_web_ui_port_ext }}
 joplin_server_base_url:             # (REQUIRED)
 joplin_server_db_service_name: "{{ joplin_server_service_name }}-db"
 joplin_server_db_pass:              # (REQUIRED)
-joplin_server_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+joplin_server_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 # WUD settings
 joplin_server_wudded: true   # Watched by WUD
 joplin_server_tag_rex:       # Leave blank to leverage bookshelf configuration
@@ -1117,7 +1117,7 @@ jotty_managed: false
 jotty_enabled: false
 jotty_version:            # Leave blank to leverage bookshelf configuration
 jotty_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
-jotty_owner: "{{ ansible_user_id }}"
+jotty_owner: "{{ ansible_facts.user_id }}"
 jotty_conf_dir: ~/conf/jotty
 jotty_service_name: jotty
 jotty_hostname: "{{ jotty_service_name }}"
@@ -1163,14 +1163,14 @@ mealie_managed: false
 mealie_enabled: false
 mealie_version:       # Leave blank to leverage bookshelf configuration
 mealie_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-mealie_owner: "{{ ansible_user_id }}"
+mealie_owner: "{{ ansible_facts.user_id }}"
 mealie_conf_dir: ~/conf/mealie
 mealie_service_name: mealie
 mealie_hostname: "{{ mealie_service_name }}"
 mealie_vhost: "{{ mealie_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 mealie_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-mealie_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+mealie_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Mealie and tailscale.
 mealie_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/mealie.env.j2') }}"
   # References:
@@ -1208,7 +1208,7 @@ memos_managed: false
 memos_enabled: false
 memos_version:        # Leave blank to leverage bookshelf configuration
 memos_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-memos_owner: "{{ ansible_user_id }}"
+memos_owner: "{{ ansible_facts.user_id }}"
 memos_conf_dir: ~/conf/memos
 memos_service_name: memos
 memos_hostname: "{{ memos_service_name }}"
@@ -1254,7 +1254,7 @@ metube_managed: false
 metube_enabled: false
 metube_version:       # Leave blank to leverage bookshelf configuration
 metube_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-metube_owner: "{{ ansible_user_id }}"       # <- Who runs the container
+metube_owner: "{{ ansible_facts.user_id }}"       # <- Who runs the container
 metube_user: "{{ metube_owner }}"           # <- The in-container user and data filesystem owner
 metube_conf_dir: ~/conf/metube
 metube_data_dir: ~/data/Metube
@@ -1263,7 +1263,7 @@ metube_hostname: "{{ metube_service_name }}"
 metube_vhost: "{{ metube_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 metube_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-metube_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+metube_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars
 metube_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/metube.env.j2') }}"
   # References:
@@ -1293,7 +1293,7 @@ navidrome_managed: false
 navidrome_enabled: false
 navidrome_version:        # Leave blank to leverage bookshelf configuration
 navidrome_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-navidrome_owner: "{{ ansible_user_id }}"    # <- Who runs the container
+navidrome_owner: "{{ ansible_facts.user_id }}"    # <- Who runs the container
 navidrome_user: "{{ navidrome_owner }}"     # <- The in-container user and data filesystem owner
 navidrome_conf_dir: ~/conf/navidrome
 navidrome_data_volumes:     # <- Volumes for data, NOTE: navidrome needs only to read it
@@ -1305,7 +1305,7 @@ navidrome_hostname: "{{ navidrome_service_name }}"
 navidrome_vhost: "{{ navidrome_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 navidrome_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
-navidrome_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+navidrome_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both navidrome and tailscale.
 navidrome_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/navidrome.env.j2') }}"
   # References:
@@ -1340,7 +1340,7 @@ nginx_proxy_manager_managed: false
 nginx_proxy_manager_enabled: false
 nginx_proxy_manager_version:          # Leave blank to leverage bookshelf configuration
 nginx_proxy_manager_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
-nginx_proxy_manager_owner: "{{ ansible_user_id }}"
+nginx_proxy_manager_owner: "{{ ansible_facts.user_id }}"
 nginx_proxy_manager_conf_dir: ~/conf/nginx-proxy-manager
 nginx_proxy_manager_service_name: nginx-proxy-manager
 nginx_proxy_manager_hostname: "{{ nginx_proxy_manager_service_name }}"
@@ -1386,7 +1386,7 @@ nginx_proxy_managed: false
 nginx_proxy_enabled: false
 nginx_proxy_version:        # Leave blank to leverage bookshelf configuration
 nginx_proxy_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-nginx_proxy_owner: "{{ ansible_user_id }}"
+nginx_proxy_owner: "{{ ansible_facts.user_id }}"
 nginx_proxy_service_name: nginx-proxy
 nginx_proxy_hostname: "{{ nginx_proxy_service_name }}"
 # NOTE: Avoid port conflicts with other reverse proxies
@@ -1434,7 +1434,7 @@ olivetin_managed: false
 olivetin_enabled: false
 olivetin_version:       # Leave blank to leverage bookshelf configuration
 olivetin_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-olivetin_owner: "{{ ansible_user_id }}"
+olivetin_owner: "{{ ansible_facts.user_id }}"
 olivetin_conf_dir: ~/conf/olivetin
 olivetin_service_name: olivetin
 olivetin_hostname: "{{ olivetin_service_name }}"
@@ -1478,7 +1478,7 @@ ollama_managed: false
 ollama_enabled: false
 ollama_version:         # Leave blank to leverage bookshelf configuration
 ollama_compose_dir:     # Unless you know ..., leave blank to leverage bookshelf configuration
-ollama_owner: "{{ ansible_user_id }}"
+ollama_owner: "{{ ansible_facts.user_id }}"
 ollama_conf_dir: ~/conf/ollama
 ollama_service_name: ollama
 ollama_hostname: "{{ ollama_service_name }}"
@@ -1516,7 +1516,7 @@ open_webui_managed: false
 open_webui_enabled: false
 open_webui_version:         # Leave blank to leverage bookshelf configuration
 open_webui_compose_dir:     # Unless you know ..., leave blank to leverage bookshelf configuration
-open_webui_owner: "{{ ansible_user_id }}"
+open_webui_owner: "{{ ansible_facts.user_id }}"
 open_webui_conf_dir: ~/conf/open-webui
 open_webui_service_name: open-webui
 open_webui_hostname: "{{ open_webui_service_name }}"
@@ -1561,14 +1561,14 @@ pairdrop_managed: false
 pairdrop_enabled: false
 pairdrop_version:       # Leave blank to leverage bookshelf configuration
 pairdrop_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-pairdrop_owner: "{{ ansible_user_id }}"
+pairdrop_owner: "{{ ansible_facts.user_id }}"
 pairdrop_conf_dir: ~/conf/pairdrop
 pairdrop_service_name: pairdrop
 pairdrop_hostname: "{{ pairdrop_service_name }}"
 pairdrop_vhost: "{{ pairdrop_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 pairdrop_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
-pairdrop_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+pairdrop_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both PairDrop and tailscale.
 pairdrop_extra_env: |   # "{{ lookup('template', playbook_dir + '/resources/pairdrop.env.j2') }}"
   # References:
@@ -1604,7 +1604,7 @@ portainer_agent_enabled: false
 portainer_agent_version:        # Leave blank to leverage bookshelf configuration
 portainer_agent_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
 portainer_agent_conf_dir: ~/conf/portainer-agent
-portainer_agent_owner: "{{ ansible_user_id }}"
+portainer_agent_owner: "{{ ansible_facts.user_id }}"
 portainer_agent_service_name: portainer-agent
 portainer_agent_hostname: "{{ portainer_agent_service_name }}"
 portainer_agent_host_management: false
@@ -1640,7 +1640,7 @@ portainer_managed: false
 portainer_enabled: false
 portainer_version:        # Leave blank to leverage bookshelf configuration
 portainer_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-portainer_owner: "{{ ansible_user_id }}"
+portainer_owner: "{{ ansible_facts.user_id }}"
 portainer_conf_dir: ~/conf/portainer
 portainer_service_name: portainer
 portainer_hostname: "{{ portainer_service_name }}"
@@ -1695,7 +1695,7 @@ qbittorrent_enabled: false
 qbittorrent_version:              # Leave blank to leverage bookshelf configuration
 qbittorrent_vuetorrent_version:   # Leave blank to leverage bookshelf configuration
 qbittorrent_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
-qbittorrent_owner: "{{ ansible_user_id }}"    # <- Who runs the container
+qbittorrent_owner: "{{ ansible_facts.user_id }}"    # <- Who runs the container
 qbittorrent_user: "{{ qbittorrent_owner }}"   # <- The in-container user and data filesystem owner
 qbittorrent_conf_dir: ~/conf/qbittorrent
 qbittorrent_data_volumes:       # <- Volumes for data
@@ -1706,7 +1706,7 @@ qbittorrent_service_name: qbittorrent
 qbittorrent_hostname: "{{ qbittorrent_service_name }}"
 qbittorrent_vhost: "{{ qbittorrent_service_name }}.domain.local"
 qbittorrent_web_ui_port:          # Leave blank to leverage bookshelf configuration
-qbittorrent_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+qbittorrent_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 # Optional. Configure notifications script, that will be available in the container
 #   /scripts/notify.sh
 # Configure in qBittorrent UI -> Settings -> Downloads -> External ... on finished
@@ -1747,7 +1747,7 @@ silverbullet_managed: false
 silverbullet_enabled: false
 silverbullet_version:       # Leave blank to leverage bookshelf configuration
 silverbullet_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-silverbullet_owner: "{{ ansible_user_id }}"   # <- Who runs the container
+silverbullet_owner: "{{ ansible_facts.user_id }}"   # <- Who runs the container
 silverbullet_conf_dir: ~/conf/silverbullet
 silverbullet_service_name: silverbullet
 silverbullet_hostname: "{{ silverbullet_service_name }}"
@@ -1756,7 +1756,7 @@ silverbullet_web_ui_port:   # Leave blank to leverage bookshelf configuration
 # Auth
 silverbullet_auth_user:     # (OPTIONAL)
 silverbullet_auth_pass:     # (REQUIRED when non-empty user) If user not set, user defaults to 'admin'
-# silverbullet_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+# silverbullet_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 # Optional extra env vars
 silverbullet_extra_env:     # "{{ lookup('template', playbook_dir + '/resources/silverbullet.env.j2') }}"
 # WUD settings
@@ -1784,7 +1784,7 @@ smtp4dev_managed: false
 smtp4dev_enabled: false
 smtp4dev_version:       # Leave blank to leverage bookshelf configuration
 smtp4dev_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
-smtp4dev_owner: "{{ ansible_user_id }}"
+smtp4dev_owner: "{{ ansible_facts.user_id }}"
 smtp4dev_conf_dir: ~/conf/smtp4dev
 smtp4dev_service_name: smtp4dev
 smtp4dev_hostname: "{{ smtp4dev_service_name }}"
@@ -1825,7 +1825,7 @@ syncthing_managed: false
 syncthing_enabled: false
 syncthing_version:              # Leave blank to leverage bookshelf configuration
 syncthing_compose_dir:          # Unless you know ..., leave blank to leverage bookshelf configuration
-syncthing_owner: "{{ ansible_user_id }}"  # <- Who runs the container
+syncthing_owner: "{{ ansible_facts.user_id }}"  # <- Who runs the container
 syncthing_user: "{{ syncthing_owner }}"   # <- The in-container user and data filesystem owner
 syncthing_conf_dir: ~/conf/syncthing
 syncthing_data_volumes:   # <- Volumes for data
@@ -1836,7 +1836,7 @@ syncthing_service_name: syncthing
 syncthing_hostname: "{{ syncthing_service_name }}"
 syncthing_vhost: "{{ syncthing_service_name }}.domain.local"
 syncthing_web_ui_port:          # Leave blank to leverage bookshelf configuration
-syncthing_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+syncthing_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 # Optional extra env vars, will affect both syncthing and tailscale.
 syncthing_extra_env:            # "{{ lookup('template', playbook_dir + '/resources/syncthing.env.j2') }}"
 # WUD settings
@@ -1882,7 +1882,7 @@ tailscale_managed: false
 tailscale_enabled: false
 tailscale_version:          # Leave blank to leverage bookshelf configuration
 tailscale_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
-tailscale_owner: "{{ ansible_user_id }}"
+tailscale_owner: "{{ ansible_facts.user_id }}"
 tailscale_conf_dir: ~/conf/tailscale
 tailscale_service_name: tailscale
 tailscale_hostname: "{{ tailscale_service_name }}"
@@ -1891,7 +1891,7 @@ tailscale_ts_hostname: "{{ tailscale_service_name }}"
 tailscale_auth_key:         # (REQUIRED)
 tailscale_routes:           # '192.168.0.0/24,192.168.2.0/24'
 tailscale_exit_node: false  # Advertise exit node
-tailscale_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+tailscale_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars
 tailscale_extra_env: |      # "{{ lookup('file', playbook_dir + '/resources/tailscale.env') }}"
   # These are used in demo gatus.sh healthcheck script.
@@ -1929,7 +1929,7 @@ torrserver_managed: false
 torrserver_enabled: false
 torrserver_version:            # Leave blank to leverage bookshelf configuration
 torrserver_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
-torrserver_owner: "{{ ansible_user_id }}"
+torrserver_owner: "{{ ansible_facts.user_id }}"
 torrserver_conf_dir: ~/conf/torrserver
 torrserver_service_name: torrserver
 torrserver_hostname: "{{ torrserver_service_name }}"
@@ -1968,7 +1968,7 @@ twingate_managed: false
 twingate_enabled: false
 twingate_version:         # Leave blank to leverage bookshelf configuration
 twingate_compose_dir:     # Unless you know ..., leave blank to leverage bookshelf configuration
-twingate_owner: "{{ ansible_user_id }}"
+twingate_owner: "{{ ansible_facts.user_id }}"
 twingate_service_name: twingate
 twingate_hostname: "{{ twingate_service_name }}"
 twingate_tenant_name:     # (REQUIRED) Your twingate network name
@@ -1996,7 +1996,7 @@ uptime_kuma_managed: false
 uptime_kuma_enabled: false
 uptime_kuma_version:        # Leave blank to leverage bookshelf configuration
 uptime_kuma_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-uptime_kuma_owner: "{{ ansible_user_id }}"
+uptime_kuma_owner: "{{ ansible_facts.user_id }}"
 uptime_kuma_conf_dir: ~/conf/uptime-kuma
 uptime_kuma_service_name: uptime-kuma
 uptime_kuma_hostname: "{{ uptime_kuma_service_name }}"
@@ -2029,7 +2029,7 @@ vaultwarden_managed: false
 vaultwarden_enabled: false
 vaultwarden_version:        # Leave blank to leverage bookshelf configuration
 vaultwarden_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-vaultwarden_owner: "{{ ansible_user_id }}"
+vaultwarden_owner: "{{ ansible_facts.user_id }}"
 vaultwarden_conf_dir: ~/conf/vaultwarden
 vaultwarden_service_name: vaultwarden
 vaultwarden_hostname: "{{ vaultwarden_service_name }}"
@@ -2044,7 +2044,7 @@ vaultwarden_vdomain:
 #   docker container run -it --rm vaultwarden/server:latest /vaultwarden hash
 vaultwarden_admin_token_hash:
 vaultwarden_web_ui_port:    # Leave blank to leverage bookshelf configuration
-vaultwarden_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+vaultwarden_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 # https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
 # Optional extra env vars
 vaultwarden_extra_env:      # "{{ lookup('file', playbook_dir + '/resources/vaultwarden.env') }}"
@@ -2070,13 +2070,13 @@ vikunja_enabled: false
 vikunja_version:            # Leave blank to leverage bookshelf configuration
 vikunja_postgres_version:   # Leave blank to leverage bookshelf configuration
 vikunja_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
-vikunja_owner: "{{ ansible_user_id }}"
+vikunja_owner: "{{ ansible_facts.user_id }}"
 vikunja_conf_dir: ~/conf/vikunja
 vikunja_service_name: vikunja
 vikunja_hostname: "{{ vikunja_service_name }}"
 vikunja_vhost: "{{ vikunja_service_name }}.domain.local"
 vikunja_web_ui_port:        # Leave blank to leverage bookshelf configuration
-vikunja_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+vikunja_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 vikunja_db_pass:            # (REQUIRED) Something hard and random
 vikunja_jwtsecret:          # (REQUIRED) Something hard and random
 # Optional extra env vars, will affect both Vikunja and Tailscale.
@@ -2110,7 +2110,7 @@ wg_easy_managed: false
 wg_easy_enabled: false
 wg_easy_version:        # Leave blank to leverage bookshelf configuration
 wg_easy_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-wg_easy_owner: "{{ ansible_user_id }}"
+wg_easy_owner: "{{ ansible_facts.user_id }}"
 wg_easy_conf_dir: ~/conf/wg-easy
 wg_easy_service_name: wg-easy
 wg_easy_hostname: "{{ wg_easy_service_name }}"
@@ -2140,14 +2140,14 @@ wikijs_enabled: false
 wikijs_version:             # Leave blank to leverage bookshelf configuration
 wikijs_postgres_version:    # Leave blank to leverage bookshelf configuration
 wikijs_compose_dir:         # Unless you know ..., leave blank to leverage bookshelf configuration
-wikijs_owner: "{{ ansible_user_id }}"
+wikijs_owner: "{{ ansible_facts.user_id }}"
 wikijs_conf_dir: ~/conf/wikijs
 wikijs_service_name: wikijs
 wikijs_hostname: "{{ wikijs_service_name }}"
 wikijs_vhost: "{{ wikijs_service_name }}.domain.local"
 wikijs_web_ui_port:         # Leave blank to leverage bookshelf configuration
 wikijs_db_pass:             # (REQUIRED) Something hard and random
-wikijs_tz: "{{ ansible_date_time.tz | default('UTC') }}"
+wikijs_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 # Optional extra env vars, will affect both Wiki.js and tailscale.
 wikijs_extra_env:           # "{{ lookup('template', playbook_dir + '/resources/wikijs.env.j2') }}"
 # WUD settings
@@ -2177,14 +2177,14 @@ wud_managed: false
 wud_enabled: false
 wud_version:            # Leave blank to leverage bookshelf configuration
 wud_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
-wud_owner: "{{ ansible_user_id }}"
+wud_owner: "{{ ansible_facts.user_id }}"
 wud_conf_dir: ~/conf/wud
 wud_service_name: wud
 wud_hostname: "{{ wud_service_name }}"
 wud_vhost: "{{ wud_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 wud_web_ui_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
-wud_tz: "{{ ansible_date_time.tz | default('UTC', true) }}"
+wud_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both wud and Tailscale.
 wud_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/wud.env.j2') }}"
   # References:
@@ -2268,7 +2268,7 @@ copyq_managed: false
 # * flatpak   # <- Forced for non-Ubuntu-like
 copyq_install_method: pm
 copyq_starters:         # <- Existing users to have copyq autostarted
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 
 # ===================
 #       DBEAVER
@@ -2291,7 +2291,7 @@ dbeaver_install_method: flatpak
 doublecmd_managed: false    # "{{ factum_os_family in ['debian'] }}"  # <- Only supported by Debian family
 doublecmd_ui_lib: gtk       # <- 'gtk' for Gnome or 'qt' for KDE
 doublecmd_starters:         # <- Existing users to have doublecmd autostarted
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 
 # ===================
 #       FLATPAK
@@ -2320,7 +2320,7 @@ gimp_install_method: flatpak
 # -----
 input_leap_managed: false
 input_leap_starters:  # <- Existing users to have InputLeap autostarted
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 
 # =========================
 #       INTELLIJ-IDEA
@@ -2344,7 +2344,7 @@ intellij_idea_install_method: snap
 # -----
 jellyfin_player_managed: false
 jellyfin_player_starters:   # <- Existing users to have jellyfin player autostarted
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 
 # ==========================
 #       JOPLIN-DESKTOP
@@ -2473,7 +2473,7 @@ teams_managed: false
 # * snap
 teams_install_method: flatpak
 teams_starters:   # <- Existing users to have teams autostarted
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 
 # ====================
 #       TELEGRAM
@@ -2487,7 +2487,7 @@ telegram_managed: false
 # * snap
 telegram_install_method: flatpak
 telegram_starters:         # <- Existing users to have telegram autostarted
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 
 # ======================
 #       TERMINATOR
@@ -2499,7 +2499,7 @@ terminator_managed: false
 # =================
 viber_managed: false
 viber_starters:   # <- Existing users to have viber autostarted
-  # - "{{ ansible_user_id }}"
+  # - "{{ ansible_facts.user_id }}"
 
 # ===============
 #       VLC
@@ -2519,7 +2519,7 @@ vscode_managed: false
 # * flatpak   # <- Forced for non-Ubuntu-like
 vscode_install_method: snap
 vscode_extensions:      # <- Per user extensions
-  # - owner: "{{ ansible_user_id }}"  # <- Existing user. Must be unique
+  # - owner: "{{ ansible_facts.user_id }}"  # <- Existing user. Must be unique
   #   extensions:
   #     - editorconfig.editorconfig
   #     - mads-hartmann.bash-ide-vscode

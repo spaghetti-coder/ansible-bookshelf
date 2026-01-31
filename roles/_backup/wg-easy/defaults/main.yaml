@@ -12,7 +12,7 @@ wg_easy_managed: false
 wg_easy_enabled: false
 wg_easy_version:        # Leave blank to leverage bookshelf configuration
 wg_easy_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
-wg_easy_owner: "{{ ansible_user_id }}"
+wg_easy_owner: "{{ ansible_facts.user_id }}"
 wg_easy_conf_dir: ~/conf/wg-easy
 wg_easy_service_name: wg-easy
 wg_easy_hostname: "{{ wg_easy_service_name }}"

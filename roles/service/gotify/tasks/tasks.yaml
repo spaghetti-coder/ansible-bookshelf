@@ -22,7 +22,7 @@
     conf_dir: "{{ gotify_conf_dir }}"
     conf_dir_abs: "{{ gotify_dirs.results[0].path }}"
     service_state: "{{ gotify_enabled | ternary('present', 'absent') }}"
-    the_user: "{{ getent_passwd[gotify_owner] }}"
+    the_user: "{{ ansible_facts.getent_passwd[gotify_owner] }}"
     user_uid: "{{ the_user.1 }}"
     user_gid: "{{ the_user.2 }}"
   block:
