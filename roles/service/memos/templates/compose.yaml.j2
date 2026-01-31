@@ -19,6 +19,7 @@ services:
       - wud.tag.include={{ tag_rex }}
     env_file:
       - ./main.env
+    user: "{{ user_uid }}:{{ user_gid }}"
     volumes:
       - '{{ conf_dir }}/config:/var/opt/memos'
 {% if memos_tailscaled %}
