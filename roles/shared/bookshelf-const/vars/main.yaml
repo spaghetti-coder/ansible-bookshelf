@@ -2,6 +2,8 @@
 bookshelf_const_version_shared:
   # https://hub.docker.com/_/alpine
   alpine: 3.23.3
+  # https://hub.docker.com/_/mariadb
+  mariadb: 11.8.5     # <- LTS
   # https://hub.docker.com/_/postgres/tags?name=alpine
   postgres: 16.11-alpine3.23
   # NOTE: With version update also update auth key: https://tailscale.com/admin/settings/keys
@@ -56,6 +58,12 @@ bookshelf_const_version:    # <- Last update: 2026-01-31
   filebrowser: v2.57.0-s6
   filebrowser_tag_rex: '^v\d+\.\d+\.\d+-s6$$'
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://hub.docker.com/r/fireflyiii/core
+  firefly: version-6.4.16
+  firefly_tag_rex: '^version-\d+\.\d+\.\d+$$'
+  firefly_mariadb: "{{ bookshelf_const_version_shared.mariadb }}"
+  firefly_alpine: "{{ bookshelf_const_version_shared.alpine }}"
+  firefly_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/twin/gatus/pkgs/container/gatus
   gatus: v5.34.0
   gatus_tag_rex: '^v\d+\.\d+\.\d+$$'
@@ -207,6 +215,8 @@ bookshelf_const_port:
     web_ui: 8110
   filebrowser:
     web_ui: 8094
+  firefly:
+    web_ui: 8118        # <- Last (8081+)
   gatus:
     web_ui: 8111
   gokapi:

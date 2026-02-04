@@ -1,0 +1,7 @@
+## Firefly III
+{% if firefly_tailscaled %}
+
+* Disable tailscale machine expiry:
+  1. Go to https://tailscale.com/admin/machines
+  2. `{{ firefly_ts_hostname }} *** > Disable key expiry`
+{% endif %}

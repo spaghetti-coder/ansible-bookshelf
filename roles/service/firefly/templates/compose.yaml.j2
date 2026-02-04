@@ -1,0 +1,82 @@
+{% set version = firefly_version | default(bookshelf_const_version.firefly, true) %}
+{% set web_ui_port = firefly_web_ui_port | default(bookshelf_const_port.firefly.web_ui, true) %}
+{% set cron_version = (firefly_cron_alpine_version | default(bookshelf_const_version.firefly_alpine, true)) %}
+{% set tag_rex = firefly_tag_rex | default(bookshelf_const_version.firefly_tag_rex, true) %}
+{% set proxy_enabled = nginx_proxy_enabled | default(false, true) %}
+---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = firefly_ts_version | default(bookshelf_const_version.firefly_tailscale, true),
+  ts_name = firefly_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+{{ lookup('template', './../../mariadb/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  db_version = firefly_mariadb_version | default(bookshelf_const_version.firefly_mariadb, true),
+  db_service_name = firefly_db_service_name, db_conf_dir = conf_dir + '/db',
+  db_net = firefly_service_name
+)) }}
+
+services:
+  {{ firefly_service_name }}:
+    # https://hub.docker.com/r/fireflyiii/core
+    image: fireflyiii/core:{{ version }}
+    container_name: {{ firefly_service_name }}
+    restart: unless-stopped
+    env_file:
+      - ./secret.env
+      - ./main.env
+    labels:
+      - wud.watch={{ firefly_wudded }}
+      - wud.tag.include={{ tag_rex }}
+    volumes:
+      - '{{ conf_dir }}/config:/var/www/html/storage/upload'
+{% if firefly_tailscaled %}
+    network_mode: "service:{{ firefly_ts_service_name }}"
+
+  {{ firefly_ts_service_name }}:
+    <<: *tailscale
+{% endif %}{# firefly_tailscaled #}
+    hostname: {{ firefly_hostname }}
+{% if web_ui_port | int > -1 %}
+    ports:
+      - "{{ web_ui_port }}:{{ firefly_web_ui_port_int }}"
+{% else %}
+    # ports:
+    #   - "{{ bookshelf_const_port.firefly.web_ui }}:{{ firefly_web_ui_port_int }}"
+{% endif %}
+    networks:
+      - {{ firefly_service_name }}
+{% if proxy_enabled %}
+      - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ firefly_vhost }}
+      - VIRTUAL_PORT={{ firefly_web_ui_port_int }}
+{% endif %}{# proxy_enabled #}
+
+  {{ firefly_db_service_name }}: *mariadb
+{% if firefly_cron_token | length > 0 %}
+
+  {{ firefly_cron_service_name }}:
+    image: alpine:{{ cron_version }}
+    restart: unless-stopped
+    container_name: {{ firefly_cron_service_name }}
+    env_file:
+      - ./secret.env
+      - ./main.env
+    command: sh -c "
+      apk add tzdata && \
+      (ln -s /usr/share/zoneinfo/$$TZ /etc/localtime || true) && \
+      echo \"0 3 * * * wget -qO- http://{{ firefly_service_name }}:8080/api/v1/cron/$$STATIC_CRON_TOKEN;echo\"
+      | crontab - && \
+      crond -f -L /dev/stdout"
+    networks:
+      - {{ firefly_service_name }}
+    depends_on:
+      - {{ firefly_service_name }}
+{% endif %}
+
+networks:
+  {{ firefly_service_name }}:
+    name: {{ firefly_service_name }}
+{% if proxy_enabled %}
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# proxy_enabled #}

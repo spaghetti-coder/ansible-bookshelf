@@ -1,0 +1,56 @@
+---
+- name: Docker
+  ansible.builtin.import_role: { name: docker }
+  vars: { docker_users: ["{{ firefly_owner }}"] }
+
+- name: Compose
+  become: true
+  become_user: "{{ firefly_owner }}"
+  vars:
+    compose_dir: "{{ firefly_compose_dir | default(bookshelf_const_compose_dir + '/firefly', true) }}"
+    conf_dir: "{{ firefly_conf_dir }}"
+    service_state: "{{ firefly_enabled | ternary('present', 'absent') }}"
+  block:
+    - name: Create compose directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop: ["{{ compose_dir }}", "{{ conf_dir }}/config"]
+
+    - name: Create compose files
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
+        mode: '0600'
+      loop:
+        - ts-serve.json   # <- Must be first
+        - compose.yaml
+        - main.env
+        - secret.env
+      register: firefly_compose_files_result
+
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+      register: firefly_service_state
+
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - firefly_enabled and not firefly_service_state.changed
+        - firefly_tailscaled and firefly_compose_files_result.results[0].changed
+
+    - name: Create note
+      ansible.builtin.import_role: { name: bookshelf-note }
+      # noqa: var-naming[no-role-prefix]
+      vars: { src: notes.md.j2, dest: firefly-service.md, present: "{{ firefly_enabled }}" }
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    firefly_done: true

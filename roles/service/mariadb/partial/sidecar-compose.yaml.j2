@@ -1,0 +1,38 @@
+{#
+
+# USAGE:
+# Requires in env files:
+#   * MARIADB_DATABASE=<db-name>
+#   * MARIADB_USER=<db-user>
+#   * MARIADB_PASSWORD=<db-user-pass>
+# -----
+{{ lookup('template', playbook_dir + '/roles/service/mariadb/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  db_version = <IMAGE_VERSION>, db_service_name = <SERVICE_NAME>,
+  db_conf_dir = <CONF_DIR>, db_net = <SERVICE_NETWORK>
+)) }}
+
+services:
+  app:
+    # ...
+  db: *mariadb  # <- Brought by the partial
+
+#}
+x-mariadb: &mariadb
+  # https://hub.docker.com/_/mariadb
+  image: mariadb:{{ db_version }}
+  container_name: {{ db_service_name }}
+  restart: unless-stopped
+  env_file:
+    - secret.env
+    - main.env    # <- Relies on values from secret.env
+  volumes:
+    - '{{ db_conf_dir }}:/var/lib/postgresql/data'
+  healthcheck:
+    test:
+      - "CMD-SHELL"
+      - "mariadb-admin -u$${MARIADB_USER} -p$${MARIADB_PASSWORD} ping >/dev/null 2>&1"
+    interval: 5s
+    timeout: 10s
+    retries: 5
+  networks:
+    - {{ db_net }}

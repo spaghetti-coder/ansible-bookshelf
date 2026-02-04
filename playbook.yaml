@@ -131,6 +131,10 @@
       tags: [filebrowser, upgradable]
       when: filebrowser_managed | default(false)
 
+    - role: firefly
+      tags: [firefly, upgradable]
+      when: firefly_managed | default(false)
+
     - role: gatus
       tags: [gatus, upgradable]
       when: gatus_managed | default(false)

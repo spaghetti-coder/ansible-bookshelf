@@ -634,6 +634,58 @@ filebrowser_ts_funnelled: false   # Expose to the world via TS funnel. Use with 
 filebrowser_ts_hostname: "{{ filebrowser_service_name }}"
 filebrowser_ts_auth_key:
 
+# ===================
+#       FIREFLY
+# ===================
+# Personal finances manager
+#   https://firefly-iii.org/
+# -----
+# VERSIONS:
+#   * https://hub.docker.com/r/fireflyiii/core
+#   * => See tailscale role versions
+# -----
+firefly_managed: "{{ factum_os_family in ['alpine'] }}"
+firefly_enabled: true
+firefly_version:            # Leave blank to leverage bookshelf configuration
+firefly_mariadb_version:    # Leave blank to leverage bookshelf configuration
+firefly_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
+firefly_owner: "{{ ansible_facts.user_id }}"
+firefly_conf_dir: ~/conf/firefly
+firefly_service_name: firefly
+firefly_hostname: "{{ firefly_service_name }}"
+firefly_vhost: "{{ firefly_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+firefly_web_ui_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
+firefly_db_service_name: "{{ firefly_service_name }}-db"
+firefly_db_pass: changeme   # (REQUIRED) Something hard and random
+# (REQUIRED) 32 chars
+#   head /dev/urandom | LC_ALL=C tr -dc 'A-Za-z0-9' | head -c 32; echo
+firefly_app_key: JZrnnWLwng84xq0vb63C31QnvGGHW6x5
+# (OPTIONAL) 32 chars.
+# If set, cron sidecar will be started automatically
+firefly_cron_token: 5VhbiN8WCL8KTfWyTykDaz8tqT9iDPFl
+firefly_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
+# Optional extra env vars, will affect both Firefly III and Tailscale.
+firefly_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/firefly.env.j2') }}"
+  # References:
+  #   https://raw.githubusercontent.com/firefly-iii/firefly-iii/main/.env.example
+  # ----------
+  # APP_URL=http://localhost
+# WUD settings
+firefly_wudded: true        # Watched by WUD
+firefly_tag_rex:            # Leave blank to leverage bookshelf configuration
+# ----------
+# The following settings configure Firefly to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+firefly_tailscaled: false
+firefly_ts_version:           # Leave blank to leverage bookshelf configuration
+firefly_ts_service_name: "{{ firefly_service_name }}-ts"
+firefly_ts_funnelled: false   # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+firefly_ts_hostname: "{{ firefly_service_name }}"
+firefly_ts_auth_key:
+
 # =================
 #       GATUS
 # =================
