@@ -1,0 +1,50 @@
+{% set version = opengist_version | default(bookshelf_const_version.opengist, true) %}
+{% set web_ui_port = opengist_web_ui_port | default(bookshelf_const_port.opengist.web_ui, true) %}
+{% set tag_rex = opengist_tag_rex | default(bookshelf_const_version.opengist_tag_rex, true) %}
+---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = opengist_ts_version | default(bookshelf_const_version.opengist_tailscale, true),
+  ts_name = opengist_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
+services:
+  app:
+    # https://github.com/thomiceli/opengist/pkgs/container/opengist
+    image: ghcr.io/thomiceli/opengist:{{ version }}
+    container_name: {{ opengist_service_name }}
+    restart: unless-stopped
+    labels:
+      - wud.watch={{ opengist_wudded }}
+      - wud.tag.include={{ tag_rex }}
+    env_file:
+      - ./secret.env
+      - ./main.env
+    volumes:
+      - '{{ conf_dir }}/config:/opengist'
+{% if opengist_tailscaled %}
+    network_mode: "service:tailscale"
+
+  tailscale:
+    <<: *tailscale
+{% endif %}{# opengist_tailscaled #}
+    hostname: {{ opengist_hostname }}
+{% if web_ui_port | int > -1 %}
+    ports:
+      - "{{ web_ui_port }}:{{ opengist_web_ui_port_int }}"
+{% else %}
+    # ports:
+    #   - "{{ bookshelf_const_port.opengist.web_ui }}:{{ opengist_web_ui_port_int }}"
+{% endif %}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge
+{% else %}
+    networks:
+      - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ opengist_vhost }}
+      - VIRTUAL_PORT={{ opengist_web_ui_port_int }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

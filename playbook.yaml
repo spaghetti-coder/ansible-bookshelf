@@ -207,6 +207,10 @@
       tags: [open-webui, upgradable]
       when: open_webui_managed | default(false)
 
+    - role: opengist
+      tags: [opengist, upgradable]
+      when: opengist_managed | default(false)
+
     - role: pairdrop
       tags: [pairdrop, upgradable]
       when: pairdrop_managed | default(false)

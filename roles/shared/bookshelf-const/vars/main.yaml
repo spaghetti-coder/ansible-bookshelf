@@ -134,6 +134,10 @@ bookshelf_const_version:    # <- Last update: 2026-02-06
   open_webui: v0.7.2
   open_webui_tag_rex: '^v\d+\.\d+\.\d+$$'
   open_webui_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://github.com/thomiceli/opengist/pkgs/container/opengist
+  opengist: 1.12.1
+  opengist_tag_rex: '^\d+\.\d+\.\d+$$'
+  opengist_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
   pairdrop: v1.11.2-ls130
   pairdrop_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
@@ -216,7 +220,7 @@ bookshelf_const_port:
   filebrowser:
     web_ui: 8094
   firefly:
-    web_ui: 8118        # <- Last (8081+)
+    web_ui: 8118
   gatus:
     web_ui: 8111
   gokapi:
@@ -251,6 +255,8 @@ bookshelf_const_port:
     tcp: 8114
   open_webui:
     web_ui: 8115
+  opengist:
+    web_ui: 8119        # <- Last (8081+)
   pairdrop:
     web_ui: 8104
   portainer:

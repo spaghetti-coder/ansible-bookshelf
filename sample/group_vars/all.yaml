@@ -1599,6 +1599,48 @@ open_webui_ts_hostname: "{{ open_webui_service_name }}"
 open_webui_ts_auth_key:
 
 # ====================
+#       OPENGIST
+# ====================
+# Self-hosted pastebin powered by Git, open-source alternative to Github Gist.
+#   https://opengist.io/
+# -----
+# VERSIONS:
+#   * https://github.com/thomiceli/opengist/pkgs/container/opengist
+#   * => See tailscale role versions
+# -----
+opengist_managed: false
+opengist_enabled: false
+opengist_version:            # Leave blank to leverage bookshelf configuration
+opengist_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
+opengist_owner: "{{ ansible_facts.user_id }}"
+opengist_conf_dir: ~/conf/opengist
+opengist_service_name: opengist
+opengist_hostname: "{{ opengist_service_name }}"
+opengist_vhost: "{{ opengist_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+opengist_web_ui_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
+# Optional extra env vars, will affect both Opengist and Tailscale.
+opengist_extra_env: |        # "{{ lookup('template', playbook_dir + '/resources/opengist.env.j2') }}"
+  # Rererences:
+  #   * https://opengist.io/docs/configuration/cheat-sheet.html
+  # ----------
+  # OG_CUSTOM_NAME=Mygist
+# WUD settings
+opengist_wudded: true        # Watched by WUD
+opengist_tag_rex:            # Leave blank to leverage bookshelf configuration
+# ----------
+# The following settings configure Opengist to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+opengist_tailscaled: false
+opengist_ts_version:           # Leave blank to leverage bookshelf configuration
+opengist_ts_service_name: "{{ opengist_service_name }}-ts"
+opengist_ts_funnelled: false   # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+opengist_ts_hostname: "{{ opengist_service_name }}"
+opengist_ts_auth_key:
+
+# ====================
 #       PAIRDROP
 # ====================
 # Transfer Files Cross-Platform. No Setup, No Signup.
