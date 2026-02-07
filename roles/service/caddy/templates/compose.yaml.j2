@@ -20,8 +20,8 @@ services:
       - ./main.env
     volumes:
       - ./{{ certs_dir | basename }}:/etc/ssl/private
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - ./{{ caddies_dir | basename }}:/caddies
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./{{ caddies_dir | basename }}:/caddies:ro
       - "{{ conf_dir }}/config:/config"
       - "{{ conf_dir }}/config:/data"
     user: "{{ user_uid }}:{{ user_gid }}"
