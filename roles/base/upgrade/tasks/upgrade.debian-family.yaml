@@ -1,6 +1,12 @@
 ---
 # https://www.cyberciti.biz/faq/ansible-apt-update-all-packages-on-ubuntu-debian-linux/
 
+- name: Clean (Debian family)
+  ansible.builtin.apt:
+    autoremove: yes   # <- Remove not needed dependencies
+    autoclean: yes    # <- Clean packages cache
+  become: true
+
 - name: Upgrade (Debian family)
   ansible.builtin.apt:
     upgrade: dist

@@ -87,7 +87,7 @@ bookshelf_const_version:    # <- Last update: 2026-02-13
   homer_tag_rex: '^v\d+\.\d+\.\d+$$'
   homer_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
-  jellyfin: 10.11.6ubu2404-ls20
+  jellyfin: 10.11.6ubu2404-ls21
   jellyfin_tag_rex: '^\d+\.\d+\.\d+.+-ls\d+$$'
   jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/joplin/server/tags
@@ -110,7 +110,7 @@ bookshelf_const_version:    # <- Last update: 2026-02-13
   memos_tag_rex: '^\d+\.\d+\.\d+$$'
   memos_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
-  metube: 2026.02.14
+  metube: 2026.02.19
   metube_tag_rex: '^\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/deluan/navidrome/tags
   navidrome: 0.60.3
@@ -174,7 +174,7 @@ bookshelf_const_version:    # <- Last update: 2026-02-13
   torrserver_tag_rex: '^.*\d+$$'
   torrserver_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/twingate/connector/tags
-  twingate: 1.84.0
+  twingate: 1.85.0
   twingate_tag_rex: '^\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/louislam/uptime-kuma/tags
   uptime_kuma: 2.1.0
