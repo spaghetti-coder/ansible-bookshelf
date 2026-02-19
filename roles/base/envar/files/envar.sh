@@ -40,7 +40,7 @@ _envar_complete() {
   fi
 }
 
-# shellcheck disable=SC2317
+# shellcheck disable=SC2317,SC2329
 _envar_lib() (
   local THE_LIB="${FUNCNAME[0]}"
   local THE_TOOL=envar

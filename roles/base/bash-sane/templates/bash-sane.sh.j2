@@ -3,3 +3,54 @@
 HISTCONTROL=ignoreboth
 HISTSIZE=100000
 HISTFILESIZE=200000
+
+# Functions
+
+ssh-tunnel()      { _ssh_tunnel "${1}" "${2}" "${3:-${2}}"; }
+ssh-tunnel-once() { _ssh_tunnel "${1}" "${2}" "${3:-${2}}" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null; }
+
+ssh-once() (
+  local SELF="${FUNCNAME[0]}"
+
+  if [[ "${1}" =~ ^(-\?|-h|--help)$ ]]; then
+    sed -e 's/^\s\+//' -e '/^$/d' <<< "
+      USAGE
+      ~~~~~
+      # ${SELF} user@192.168.1.10
+      ${SELF} SSH_ARGS...
+    "
+    return
+  fi
+
+  set -x
+  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "${@}"
+)
+
+# Helpers
+
+_ssh_tunnel() (
+  local CALLER="${FUNCNAME[1]}"
+
+  local destination="${1}"
+  local port_local="${2}"
+  local port_remote="${3}"
+  local -a rest=("${@:4}")
+
+  if [[ "${1}" =~ ^(-\?|-h|--help)$ ]]; then
+    sed -e 's/^\s\+//' -e '/^$/d' <<< "
+      USAGE
+      ~~~~~
+      # ${CALLER} user@192.168.1.10 3000
+      # ${CALLER} user@192.168.1.10 3000 8000
+      ${CALLER} DESTINATION PORT_LOCAL [PORT_REMOTE]
+    "
+    return
+  fi
+
+  [ -n "${destination}" ] && [ -n "${port_local}" ] && [ -n "${port_remote}" ] || {
+    "${CALLER}" --help; return 1
+  }
+
+  set -x
+  ssh -L "${port_local}:localhost:${port_remote}" "${destination}" "${rest[@]}" # Or ssh -N -L ...
+)
