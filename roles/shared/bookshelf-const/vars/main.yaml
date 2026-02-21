@@ -29,7 +29,7 @@ bookshelf_const_version:    # <- Last update: 2026-02-13
   # SERVICE
   #
   # https://hub.docker.com/r/adguard/adguardhome/tags
-  adguard: v0.107.71
+  adguard: v0.107.72
   adguard_tag_rex: '^v\d+\.\d+\.\d+$$'
   adguard_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/advplyr/audiobookshelf/tags
@@ -55,7 +55,7 @@ bookshelf_const_version:    # <- Last update: 2026-02-13
   duplicati_tag_rex: '^v\d+\.\d+\.\d+.\d+.*-ls\d+$$'
   duplicati_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-  filebrowser: v2.59.0-s6
+  filebrowser: v2.60.0-s6
   filebrowser_tag_rex: '^v\d+\.\d+\.\d+-s6$$'
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/fireflyiii/core
@@ -65,7 +65,7 @@ bookshelf_const_version:    # <- Last update: 2026-02-13
   firefly_alpine: "{{ bookshelf_const_version_shared.alpine }}"
   firefly_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/twin/gatus/pkgs/container/gatus
-  gatus: v5.34.0
+  gatus: v5.35.0
   gatus_tag_rex: '^v\d+\.\d+\.\d+$$'
   gatus_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/f0rc3/gokapi/tags
@@ -127,7 +127,7 @@ bookshelf_const_version:    # <- Last update: 2026-02-13
   olivetin: 2025.11.25                      # <- TODO: switch to 3k some day before 2028
   olivetin_tag_rex: '^20\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/ollama/ollama/tags
-  ollama: 0.16.2
+  ollama: 0.16.3
   ollama_tag_rex: '^\d+\.\d+\.\d+$$'
   ollama_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/open-webui/open-webui/releases
