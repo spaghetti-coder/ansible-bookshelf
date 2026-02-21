@@ -21,6 +21,15 @@ services:
       - ./main.env
     volumes:
       - '{{ conf_dir }}/config:/root/.ollama'
+{% if ollama_nvidia %}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+{% endif %}
 {% if ollama_tailscaled %}
     network_mode: "service:{{ ollama_ts_service_name }}"
 

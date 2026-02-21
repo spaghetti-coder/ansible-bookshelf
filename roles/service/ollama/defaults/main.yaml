@@ -17,6 +17,9 @@ ollama_enabled: false
 ollama_version:         # Leave blank to leverage bookshelf configuration
 ollama_compose_dir:     # Unless you know ..., leave blank to leverage bookshelf configuration
 ollama_owner: "{{ ansible_facts.user_id }}"
+# Use NVidia card (must be configured, see docker role)
+#   ollama_nvidia: "{{ docker_nvidia_toolkit }}"
+ollama_nvidia: false
 ollama_conf_dir: ~/conf/ollama
 ollama_service_name: ollama
 ollama_hostname: "{{ ollama_service_name }}"
