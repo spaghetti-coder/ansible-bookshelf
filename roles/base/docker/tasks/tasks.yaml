@@ -1,8 +1,11 @@
 ---
 - name: Load install
-  ansible.builtin.include_tasks:
-    file: install.yaml
+  ansible.builtin.include_tasks: { file: install.yaml }
   when: not (docker_install_done | default(false))
+
+- name: Load Nvidia toolkit
+  ansible.builtin.include_tasks: { file: nvidia-toolkit/install.yaml }
+  when: docker_nvidia_toolkit
 
 - name: Acl
   ansible.builtin.import_role: { name: acl }
@@ -11,8 +14,7 @@
     - docker_users_todo | difference(['root', ansible_facts.user_id]) | length > 0
 
 - name: Load setup users
-  ansible.builtin.include_tasks:
-    file: setup-user.yaml
+  ansible.builtin.include_tasks: { file: setup-user.yaml }
   when: docker_users_todo | length > 0
   loop: "{{ docker_users_todo }}"
   loop_control: { loop_var: user }

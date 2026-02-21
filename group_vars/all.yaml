@@ -97,6 +97,7 @@ docker_clean_prune_images: true     # <- Weekly prune unused images
 #   DOCKER
 # ==========
 docker_managed: true
+docker_nvidia_toolkit: false
 docker_users:   # <- Users to be added to docker group
   - "{{ ansible_facts.user_id }}"
 

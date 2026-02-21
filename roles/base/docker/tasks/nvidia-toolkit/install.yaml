@@ -1,0 +1,51 @@
+---
+- name: Load OS specific repo
+  ansible.builtin.include_tasks:
+    file: repo.{{ factum_os_family }}-family.yaml
+
+- name: Install NVidia Container Toolkit
+  ansible.builtin.package:
+    name: nvidia-container-toolkit
+    state: "{{ (docker_nvidia_toolkit_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
+  become: true
+
+- name: Daemon config
+  become: true
+  vars:
+    config_file: /etc/docker/daemon.json
+  block:
+    - name: Create daemon.json config directory
+      ansible.builtin.file:
+        path: "{{ config_file | dirname }}"
+        mode: '0755'
+        state: directory
+
+    - name: Get daemon.json config
+      ansible.builtin.slurp: { src: "{{ config_file }}" }
+      failed_when: false
+      register: docker_daemon_config
+
+    - name: Update daemon.json
+      ansible.builtin.copy:
+        content: |
+          {{ final | to_nice_json }}
+        dest: "{{ config_file }}"
+        mode: '0644'
+      vars:
+        init: "{{ docker_daemon_config.content | default('', true) | b64decode | default('{}', true) | from_json }}"
+        # noqa jinja[spacing]
+        final: "{{ init | combine({
+            'runtimes': init.runtimes | default({}, true) | combine({
+              'nvidia': init.runtimes.nvidia | default(
+                {'args': [], 'path': 'nvidia-container-runtime'}, true
+              )
+            })
+          }) }}"
+      register: docker_daemon_config_state
+
+    - name: Restart docker
+      # noqa: no-handler
+      ansible.builtin.service:
+        name: docker
+        state: restarted
+      when: docker_daemon_config_state.changed

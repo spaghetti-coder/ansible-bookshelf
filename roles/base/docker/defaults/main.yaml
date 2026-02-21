@@ -1,4 +1,7 @@
 ---
 docker_managed: false
+# Add Nvidia support for docker.
+# Only supported by Debian and RHEL families
+docker_nvidia_toolkit: false
 docker_users:     # <- Existing users to be added to docker group
   # - "{{ ansible_facts.user_id }}"

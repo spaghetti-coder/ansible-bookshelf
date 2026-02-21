@@ -1,0 +1,23 @@
+---
+- name: Software repos deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: software-repos-deps }
+
+- name: NVidia Container Toolkit repo
+  become: true
+  vars:
+    keyfile: "{{ software_repos_deps_keyrings_dir }}/nvidia-container-toolkit.asc"
+  block:
+    - name: Install NVidia Container Toolkit signing key
+      ansible.builtin.get_url:
+        url: https://nvidia.github.io/libnvidia-container/gpgkey
+        dest: "{{ keyfile }}"
+        mode: "0644"
+
+    - name: Install NVidia Container Toolkit repo
+      ansible.builtin.apt_repository:
+        repo: |
+          deb [signed-by={{ keyfile }}] https://nvidia.github.io/libnvidia-container/stable/deb/$(ARCH) /
+        state: present
+        filename: nvidia-container-toolkit
+        update_cache: true
+      register: docker_nvidia_toolkit_repo_state
