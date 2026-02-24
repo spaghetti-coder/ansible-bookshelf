@@ -1,0 +1,6 @@
+#!/bin/sh
+
+SELF_DIR="$(dirname "$(realpath -- "${0}" 2>/dev/null)")"
+
+cd "${SELF_DIR}" || exit
+docker compose exec ollama {{ ollama_service_name }} "${@}"

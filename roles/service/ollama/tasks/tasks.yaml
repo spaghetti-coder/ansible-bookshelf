@@ -46,6 +46,21 @@
         - ollama_enabled and not ollama_service_state.changed
         - ollama_tailscaled and ollama_compose_files_result.results[1].changed
 
+    - name: Create ollama script
+      ansible.builtin.template:
+        src: ollama.sh.j2
+        dest: "{{ compose_dir }}/ollama.sh"
+        mode: '0755'
+      register: ollama_script_state   # <- Trap to have real path for root
+
+- name: Install ollama script
+  ansible.builtin.file:
+    src: "{{ ollama_script_state.path }}"
+    path: /usr/local/bin/{{ ollama_global_script | basename }}
+    state: link
+  become: true
+  become_user: root
+
 - name: Mark done
   ansible.builtin.set_fact:
     ollama_done: true
