@@ -1,0 +1,16 @@
+---
+- name: OS specific repo
+  ansible.builtin.include_tasks:
+    file: repo.{{ factum_os_family }}-family.yaml
+
+- name: Install
+  ansible.builtin.package:
+    name: antigravity
+    state: "{{ repo_changed | ternary('latest', 'present') }}"
+  vars:
+    repo_changed: "{{ antigravity_repo_state.changed | default(false) }}"
+  become: true
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    antigravity_done: true

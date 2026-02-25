@@ -1,0 +1,5 @@
+---
+- name: Load install
+  ansible.builtin.include_tasks:
+    file: tasks.yaml
+  when: not (antigravity_done | default(false))

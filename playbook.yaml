@@ -279,6 +279,10 @@
   tags: [desktops]
   hosts: all
   roles:
+    - role: antigravity
+      tags: [antigravity]
+      when: antigravity_managed | default(false)
+
     - role: audacity
       tags: [audacity]
       when: audacity_managed | default(false)

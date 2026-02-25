@@ -2082,6 +2082,11 @@ wud_ts_auth_key:
 ###   DESKTOP   ###
 ###################
 
+# =======================
+#       ANTIGRAVITY
+# =======================
+antigravity_managed: false
+
 # ============
 #   AUDACITY
 # ============

@@ -2326,6 +2326,14 @@ wud_ts_auth_key:
 ###       DESKTOP       ###
 ###########################
 
+# =======================
+#       ANTIGRAVITY
+# =======================
+# Experience liftoff with the next-generation IDE
+#   https://antigravity.google/
+# -----
+antigravity_managed: false
+
 # ====================
 #       AUDACITY
 # ====================

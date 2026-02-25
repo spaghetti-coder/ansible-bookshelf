@@ -1,0 +1,34 @@
+---
+- name: Software repos deps    # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: software-repos-deps }
+
+- name: Antigravity repo
+  become: true
+  vars:
+    keyfile: "{{ software_repos_deps_keyrings_dir }}/antigravity.gpg"
+    repo_url: https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/
+  block:
+    - name: Download ASCII armored key
+      ansible.builtin.get_url:
+        url: https://us-central1-apt.pkg.dev/doc/repo-signing-key.gpg
+        dest: "{{ software_repos_deps_keyrings_dir }}/antigravity.asc"
+        mode: "0644"
+      register: antigravity_asc_key_state
+
+    # Work around for failing GPG key check
+    - name: ASCII key to binary
+      ansible.builtin.command:
+        cmd: >
+          gpg --dearmor --yes
+          -o {{ keyfile }} {{ antigravity_asc_key_state.dest }}
+      changed_when: true
+      # noqa: no-handler
+      when: antigravity_asc_key_state.changed
+
+    - name: Install repo
+      ansible.builtin.apt_repository:
+        repo: deb [signed-by={{ keyfile }} arch=amd64] {{ repo_url }} antigravity-debian main
+        state: present
+        filename: antigravity
+        update_cache: true
+      register: antigravity_repo_state

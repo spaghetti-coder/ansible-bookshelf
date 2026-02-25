@@ -1,0 +1,14 @@
+---
+- name: Install repo
+  ansible.builtin.copy:
+    content: |
+      [antigravity-rpm]
+      name=Antigravity RPM Repository
+      baseurl=https://us-central1-yum.pkg.dev/projects/antigravity-auto-updater-dev/antigravity-rpm
+      enabled=1
+      gpgcheck=0
+    dest: /etc/yum.repos.d/antigravity.repo
+    mode: '0644'
+    force: true
+  become: true
+  register: antigravity_repo_state
