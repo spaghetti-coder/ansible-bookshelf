@@ -53,7 +53,27 @@
         mode: '0755'
       register: ollama_script_state   # <- Trap to have real path for root
 
-- name: Install ollama script
+    - name: List models
+      ansible.builtin.shell:  # noqa: risky-shell-pipe
+        cmd: >
+          {{ ollama_script_state.path }} list | tail -n +2
+          | sort -n | cut -d' ' -f1 2>/dev/null
+      changed_when: false
+      register: ollama_models_installed
+
+    - name: Install models
+      ansible.builtin.command:
+        argv:
+          - "{{ ollama_script_state.path }}"
+          - pull
+          - "{{ item }}"
+      vars:
+        present: "{{ ollama_models_installed.stdout_lines | default([], true) }}"
+        absent: "{{ ollama_models | default([], true) | difference(present) }}"
+      changed_when: true
+      loop: "{{ absent }}"
+
+- name: Install helper script
   ansible.builtin.file:
     src: "{{ ollama_script_state.path }}"
     path: /usr/local/bin/{{ ollama_global_script | basename }}

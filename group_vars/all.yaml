@@ -1335,6 +1335,11 @@ ollama_service_name: ollama
 ollama_global_script: "{{ ollama_service_name }}.sh"
 ollama_hostname: "{{ ollama_service_name }}"
 ollama_vhost: "{{ ollama_service_name }}.domain.local"
+ollama_models:
+  # - hf.co/TeichAI/Qwen3-14B-Claude-4.5-Opus-High-Reasoning-Distill-GGUF:Q4_K_M
+  # - llama3:latest
+  # - qwen3:14b
+  # - qwen3:8b
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 ollama_tcp_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
 # Optional extra env vars, will affect both Ollama and Tailscale.
