@@ -127,7 +127,7 @@ bookshelf_const_version:    # <- Last update: 2026-02-23
   olivetin: 2025.11.25                      # <- TODO: switch to 3k some day before 2028
   olivetin_tag_rex: '^20\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/ollama/ollama/tags
-  ollama: 0.17.0
+  ollama: 0.17.4
   ollama_tag_rex: '^\d+\.\d+\.\d+$$'
   ollama_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/open-webui/open-webui/releases
@@ -199,7 +199,7 @@ bookshelf_const_version:    # <- Last update: 2026-02-23
   wikijs_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   wikijs_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://ghcr.io/getwud/wud
-  wud: 8.2.1
+  wud: 8.2.2
   wud_tag_rex: '^\d+\.\d+\.\d+$$'
   wud_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
 
