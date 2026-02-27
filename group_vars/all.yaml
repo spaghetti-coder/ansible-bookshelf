@@ -1344,6 +1344,8 @@ ollama_models:
 ollama_tcp_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
 # Optional extra env vars, will affect both Ollama and Tailscale.
 ollama_extra_env:       # "{{ lookup('template', playbook_dir + '/resources/ollama.env.j2') }}"
+  # # https://docs.ollama.com/faq#how-do-i-keep-a-model-loaded-in-memory-or-make-it-unload-immediately
+  # OLLAMA_KEEP_ALIVE=2h
 # WUD settings
 ollama_wudded: true     # Watched by WUD
 ollama_tag_rex:         # Leave blank to leverage bookshelf configuration

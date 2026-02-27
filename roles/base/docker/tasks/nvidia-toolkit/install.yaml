@@ -1,7 +1,7 @@
 ---
 - name: Load OS specific repo
   ansible.builtin.include_tasks:
-    file: repo.{{ factum_os_family }}-family.yaml
+    file: nvidia-toolkit/repo.{{ factum_os_family }}-family.yaml
 
 - name: Install NVidia Container Toolkit
   ansible.builtin.package:

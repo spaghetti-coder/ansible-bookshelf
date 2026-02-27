@@ -56,15 +56,15 @@
     - name: List models
       ansible.builtin.shell:  # noqa: risky-shell-pipe
         cmd: >
-          {{ ollama_script_state.path }} list | tail -n +2
-          | sort -n | cut -d' ' -f1 2>/dev/null
+          {{ ollama_script_state.path | default(ollama_script_state.dest) }} list
+          | tail -n +2 | sort -n | cut -d' ' -f1 2>/dev/null
       changed_when: false
       register: ollama_models_installed
 
     - name: Install models
       ansible.builtin.command:
         argv:
-          - "{{ ollama_script_state.path }}"
+          - "{{ ollama_script_state.path | default(ollama_script_state.dest) }}"
           - pull
           - "{{ item }}"
       vars:
@@ -75,7 +75,7 @@
 
 - name: Install helper script
   ansible.builtin.file:
-    src: "{{ ollama_script_state.path }}"
+    src: "{{ ollama_script_state.path | default(ollama_script_state.dest) }}"
     path: /usr/local/bin/{{ ollama_global_script | basename }}
     state: link
   become: true
