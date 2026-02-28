@@ -1633,6 +1633,40 @@ samba_tz: "{{ ansible_facts.date_time.tz | default('UTC') }}"
 # Ex.: "{{ playbook_dir }}/resources/samba/extra.env.j2"
 samba_extra_envfile:
 
+# ===================
+#       SEARXNG
+# ===================
+# VERSIONS: https://hub.docker.com/r/searxng/searxng/tags
+# -----
+searxng_managed: true
+searxng_enabled: true
+searxng_version:        # Leave blank to leverage bookshelf configuration
+searxng_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+searxng_owner: "{{ ansible_facts.user_id }}"    # <- Who runs the container
+searxng_conf_dir: ~/conf/searxng
+searxng_service_name: searxng
+searxng_hostname: "{{ searxng_service_name }}"
+searxng_vhost: "{{ searxng_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+searxng_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
+# Optional extra env vars
+searxng_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/searxng.env.j2') }}"
+  # Some variables
+# WUD settings
+searxng_wudded: true     # Watched by WUD
+searxng_tag_rex:         # Leave blank to leverage bookshelf configuration
+# ----------
+# The following settings configure SearXNG to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+searxng_tailscaled: false
+searxng_ts_version:           # Leave blank to leverage bookshelf configuration
+searxng_ts_service_name: "{{ searxng_service_name }}-ts"
+searxng_ts_funnelled: false   # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+searxng_ts_hostname: "{{ searxng_service_name }}"
+searxng_ts_auth_key:
+
 # ========================
 #       SILVERBULLET
 # ========================

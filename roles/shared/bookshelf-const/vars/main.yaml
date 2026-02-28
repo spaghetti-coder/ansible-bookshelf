@@ -154,6 +154,10 @@ bookshelf_const_version:    # <- Last update: 2026-02-23
   qbittorrent: 5.1.4-r2-ls442
   qbittorrent_tag_rex: '^\d+\.\d+\.\d{1,2}-.*-ls\d+$$'
   qbittorrent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://hub.docker.com/r/searxng/searxng/tags
+  searxng: 2026.2.28-31cc7ef7f
+  searxng_tag_rex: '^\d+\.\d+\.\d{1,2}-'
+  searxng_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: 2.4.1
   silverbullet_tag_rex: '^\d+\.\d+\.\d+$$'
@@ -256,7 +260,7 @@ bookshelf_const_port:
   open_webui:
     web_ui: 8115
   opengist:
-    web_ui: 8119        # <- Last (8081+)
+    web_ui: 8119
   pairdrop:
     web_ui: 8104
   portainer:
@@ -269,6 +273,8 @@ bookshelf_const_port:
     torrenting: 6881
   jotty:
     web_ui: 8108
+  searxng:
+    web_ui: 8120        # <- Last (8081+)
   silverbullet:
     web_ui: 8103
   smtp4dev:

@@ -227,6 +227,10 @@
       tags: [qbittorrent, upgradable]
       when: qbittorrent_managed | default(false)
 
+    - role: searxng
+      tags: [searxng, upgradable]
+      when: searxng_managed | default(false)
+
     - role: silverbullet
       tags: [silverbullet, upgradable]
       when: silverbullet_managed | default(false)
