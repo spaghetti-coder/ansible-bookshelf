@@ -3,7 +3,7 @@ bookshelf_const_version_shared:
   # https://hub.docker.com/_/alpine
   alpine: 3.23.3
   # https://hub.docker.com/_/mariadb
-  mariadb: 11.8.6     # <- LTS
+  mariadb: 11.8.6 # <- LTS
   # https://hub.docker.com/_/postgres/tags?name=alpine
   postgres: 16.12-alpine3.23
   # NOTE: With version update also update auth key: https://tailscale.com/admin/settings/keys
@@ -11,20 +11,19 @@ bookshelf_const_version_shared:
   tailscale: v1.94.2
   tailscale_tag_rex: '^v\d+\.\d+\.\d+$$'
 
-bookshelf_const_version:    # <- Last update: 2026-02-23
+bookshelf_const_version: # <- Last update: 2026-02-23
   #
   # BASE
   #
   # https://github.com/FiloSottile/age/releases
   age: v1.3.1
   # https://github.com/junegunn/fzf/releases
-  fzf: '0.68.0'
+  fzf: "0.68.0"
   # Versions (better pick latest LTS) and channels lists:
   # * https://nodejs.org/en/about/previous-releases#looking-for-the-latest-release-of-a-version-branch
-  # * https://snapcraft.io/node
-  nodejs_snap_channel: 24/stable
+  nodejs_version: 24
   # https://github.com/tmux/tmux-builds/releases
-  tmux: '3.6a'
+  tmux: "3.6a"
   #
   # SERVICE
   #
@@ -124,7 +123,7 @@ bookshelf_const_version:    # <- Last update: 2026-02-23
   nginx_proxy_manager_tag_rex: '^\d+\.\d+\.\d+$$'
   nginx_proxy_manager_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/jamesread/olivetin/tags
-  olivetin: 2025.11.25                      # <- TODO: switch to 3k some day before 2028
+  olivetin: 2025.11.25 # <- TODO: switch to 3k some day before 2028
   olivetin_tag_rex: '^20\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/ollama/ollama/tags
   ollama: 0.18.0
@@ -274,7 +273,7 @@ bookshelf_const_port:
   jotty:
     web_ui: 8108
   searxng:
-    web_ui: 8120        # <- Last (8081+)
+    web_ui: 8120 # <- Last (8081+)
   silverbullet:
     web_ui: 8103
   smtp4dev:
@@ -298,7 +297,7 @@ bookshelf_const_port:
   wikijs:
     web_ui: 8107
   wud:
-    web_ui: 8117        # <- Last (8081+)
+    web_ui: 8117 # <- Last (8081+)
 
 bookshelf_const_compose_dir: ~/docker
 # Not used within bookshelf space, but can be used to keep envar desks.

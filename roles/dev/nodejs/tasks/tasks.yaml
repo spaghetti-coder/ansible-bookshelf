@@ -1,7 +1,14 @@
 ---
-- name: Load install
+- name: Load repo
   ansible.builtin.include_tasks:
-    file: install.{{ factum_os_like }}-like.yaml
+    file: repo.{{ factum_os_family }}-family.yaml
+  when: factum_os_family not in ['alpine']
+
+- name: Install
+  ansible.builtin.package:
+    name: nodejs
+    state: "{{ (nodejs_repo.changed | default(false)) | ternary('latest', 'present') }}"
+  become: true
 
 - name: Mark dones
   ansible.builtin.set_fact:

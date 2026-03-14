@@ -1,0 +1,15 @@
+---
+- name: RedHat family
+  become: true
+  vars:
+    version: "{{ nodejs_version | default(bookshelf_const_version.nodejs_version, true) }}"
+  block:
+    - name: Add repository
+      ansible.builtin.yum_repository:
+        name: nodesource
+        description: Node.js Packages for Enterprise Linux
+        baseurl: "https://rpm.nodesource.com/pub_{{ version }}.x/nodistro/nodejs/$basearch"
+        gpgkey: https://rpm.nodesource.com/gpgkey/ns-operations-public.key
+        gpgcheck: true
+        enabled: true
+      register: nodejs_repo

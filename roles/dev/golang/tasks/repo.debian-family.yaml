@@ -4,12 +4,13 @@
 - name: Software repos deps    # <- 'import' because will need the role vars
   ansible.builtin.import_role: { name: software-repos-deps }
 
-- name: Golang repo
+- name: Debian family
   become: true
   vars:
     keyfile: "{{ software_repos_deps_keyrings_dir }}/golang.asc"
     codename: "{{ factum_ubuntu_codename }}"
     repo_url: https://ppa.launchpadcontent.net/longsleep/golang-backports/{{ factum_os_like }}
+  when: factum_os_like == "ubuntu"
   block:
     - name: Install signing key
       ansible.builtin.get_url:

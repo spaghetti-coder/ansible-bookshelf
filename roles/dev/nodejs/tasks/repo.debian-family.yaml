@@ -1,0 +1,24 @@
+---
+- name: Software repos deps # <- 'import' because will need the role vars
+  ansible.builtin.import_role: { name: software-repos-deps }
+
+- name: Debian family
+  become: true
+  vars:
+    keyfile: "{{ software_repos_deps_keyrings_dir }}/nodesource.asc"
+  block:
+    - name: Install signing key
+      ansible.builtin.get_url:
+        url: https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key
+        dest: "{{ keyfile }}"
+        mode: "0644"
+
+    - name: Add repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by={{ keyfile }}] https://deb.nodesource.com/node_{{ version }}.x nodistro main"
+        state: present
+        filename: nodesource
+        update_cache: true
+      register: nodejs_repo
+      vars:
+        version: "{{ nodejs_version | default(bookshelf_const_version.nodejs_version, true) }}"

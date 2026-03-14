@@ -72,7 +72,7 @@
         required: "{{ ollama_models | default([], true) }}"
         present: "{{ ollama_models_installed.stdout_lines | default([], true) }}"
       loop: "{{ required }}"
-      changed_when: "{{ required | difference(present) | length > 0 }}"
+      changed_when: required | difference(present) | length > 0
 
 - name: Install helper script
   ansible.builtin.file:

@@ -1,8 +1,8 @@
 ---
-- name: Load install repo
+- name: Load repo
   ansible.builtin.include_tasks:
-    file: repo.{{ factum_os_like }}-like.yaml
-  when: factum_os_like in ["ubuntu"]
+    file: repo.{{ factum_os_family }}-family.yaml
+  when: factum_os_family in ['debian']
 
 - name: Install
   ansible.builtin.package:
@@ -10,7 +10,8 @@
     state: "{{ (golang_repo_state.changed | default(false)) | ternary('latest', 'present') }}"
   vars:
     pkg_map:
-      _default: go
+      _default: golang
+      alpine: go
       ubuntu: golang-go
   become: true
 
