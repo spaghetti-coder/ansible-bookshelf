@@ -15,16 +15,16 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        mode: '0700'
+        mode: "0700"
       loop: ["{{ compose_dir }}", "{{ conf_dir }}"]
 
     - name: Create compose files
       ansible.builtin.template:
         src: "{{ item }}.j2"
         dest: "{{ compose_dir }}/{{ item }}"
-        mode: '0600'
+        mode: "0600"
       loop:
-        - ts-serve.json   # <- For the first 2 files order matters
+        - ts-serve.json # <- For the first 2 files order matters
         - compose.yaml
         - main.env
         - secret.env
@@ -50,11 +50,11 @@
       ansible.builtin.template:
         src: ollama.sh.j2
         dest: "{{ compose_dir }}/ollama.sh"
-        mode: '0755'
-      register: ollama_script_state   # <- Trap to have real path for root
+        mode: "0755"
+      register: ollama_script_state # <- Trap to have real path for root
 
     - name: List models
-      ansible.builtin.shell:  # noqa: risky-shell-pipe
+      ansible.builtin.shell: # noqa: risky-shell-pipe
         cmd: >
           {{ ollama_script_state.path | default(ollama_script_state.dest) }} list
           | tail -n +2 | sort -n | cut -d' ' -f1 2>/dev/null
@@ -67,11 +67,12 @@
           - "{{ ollama_script_state.path | default(ollama_script_state.dest) }}"
           - pull
           - "{{ item }}"
+      when: item not in present
       vars:
+        required: "{{ ollama_models | default([], true) }}"
         present: "{{ ollama_models_installed.stdout_lines | default([], true) }}"
-        absent: "{{ ollama_models | default([], true) | difference(present) }}"
-      changed_when: true
-      loop: "{{ absent }}"
+      loop: "{{ required }}"
+      changed_when: "{{ required | difference(present) | length > 0 }}"
 
 - name: Install helper script
   ansible.builtin.file:
