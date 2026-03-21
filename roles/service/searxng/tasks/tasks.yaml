@@ -30,6 +30,14 @@
         - secret.env
       register: searxng_compose_files_result
 
+    - name: Create config file
+      ansible.builtin.copy:
+        content: |
+          {{ searxng_settings }}
+        dest: "{{ compose_dir }}/settings.yaml"
+        mode: '0644'
+      register: searxng_config_file_result
+
     - name: Apply service state
       community.docker.docker_compose_v2:
         project_src: "{{ compose_dir }}"

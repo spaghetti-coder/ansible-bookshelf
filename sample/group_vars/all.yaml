@@ -1863,6 +1863,14 @@ searxng_hostname: "{{ searxng_service_name }}"
 searxng_vhost: "{{ searxng_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 searxng_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
+searxng_settings: |
+  ---
+  # https://docs.searxng.org/admin/settings/settings.html#use-default-settings
+  use_default_settings: true
+  ## EXAMPLE
+  # search:
+  #   safe_search: 0
+  #   formats: [html, json]
 # Optional extra env vars
 searxng_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/searxng.env.j2') }}"
   # Some variables

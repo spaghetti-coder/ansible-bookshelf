@@ -21,7 +21,7 @@ services:
       - ./secret.env
       - ./main.env
     volumes:
-      - '{{ conf_dir }}/config:/etc/searxng'
+      - './settings.yaml:/etc/searxng/settings.yml:ro'
 {% if searxng_tailscaled %}
     network_mode: "service:{{ searxng_ts_service_name }}"
 
