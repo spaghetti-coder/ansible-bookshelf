@@ -1,0 +1,51 @@
+{% set version = litellm_version | default(bookshelf_const_version.litellm, true) %}
+{% set tcp_port = litellm_tcp_port | default(bookshelf_const_port.litellm.tcp, true) %}
+{% set tag_rex = litellm_tag_rex | default(bookshelf_const_version.litellm_tag_rex, true) %}
+---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = litellm_ts_version | default(bookshelf_const_version.litellm_tailscale, true),
+  ts_name = litellm_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
+services:
+  {{ litellm_service_name }}:
+    # https://github.com/BerriAI/litellm/pkgs/container/litellm
+    image: ghcr.io/berriai/litellm:{{ version }}
+    container_name: {{ litellm_service_name }}
+    restart: unless-stopped
+    labels:
+      - wud.watch={{ litellm_wudded }}
+      - wud.tag.include={{ tag_rex }}
+    env_file:
+      - ./secret.env
+      - ./main.env
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+    command: --config /app/config.yaml --port 5000
+{% if litellm_tailscaled %}
+    network_mode: "service:{{ litellm_ts_service_name }}"
+
+  {{ litellm_ts_service_name }}:
+    <<: *tailscale
+{% endif %}{# litellm_tailscaled #}
+    hostname: {{ litellm_hostname }}
+{% if tcp_port | int > -1 %}
+    ports:
+      - "{{ tcp_port }}:{{ litellm_tcp_port_int }}"
+{% else %}
+    # ports:
+    #   - "{{ litellm_tcp_port_int }}:{{ litellm_tcp_port_int }}"
+{% endif %}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge
+{% else %}
+    networks:
+      - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ litellm_vhost }}
+      - VIRTUAL_PORT={{ litellm_tcp_port_int }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

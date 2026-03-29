@@ -1202,6 +1202,56 @@ jotty_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
 jotty_ts_hostname: "{{ jotty_service_name }}"
 jotty_ts_auth_key:
 
+# ===================
+#       LITELLM
+# ===================
+# LiteLLM - OpenAI compatible proxy for multiple LLM providers
+# https://docs.litellm.ai/
+# -----
+# VERSIONS:
+# * https://github.com/BerriAI/litellm/pkgs/container/litellm
+# -----
+litellm_managed: false
+litellm_enabled: false
+litellm_version:        # Leave blank to leverage bookshelf configuration
+litellm_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+litellm_conf_dir: ~/conf/litellm
+litellm_owner: "{{ ansible_facts.user_id }}"
+litellm_service_name: litellm
+litellm_hostname: "{{ litellm_service_name }}"
+litellm_vhost: "{{ litellm_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+litellm_tcp_port:       # Leave blank for bookshelf default, or '-1' to not expose the port
+litellm_config: |       # Required. "{{ lookup('file', playbook_dir + '/resources/litellm.yaml') }}"
+  # See for demo config.yaml under role files
+  ---
+  # ...
+# Required credentials
+litellm_master_key:     # (REQUIRED) Something hard and random, format: sk-1234567890abcdef
+# Optional extra env vars, will affect both LiteLLM and Tailscale.
+litellm_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/litellm.env.j2') }}"
+  # References:
+  # * https://docs.litellm.ai/docs/proxy/configs
+  # ----------
+litellm_secrets_env: |  # "{{ lookup('template', playbook_dir + '/resources/gatus.secret.env.j2') }}"
+  # Same as extra env, but for secrets
+  # ----------
+  # SOME_SECRET_VAR=some-secret
+# WUD settings
+litellm_wudded: true    # Watched by WUD
+litellm_tag_rex:        # Leave blank to leverage bookshelf configuration
+# ----------
+# The following settings configure LiteLLM to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+litellm_tailscaled: false
+litellm_ts_version: # Leave blank to leverage bookshelf configuration
+litellm_ts_service_name: "{{ litellm_service_name }}-ts"
+litellm_ts_funnelled: false # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+litellm_ts_hostname: "{{ litellm_service_name }}"
+litellm_ts_auth_key:
+
 # ==================
 #       MEALIE
 # ==================

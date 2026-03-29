@@ -1,0 +1,55 @@
+# Demo:
+---
+x-nim-commons: &nim-commons
+  custom_llm_provider: openai
+  supports_response_api: false  # <- Legacy request format, just in case
+  mock_response: null
+  health_check_enabled: false
+  api_key: os.environ/NVIDIA_API_KEY
+  api_base: https://integrate.api.nvidia.com/v1
+x-ollama3-commons: &ollama3-commons
+  custom_llm_provider: ollama
+  api_base: http://ollama.home
+
+model_list:
+  - model_name: llama-3.1-instruct:70b    # <- 128k ctx window
+    litellm_params:
+      model: openai/meta/llama-3.1-70b-instruct
+      <<: *nim-commons
+  # Ollama
+  - model_name: qwen3.5:0.8b
+    litellm_params:
+      model: qwen3.5:0.8b
+      <<: *ollama3-commons
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  # https://docs.litellm.ai/docs/completion/drop_params
+  drop_params: true
+
+litellm_settings:
+  # FALLBACKS (https://docs.litellm.ai/docs/proxy/reliability)
+  num_retries: 2        # <- Times to retry call
+  request_timeout: 600  # <- Raise Timeout error if call takes longer than
+  fallbacks:
+    - llama-3.1-instruct:70b:
+      - qwen3.5:0.8b
+  allowed_fails: 3      # <- Cooldown model if it fails > 1 call in a minute.
+  cooldown_time: 30     # <- How long to cooldown model if fails/min > allowed_fails
+
+
+
+#
+# curl http://${LITELLM_INSTANCE}/v1/chat/completions \
+#   -H "Content-Type: application/json" \
+#   -H "Authorization: Bearer ${BEARER}" \
+#   -d '{
+#     "model": "qwen3.5-397b-a17b", "max_tokens": 1000, "temperature": 0.2,
+#     "messages": [
+#       {"role": "user", "content": "ping..."}
+#     ]
+#   }'
+#
+# curl http://${LITELLM_INSTANCE}/v1/models \
+#   -H "Authorization: Bearer ${BEARER}"
+#

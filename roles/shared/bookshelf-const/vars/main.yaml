@@ -97,6 +97,10 @@ bookshelf_const_version: # <- Last update: 2026-03-26
   jotty: 1.21.1
   jotty_tag_rex: '^\d+\.\d+\.\d+$$'
   jotty_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://github.com/BerriAI/litellm/pkgs/container/litellm
+  litellm: v1.82.3-stable.patch.2
+  litellm_tag_rex: '-stable'
+  litellm_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
   mealie: v3.13.1
   mealie_tag_rex: '^v\d+\.\d+\.\d+$$'
@@ -242,6 +246,8 @@ bookshelf_const_port:
     client_discovery: 7359
   joplin_server:
     web_ui: 8092
+  litellm:
+    tcp: 8121 # <- Last (8081+)
   mealie:
     web_ui: 8100
   memos:
@@ -273,7 +279,7 @@ bookshelf_const_port:
   jotty:
     web_ui: 8108
   searxng:
-    web_ui: 8120 # <- Last (8081+)
+    web_ui: 8120
   silverbullet:
     web_ui: 8103
   smtp4dev:

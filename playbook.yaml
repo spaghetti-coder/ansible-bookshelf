@@ -171,6 +171,10 @@
       tags: [jotty, upgradable]
       when: jotty_managed | default(false)
 
+    - role: litellm
+      tags: [litellm, upgradable]
+      when: litellm_managed | default(false)
+
     - role: mealie
       tags: [mealie, upgradable]
       when: mealie_managed | default(false)
