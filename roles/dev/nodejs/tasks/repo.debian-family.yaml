@@ -15,10 +15,11 @@
 
     - name: Add repository
       ansible.builtin.apt_repository:
-        repo: "deb [signed-by={{ keyfile }}] https://deb.nodesource.com/node_{{ version }}.x nodistro main"
+        repo: "deb [signed-by={{ keyfile }} arch={{ nodejs_arch }}] {{ url }} nodistro main"
         state: present
         filename: nodesource
         update_cache: true
       register: nodejs_repo
       vars:
         version: "{{ nodejs_version | default(bookshelf_const_version.nodejs_version, true) }}"
+        url: https://deb.nodesource.com/node_{{ version }}.x
