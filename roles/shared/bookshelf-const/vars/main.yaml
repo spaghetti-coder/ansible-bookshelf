@@ -54,7 +54,7 @@ bookshelf_const_version: # <- Last update: 2026-03-26
   duplicati_tag_rex: '^v\d+\.\d+\.\d+.\d+.*-ls\d+$$'
   duplicati_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-  filebrowser: v2.62.1-s6
+  filebrowser: v2.62.2-s6
   filebrowser_tag_rex: '^v\d+\.\d+\.\d+-s6$$'
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/fireflyiii/core
@@ -99,10 +99,10 @@ bookshelf_const_version: # <- Last update: 2026-03-26
   jotty_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/BerriAI/litellm/pkgs/container/litellm
   litellm: v1.82.3-stable.patch.2
-  litellm_tag_rex: '-stable'
+  litellm_tag_rex: '^v\d+\.\d+\.\d+.*-stable'
   litellm_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
-  mealie: v3.13.1
+  mealie: v3.14.0
   mealie_tag_rex: '^v\d+\.\d+\.\d+$$'
   mealie_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/neosmemo/memos/tags
@@ -130,7 +130,7 @@ bookshelf_const_version: # <- Last update: 2026-03-26
   olivetin: 2025.11.25 # <- TODO: switch to 3k some day before 2028
   olivetin_tag_rex: '^20\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/ollama/ollama/tags
-  ollama: 0.18.3
+  ollama: 0.19.0
   ollama_tag_rex: '^\d+\.\d+\.\d+$$'
   ollama_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/open-webui/open-webui/releases
@@ -142,7 +142,7 @@ bookshelf_const_version: # <- Last update: 2026-03-26
   opengist_tag_rex: '^\d+\.\d+\.\d+$$'
   opengist_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
-  pairdrop: v1.11.2-ls133
+  pairdrop: v1.11.2-ls134
   pairdrop_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
   pairdrop_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
@@ -154,11 +154,11 @@ bookshelf_const_version: # <- Last update: 2026-03-26
   portainer_agent_tag_rex: '^\d+\.\d+\.\d+-alpine$$'
   portainer_agent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.4-r2-ls446
+  qbittorrent: 5.1.4-r2-ls447
   qbittorrent_tag_rex: '^\d+\.\d+\.\d{1,2}-.*-ls\d+$$'
   qbittorrent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/searxng/searxng/tags
-  searxng: 2026.3.26-e73442400
+  searxng: 2026.3.29-c8208fa8b
   searxng_tag_rex: '^\d+\.\d+\.\d{1,2}-'
   searxng_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
@@ -201,7 +201,7 @@ bookshelf_const_version: # <- Last update: 2026-03-26
   wg_easy: 15.2.2
   wg_easy_tag_rex: '^\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/linuxserver/wikijs/tags?name=-ls
-  wikijs: v2.5.312-ls208
+  wikijs: v2.5.312-ls209
   wikijs_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
   wikijs_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   wikijs_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
