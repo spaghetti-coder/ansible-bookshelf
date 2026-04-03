@@ -1,0 +1,12 @@
+---
+opencode_cli_managed: false
+opencode_cli_extra_deps:
+  # - "@ai-sdk/openai-compatible@2.0.37"  # <- Required to connect to openai compat endpoints
+opencode_cli_configs: # <- opencode.jsonc to user
+  # - user: "{{ ansible_facts.user_id }}"
+  #   config: "{{ lookup('file', 'opencode.jsonc') }}" # <- (Optional) See demo in files
+  #   # This two require envar pre-installed for this user
+  #   vars: |     # <- (Optional) Will go to opencode.sh under user envar.d
+  #     export OPENAI_API_BASE=https://openrouter.ai/api/v1
+  #   secrets: |  # <- (Optional) Will go to opencode.secret.sh under user envar.d
+  #     export OPENAI_API_KEY=foobar

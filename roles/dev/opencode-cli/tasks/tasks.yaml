@@ -1,0 +1,20 @@
+---
+- name: Install
+  community.general.npm:
+    name: "{{ item }}"
+    global: true
+  loop: "{{ [main_pkg] + (opencode_cli_extra_deps | default([], true)) }}"
+  vars:
+    main_pkg: "opencode-ai"
+  become: true
+
+- name: Load setup users
+  ansible.builtin.include_tasks: { file: setup-user.yaml }
+  loop: "{{ opencode_cli_configs | default([], true) }}"
+  loop_control:
+    loop_var: config
+    label: "{{ config.user }}"
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    opencode_cli_done: true
