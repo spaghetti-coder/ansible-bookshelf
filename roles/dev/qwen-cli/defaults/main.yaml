@@ -1,0 +1,6 @@
+---
+# VERSIONS:
+#   https://github.com/QwenLM/qwen-code/releases
+# ---
+qwen_cli_managed: false
+qwen_cli_version: # Leave blank to leverage bookshelf configuration

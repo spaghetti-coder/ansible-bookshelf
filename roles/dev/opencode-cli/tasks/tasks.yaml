@@ -1,11 +1,9 @@
 ---
 - name: Install
   community.general.npm:
-    name: "{{ item }}"
+    name: opencode-ai
+    version: "{{ opencode_cli_version | default(bookshelf_const_version.opencode_cli, true) }}"
     global: true
-  loop: "{{ [main_pkg] + (opencode_cli_extra_deps | default([], true)) }}"
-  vars:
-    main_pkg: "opencode-ai"
   become: true
 
 - name: Load setup users

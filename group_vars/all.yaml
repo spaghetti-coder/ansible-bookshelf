@@ -2453,9 +2453,11 @@ nodejs_version: # Leave blank to leverage bookshelf defaults
 # ========================
 #       OPENCODE-CLI
 # ========================
+# VERSIONS:
+#   https://github.com/anomalyco/opencode/releases
+# ---
 opencode_cli_managed: "{{ factum_os_like in ['ubuntu'] }}"
-opencode_cli_extra_deps:
-  - "@ai-sdk/openai-compatible@2.0.37"  # <- Required to connect to openai compat endpoints
+opencode_cli_version: # Leave blank to leverage bookshelf configuration
 opencode_cli_configs:   # <- opencode.jsonc to user
   - user: "{{ ansible_facts.user_id }}"
     config: "{{ lookup('file', 'opencode.jsonc') }}"
@@ -2463,3 +2465,12 @@ opencode_cli_configs:   # <- opencode.jsonc to user
       export OPENAI_API_BASE=https://openrouter.ai/api/v1
     secrets: |  # <- (Optional) Will go to opencode.secret.sh under user envar.d
       export OPENAI_API_KEY=foobar
+
+# ====================
+#       QWEN-CLI
+# ====================
+# VERSIONS:
+#   https://github.com/QwenLM/qwen-code/releases
+# ---
+qwen_cli_managed: "{{ factum_os_like in ['ubuntu'] }}"
+qwen_cli_version: # Leave blank to leverage bookshelf configuration

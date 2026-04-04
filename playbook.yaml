@@ -416,5 +416,9 @@
       when: nodejs_managed | default(false)
 
     - role: opencode-cli
-      tags: [opencode-cli]
+      tags: [opencode-cli, upgradable]
       when: opencode_cli_managed | default(false)
+
+    - role: qwen-cli
+      tags: [qwen-cli, upgradable]
+      when: qwen_cli_managed | default(false)
