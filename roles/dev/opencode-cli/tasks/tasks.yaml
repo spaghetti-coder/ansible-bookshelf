@@ -2,7 +2,6 @@
 - name: Install
   community.general.npm:
     name: opencode-ai
-    version: "{{ opencode_cli_version | default(bookshelf_const_version.opencode_cli, true) }}"
     global: true
   become: true
 

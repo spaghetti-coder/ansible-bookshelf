@@ -24,10 +24,6 @@ bookshelf_const_version: # <- Last update: 2026-03-26
   nodejs_version: 24
   # https://github.com/tmux/tmux-builds/releases
   tmux: "3.6a"
-  # https://github.com/anomalyco/opencode/releases
-  opencode_cli: v1.3.13
-  # https://github.com/QwenLM/qwen-code/releases
-  qwen_cli: v0.14.0
   #
   # SERVICE
   #

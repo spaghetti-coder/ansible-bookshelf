@@ -2,6 +2,5 @@
 - name: Install
   community.general.npm:
     name: "@qwen-code/qwen-code"
-    version: "{{ qwen_cli_version | default(bookshelf_const_version.qwen_cli, true) }}"
     global: true
   become: true

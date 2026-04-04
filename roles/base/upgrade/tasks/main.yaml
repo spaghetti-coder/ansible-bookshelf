@@ -1,7 +1,11 @@
 ---
 - name: OS specific upgrade
   ansible.builtin.include_tasks:
-    file: "upgrade.{{ factum_os_family }}-family.yaml"
+    file: upgrade.{{ factum_os_family }}-family.yaml
+
+- name: NPM upgrade
+  ansible.builtin.include_tasks:
+    file: upgrade.npm.yaml
 
 - name: Alt pms
   ansible.builtin.include_tasks:

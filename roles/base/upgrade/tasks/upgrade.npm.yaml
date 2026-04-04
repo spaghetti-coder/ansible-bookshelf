@@ -1,0 +1,14 @@
+---
+- name: Check npm installation
+  ansible.builtin.command:      # noqa: risky-shell-pipe
+    argv: [npm, --version]
+  register: upgrade_npm_version
+  changed_when: false
+  failed_when: false
+
+- name: Upgrade npm packages
+  community.general.npm:
+    global: true
+    state: latest
+  become: true
+  when: upgrade_npm_version.rc < 1

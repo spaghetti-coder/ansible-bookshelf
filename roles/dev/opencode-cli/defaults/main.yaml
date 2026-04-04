@@ -1,9 +1,5 @@
 ---
-# VERSIONS:
-#   https://github.com/anomalyco/opencode/releases
-# ---
 opencode_cli_managed: false
-opencode_cli_version: # Leave blank to leverage bookshelf configuration
 opencode_cli_configs: # <- opencode.jsonc to user
   # - user: "{{ ansible_facts.user_id }}"
   #   config: "{{ lookup('file', 'opencode.jsonc') }}" # <- (Optional) See demo in files

@@ -2775,11 +2775,7 @@ nodejs_version: # Leave blank to leverage bookshelf defaults
 # ========================
 #       OPENCODE-CLI
 # ========================
-# VERSIONS:
-#   https://github.com/anomalyco/opencode/releases
-# ---
 opencode_cli_managed: false
-opencode_cli_version: # Leave blank to leverage bookshelf configuration
 opencode_cli_configs: # <- opencode.jsonc to user
   # - user: "{{ ansible_facts.user_id }}"
   #   config: "{{ lookup('file', 'opencode.jsonc') }}" # <- (Optional) See demo in files
@@ -2792,8 +2788,4 @@ opencode_cli_configs: # <- opencode.jsonc to user
 # ====================
 #       QWEN-CLI
 # ====================
-# VERSIONS:
-#   https://github.com/QwenLM/qwen-code/releases
-# ---
 qwen_cli_managed: false
-qwen_cli_version: # Leave blank to leverage bookshelf configuration
