@@ -235,6 +235,10 @@
       tags: [searxng, upgradable]
       when: searxng_managed | default(false)
 
+    - role: searxng-mcp
+      tags: [searxng-mcp, upgradable]
+      when: searxng_mcp_managed | default(false)
+
     - role: silverbullet
       tags: [silverbullet, upgradable]
       when: silverbullet_managed | default(false)

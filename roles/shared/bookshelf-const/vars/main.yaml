@@ -161,6 +161,10 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   searxng: 2026.4.10-67af4894d
   searxng_tag_rex: '^\d+\.\d+\.\d{1,2}-'
   searxng_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://github.com/spaghetti-coder/searxng-mcp/pkgs/container/searxng-mcp
+  searxng_mcp: v0.0.4
+  searxng_mcp_tag_rex: '^v\d+\.\d+\.\d+$$'
+  searxng_mcp_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: 2.5.2
   silverbullet_tag_rex: '^\d+\.\d+\.\d+$$'
@@ -247,7 +251,7 @@ bookshelf_const_port:
   joplin_server:
     web_ui: 8092
   litellm:
-    tcp: 8121 # <- Last (8081+)
+    tcp: 8121
   mealie:
     web_ui: 8100
   memos:
@@ -280,6 +284,8 @@ bookshelf_const_port:
     web_ui: 8108
   searxng:
     web_ui: 8120
+  searxng_mcp:
+    tcp: 8122   # <- Last (8081+)
   silverbullet:
     web_ui: 8103
   smtp4dev:

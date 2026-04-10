@@ -1752,6 +1752,44 @@ searxng_ts_funnelled: false # Expose to the world via TS funnel. Use with cautio
 searxng_ts_hostname: "{{ searxng_service_name }}"
 searxng_ts_auth_key:
 
+# =======================
+#       SEARXNG-MCP
+# =======================
+# VERSIONS:
+#   - https://github.com/spaghetti-coder/searxng-mcp/pkgs/container/searxng-mcp
+# -----
+searxng_mcp_managed: "{{ factum_os_family in ['alpine'] }}"
+searxng_mcp_enabled: true
+searxng_mcp_version:            # Leave blank to leverage bookshelf configuration
+searxng_mcp_compose_dir:        # Unless you know ..., leave blank to leverage bookshelf configuration
+searxng_mcp_owner: "{{ ansible_facts.user_id }}"
+searxng_mcp_conf_dir: ~/conf/searxng-mcp
+searxng_mcp_service_name: searxng-mcp
+searxng_mcp_hostname: "{{ searxng_mcp_service_name }}"
+searxng_mcp_vhost: "{{ searxng_mcp_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+searxng_mcp_tcp_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
+# (REQUIRED) Comma-separated list of SearXNG URLs (external SearXNG instances)
+searxng_mcp_urls: http://searxng:8888
+# Optional extra env vars
+searxng_mcp_extra_env: |
+  # QUEUE_DELAY_MIN=4000
+  # QUEUE_DELAY_MAX=8000
+# WUD settings
+searxng_mcp_wudded: true        # Watched by WUD
+searxng_mcp_tag_rex:            # Leave blank to leverage bookshelf configuration
+# ----------
+# The following settings configure SearXNG MCP to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+searxng_mcp_tailscaled: false
+searxng_mcp_ts_version:         # Leave blank to leverage bookshelf configuration
+searxng_mcp_ts_service_name: "{{ searxng_mcp_service_name }}-ts"
+searxng_mcp_ts_funnelled: false # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+searxng_mcp_ts_hostname: "{{ searxng_mcp_service_name }}"
+searxng_mcp_ts_auth_key:
+
 # ========================
 #       SILVERBULLET
 # ========================
