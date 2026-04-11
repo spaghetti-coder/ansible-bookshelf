@@ -54,7 +54,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   duplicati_tag_rex: '^v\d+\.\d+\.\d+.\d+.*-ls\d+$$'
   duplicati_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
-  filebrowser: v2.63.1-s6
+  filebrowser: v2.63.2-s6
   filebrowser_tag_rex: '^v\d+\.\d+\.\d+-s6$$'
   filebrowser_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/fireflyiii/core
@@ -102,7 +102,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   litellm_tag_rex: '^v\d+\.\d+\.\d+.*-stable'
   litellm_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
-  mealie: v3.14.0
+  mealie: v3.15.0
   mealie_tag_rex: '^v\d+\.\d+\.\d+$$'
   mealie_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/neosmemo/memos/tags
@@ -113,10 +113,10 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   memos_tag_rex: '^\d+\.\d+\.\d+$$'
   memos_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
-  metube: 2026.04.10
+  metube: 2026.04.13
   metube_tag_rex: '^\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/deluan/navidrome/tags
-  navidrome: 0.61.1
+  navidrome: 0.61.2
   navidrome_tag_rex: '^\d+\.\d+\.\d+$$'
   navidrome_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/nginxproxy/nginx-proxy/tags?name=alpine
@@ -130,7 +130,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   olivetin: 2025.11.25 # <- TODO: switch to 3k some day before 2028
   olivetin_tag_rex: '^20\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/ollama/ollama/tags
-  ollama: 0.20.4
+  ollama: 0.20.6
   ollama_tag_rex: '^\d+\.\d+\.\d+$$'
   ollama_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/open-webui/open-webui/releases
@@ -142,7 +142,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   opengist_tag_rex: '^\d+\.\d+\.\d+$$'
   opengist_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/pairdrop/tags?name=-ls
-  pairdrop: v1.11.2-ls134
+  pairdrop: v1.11.2-ls135
   pairdrop_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
   pairdrop_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/portainer/portainer-ce/tags?name=alpine
@@ -154,15 +154,15 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   portainer_agent_tag_rex: '^\d+\.\d+\.\d+-alpine$$'
   portainer_agent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.4-r2-ls448
+  qbittorrent: 5.1.4-r3-ls449
   qbittorrent_tag_rex: '^\d+\.\d+\.\d{1,2}-.*-ls\d+$$'
   qbittorrent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/searxng/searxng/tags
-  searxng: 2026.4.10-67af4894d
+  searxng: 2026.4.13-ee66b070a
   searxng_tag_rex: '^\d+\.\d+\.\d{1,2}-'
   searxng_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/spaghetti-coder/searxng-mcp/pkgs/container/searxng-mcp
-  searxng_mcp: v0.0.4
+  searxng_mcp: v0.0.5
   searxng_mcp_tag_rex: '^v\d+\.\d+\.\d+$$'
   searxng_mcp_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
@@ -192,7 +192,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   uptime_kuma_tag_rex: '^\d+\.\d+\.\d+$$'
   uptime_kuma_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
-  vaultwarden: 1.35.4-alpine
+  vaultwarden: 1.35.7-alpine
   vaultwarden_tag_rex: '^\d+\.\d+\.\d+-alpine$$'
   # https://hub.docker.com/r/vikunja/vikunja/tags
   vikunja: 2.3.0
@@ -205,7 +205,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   wg_easy: 15.2.2
   wg_easy_tag_rex: '^\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/linuxserver/wikijs/tags?name=-ls
-  wikijs: v2.5.312-ls209
+  wikijs: v2.5.312-ls210
   wikijs_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
   wikijs_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   wikijs_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
