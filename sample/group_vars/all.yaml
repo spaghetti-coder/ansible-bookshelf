@@ -1233,6 +1233,7 @@ litellm_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/lite
   # References:
   # * https://docs.litellm.ai/docs/proxy/configs
   # ----------
+  # LITELLM_LOG=DEBUG   # or INFO
 litellm_secrets_env: |  # "{{ lookup('template', playbook_dir + '/resources/gatus.secret.env.j2') }}"
   # Same as extra env, but for secrets
   # ----------
