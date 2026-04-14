@@ -1,10 +1,25 @@
 ---
 opencode_cli_managed: false
 opencode_cli_configs: # <- opencode.jsonc to user
-  # - user: "{{ ansible_facts.user_id }}"
-  #   config: "{{ lookup('file', 'opencode.jsonc') }}" # <- (Optional) See demo in files
-  #   # This two require envar pre-installed for this user
-  #   vars: |     # <- (Optional) Will go to opencode.sh under user envar.d
-  #     export OPENAI_API_BASE=https://openrouter.ai/api/v1
+  # - user: "{{ ansible_facts.user_id }}"               # <- (REQUIRED, the rest is optional)
+  #   config: "{{ lookup('file', 'opencode.jsonc') }}"  # <- See demo in files
+  #   agents_md: "{{ lookup('file', 'AGENTS.md') }}"    # <- See demo in files
+  #   # This requires envar for this user
   #   secrets: |  # <- (Optional) Will go to opencode.secret.sh under user envar.d
   #     export OPENAI_API_KEY=foobar
+  #   # Only available for systemd based systems
+  #   #   Health endpoint: http://<host>/global/health
+  #   web:                                    # <- (Optional) Web server, all fields optional
+  #     enabled: false                        # "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
+  #     port:                                 # <- Leave blank to leverage bookshelf defaults
+  #     # This will be used for the service.
+  #     # Not supported by service:
+  #     #   - `export` prefix to variables
+  #     #   - comments on the same line after variables
+  #     secrets: |
+  #       # Password protect the web server (optional, but recommended)
+  #       # USERNAME defaults to 'opencode'. If no PASSWORD, will be unprotected
+  #       OPENCODE_SERVER_USERNAME=admin
+  #       OPENCODE_SERVER_PASSWORD=changeme
+  #       # Secrets from main user section must be duplicated
+  #       OPENAI_API_KEY=foobar

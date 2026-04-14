@@ -4,7 +4,23 @@
     "ollama": {
       "name": "Ollama", "npm": "@ai-sdk/openai-compatible",
       "options": { "baseURL": "http://localhost:11434/v1" },
-      "models": { "qwen3-coder": { "name": "qwen3-coder" } }
+      "models": { "qwen3.5:9b": { "name": "qwen3.5:9b" } }
+    }
+  },
+  "mcp": {
+    "gitmcp": {
+      //  For per project using consider using more specific repos to avoid halucination,
+      //  e.g. https://gitmcp.io/facebook/react
+      //    https://gitmcp.io/
+      "enabled": true, "type": "remote",
+      "url": "https://gitmcp.io/docs"
+    },
+    "chrome-devtools": {
+      "enabled": false, "type": "local",
+      "command": [
+        "npx", "-y", "chrome-devtools-mcp@latest",
+        "--no-usage-statistics", "--headless"
+      ]
     }
   }
 }

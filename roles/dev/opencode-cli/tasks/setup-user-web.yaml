@@ -1,0 +1,44 @@
+---
+- name: Config
+  when: (config.config | default('', true) | length) > 0
+  become: true
+  become_user: "{{ config.user }}"
+  vars:
+    service_file: "~{{ config.user }}/.config/systemd/user/opencode-web.service"
+  block:
+    - name: Create systemd user directory
+      ansible.builtin.file:
+        path: "{{ service_file | dirname }}"
+        state: directory
+        mode: '0755'
+      become: true
+      become_user: "{{ config.user }}"
+
+    - name: Create service file
+      ansible.builtin.file:
+        src: "{{ web_dir }}/web.service"
+        dest: "{{ service_file }}"
+        state: link
+
+    - name: Apply opencode-web service state
+      ansible.builtin.systemd_service:
+        name: "{{ service_file | basename }}"
+        enabled: true
+        state: "{{ state }}"
+        daemon_reload: true
+        scope: user
+      vars:
+        state: "{{ opencode_web_conffiles_state.changed | default(false) | ternary('restarted', 'started') }}"
+
+    - name: Get linger status     # noqa: command-instead-of-shell risky-shell-pipe
+      ansible.builtin.shell: loginctl show-user {{ config.user }} --property=Linger | grep -q '=yes'
+      register: opencode_linger_status
+      changed_when: false
+      failed_when: false
+
+- name: Enable linger for user
+  ansible.builtin.command:
+    argv: ['loginctl', 'enable-linger', "{{ config.user }}"]
+  become: true
+  changed_when: true
+  when: opencode_linger_status.rc != 0

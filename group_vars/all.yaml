@@ -2493,12 +2493,27 @@ nodejs_version: # Leave blank to leverage bookshelf defaults
 # ========================
 opencode_cli_managed: "{{ factum_os_like in ['ubuntu'] }}"
 opencode_cli_configs:   # <- opencode.jsonc to user
-  - user: "{{ ansible_facts.user_id }}"
-    config: "{{ lookup('file', 'opencode.jsonc') }}"
-    vars: |     # <- (Optional) Will go to opencode.sh under user envar.d
-      export OPENAI_API_BASE=https://openrouter.ai/api/v1
+  - user: "{{ ansible_facts.user_id }}"               # <- (REQUIRED, the rest is optional)
+    config: "{{ lookup('file', 'opencode.jsonc') }}"  # <- See demo in files
+    agents_md: "{{ lookup('file', 'AGENTS.md') }}"    # <- See demo in files
+    # This requires envar for this user
     secrets: |  # <- (Optional) Will go to opencode.secret.sh under user envar.d
       export OPENAI_API_KEY=foobar
+    # Only available for systemd based systems
+    web:                                    # <- (Optional) Web server, all fields optional
+      enabled: "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
+      port:
+      # This will be used for the service.
+      # Not supported by service:
+      #   - `export` prefix to variables
+      #   - comments on the same line after variables
+      secrets: |
+        # Password protect the web server (optional, but recommended)
+        # USERNAME defaults to 'opencode'. If no PASSWORD, will be unprotected
+        OPENCODE_SERVER_USERNAME=admin
+        OPENCODE_SERVER_PASSWORD=changeme
+        # Secrets from main user section must be duplicated
+        OPENAI_API_KEY=foobar
 
 # ====================
 #       QWEN-CLI

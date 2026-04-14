@@ -270,6 +270,8 @@ bookshelf_const_port:
     web_ui: 8115
   opengist:
     web_ui: 8119
+  opencode:
+    web_ui: 8123   # <- Last (8081+)
   pairdrop:
     web_ui: 8104
   portainer:
@@ -285,7 +287,7 @@ bookshelf_const_port:
   searxng:
     web_ui: 8120
   searxng_mcp:
-    tcp: 8122   # <- Last (8081+)
+    tcp: 8122
   silverbullet:
     web_ui: 8103
   smtp4dev:

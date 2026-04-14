@@ -1,0 +1,54 @@
+---
+- name: Envar         # <- Needed for envar_user_dir
+  ansible.builtin.import_role: { name: envar }
+
+- name: Config
+  when: (config.config | default('', true) | length) > 0
+  become: true
+  become_user: "{{ config.user }}"
+  block:
+    - name: Find opencode binary        # noqa: command-instead-of-shell
+      ansible.builtin.shell: command -v opencode
+      register: opencode_binary_result
+      changed_when: false
+
+    - name: Create directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop: ["{{ conf_dir }}", "{{ web_dir }}"]
+
+    - name: Create secrets
+      ansible.builtin.template:
+        src: secret.env.j2
+        dest: "{{ envar_user_dir }}/500-opencode.secret.sh"
+        mode: '0600'
+
+    - name: Create config file
+      ansible.builtin.copy:
+        content: |
+          {{- config.config }}
+        dest: "{{ conf_dir }}/opencode.jsonc"
+        mode: '0600'
+      when: config.config | default('', true) | length > 0
+
+    - name: Create AGENTS.md
+      ansible.builtin.copy:
+        content: |
+          {{ config.agents_md }}
+        dest: "{{ conf_dir }}/AGENTS.md"
+        mode: '0600'
+      when: config.agents_md | default('', true) | length > 0
+
+    - name: Create web config
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ web_dir }}/{{ item }}"
+        mode: '0600'
+      loop:
+        - web.service
+        - web.secret.env
+      register: opencode_web_conffiles_state
+      vars:
+        opencode_binary_path: "{{ opencode_binary_result.stdout }}"

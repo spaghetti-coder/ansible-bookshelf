@@ -1,0 +1,21 @@
+# REFERENCES:
+#   https://stacktoheap.com/blog/2026/02/08/how-i-code-from-the-gym/
+#   https://opencode.ai/docs/web/
+
+{% set bin_path = opencode_binary_path | default(opencode_web_defaults.bin_path, true) %}
+{% set port = web_config.port | default(opencode_web_defaults.port, true) %}
+{% set hostname = opencode_web_defaults.hostname %}
+[Unit]
+Description=OpenCode Web Server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h
+EnvironmentFile=%h/.config/opencode/web/web.secret.env
+ExecStart={{ bin_path }} web --port {{ port }} --hostname {{ hostname }}
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

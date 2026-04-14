@@ -1,45 +1,13 @@
 ---
-- name: Envar
-  ansible.builtin.import_role: { name: envar }
-
-- name: Setup
-  become: true
-  become_user: "{{ config.user }}"
+- name: User
+  vars:
+    conf_dir: ~/.config/opencode
+    web_dir: "{{ conf_dir }}/web"
+    web_config: "{{ config.web | default({}) }}"
   block:
-    - name: Config
-      when: (config.config | default('', true) | length) > 0
-      vars:
-        dir: ~/.config/opencode
-      block:
-        - name: Create config directory
-          ansible.builtin.file:
-            path: "{{ dir }}"
-            state: directory
-            mode: '0700'
+    - name: Setup config
+      ansible.builtin.include_tasks: { file: setup-user-config.yaml }
 
-        - name: Create config file
-          ansible.builtin.copy:
-            content: |
-              {{ config.config }}
-            dest: "{{ dir }}/opencode.jsonc"
-            mode: '0600'
-
-    - name: Create vars
-      ansible.builtin.copy:
-        content: |
-          {{ config.vars }}
-        dest: "{{ envar_user_dir }}/500-opencode.sh"
-        mode: '0600'
-      when:
-        - config.vars | default('', true) | length > 0
-        - envar_user_dir | default('', true) | length > 0
-
-    - name: Create secrets
-      ansible.builtin.copy:
-        content: |
-          {{ config.secrets }}
-        dest: "{{ envar_user_dir }}/500-opencode.secret.sh"
-        mode: '0600'
-      when:
-        - config.secrets | default('', true) | length > 0
-        - envar_user_dir | default('', true) | length > 0
+    - name: Setup web
+      ansible.builtin.include_tasks: { file: setup-user-web.yaml }
+      when: web_config.enabled | default(false)
