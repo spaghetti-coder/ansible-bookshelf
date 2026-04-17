@@ -1,0 +1,20 @@
+---
+- name: Install dependencies
+  ansible.builtin.package:
+    name: "{{ packages }}"
+  vars:
+    packages_map:
+      _default: [python3-setuptools, make, build-essential]
+      redhat: [python3-setuptools, make, gcc, gcc-c++]
+    packages: "{{ packages_map[factum_os_family] | default(packages_map['_default']) }}"
+  become: true
+
+- name: Install
+  community.general.npm:
+    name: "@siteboon/claude-code-ui"
+    global: true
+  become: true
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    cloudcli_done: true

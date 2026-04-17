@@ -2475,6 +2475,11 @@ whatsie_install_method: flatpak
 ###       DEV       ###
 #######################
 
+# ====================
+#       CLOUDCLI
+# ====================
+cloudcli_managed: "{{ factum_os_family not in ['alpine'] }}"
+
 # ==================
 #       GOLANG
 # ==================

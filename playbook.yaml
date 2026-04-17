@@ -411,6 +411,10 @@
   tags: [dev]
   hosts: all
   roles:
+    - role: cloudcli
+      tags: [cloudcli]
+      when: cloudcli_managed | default(false)
+
     - role: golang
       tags: [golang]
       when: golang_managed | default(false)
