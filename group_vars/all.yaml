@@ -2503,10 +2503,7 @@ opencode_cli_configs:   # <- opencode.jsonc to user
     web:                                    # <- (Optional) Web server, all fields optional
       enabled: "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
       port:
-      # This will be used for the service.
-      # Not supported by service:
-      #   - `export` prefix to variables
-      #   - comments on the same line after variables
+      hostname: 0.0.0.0                     # <- Defaults to 127.0.0.1
       secrets: |
         # Password protect the web server (optional, but recommended)
         # USERNAME defaults to 'opencode'. If no PASSWORD, will be unprotected

@@ -42,6 +42,10 @@ services:
       - "{{ port_kv }}"
 {% endfor %}
 {% endif %}{#                       <- PORTS END #}
+{% if not caddy_host_net %}
+    extra_hosts:  # <- Access host services via "host.docker.internal"
+      - host.docker.internal:host-gateway
+{% endif %}
 {% if caddy_host_net %}{#           <- NETMODE START #}
     network_mode: host
 {% elif not proxy_enabled %}

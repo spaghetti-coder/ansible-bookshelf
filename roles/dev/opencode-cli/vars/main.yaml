@@ -1,5 +1,5 @@
 opencode_web_defaults:
   enabled: false
   port: "{{ bookshelf_const_port.opencode.web_ui }}"
-  hostname: "0.0.0.0"
+  hostname: "127.0.0.1"
   bin_path: "/usr/bin/opencode"

@@ -2830,17 +2830,21 @@ opencode_cli_configs: # <- opencode.jsonc to user
   #   web:                                    # <- (Optional) Web server, all fields optional
   #     enabled: false                        # "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
   #     port:                                 # <- Leave blank to leverage bookshelf defaults
+  #     hostname:                             # <- Defaults to 127.0.0.1
   #     # This will be used for the service.
   #     # Not supported by service:
   #     #   - `export` prefix to variables
   #     #   - comments on the same line after variables
   #     secrets: |
-  #       # Password protect the web server (optional, but recommended)
-  #       # USERNAME defaults to 'opencode'. If no PASSWORD, will be unprotected
-  #       OPENCODE_SERVER_USERNAME=admin
-  #       OPENCODE_SERVER_PASSWORD=changeme
   #       # Secrets from main user section must be duplicated
   #       OPENAI_API_KEY=foobar
+  #       #
+  #       # Password protect the web server (optional, but recommended). USERNAME defaults to 'opencode'. If no PASSWORD,
+  #       # will be unprotected. This can be used with hostname != 127.0.0.1.
+  #       # Another (IMO, better) strategy is to leave hostname = 127.0.0.1 and protect access on reverse proxy level.
+  #       #
+  #       # OPENCODE_SERVER_USERNAME=admin
+  #       # OPENCODE_SERVER_PASSWORD=changeme
 
 # ====================
 #       QWEN-CLI

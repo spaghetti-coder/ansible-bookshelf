@@ -4,7 +4,7 @@
 
 {% set bin_path = opencode_binary_path | default(opencode_web_defaults.bin_path, true) %}
 {% set port = web_config.port | default(opencode_web_defaults.port, true) %}
-{% set hostname = opencode_web_defaults.hostname %}
+{% set hostname = web_config.hostname | default(opencode_web_defaults.hostname, true) %}
 [Unit]
 Description=OpenCode Web Server
 After=network.target
