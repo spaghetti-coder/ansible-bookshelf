@@ -1,4 +1,19 @@
 ---
+- name: Get linger status     # noqa: command-instead-of-shell risky-shell-pipe
+  ansible.builtin.shell: loginctl show-user {{ config.user }} --property=Linger | grep -q '=yes'
+  become: true
+  become_user: "{{ config.user }}"
+  register: opencode_linger_status
+  changed_when: false
+  failed_when: false
+
+- name: Enable linger for user
+  ansible.builtin.command:
+    argv: ['loginctl', 'enable-linger', "{{ config.user }}"]
+  become: true
+  changed_when: true
+  when: opencode_linger_status.rc != 0
+
 - name: Config
   when: (config.config | default('', true) | length) > 0
   become: true
@@ -29,16 +44,3 @@
         scope: user
       vars:
         state: "{{ opencode_web_conffiles_state.changed | default(false) | ternary('restarted', 'started') }}"
-
-    - name: Get linger status     # noqa: command-instead-of-shell risky-shell-pipe
-      ansible.builtin.shell: loginctl show-user {{ config.user }} --property=Linger | grep -q '=yes'
-      register: opencode_linger_status
-      changed_when: false
-      failed_when: false
-
-- name: Enable linger for user
-  ansible.builtin.command:
-    argv: ['loginctl', 'enable-linger', "{{ config.user }}"]
-  become: true
-  changed_when: true
-  when: opencode_linger_status.rc != 0
