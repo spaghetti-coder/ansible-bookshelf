@@ -28,7 +28,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   # SERVICE
   #
   # https://hub.docker.com/r/adguard/adguardhome/tags
-  adguard: v0.107.73
+  adguard: v0.107.74
   adguard_tag_rex: '^v\d+\.\d+\.\d+$$'
   adguard_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/advplyr/audiobookshelf/tags
@@ -94,15 +94,15 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   joplin_server_tag_rex: '^\d+\.\d+\.\d+$$'
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   # https://github.com/fccview/jotty/pkgs/container/jotty
-  jotty: 1.21.1
+  jotty: 1.22.0
   jotty_tag_rex: '^\d+\.\d+\.\d+$$'
   jotty_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/BerriAI/litellm/pkgs/container/litellm
-  litellm: v1.83.3-stable
+  litellm: v1.83.3-stable.patch.1
   litellm_tag_rex: '^v\d+\.\d+\.\d+.*-stable'
   litellm_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
-  mealie: v3.15.1
+  mealie: v3.15.2
   mealie_tag_rex: '^v\d+\.\d+\.\d+$$'
   mealie_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/neosmemo/memos/tags
@@ -113,7 +113,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   memos_tag_rex: '^\d+\.\d+\.\d+$$'
   memos_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/alexta69/metube/pkgs/container/metube
-  metube: 2026.04.13
+  metube: 2026.04.16
   metube_tag_rex: '^\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/deluan/navidrome/tags
   navidrome: 0.61.2
@@ -130,7 +130,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   olivetin: 2025.11.25 # <- TODO: switch to 3k some day before 2028
   olivetin_tag_rex: '^20\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/ollama/ollama/tags
-  ollama: 0.20.7
+  ollama: 0.21.0
   ollama_tag_rex: '^\d+\.\d+\.\d+$$'
   ollama_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/open-webui/open-webui/releases
@@ -154,11 +154,11 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   portainer_agent_tag_rex: '^\d+\.\d+\.\d+-alpine$$'
   portainer_agent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.4-r3-ls449
+  qbittorrent: 5.1.4-r3-ls450
   qbittorrent_tag_rex: '^\d+\.\d+\.\d{1,2}-.*-ls\d+$$'
   qbittorrent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/searxng/searxng/tags
-  searxng: 2026.4.13-ee66b070a
+  searxng: 2026.4.17-8579974f5
   searxng_tag_rex: '^\d+\.\d+\.\d{1,2}-'
   searxng_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/spaghetti-coder/searxng-mcp/pkgs/container/searxng-mcp
