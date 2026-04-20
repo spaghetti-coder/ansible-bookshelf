@@ -23,6 +23,11 @@ open_webui_extra_env: |     # "{{ lookup('template', playbook_dir + '/resources/
   #   * https://docs.openwebui.com/getting-started/env-configuration/
   # ----------
   # OLLAMA_BASE_URL=http://ollama.domain.local
+  # OPENAI_API_BASE_URL=https://api.openai.com/v1
+open_webui_secrets_env: |  # "{{ lookup('template', playbook_dir + '/resources/open-webui.secret.env.j2') }}"
+  # Same as extra env, but for secrets
+  # ----------
+  # OPENAI_API_KEY=xxx
 # WUD settings
 open_webui_wudded: true     # Watched by WUD
 open_webui_tag_rex:         # Leave blank to leverage bookshelf configuration
