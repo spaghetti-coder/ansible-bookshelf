@@ -22,6 +22,7 @@ open_webui_extra_env: |     # "{{ lookup('template', playbook_dir + '/resources/
   # References:
   #   * https://docs.openwebui.com/getting-started/env-configuration/
   # ----------
+  # ENABLE_PERSISTENT_CONFIG=false
   # OLLAMA_BASE_URL=http://ollama.domain.local
   # OPENAI_API_BASE_URL=https://api.openai.com/v1
 open_webui_secrets_env: |  # "{{ lookup('template', playbook_dir + '/resources/open-webui.secret.env.j2') }}"
