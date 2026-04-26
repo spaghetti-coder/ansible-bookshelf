@@ -86,7 +86,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   homer_tag_rex: '^v\d+\.\d+\.\d+$$'
   homer_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
-  jellyfin: 10.11.8ubu2404-ls27
+  jellyfin: 10.11.8ubu2404-ls29
   jellyfin_tag_rex: '^\d+\.\d+\.\d+.+-ls\d+$$'
   jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/joplin/server/tags
@@ -98,7 +98,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   jotty_tag_rex: '^\d+\.\d+\.\d+$$'
   jotty_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/BerriAI/litellm/pkgs/container/litellm
-  litellm: v1.83.7-stable.patch.1
+  litellm: v1.83.10-stable
   litellm_tag_rex: '^v\d+\.\d+\.\d+.*-stable'
   litellm_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
@@ -154,7 +154,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   portainer_agent_tag_rex: '^\d+\.\d+\.\d+-alpine$$'
   portainer_agent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.1.4-r3-ls450
+  qbittorrent: 5.1.4-r3-ls452
   qbittorrent_tag_rex: '^\d+\.\d+\.\d{1,2}-.*-ls\d+$$'
   qbittorrent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/searxng/searxng/tags
@@ -173,7 +173,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   smtp4dev_tag_rex: '^v\d+\.\d+$$'
   smtp4dev_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/syncthing/tags?name=-ls
-  syncthing: v2.0.16-ls214
+  syncthing: v2.0.16-ls215
   syncthing_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
   syncthing_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # => See tailscale versions in the top
@@ -192,7 +192,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   uptime_kuma_tag_rex: '^\d+\.\d+\.\d+$$'
   uptime_kuma_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
-  vaultwarden: 1.35.7-alpine
+  vaultwarden: 1.35.8-alpine
   vaultwarden_tag_rex: '^\d+\.\d+\.\d+-alpine$$'
   # https://hub.docker.com/r/vikunja/vikunja/tags
   vikunja: 2.3.0
