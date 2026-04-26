@@ -31,6 +31,7 @@
           {{- config.config }}
         dest: "{{ conf_dir }}/opencode.jsonc"
         mode: '0600'
+      register: opencode_cli_conffiles_state
       when: config.config | default('', true) | length > 0
 
     - name: Create AGENTS.md
@@ -39,6 +40,7 @@
           {{ config.agents_md }}
         dest: "{{ conf_dir }}/AGENTS.md"
         mode: '0600'
+      register: opencode_agents_file_state
       when: config.agents_md | default('', true) | length > 0
 
     - name: Create web config

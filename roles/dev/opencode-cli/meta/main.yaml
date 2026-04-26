@@ -1,4 +1,5 @@
 ---
 dependencies:
   - bookshelf-const
+  - git               # <- For plugins installation
   - nodejs

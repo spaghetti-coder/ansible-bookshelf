@@ -43,4 +43,10 @@
         daemon_reload: true
         scope: user
       vars:
-        state: "{{ opencode_web_conffiles_state.changed | default(false) | ternary('restarted', 'started') }}"
+        cli_conffiles_changed: "{{ opencode_cli_conffiles_state.changed | default(false) }}"
+        web_conffiles_changed: "{{ opencode_web_conffiles_state.changed | default(false) }}"
+        agetns_file_changed: "{{ opencode_agents_file_state.changed | default(false) }}"
+        state: "{{
+            (cli_conffiles_changed or web_conffiles_changed or agetns_file_changed)
+            | ternary('restarted', 'started')
+          }}"
