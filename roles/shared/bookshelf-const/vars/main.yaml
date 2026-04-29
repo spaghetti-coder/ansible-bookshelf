@@ -165,6 +165,10 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   searxng_mcp: v0.0.5
   searxng_mcp_tag_rex: '^v\d+\.\d+\.\d+$$'
   searxng_mcp_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://github.com/spaghetti-coder/throttle-proxy/pkgs/container/throttle-proxy
+  searxng_proxy: v0.0.3
+  searxng_proxy_tag_rex: '^v\d+\.\d+\.\d+$$'
+  searxng_proxy_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: 2.5.2
   silverbullet_tag_rex: '^\d+\.\d+\.\d+$$'
@@ -271,7 +275,7 @@ bookshelf_const_port:
   opengist:
     web_ui: 8119
   opencode:
-    web_ui: 8123   # <- Last (8081+)
+    web_ui: 8123
   pairdrop:
     web_ui: 8104
   portainer:
@@ -288,6 +292,8 @@ bookshelf_const_port:
     web_ui: 8120
   searxng_mcp:
     tcp: 8122
+  searxng_proxy:
+    web_ui: 8124 # <- Last (8081+)
   silverbullet:
     web_ui: 8103
   smtp4dev:
@@ -311,7 +317,7 @@ bookshelf_const_port:
   wikijs:
     web_ui: 8107
   wud:
-    web_ui: 8117 # <- Last (8081+)
+    web_ui: 8117
 
 bookshelf_const_compose_dir: ~/docker
 # Not used within bookshelf space, but can be used to keep envar desks.

@@ -1,0 +1,72 @@
+---
+# Lightweight Go reverse proxy that protects upstream services from request
+# floods by serializing and throttling requests.
+#   https://github.com/spaghetti-coder/throttle-proxy
+# -----
+# VERSIONS: https://github.com/spaghetti-coder/throttle-proxy/pkgs/container/throttle-proxy
+# -----
+searxng_proxy_managed: false
+searxng_proxy_enabled: false
+searxng_proxy_version:      # Leave blank to leverage bookshelf configuration
+searxng_proxy_compose_dir:  # Unless you know ..., leave blank to leverage bookshelf configuration
+searxng_proxy_owner: "{{ ansible_facts.user_id }}"  # <- Who runs the container
+searxng_proxy_conf_dir: ~/conf/throttle-proxy
+searxng_proxy_service_name: throttle-proxy
+searxng_proxy_hostname: "{{ searxng_proxy_service_name }}"
+searxng_proxy_vhost: "{{ searxng_proxy_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+searxng_proxy_web_ui_port:  # Leave blank for bookshelf default, or '-1' to not expose the port
+
+# Required: Comma-separated upstream URLs (http://host:port)
+# Example: "http://searxng:8080" or "http://host1:8080,http://host2:8080"
+searxng_proxy_upstream:
+
+# Optional: Upstream fetch timeout in seconds (default: 5)
+searxng_proxy_upstream_timeout: 5
+
+# Optional: Delay between requests in seconds.
+# Supports "min:max" range: "0.5:2". If max < min, max = min
+searxng_proxy_delay: 0
+
+# Optional: Max time a request can wait in queue. Returns 503 if exceeded.
+# 0 = unlimited
+trottle_proxy_max_wait: 0
+
+# Optional: Trigger delay escalation after this many requests under sustained
+# high-frequency load. 0 = disabled
+searxng_proxy_escalate_after: 0
+
+# Optional: Maximum delay escalation steps. 0 = unlimited
+searxng_proxy_escalate_max_count: 3
+
+# Optional: Delay multiplier on each escalation step.
+# Supports constant ("1.5") or range ("1.5:2.0")
+searxng_proxy_escalate_factor: "1.5:2.0"
+
+# Optional: Comma-separated endpoint prefixes to throttle.
+# Prefix-matched: "/search" matches "/search" and "/search/foo"
+# Default: "/" (throttle all endpoints)
+searxng_proxy_endpoints: "/"
+
+# Optional: Max queue size. Minimum: 100. Special: 0 = 10000
+searxng_proxy_queue_size: 10000
+
+# Optional extra env vars
+searxng_proxy_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/throttle-proxy.env.j2') }}"
+  # Some variables
+
+# WUD settings
+searxng_proxy_wudded: true     # Watched by WUD
+searxng_proxy_tag_rex:         # Leave blank to leverage bookshelf configuration
+
+# ----------
+# The following settings configure throttle-proxy to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+searxng_proxy_tailscaled: false
+searxng_proxy_ts_version:           # Leave blank to leverage bookshelf configuration
+searxng_proxy_ts_service_name: "{{ searxng_proxy_service_name }}-ts"
+searxng_proxy_ts_funnelled: false   # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+searxng_proxy_ts_hostname: "{{ searxng_proxy_service_name }}"
+searxng_proxy_ts_auth_key:

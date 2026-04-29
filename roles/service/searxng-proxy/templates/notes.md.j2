@@ -1,0 +1,17 @@
+## Throttle Proxy
+
+A lightweight Go reverse proxy that protects upstream services from request floods.
+
+* GitHub: https://github.com/spaghetti-coder/throttle-proxy
+* Features:
+  - Request serialization (max one in-flight per upstream)
+  - EDF scheduling across multiple upstreams
+  - Automatic delay escalation under sustained load
+  - Round-robin passthrough for non-throttled endpoints
+  - Upstream health tracking with automatic failover
+
+{% if searxng_proxy_tailscaled %}
+* Disable tailscale machine expiry:
+  1. Go to https://tailscale.com/admin/machines
+  2. `{{ searxng_proxy_ts_hostname }} *** > Disable key expiry`
+{% endif %}
