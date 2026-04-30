@@ -2529,6 +2529,11 @@ cloudcli_managed: "{{ factum_os_family not in ['alpine'] }}"
 # ==================
 golang_managed: true
 
+# ====================
+#       GRAPHIFY
+# ====================
+graphify_managed: "{{ inventory_hostname not in ['alma'] }}"
+
 # ==================
 #       NODEJS
 # ==================
@@ -2560,6 +2565,15 @@ opencode_cli_configs:   # <- opencode.jsonc to user
         OPENCODE_SERVER_PASSWORD=changeme
         # Secrets from main user section must be duplicated
         OPENAI_API_KEY=foobar
+
+# ==================
+#       PYTHON
+# ==================
+# Python, plus:
+#   - pip
+#   - pipx
+# -----
+python_managed: true
 
 # ====================
 #       QWEN-CLI

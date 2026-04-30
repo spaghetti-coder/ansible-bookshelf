@@ -423,6 +423,10 @@
       tags: [golang]
       when: golang_managed | default(false)
 
+    - role: graphify
+      tags: [graphify]
+      when: graphify_managed | default(false)
+
     - role: nodejs
       tags: [nodejs]
       when: nodejs_managed | default(false)
@@ -430,6 +434,10 @@
     - role: opencode-cli
       tags: [opencode-cli]
       when: opencode_cli_managed | default(false)
+
+    - role: python
+      tags: [python]
+      when: python_managed | default(false)
 
     - role: qwen-cli
       tags: [qwen-cli]

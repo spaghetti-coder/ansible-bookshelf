@@ -1,0 +1,4 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks: { file: tasks.yaml }
+  when: not (graphify_done | default(false))

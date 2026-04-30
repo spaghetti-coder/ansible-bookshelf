@@ -1,0 +1,14 @@
+---
+- name: Install
+  ansible.builtin.package: { name: "{{ pkgs }}", state: present }
+  vars:
+    pkgs: "{{ python_pkgs_map[factum_os_family] | default(python_pkgs_map._) }}"
+  become: true
+
+- name: Load pipx workaround
+  ansible.builtin.include_tasks: { file: pipx-workaround.yaml }
+  when: python_pipx_workaround_required
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    python_done: true

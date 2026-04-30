@@ -1,0 +1,7 @@
+---
+# Turn any folder of code, docs, papers, images, or videos into a queryable knowledge graph
+#   https://graphifylabs.ai/
+# NOTE:
+#   Requires decent python version -> not supported by versions < 10 of RHEL family
+# -----
+graphify_managed: false

@@ -1,0 +1,5 @@
+---
+- name: Load OS-specific pipx workaround
+  ansible.builtin.include_tasks: { file: "pipx-workaround.{{ type }}.yaml" }
+  vars:
+    type: "{{ 'ubuntu' if factum_os_like in ['ubuntu'] else 'default' }}"

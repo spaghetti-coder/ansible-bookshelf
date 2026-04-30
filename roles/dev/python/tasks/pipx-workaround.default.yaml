@@ -1,0 +1,13 @@
+---
+# Required by ansible.builtin.pip
+- name: Install python packaging
+  ansible.builtin.package:
+    name: python3-packaging
+    state: present
+  become: true
+
+- name: Install pipx via pip
+  ansible.builtin.pip:
+    name: pipx
+    state: present
+  become: true

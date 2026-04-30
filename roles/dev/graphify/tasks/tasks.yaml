@@ -1,0 +1,15 @@
+---
+- name: Python
+  ansible.builtin.import_role: { name: python }
+
+- name: Install
+  community.general.pipx:
+    name: graphifyy
+    state: present
+    global: true
+    executable: "{{ python_pipx_executable | default('pipx', true) }}"
+  become: true
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    graphify_done: true

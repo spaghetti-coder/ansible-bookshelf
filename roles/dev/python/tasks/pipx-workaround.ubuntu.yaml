@@ -1,0 +1,43 @@
+---
+# Ubuntu doesn't allow `sudo pip3 install PKG`.
+# Hacky workaround based on:
+#   https://github.com/pypa/pipx/issues/1481#issuecomment-2593124603
+
+- name: Set pipx executable path
+  ansible.builtin.set_fact:
+    python_pipx_executable: /usr/local/bin/pipx
+
+- name: Check current global pipx
+  ansible.builtin.command:
+    argv: ["{{ python_pipx_executable }}", "--version"]
+  changed_when: false
+  failed_when: false
+  become: true
+  register: python_pipx_version_check
+
+- name: Install pipx workaround
+  when: python_pipx_version_check.stdout | default('0.0.0', true) is version("1.7.0", "<")
+  become: true
+  block:
+    - name: Install obsolete version of pipx from PM
+      ansible.builtin.package:
+        name: pipx
+        state: present
+
+    - name: Install user level pipx
+      # community.general.pipx requires pipx >= 1.7.0, so...
+      ansible.builtin.command:
+        cmd: pipx install pipx
+      changed_when: true
+
+    - name: Uninstall obsolete pipx
+      ansible.builtin.package:
+        name: pipx
+        state: absent
+
+    - name: Install pipx from user level pipx
+      community.general.pipx:
+        name: pipx
+        state: present
+        global: true
+        executable: ~/.local/bin/pipx

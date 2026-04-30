@@ -1,0 +1,7 @@
+---
+# Python, plus:
+#   - pip
+#   - pipx
+# Exposes python_pipx_executable (dependent roles)
+# -----
+python_managed: false

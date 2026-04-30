@@ -2855,6 +2855,16 @@ cloudcli_managed: false     # "{{ factum_os_family not in ['alpine'] }}"   # <- 
 # ==================
 golang_managed: false
 
+# ====================
+#       GRAPHIFY
+# ====================
+# Turn any folder of code, docs, papers, images, or videos into a queryable knowledge graph
+#   https://graphifylabs.ai/
+# NOTE:
+#   Requires decent python version -> not supported by versions < 10 of RHEL family
+# -----
+graphify_managed: false
+
 # ==================
 #       NODEJS
 # ==================
@@ -2894,6 +2904,16 @@ opencode_cli_configs: # <- opencode.jsonc to user
   #       #
   #       # OPENCODE_SERVER_USERNAME=admin
   #       # OPENCODE_SERVER_PASSWORD=changeme
+
+# ==================
+#       PYTHON
+# ==================
+# Python, plus:
+#   - pip
+#   - pipx
+# Exposes python_pipx_executable (dependent roles)
+# -----
+python_managed: false
 
 # ====================
 #       QWEN-CLI

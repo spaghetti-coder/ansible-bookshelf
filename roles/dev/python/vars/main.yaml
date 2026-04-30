@@ -1,0 +1,12 @@
+---
+# Ubuntu <= 24.04 has some old version of pipx in the repos
+python_pipx_workaround_required: "{{
+    factum_os_like not in ['alpine', 'debian']
+    or (factum_os_like == 'ubuntu' and ansible_facts.distribution_version is version('24.04', '<='))
+  }}"
+python_pkgs_map:
+  # factum_os_family: pkgs
+  _: "{{ ['python3', 'python3-pip'] + ([] if python_pipx_workaround_required else ['pipx']) }}"
+  alpine: [python3, py3-pip, pipx]
+
+python_pipx_executable:
