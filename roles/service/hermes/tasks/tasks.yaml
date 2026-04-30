@@ -1,0 +1,72 @@
+---
+- name: Docker
+  ansible.builtin.import_role: { name: docker }
+  vars: { docker_users: ["{{ hermes_owner }}"] }
+
+- name: Create config home
+  ansible.builtin.file:
+    path: "{{ hermes_conf_dir }}"
+    state: directory
+    mode: '0700'
+  become: true
+  become_user: "{{ hermes_owner }}"
+  register: hermes_conf_home_result
+
+- name: Create config dir
+  ansible.builtin.file:
+    path: "{{ hermes_conf_home_result.path }}/config"
+    state: directory
+    mode: '0700'
+    owner: 10000
+    group: 10000
+  become: true
+
+- name: Compose
+  become: true
+  become_user: "{{ hermes_owner }}"
+  vars:
+    compose_dir: "{{ hermes_compose_dir | default(bookshelf_const_compose_dir + '/hermes', true) }}"
+    conf_dir: "{{ hermes_conf_dir }}"
+    service_state: "{{ hermes_enabled | ternary('present', 'absent') }}"
+  block:
+    - name: Create compose directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop: ["{{ compose_dir }}"]
+
+    - name: Create compose files
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
+        mode: '0600'
+      loop:
+        - hermes.sh
+        - compose.yaml
+        - main.env
+        - secret.env
+      register: hermes_compose_files_result
+
+    - name: Chmod helper script
+      ansible.builtin.file:
+        path: "{{ hermes_compose_files_result.results[0].path | default(hermes_compose_files_result.results[0].dest) }}"
+        mode: '0755'
+
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+
+- name: Install helper script
+  ansible.builtin.file:
+    src: "{{ hermes_compose_files_result.results[0].path | default(hermes_compose_files_result.results[0].dest) }}"
+    path: /usr/local/bin/{{ hermes_global_script | basename }}
+    state: link
+  become: true
+  become_user: root
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    hermes_done: true

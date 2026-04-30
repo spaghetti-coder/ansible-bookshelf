@@ -81,6 +81,9 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   # https://hub.docker.com/r/linuxserver/heimdall/tags
   heimdall: v2.7.6-ls340
   heimdall_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
+  # https://hub.docker.com/r/nousresearch/hermes-agent/tags
+  hermes: v2026.4.23
+  hermes_tag_rex: '^.*$$'
   # https://hub.docker.com/r/b4bz/homer/tags
   homer: v26.4.2
   homer_tag_rex: '^v\d+\.\d+\.\d+$$'

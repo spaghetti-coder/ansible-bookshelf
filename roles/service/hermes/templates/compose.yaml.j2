@@ -1,0 +1,29 @@
+{% set version = hermes_version | default(bookshelf_const_version.hermes, true) %}
+{% set tag_rex = hermes_tag_rex | default(bookshelf_const_version.hermes_tag_rex, true) %}
+---
+services:
+  {{ hermes_service_name }}:
+    # https://hub.docker.com/r/nousresearch/hermes-agent/tags
+    image: nousresearch/hermes-agent:{{ version }}
+    container_name: {{ hermes_service_name }}
+    restart: unless-stopped
+    command: gateway run
+    labels:
+      - wud.watch={{ hermes_wudded }}
+      - wud.tag.include={{ tag_rex }}
+    env_file:
+      - ./secret.env
+      - ./main.env
+    volumes:
+      - '{{ conf_dir }}/config:/opt/data'
+    hostname: {{ hermes_hostname }}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge
+{% else %}
+    networks:
+      - {{ nginx_proxy_net }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{# nginx_proxy_enabled #}

@@ -1020,6 +1020,40 @@ heimdall_base_url:      # (REQUIRED)
 heimdall_wudded: true   # Watched by WUD
 heimdall_tag_rex:       # Leave blank to leverage bookshelf configuration
 
+# ==================
+#       HERMES
+# ==================
+# The agent that grows with you
+#   https://github.com/NousResearch/hermes-agent
+# -----
+# VERSIONS:
+#   - https://hub.docker.com/r/nousresearch/hermes-agent/tags
+# -----
+hermes_managed: false
+hermes_enabled: false
+hermes_version:       # Leave blank to leverage bookshelf configuration
+hermes_compose_dir:   # Unless you know ..., leave blank to leverage bookshelf configuration
+hermes_owner: "{{ ansible_facts.user_id }}"
+hermes_conf_dir: ~/conf/hermes
+hermes_service_name: hermes
+hermes_hostname: "{{ hermes_service_name }}"
+hermes_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
+# Optional extra env vars, will affect both Gotify and tailscale.
+hermes_extra_env: |     # "{{ lookup('template', playbook_dir + '/resources/hermes.env.j2') }}"
+  # Better not to use
+hermes_secrets_env: |   # "{{ lookup('template', playbook_dir + '/resources/hermes.secret.env.j2') }}"
+  # Same as extra env, but for secrets
+  # ----------
+  # OLLAMA_API_KEY=sk-1234567890abcdef
+  # ANTHROPIC_API_KEY=sk-1234567890abcdef
+  # TELEGRAM_BOT_TOKEN=123456789:ABCdefGHI-jklMNOpqrSTUvwxYZ
+  # TELEGRAM_ALLOWED_USERS=1234567890
+  # TELEGRAM_HOME_CHANNEL=1234567890
+hermes_global_script: "{{ hermes_service_name }}.sh"
+# WUD settings
+hermes_wudded: true     # Watched by WUD
+hermes_tag_rex:         # Leave blank to leverage bookshelf configuration
+
 # =================
 #       HOMER
 # =================
