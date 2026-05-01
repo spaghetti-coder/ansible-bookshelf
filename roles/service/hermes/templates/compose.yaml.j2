@@ -1,12 +1,31 @@
 {% set version = hermes_version | default(bookshelf_const_version.hermes, true) %}
 {% set tag_rex = hermes_tag_rex | default(bookshelf_const_version.hermes_tag_rex, true) %}
+{% set webui_port = hermes_dashboard_web_ui_port | default(bookshelf_const_port.hermes.web_ui, true) %}
+{% set proxy_service = hermes_dashboard_hostname + '-proxy' %}
 ---
+x-common: &common
+  image: nousresearch/hermes-agent:{{ version }}
+  restart: unless-stopped
+  volumes:
+    - '{{ conf_dir }}/config:/opt/data'
+
 services:
+  {{ hermes_dashboard_hostname }}:
+    <<: *common
+    container_name: {{ hermes_dashboard_hostname }}
+    command: dashboard --host 0.0.0.0 --insecure
+    environment:
+      - GATEWAY_HEALTH_URL=http://{{ hermes_service_name }}:8642
+    hostname: {{ hermes_dashboard_hostname }}
+    networks:
+      - {{ hermes_service_name }}
+    depends_on:
+      - {{ hermes_service_name }}
+
   {{ hermes_service_name }}:
-    # https://hub.docker.com/r/nousresearch/hermes-agent/tags
-    image: nousresearch/hermes-agent:{{ version }}
+    <<: *common
     container_name: {{ hermes_service_name }}
-    restart: unless-stopped
+    # https://hub.docker.com/r/nousresearch/hermes-agent/tags
     command: gateway run
     labels:
       - wud.watch={{ hermes_wudded }}
@@ -14,16 +33,32 @@ services:
     env_file:
       - ./secret.env
       - ./main.env
-    volumes:
-      - '{{ conf_dir }}/config:/opt/data'
     hostname: {{ hermes_hostname }}
-{% if not (nginx_proxy_enabled | default(false)) %}
-    network_mode: bridge
-{% else %}
     networks:
+      - {{ hermes_service_name }}
+
+  {{ proxy_service }}:
+    image: caddy:{{ bookshelf_const_version.hermes_caddy }}
+    container_name: {{ proxy_service }}
+    restart: unless-stopped
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+{% if webui_port | int > 0 %}
+    ports:
+      - "{{ webui_port }}:{{ hermes_dashboard_web_ui_port_int }}"
+{% endif %}
+    networks:
+      - {{ hermes_service_name }}
+{% if (nginx_proxy_enabled | default(false)) %}
       - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ hermes_dashboard_vhost }}
+      - VIRTUAL_PORT={{ hermes_dashboard_web_ui_port_int }}
+{% endif %}
 
 networks:
+  {{ hermes_service_name }}:
+{% if (nginx_proxy_enabled | default(false)) %}
   {{ nginx_proxy_net }}:
     external: true
 {% endif %}{# nginx_proxy_enabled #}

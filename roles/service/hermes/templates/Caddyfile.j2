@@ -1,0 +1,9 @@
+:80 {
+{% if hermes_dashboard_user and hermes_dashboard_pass %}
+  basicauth {
+    # docker run --rm caddy:2 caddy hash-password --plaintext "PASSWORD"
+    {{ hermes_dashboard_user }} {{ hermes_dashboard_pass }}
+  }
+{% endif %}
+  reverse_proxy {{ hermes_dashboard_hostname }}:9119
+}

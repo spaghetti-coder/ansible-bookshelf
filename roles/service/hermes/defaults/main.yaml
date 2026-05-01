@@ -13,6 +13,15 @@ hermes_owner: "{{ ansible_facts.user_id }}"
 hermes_conf_dir: ~/conf/hermes
 hermes_service_name: hermes
 hermes_hostname: "{{ hermes_service_name }}"
+# user / pass both optional.
+# If any of them absent, dashboard is public.
+# Generate password with:
+#   docker run --rm caddy:2 caddy hash-password --plaintext "PASSWORD"
+hermes_dashboard_user:
+hermes_dashboard_pass:
+hermes_dashboard_hostname: "{{ hermes_service_name }}-dashboard"
+hermes_dashboard_vhost: "{{ hermes_service_name }}.domain.local"
+hermes_dashboard_web_ui_port:   # Leave blank for bookshelf default, or '-1' to not expose the port
 hermes_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
 # Optional extra env vars, will affect both Gotify and tailscale.
 hermes_extra_env: |     # "{{ lookup('template', playbook_dir + '/resources/hermes.env.j2') }}"

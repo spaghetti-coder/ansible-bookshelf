@@ -2,6 +2,8 @@
 bookshelf_const_version_shared:
   # https://hub.docker.com/_/alpine
   alpine: 3.23.3
+  # https://hub.docker.com/_/caddy/tags
+  caddy: 2.11.2
   # https://hub.docker.com/_/mariadb
   mariadb: 11.8.6 # <- LTS
   # https://hub.docker.com/_/postgres/tags?name=alpine
@@ -41,7 +43,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   blinko_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   blinko_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/_/caddy/tags
-  caddy: 2.11.2
+  caddy: "{{ bookshelf_const_version_shared.caddy }}"
   caddy_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
   code_server: v4.115.0
@@ -83,6 +85,7 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   heimdall_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
   # https://hub.docker.com/r/nousresearch/hermes-agent/tags
   hermes: v2026.4.30
+  hermes_caddy: "{{ bookshelf_const_version_shared.caddy }}"
   hermes_tag_rex: '^.*$$'
   # https://hub.docker.com/r/b4bz/homer/tags
   homer: v26.4.2
@@ -245,6 +248,8 @@ bookshelf_const_port:
     web_ui: 8101
   heimdall:
     web_ui: 8087
+  hermes:
+    web_ui: 8124
   homer:
     web_ui: 8116
   jellyfin:
@@ -274,7 +279,7 @@ bookshelf_const_port:
   opengist:
     web_ui: 8119
   opencode:
-    web_ui: 8123   # <- Last (8081+)
+    web_ui: 8123
   pairdrop:
     web_ui: 8104
   portainer:
@@ -314,7 +319,7 @@ bookshelf_const_port:
   wikijs:
     web_ui: 8107
   wud:
-    web_ui: 8117 # <- Last (8081+)
+    web_ui: 8117
 
 bookshelf_const_compose_dir: ~/docker
 # Not used within bookshelf space, but can be used to keep envar desks.

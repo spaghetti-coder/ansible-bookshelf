@@ -42,16 +42,11 @@
         dest: "{{ compose_dir }}/{{ item }}"
         mode: '0600'
       loop:
-        - hermes.sh
+        - Caddyfile     # <- Order is important
         - compose.yaml
         - main.env
         - secret.env
       register: hermes_compose_files_result
-
-    - name: Chmod helper script
-      ansible.builtin.file:
-        path: "{{ hermes_compose_files_result.results[0].path | default(hermes_compose_files_result.results[0].dest) }}"
-        mode: '0755'
 
     - name: Apply service state
       community.docker.docker_compose_v2:
@@ -59,9 +54,25 @@
         state: "{{ service_state }}"
         remove_orphans: true
 
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        # noqa: no-handler
+        - hermes_compose_files_result.results[0].changed
+
+    - name: Create hermes script
+      ansible.builtin.template:
+        src: hermes.sh.j2
+        dest: "{{ compose_dir }}/hermes.sh"
+        mode: '0755'
+      register: hermes_script_state # <- Trap to have real path for root
+
 - name: Install helper script
   ansible.builtin.file:
-    src: "{{ hermes_compose_files_result.results[0].path | default(hermes_compose_files_result.results[0].dest) }}"
+    src: "{{ hermes_script_state.path | default(hermes_script_state.dest) }}"
     path: /usr/local/bin/{{ hermes_global_script | basename }}
     state: link
   become: true
