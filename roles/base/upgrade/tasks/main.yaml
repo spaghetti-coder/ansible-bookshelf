@@ -18,5 +18,8 @@
     flatpak:  # <- Tool name
       update_args: update --noninteractive
       updated_marker: Updating
+    pipx:
+      update_args: upgrade-all --global --include-injected -qqq --force
+      updated_marker: upgraded package
   loop_control:
     label: "{{ pm_tool }}"

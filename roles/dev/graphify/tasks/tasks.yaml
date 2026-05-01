@@ -10,6 +10,18 @@
     executable: "{{ python_pipx_executable | default('pipx', true) }}"
   become: true
 
+- name: Install extras
+  community.general.pipx:
+    name: graphifyy
+    state: inject
+    inject_packages:
+      - office
+      - sql
+      # - video
+    global: true
+    executable: "{{ python_pipx_executable | default('pipx', true) }}"
+  become: true
+
 - name: Mark dones
   ansible.builtin.set_fact:
     graphify_done: true
