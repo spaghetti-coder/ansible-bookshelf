@@ -419,6 +419,10 @@
       tags: [cloudcli]
       when: cloudcli_managed | default(false)
 
+    - role: get-shit-done
+      tags: [get-shit-done]
+      when: get_shit_done_managed | default(false)
+
     - role: golang
       tags: [golang]
       when: golang_managed | default(false)

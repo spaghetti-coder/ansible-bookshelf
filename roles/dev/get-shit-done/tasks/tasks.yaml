@@ -1,0 +1,13 @@
+---
+- name: Node
+  ansible.builtin.import_role: { name: nodejs }
+
+- name: Install
+  community.general.npm:
+    name: get-shit-done
+    global: true
+  become: true
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    get_shit_done_done: true

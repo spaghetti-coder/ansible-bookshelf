@@ -2524,6 +2524,11 @@ whatsie_install_method: flatpak
 # ====================
 cloudcli_managed: "{{ factum_os_family not in ['alpine'] }}"
 
+# =========================
+#       GET-SHIT-DONE
+# =========================
+get_shit_done_managed: true
+
 # ==================
 #       GOLANG
 # ==================
@@ -2545,7 +2550,7 @@ nodejs_version: # Leave blank to leverage bookshelf defaults
 # ========================
 #       OPENCODE-CLI
 # ========================
-opencode_cli_managed: "{{ factum_os_like in ['ubuntu'] }}"
+opencode_cli_managed: true
 opencode_cli_configs:   # <- opencode.jsonc to user
   - user: "{{ ansible_facts.user_id }}"               # <- (REQUIRED, the rest is optional)
     config: "{{ lookup('file', 'opencode.jsonc') }}"  # <- See demo in files

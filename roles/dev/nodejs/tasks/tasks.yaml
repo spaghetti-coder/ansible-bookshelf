@@ -6,8 +6,10 @@
 
 - name: Install
   ansible.builtin.package:
-    name: nodejs
+    name: "{{ pkgs }}"
     state: "{{ (nodejs_repo.changed | default(false)) | ternary('latest', 'present') }}"
+  vars:
+    pkgs: "{{ ['nodejs'] + (['npm'] if factum_os_family in ['alpine'] else []) }}"
   become: true
 
 - name: Mark dones

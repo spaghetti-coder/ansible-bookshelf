@@ -2850,6 +2850,15 @@ whatsie_install_method: flatpak
 # ====================
 cloudcli_managed: false     # "{{ factum_os_family not in ['alpine'] }}"   # <- Not supported by Alpine
 
+# =========================
+#       GET-SHIT-DONE
+# =========================
+# A light-weight and powerful meta-prompting, context engineering and spec-driven
+# development system for Claude Code by TÂCHES.
+#   https://github.com/gsd-build/get-shit-done
+# -----
+get_shit_done_managed: false
+
 # ==================
 #       GOLANG
 # ==================

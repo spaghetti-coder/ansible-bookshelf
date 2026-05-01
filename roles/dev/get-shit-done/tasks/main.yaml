@@ -1,0 +1,4 @@
+---
+- name: Load tasks
+  ansible.builtin.include_tasks: { file: tasks.yaml }
+  when: not (get_shit_done_done | default(false))
