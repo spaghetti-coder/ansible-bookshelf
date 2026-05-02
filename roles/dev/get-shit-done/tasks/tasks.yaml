@@ -4,7 +4,7 @@
 
 - name: Install
   community.general.npm:
-    name: get-shit-done
+    name: get-shit-done-cc
     global: true
   become: true
 
