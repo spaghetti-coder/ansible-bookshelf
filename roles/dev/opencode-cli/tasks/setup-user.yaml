@@ -8,6 +8,16 @@
     - name: Setup config
       ansible.builtin.include_tasks: { file: setup-user-config.yaml }
 
+    - name: Setup plugins
+      ansible.builtin.include_tasks: { file: setup-user-plugin.yaml }
+      when: config['plugin_' + item.key] | default(false)
+      loop: "{{ opencode_plugins | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+      vars:
+        role: "{{ item.value.role | default(item.key) }}"
+        plugin: "{{ item.value | combine({'key': item.key, 'role': role}) }}"
+
     - name: Setup web
       ansible.builtin.include_tasks: { file: setup-user-web.yaml }
       when: web_config.enabled | default(false)

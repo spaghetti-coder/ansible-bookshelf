@@ -3,3 +3,12 @@ opencode_web_defaults:
   port: "{{ bookshelf_const_port.opencode.web_ui }}"
   hostname: "127.0.0.1"
   bin_path: "/usr/bin/opencode"
+
+opencode_plugins:
+  get_shit_done:          # <- Key in the opencode configuration
+    role: get-shit-done   # <- (Optional) References ansible role name (when different from key)
+    test_cmd: ls ~/.config/opencode/get-shit-done/VERSION
+    setup_cmd: get-shit-done-cc --opencode --global
+  # graphify:             # <- Currently not supported, not possible to install for user
+  #   test_cmd: ls ~/.config/opencode/skills/graphify/SKILL.md
+  #   setup_cmd: graphify install --platform opencode

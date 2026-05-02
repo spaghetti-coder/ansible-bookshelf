@@ -22,5 +22,14 @@
         "--no-usage-statistics", "--headless"
       ]
     }
+  },
+  "permission": {
+    // Required for get-shit-done
+    "read": {
+      "~/.config/opencode/get-shit-done/*": "allow"
+    },
+    "external_directory": {
+      "~/.config/opencode/get-shit-done/*": "allow"
+    }
   }
 }

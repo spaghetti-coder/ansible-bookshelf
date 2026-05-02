@@ -2899,6 +2899,9 @@ opencode_cli_configs: # <- opencode.jsonc to user
   # - user: "{{ ansible_facts.user_id }}"               # <- (REQUIRED, the rest is optional)
   #   config: "{{ lookup('file', 'opencode.jsonc') }}"  # <- See demo in files
   #   agents_md: "{{ lookup('file', 'AGENTS.md') }}"    # <- See demo in files
+  #   # Plugins setup
+  #   plugin_get_shit_done: false
+  #   # plugin_graphify: false                # <- Currently user level setup is not supported
   #   # This requires envar for this user
   #   secrets: |  # <- (Optional) Will go to opencode.secret.sh under user envar.d
   #     export OPENAI_API_KEY=foobar

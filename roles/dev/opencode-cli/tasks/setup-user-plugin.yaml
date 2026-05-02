@@ -1,0 +1,19 @@
+---
+- name: Install plugin
+  ansible.builtin.include_role: { name: "{{ plugin.role }}" }
+
+- name: Plugins
+  when: (config.config | default('', true) | length) > 0
+  become: true
+  become_user: "{{ config.user }}"
+  block:
+    - name: Check plugin availability
+      ansible.builtin.command: { cmd: "{{ plugin.test_cmd }}" }
+      register: opencode_plugin_test
+      changed_when: false
+      failed_when: false
+
+    - name: Setup plugin
+      ansible.builtin.command: { cmd: "{{ plugin.setup_cmd }}" }
+      when: opencode_plugin_test.rc > 0
+      changed_when: true
