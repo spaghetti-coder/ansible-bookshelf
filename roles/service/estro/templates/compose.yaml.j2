@@ -1,0 +1,56 @@
+{% set version = estro_version | default(bookshelf_const_version.estro, true) %}
+{% set web_ui_port = estro_web_ui_port | default(bookshelf_const_port.estro.web_ui, true) %}
+{% set tag_rex = estro_tag_rex | default(bookshelf_const_version.estro_tag_rex, true) %}
+---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = estro_ts_version | default(bookshelf_const_version.estro_tailscale, true),
+  ts_name = estro_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
+services:
+  {{ estro_service_name }}:
+    # https://github.com/spaghetti-coder/estro/pkgs/container/estro
+    image: ghcr.io/spaghetti-coder/estro:{{ version }}
+    container_name: {{ estro_service_name }}
+    restart: unless-stopped
+    labels:
+      - wud.watch={{ estro_wudded }}
+      - wud.tag.include={{ tag_rex }}
+    env_file:
+      - ./secret.env
+      - ./main.env
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+{% if estro_mount_ssh %}
+      - ~/.ssh:/home/node/.ssh:ro
+{% endif %}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/config"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+{% if estro_tailscaled %}
+    network_mode: "service:{{ estro_ts_service_name }}"
+
+  {{ estro_ts_service_name }}:
+    <<: *tailscale
+{% endif %}
+    hostname: {{ estro_hostname }}
+{% if web_ui_port | int > -1 %}
+    ports: [{{ web_ui_port }}:{{ estro_web_ui_port_int }}]
+{% else %}
+    # ports: [ {{ bookshelf_const_port.estro.web_ui }}:{{ estro_web_ui_port_int }} ]
+{% endif %}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge
+{% else %}
+    networks:
+      - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ estro_vhost }}
+      - VIRTUAL_PORT={{ estro_web_ui_port_int }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{#                       <- NETMODE END #}

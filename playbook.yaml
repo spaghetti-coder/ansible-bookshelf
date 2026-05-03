@@ -127,6 +127,10 @@
       tags: [duplicati, upgradable]
       when: duplicati_managed | default(false)
 
+    - role: estro
+      tags: [estro, upgradable]
+      when: estro_managed | default(false)
+
     - role: filebrowser
       tags: [filebrowser, upgradable]
       when: filebrowser_managed | default(false)

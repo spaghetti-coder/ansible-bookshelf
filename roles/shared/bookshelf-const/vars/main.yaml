@@ -55,6 +55,10 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   duplicati: v2.2.0.3_stable_2026-01-06-ls286
   duplicati_tag_rex: '^v\d+\.\d+\.\d+.\d+.*-ls\d+$$'
   duplicati_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://github.com/spaghetti-coder/estro/pkgs/container/estro
+  estro: v0.0.6
+  estro_tag_rex: '^v\d+\.\d+\.\d+$$'
+  estro_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/filebrowser/filebrowser/tags?name=-s6
   filebrowser: v2.63.2-s6
   filebrowser_tag_rex: '^v\d+\.\d+\.\d+-s6$$'
@@ -234,6 +238,8 @@ bookshelf_const_port:
     web_ui: 8109
   duplicati:
     web_ui: 8110
+  estro:
+    web_ui: 8125   # <- Last (8081+)
   filebrowser:
     web_ui: 8094
   firefly:

@@ -1,0 +1,47 @@
+---
+# A minimal web UI for running shell commands from the browser.
+#   https://github.com/spaghetti-coder/estro
+# -----
+# VERSIONS:
+#   * https://github.com/spaghetti-coder/estro/pkgs/container/estro
+#   * => See tailscale role versions
+# -----
+estro_managed: false
+estro_enabled: false
+estro_version:          # Leave blank to leverage bookshelf configuration
+estro_compose_dir:      # Unless you know ..., leave blank to leverage bookshelf configuration
+estro_conf_dir: ~/conf/estro
+estro_owner: "{{ ansible_facts.user_id }}"
+estro_service_name: estro
+estro_hostname: "{{ estro_service_name }}"
+estro_vhost: "{{ estro_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+estro_web_ui_port:      # Leave blank for bookshelf default, or '-1' to not expose the port
+estro_config_content: | # "{{ lookup('file', 'config.yaml') }}"  # <- Demo config
+  # Required. See demo config in files/config.yaml.
+  # References:
+  #   * https://github.com/spaghetti-coder/estro#configuration
+  # ----------
+estro_mount_ssh: true   # Mount host ~/.ssh:ro for remote SSH commands
+# Optional extra env vars, will affect both Estro and Tailscale.
+estro_extra_env: |
+  # ----------
+  # MY_VAR=123
+estro_secrets_env: |      # "{{ lookup('template', playbook_dir + '/resources/estro.secret.env.j2') }}"
+  # Can be used to pass secret values to the config file
+  # ----------
+  # MY_SECRET=123
+# WUD settings
+estro_wudded: true        # Watched by WUD
+estro_tag_rex:            # Leave blank to leverage bookshelf configuration
+# ----------
+# The following settings configure Estro to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+estro_tailscaled: false
+estro_ts_version:          # Leave blank to leverage bookshelf configuration
+estro_ts_service_name: "{{ estro_service_name }}-ts"
+estro_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+estro_ts_hostname: "{{ estro_service_name }}"
+estro_ts_auth_key:

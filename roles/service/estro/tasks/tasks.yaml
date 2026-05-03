@@ -1,0 +1,71 @@
+---
+- name: Docker
+  ansible.builtin.import_role: { name: docker }
+  vars: { docker_users: ["{{ estro_owner }}"] }
+
+- name: Compose
+  become: true
+  become_user: "{{ estro_owner }}"
+  vars:
+    compose_dir: "{{ estro_compose_dir | default(bookshelf_const_compose_dir + '/estro', true) }}"
+    conf_dir: "{{ estro_conf_dir }}"
+    service_state: "{{ estro_enabled | ternary('present', 'absent') }}"
+    the_user: "{{ ansible_facts.getent_passwd[gokapi_owner] }}"
+    user_uid: "{{ the_user.1 }}"
+    user_gid: "{{ the_user.2 }}"
+  block:
+    - name: Create compose directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop: ["{{ compose_dir }}", "{{ conf_dir }}"]
+
+    - name: Create compose files
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
+        mode: '0600'
+      loop:
+        - ts-serve.json   # <- For the first 2 files order matters
+        - compose.yaml
+        - main.env
+        - secret.env
+      register: estro_compose_files_result
+
+    - name: Create config.yaml
+      ansible.builtin.copy:
+        content: "{{ estro_config_content }}"
+        dest: "{{ compose_dir }}/config.yaml"
+        mode: '0600'
+      when: estro_config_content | length > 0
+      register: estro_config_file_result
+
+    # MANAGE SERVICE STATE
+
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+      register: estro_service_state
+
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - estro_enabled and not estro_service_state.changed
+        - estro_compose_files_result.results[0].changed
+          or (estro_tailscaled and estro_compose_files_result.results[1].changed)
+          or estro_config_file_result.changed
+
+    - name: Create note
+      ansible.builtin.import_role: { name: bookshelf-note }
+      # noqa: var-naming[no-role-prefix]
+      vars: { src: notes.md.j2, dest: estro-service.md, present: "{{ estro_enabled }}" }
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    estro_done: true
