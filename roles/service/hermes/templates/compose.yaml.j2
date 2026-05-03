@@ -58,6 +58,7 @@ services:
 
 networks:
   {{ hermes_service_name }}:
+    name: {{ hermes_service_name }}
 {% if (nginx_proxy_enabled | default(false)) %}
   {{ nginx_proxy_net }}:
     external: true
