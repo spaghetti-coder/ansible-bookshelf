@@ -171,9 +171,9 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   searxng: 2026.5.2-cd75013c9
   searxng_tag_rex: '^\d+\.\d+\.\d{1,2}-'
   searxng_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
-  # https://github.com/spaghetti-coder/searxng-mcp/pkgs/container/searxng-mcp
-  searxng_mcp: v0.0.5
-  searxng_mcp_tag_rex: '^v\d+\.\d+\.\d+$$'
+  # https://hub.docker.com/r/isokoliuk/mcp-searxng/tags
+  searxng_mcp: 1.0.3
+  searxng_mcp_tag_rex: '^\d+\.\d+\.\d+$$'
   searxng_mcp_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/spaghetti-coder/throttle-proxy/pkgs/container/throttle-proxy
   searxng_proxy: 0.0.5

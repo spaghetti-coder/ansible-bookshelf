@@ -52,7 +52,8 @@
         remove_orphans: true
       when:
         - searxng_enabled and not searxng_service_state.changed
-        - searxng_tailscaled and searxng_compose_files_result.results[0].changed
+        - (searxng_tailscaled and searxng_compose_files_result.results[0].changed)
+          or searxng_config_file_result.changed
 
     - name: Create note
       ansible.builtin.import_role: { name: bookshelf-note }

@@ -1865,12 +1865,12 @@ searxng_mcp_hostname: "{{ searxng_mcp_service_name }}"
 searxng_mcp_vhost: "{{ searxng_mcp_service_name }}.domain.local"
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 searxng_mcp_tcp_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
-# (REQUIRED) Comma-separated list of SearXNG URLs (external SearXNG instances)
-searxng_mcp_urls: http://searxng:8888
+searxng_mcp_url: http://searxng:8080  # (REQUIRED) SearXNG instance URL
 # Optional extra env vars
 searxng_mcp_extra_env: |
-  # QUEUE_DELAY_MIN=4000
-  # QUEUE_DELAY_MAX=8000
+  # References:
+  #  - https://github.com/ihor-sokoliuk/mcp-searxng/blob/main/CONFIGURATION.md
+  # -----
 # WUD settings
 searxng_mcp_wudded: true        # Watched by WUD
 searxng_mcp_tag_rex:            # Leave blank to leverage bookshelf configuration

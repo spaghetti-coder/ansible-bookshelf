@@ -9,10 +9,11 @@
 
 services:
   {{ searxng_mcp_service_name }}:
-    # https://github.com/spaghetti-coder/searxng-mcp/pkgs/container/searxng-mcp
-    image: ghcr.io/spaghetti-coder/searxng-mcp:{{ version }}
+    # https://hub.docker.com/r/isokoliuk/mcp-searxng/tags
+    image: isokoliuk/mcp-searxng:{{ version }}
     container_name: {{ searxng_mcp_service_name }}
     restart: unless-stopped
+    stdin_open: true
     labels:
       - wud.watch={{ searxng_mcp_wudded }}
       - wud.tag.include={{ tag_rex }}
@@ -20,7 +21,7 @@ services:
       - ./secret.env
       - ./main.env
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:{{ searxng_mcp_tcp_port_int }}/health"]
       interval: 30s
       timeout: 5s
       retries: 3
