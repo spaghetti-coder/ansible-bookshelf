@@ -1,0 +1,51 @@
+---
+# Lightweight Go reverse proxy that protects upstream services from request floods.
+#   https://github.com/spaghetti-coder/throttle-proxy
+# -----
+# VERSIONS:
+#   * https://github.com/spaghetti-coder/throttle-proxy/pkgs/container/throttle-proxy
+#   * => See tailscale role versions
+# -----
+searxng_proxy_managed: false
+searxng_proxy_enabled: false
+searxng_proxy_version:        # Leave blank to leverage bookshelf configuration
+searxng_proxy_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+searxng_proxy_conf_dir: ~/conf/searxng-proxy
+searxng_proxy_owner: "{{ ansible_facts.user_id }}"
+searxng_proxy_service_name: searxng-proxy
+searxng_proxy_hostname: "{{ searxng_proxy_service_name }}"
+searxng_proxy_vhost: "{{ searxng_proxy_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+searxng_proxy_web_ui_port:    # Leave blank for bookshelf default, or '-1' to not expose the port
+searxng_proxy_upstream:       # At least 1 required
+  - http://localhost:9000
+searxng_proxy_delay: "5:9"    # Supports constant or range (min:max) values
+searxng_proxy_escalate_after: 2
+searxng_proxy_endpoints: []   # Empty/unset <=> ["/"]
+# Optional extra env vars, will affect both searxng-proxy and Tailscale.
+searxng_proxy_extra_env: |
+  # References:
+  #   * https://github.com/spaghetti-coder/throttle-proxy#configuration
+  # ----------
+  # UPSTREAM_TIMEOUT=7
+  # MAX_WAIT=30
+  # ESCALATE_FACTOR=1.5
+  # ESCALATE_MAX_COUNT=5
+  # QUEUE_SIZE=100
+searxng_proxy_secrets_env: |
+  # Can be used to pass secret values
+  # ----------
+# WUD settings
+searxng_proxy_wudded: true    # Watched by WUD
+searxng_proxy_tag_rex:        # Leave blank to leverage bookshelf configuration
+# ----------
+# The following settings configure searxng-proxy to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+searxng_proxy_tailscaled: false
+searxng_proxy_ts_version:     # Leave blank to leverage bookshelf configuration
+searxng_proxy_ts_service_name: "{{ searxng_proxy_service_name }}-ts"
+searxng_proxy_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+searxng_proxy_ts_hostname: "{{ searxng_proxy_service_name }}"
+searxng_proxy_ts_auth_key:

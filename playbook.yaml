@@ -247,6 +247,10 @@
       tags: [searxng-mcp, upgradable]
       when: searxng_mcp_managed | default(false)
 
+    - role: searxng-proxy
+      tags: [searxng-proxy, upgradable]
+      when: searxng_proxy_managed | default(false)
+
     - role: silverbullet
       tags: [silverbullet, upgradable]
       when: silverbullet_managed | default(false)

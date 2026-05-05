@@ -175,6 +175,10 @@ bookshelf_const_version: # <- Last update: 2026-04-09
   searxng_mcp: v0.0.5
   searxng_mcp_tag_rex: '^v\d+\.\d+\.\d+$$'
   searxng_mcp_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://github.com/spaghetti-coder/throttle-proxy/pkgs/container/throttle-proxy
+  searxng_proxy: 0.0.5
+  searxng_proxy_tag_rex: '^\d+\.\d+\.\d+$$'
+  searxng_proxy_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/zefhemel/silverbullet/tags
   silverbullet: 2.5.2
   silverbullet_tag_rex: '^\d+\.\d+\.\d+$$'
@@ -239,7 +243,7 @@ bookshelf_const_port:
   duplicati:
     web_ui: 8110
   estro:
-    web_ui: 8125   # <- Last (8081+)
+    web_ui: 8125
   filebrowser:
     web_ui: 8094
   firefly:
@@ -302,6 +306,8 @@ bookshelf_const_port:
     web_ui: 8120
   searxng_mcp:
     tcp: 8122
+  searxng_proxy:
+    web_ui: 8126   # <- Last (8081+)
   silverbullet:
     web_ui: 8103
   smtp4dev:

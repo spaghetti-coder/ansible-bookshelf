@@ -20,6 +20,8 @@ searxng_settings: |
   ---
   # https://docs.searxng.org/admin/settings/settings.html#use-default-settings
   use_default_settings: true
+  server:
+    secret_key: "ZYzZHTYrTlvIflXQs"
   ## EXAMPLE
   # search:
   #   safe_search: 0
