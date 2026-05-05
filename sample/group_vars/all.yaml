@@ -1742,7 +1742,7 @@ open_webui_web_ui_port:     # Leave blank for bookshelf default, or '-1' to not 
 # Optional extra env vars, will affect both Open WebUI and Tailscale.
 open_webui_extra_env: |     # "{{ lookup('template', playbook_dir + '/resources/open-webui.env.j2') }}"
   # References:
-  #   * https://docs.openwebui.com/getting-started/env-configuration/
+  #   * https://docs.openwebui.com/reference/env-configuration/
   # ----------
   # ENABLE_PERSISTENT_CONFIG=false
   # OLLAMA_BASE_URL=http://ollama.domain.local
