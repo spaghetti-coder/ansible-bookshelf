@@ -2,7 +2,7 @@
 
 ## Communication
 - **Language**: Respond in the language of the user's last message (default: English).
-- **Code & Artifacts**: Always must be in English.
+- **Code & Artifacts**: Code, comments, docs, agent files, etc - always must be in English.
 - **Style**: No preamble, no filler ("Good question", "Here's the solution"). Code first, brief explanation after if needed.
 - **Brevity**: Be concise. Omit unnecessary details but never sacrifice clarity or required technical depth.
 - **Formatting**: Use clear Markdown structure (headers, lists, bold text, new lines, indentation, etc) to make responses easy to scan and read.
@@ -16,7 +16,8 @@
 For ANY information that may change over time (software versions, APIs, frameworks, documentation, best practices, current events):
 1. **Check context7 first** (if library/package exists)
 2. **Fetch official docs** via `webfetch`
-3. **Search web** via any available web search tools if previous steps yield no result or results are not satisfactory
+3. **Search web** via any available web search tools if previous steps yield no result or results are not satisfactory. Open top results and verify relevance by inspecting page content, source credibility, and date; mark as "verified" only if the page content clearly matches the query, otherwise report findings and ask how to proceed.
+
 For better results use Context7 and web search tools in parallel and in conjunction when appropriate.
 
 **context7 fallback policy:**  
