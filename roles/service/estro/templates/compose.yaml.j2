@@ -22,7 +22,7 @@ services:
     volumes:
       - ./config.yaml:/app/config.yaml:ro
 {% if estro_mount_ssh %}
-      - ~/.ssh:/home/node/.ssh:ro
+      - ~/.ssh:/app/.ssh:ro
 {% endif %}
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/config"]

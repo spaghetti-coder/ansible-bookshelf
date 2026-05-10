@@ -4,7 +4,7 @@
 
 - name: Install
   community.general.npm:
-    name: get-shit-done-cc
+    name: '@opengsd/get-shit-done-redux'
     global: true
   become: true
 
