@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+
+print_help() {
+  echo "Create custom model based on profile"
+  echo
+  print_usage
+}
+
+print_usage() {
+  local self; self="$(basename -- "${0}")"
+  local demo_base=qwen3.5:9b \
+        demo_target=qwen3.5:9b-256k \
+        demo_ctx=256000
+  echo "
+    # Usage
+    ${self} --profiles            # List available profiles
+    ${self} --profile PROFILE     # Show specific profile
+    ${self} MODELFILE             # Create model based on MODELFILE content
+    cat MODELFILE | ${self}       # Same as above, but from stdin
+   ,
+    # Create ${demo_target} model with ${demo_ctx} context based on ${demo_base}
+    cat << EOF | ${self}
+   ,  # Valid Modelfile format with TARGET model name as a comment (required).
+   ,  # Padding is trimmed.
+   ,  #
+   ,  # TARGET = ${demo_target}
+   ,  #
+   ,  FROM ${demo_base}
+   ,  PARAMETER num_ctx ${demo_ctx}
+   ,  PARAMETER num_predict -1
+    EOF
+  " | sed -e 's/^\s\+//' -e 's/\s\+$//' -e '/^\s*$/d' -e 's/^,//'
+}
+
+get_target() {
+  local modelfile="${1}"
+  local target_rex='^\s*#\+\s*TARGET\s*=\s*\([^ ]\+\)\s*$'
+  (
+    set -o pipefail
+    grep "${target_rex}" <<< "${modelfile}" | tail -n 1 \
+      | sed "s/${target_rex}/\1/"
+  )
+}
+
+create_model() {
+  local modelfile="${1}"
+  local target; target="$(get_target "${modelfile}")" || {
+    echo "Failed to parse target model name from MODELFILE." >&2
+    echo >&2
+    print_usage
+    return 1
+  }
+
+  local tmpfile; tmpfile="$(set -x; mktemp)" || return
+  local tmpfile_basename; tmpfile_basename="$(basename -- "${tmpfile}")"
+  (set -x; tee "${tmpfile}" <<< "${modelfile}") || return
+
+  local self_dir; self_dir="$(dirname "$(realpath -- "${0}" 2>/dev/null)")"
+  cd "${self_dir}" || exit
+
+  (set -x; docker compose cp "${tmpfile}" {{ ollama_service_name }}:/tmp/${tmpfile_basename}) || return
+  docker compose exec {{ ollama_service_name }} sh -c "
+    set -x
+    ollama create ${target} -f '/tmp/${tmpfile_basename}'
+    rm -f '/tmp/${tmpfile_basename}'
+  "
+}
+
+get_profiles() {
+  local first_line="# TARGET is also a profile name"
+  local qwen128k="
+    # https://huggingface.co/unsloth/Qwen3.6-27B-GGUF#using-qwen36-via-the-chat-completions-api
+    FROM hf.co/unsloth/Qwen3.6-27B-GGUF:Q3_K_M
+    PARAMETER num_ctx 128000
+    PARAMETER num_predict -1
+  "
+  declare -A profiles=(
+    [qwen3.6-general:27b-128k]="
+      ${qwen128k}
+      PARAMETER temperature 1.0
+      PARAMETER top_p 0.95
+      PARAMETER top_k 20
+      PARAMETER min_p 0.0
+      PARAMETER presence_penalty 0.0
+      PARAMETER repeat_penalty 1.0
+    "
+    [qwen3.6-dev:27b-128k]="
+      ${qwen128k}
+      PARAMETER temperature 0.6
+      PARAMETER top_p 0.95
+      PARAMETER top_k 20
+      PARAMETER min_p 0.0
+      PARAMETER presence_penalty 0.0
+      PARAMETER repeat_penalty 1.0
+    "
+    [qwen3.6-instruct:27b-128k]="
+      ${qwen128k}
+      PARAMETER temperature 0.7
+      PARAMETER top_p 0.80
+      PARAMETER top_k 20
+      PARAMETER min_p 0.0
+      PARAMETER presence_penalty 1.5
+      PARAMETER repeat_penalty 1.0
+    "
+  )
+
+  local selected
+  if [ -n "${1}" ]; then
+    selected="${1}"
+    [ -n "${profiles[$selected]+x}" ] || {
+      echo "Profile not found: ${selected}" >&2
+      echo >&2
+      print_usage
+      return 1
+    }
+
+    printf -- '# TARGET = %s\n%s\n' "${selected}" "${first_line}"
+    cat <<< "${profiles[${selected}]}" \
+    | sed -e 's/^\s\+//' -e 's/\s\+$//' -e '/^\s*$/d'
+
+    return
+  fi
+
+  local ctr=0
+  local profile; for profile in "${!profiles[@]}"; do
+    [ $ctr -gt 0 ] && echo
+    ${FUNCNAME[0]} "${profile}"
+    (( ctr++ ))
+  done
+}
+
+case "${1}" in
+  -\?|-h|--help)  print_help; exit ;;
+  --profiles)     get_profiles; exit ;;
+  --profile)      get_profiles "${2}"; exit ;;
+  --*)            echo "Unknown option: ${1}"; exit 1 ;;
+esac
+
+MODELFILE=""
+if [ -t 0 ]; then
+  MODELFILE="$(cat -- "${1}" 2>/dev/null)" || {
+    echo "Failed to read file: ${1}" >&2
+    echo >&2
+    print_usage
+    exit 1
+  }
+else
+  MODELFILE="$(cat -- /dev/stdin)" || exit
+fi
+MODELFILE="$(sed -e 's/^\s\+//' <<< "${MODELFILE}")"
+
+create_model "${MODELFILE}"

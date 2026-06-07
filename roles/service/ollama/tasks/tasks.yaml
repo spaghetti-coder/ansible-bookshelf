@@ -46,29 +46,35 @@
         - ollama_enabled and not ollama_service_state.changed
         - ollama_tailscaled and ollama_compose_files_result.results[1].changed
 
-    - name: Create ollama script
+    - name: Create helper scripts
       ansible.builtin.template:
-        src: ollama.sh.j2
-        dest: "{{ compose_dir }}/ollama.sh"
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
         mode: "0755"
-      register: ollama_script_state # <- Trap to have real path for root
+      loop:
+        - ollama.sh
+        - ollama-cm.sh
+      register: ollama_helpers_state # <- Trap to have real path for root
 
     - name: List models
       ansible.builtin.shell: # noqa: risky-shell-pipe
         cmd: >
-          {{ ollama_script_state.path | default(ollama_script_state.dest) }} list
+          {{ ollama_script.path | default(ollama_script.dest) }} list
           | tail -n +2 | sort -n | cut -d' ' -f1 2>/dev/null
+      vars:
+        ollama_script: "{{ ollama_helpers_state.results[0] }}"
       changed_when: false
       register: ollama_models_installed
 
     - name: Install models
       ansible.builtin.command:
         argv:
-          - "{{ ollama_script_state.path | default(ollama_script_state.dest) }}"
+          - "{{ ollama_script.path | default(ollama_script.dest) }}"
           - pull
           - "{{ item }}"
       when: item not in present
       vars:
+        ollama_script: "{{ ollama_helpers_state.results[0] }}"
         required: "{{ ollama_models | default([], true) }}"
         present: "{{ ollama_models_installed.stdout_lines | default([], true) }}"
       loop: "{{ required }}"
@@ -76,9 +82,14 @@
 
 - name: Install helper script
   ansible.builtin.file:
-    src: "{{ ollama_script_state.path | default(ollama_script_state.dest) }}"
-    path: /usr/local/bin/{{ ollama_global_script | basename }}
+    src: "{{ script_path }}"
+    path: /usr/local/bin/{{ script_path | basename }}
     state: link
+  vars:
+    script_path: "{{ item.path | default(item.dest) }}"
+  loop: "{{ ollama_helpers_state.results }}"
+  loop_control:
+    label: "{{ script_path }}"
   become: true
   become_user: root
 
