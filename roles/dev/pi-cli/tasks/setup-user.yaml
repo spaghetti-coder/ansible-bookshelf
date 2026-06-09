@@ -1,0 +1,30 @@
+---
+- name: User
+  become: true
+  become_user: "{{ config.user }}"
+  vars:
+    conf_dir: ~/.pi
+    agent_dir: "{{ conf_dir }}/agent"
+  block:
+    - name: Create config directory
+      ansible.builtin.file:
+        path: "{{ agent_dir }}"
+        state: directory
+        mode: '0700'
+
+    - name: Create config files
+      ansible.builtin.copy:
+        content: |
+          {{- config[item] }}
+        dest: "{{ agent_dir }}/{{ item }}.json"
+        mode: '0600'
+      when: config[item] | default('', true) | length > 0
+      loop: ["settings", "models"]
+
+    - name: Create agents file
+      ansible.builtin.copy:
+        content: |
+          {{- config.agents_md }}
+        dest: "{{ agent_dir }}/AGENTS.md"
+        mode: '0600'
+      when: config.agents_md | default('', true) | length > 0

@@ -1,0 +1,23 @@
+{
+  "providers": {
+    "Local": {
+      "baseUrl": "http://localhost:11434/v1",
+      "api": "openai-completions",
+      "apiKey": "none",
+      "models": [
+        {
+          "id": "qwen3.6-dev:27b-80k",
+          "input": ["text", "image"],
+          "contextWindow": 80000,
+          "maxTokens": 32000
+        },
+        {
+          "id": "qwen3.6-dev:27b-128k",
+          "input": ["text", "image"],
+          "contextWindow": 128000,
+          "maxTokens": 64000
+        }
+      ]
+    }
+  }
+}

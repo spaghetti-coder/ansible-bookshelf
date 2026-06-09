@@ -1,0 +1,17 @@
+---
+- name: Install
+  community.general.npm:
+    name: '@earendil-works/pi-coding-agent'
+    global: true
+  become: true
+
+- name: Load setup users
+  ansible.builtin.include_tasks: { file: setup-user.yaml }
+  loop: "{{ pi_cli_configs | default([], true) }}"
+  loop_control:
+    loop_var: config
+    label: "{{ config.user }}"
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    pi_cli_done: true

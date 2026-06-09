@@ -1,0 +1,9 @@
+{
+  "defaultProvider": "Local",
+  "defaultModel": "qwen3.6-dev:27b-128k",
+  "enabledModels": [
+    "Local/qwen3.6-dev:27b-80k",
+    "Local/qwen3.6-dev:27b-128k"
+  ],
+  "defaultThinkingLevel": "medium"
+}

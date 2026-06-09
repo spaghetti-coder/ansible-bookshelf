@@ -447,6 +447,10 @@
       tags: [opencode-cli]
       when: opencode_cli_managed | default(false)
 
+    - role: pi-cli
+      tags: [pi-cli]
+      when: pi_cli_managed | default(false)
+
     - role: python
       tags: [python]
       when: python_managed | default(false)
