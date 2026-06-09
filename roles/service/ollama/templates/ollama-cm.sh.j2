@@ -67,16 +67,27 @@ create_model() {
 }
 
 get_profiles() {
-  local first_line="# TARGET is also a profile name"
-  local qwen128k="
+  local qwen_128k_hq="
     # https://huggingface.co/unsloth/Qwen3.6-27B-GGUF#using-qwen36-via-the-chat-completions-api
-    FROM hf.co/unsloth/Qwen3.6-27B-GGUF:Q3_K_M
+    FROM hf.co/unsloth/Qwen3.6-27B-GGUF:Q4_K_M
     PARAMETER num_ctx 128000
     PARAMETER num_predict -1
   "
-  declare -A profiles=(
-    [qwen3.6-general:27b-128k]="
-      ${qwen128k}
+  local qwen_128k_lq; qwen_128k_lq="$(sed -e 's/Q4_K_M/Q3_K_M/' <<< "${qwen_128k_hq}")"
+  local gemma_128k_hq="
+    # https://huggingface.co/unsloth/gemma-4-31B-it-GGUF#1-sampling-parameters
+    FROM hf.co/unsloth/gemma-4-31B-it-GGUF:Q4_K_M
+    PARAMETER num_ctx 128000
+    PARAMETER num_predict -1
+    PARAMETER temperature 1.0
+    PARAMETER top_p 0.95
+    PARAMETER top_k 64
+  "
+  declare -A profiles; profiles=(
+    [gemma-4-it-hq:31b-128k]="${gemma_128k_hq}"
+    [gemma-4-it-lq:31b-128k]="$(sed -e 's/Q4_K_M/Q3_K_M/' <<< "${gemma_128k_hq}")"
+    [qwen3.6-general-hq:27b-128k]="
+      ${qwen_128k_hq}
       PARAMETER temperature 1.0
       PARAMETER top_p 0.95
       PARAMETER top_k 20
@@ -84,8 +95,8 @@ get_profiles() {
       PARAMETER presence_penalty 0.0
       PARAMETER repeat_penalty 1.0
     "
-    [qwen3.6-dev:27b-128k]="
-      ${qwen128k}
+    [qwen3.6-dev-hq:27b-128k]="
+      ${qwen_128k_hq}
       PARAMETER temperature 0.6
       PARAMETER top_p 0.95
       PARAMETER top_k 20
@@ -93,8 +104,35 @@ get_profiles() {
       PARAMETER presence_penalty 0.0
       PARAMETER repeat_penalty 1.0
     "
-    [qwen3.6-instruct:27b-128k]="
-      ${qwen128k}
+    [qwen3.6-instruct-hq:27b-128k]="
+      ${qwen_128k_hq}
+      PARAMETER temperature 0.7
+      PARAMETER top_p 0.80
+      PARAMETER top_k 20
+      PARAMETER min_p 0.0
+      PARAMETER presence_penalty 1.5
+      PARAMETER repeat_penalty 1.0
+    "
+    [qwen3.6-general-lq:27b-128k]="
+      ${qwen_128k_lq}
+      PARAMETER temperature 1.0
+      PARAMETER top_p 0.95
+      PARAMETER top_k 20
+      PARAMETER min_p 0.0
+      PARAMETER presence_penalty 0.0
+      PARAMETER repeat_penalty 1.0
+    "
+    [qwen3.6-dev-lq:27b-128k]="
+      ${qwen_128k_lq}
+      PARAMETER temperature 0.6
+      PARAMETER top_p 0.95
+      PARAMETER top_k 20
+      PARAMETER min_p 0.0
+      PARAMETER presence_penalty 0.0
+      PARAMETER repeat_penalty 1.0
+    "
+    [qwen3.6-instruct-lq:27b-128k]="
+      ${qwen_128k_lq}
       PARAMETER temperature 0.7
       PARAMETER top_p 0.80
       PARAMETER top_k 20
@@ -114,18 +152,18 @@ get_profiles() {
       return 1
     }
 
-    printf -- '# TARGET = %s\n%s\n' "${selected}" "${first_line}"
+    printf -- '# TARGET = %s\n#\n' "${selected}"
     cat <<< "${profiles[${selected}]}" \
     | sed -e 's/^\s\+//' -e 's/\s\+$//' -e '/^\s*$/d'
 
     return
   fi
 
-  local ctr=0
-  local profile; for profile in "${!profiles[@]}"; do
-    [ $ctr -gt 0 ] && echo
-    ${FUNCNAME[0]} "${profile}"
-    (( ctr++ ))
+  local modelfile
+  printf -- "%s\n" "${!profiles[@]}" | sort -V \
+  | while read -r profile; do
+    modelfile="$(${FUNCNAME[0]} "${profile}")"
+    get_target "${modelfile}"
   done
 }
 
