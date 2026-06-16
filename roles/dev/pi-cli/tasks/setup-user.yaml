@@ -5,26 +5,49 @@
   vars:
     conf_dir: ~/.pi
     agent_dir: "{{ conf_dir }}/agent"
+    settings_file: "{{ agent_dir }}/settings.json"
   block:
+    - name: Get settings.json content
+      ansible.builtin.slurp: { src: "{{ settings_file }}" }
+      register: pi_cli_settings
+      failed_when: false
+
     - name: Create config directory
       ansible.builtin.file:
         path: "{{ agent_dir }}"
         state: directory
         mode: '0700'
 
-    - name: Create config files
+    - name: Create settings.json
       ansible.builtin.copy:
-        content: |
-          {{- config[item] }}
-        dest: "{{ agent_dir }}/{{ item }}.json"
+        content: "{{ final }}"
+        dest: "{{ settings_file }}"
         mode: '0600'
-      when: config[item] | default('', true) | length > 0
-      loop: ["settings", "models"]
+      vars:
+        original: "{{ pi_cli_settings.content | default('', true) | b64decode | default('{}', true) | from_json }}"
+        update: "{{ config.settings | from_json }}"
+        final: "{{ original | combine(update) | to_nice_json(indent=2) }}"
+      when: config.settings | default("", true) | length > 0
 
-    - name: Create agents file
+    - name: Create models.json
       ansible.builtin.copy:
         content: |
-          {{- config.agents_md }}
-        dest: "{{ agent_dir }}/AGENTS.md"
+          {{- config.models }}
+        dest: "{{ agent_dir }}/models.json"
         mode: '0600'
-      when: config.agents_md | default('', true) | length > 0
+      when: config.models | default('', true) | length > 0
+
+    - name: Create prompt files
+      ansible.builtin.copy:
+        content: |
+          {{- config[item.key] }}
+        dest: "{{ agent_dir }}/{{ files_map[item.key] }}"
+        mode: '0600'
+      when: config[item.key] | default('', true) | length > 0
+      loop: "{{ files_map | dict2items }}"
+      loop_control:
+        label: "{{ files_map[item.key] }}"
+      vars:
+        files_map:
+          agents_md: AGENTS.md
+          append_system_md: APPEND_SYSTEM.md

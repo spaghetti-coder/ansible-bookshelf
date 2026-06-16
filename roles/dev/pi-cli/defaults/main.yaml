@@ -1,7 +1,8 @@
 ---
 pi_cli_managed: false
 pi_cli_configs: # <- per user global configs
-  # - user: "{{ ansible_facts.user_id }}"                 # <- (REQUIRED, the rest is optional)
-  #   settings: "{{ lookup('file', 'settings.json') }}"   # <- See demo in files
-  #   models: "{{ lookup('file', 'models.json') }}"       # <- See demo in files
-  #   agents_md: "{{ lookup('file', 'AGENTS.md') }}"      # <- See demo in files
+  # - user: "{{ ansible_facts.user_id }}"                           # <- (REQUIRED, the rest is optional)
+  #   settings: "{{ lookup('file', 'settings.json') }}"             # <- See demo in files
+  #   models: "{{ lookup('file', 'models.json') }}"                 # <- See demo in files
+  #   agents_md: "{{ lookup('file', 'AGENTS.md') }}"                # <- See demo in files
+  #   append_system_md: "{{ lookup('file', 'APPEND_SYSTEM.md') }}"  # <- See demo in files
