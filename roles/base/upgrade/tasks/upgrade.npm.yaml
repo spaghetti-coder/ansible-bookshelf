@@ -6,6 +6,16 @@
   changed_when: false
   failed_when: false
 
+- name: Remove npm junk
+  ansible.builtin.shell:        # noqa: command-instead-of-shell
+    cmd: "{{ item }}"
+  changed_when: false
+  failed_when: false
+  loop:
+    - find /usr/lib/node_modules/ -maxdepth 1 -name '.*' -type d -exec rm -rf {} +
+    - find /usr/lib/node_modules/@* -maxdepth 1 -name '.*' -type d -exec rm -rf {} +
+  become: true
+
 - name: Upgrade npm packages
   community.general.npm:
     global: true
