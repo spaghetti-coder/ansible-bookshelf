@@ -84,7 +84,13 @@ get_profiles() {
     PARAMETER top_k 64
   "
   declare -A profiles; profiles=(
+    [gemma-4-it-hq:12b-128k]="$(
+      sed -e 's#hf.co/unsloth/gemma-4-31B-it-GGUF:Q4_K_M#hf.co/unsloth/gemma-4-12b-it-GGUF:Q6_K#' <<< "${gemma_128k_hq}"
+    )"
     [gemma-4-it-hq:31b-128k]="${gemma_128k_hq}"
+    [gemma-4-it-lq:12b-128k]="$(
+      sed -e 's#hf.co/unsloth/gemma-4-31B-it-GGUF:Q4_K_M#hf.co/unsloth/gemma-4-12b-it-GGUF:UD-Q4_K_XL#' <<< "${gemma_128k_hq}"
+    )"
     [gemma-4-it-lq:31b-128k]="$(sed -e 's/Q4_K_M/Q3_K_M/' <<< "${gemma_128k_hq}")"
     [qwen3.6-general-hq:27b-128k]="
       ${qwen_128k_hq}
