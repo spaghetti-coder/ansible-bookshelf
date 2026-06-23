@@ -12,23 +12,18 @@ print_usage() {
         demo_target=qwen3.5:9b-256k \
         demo_ctx=256000
   echo "
-    # Usage
+    # ~~~ Usage ~~~
+   ,
     ${self} --profiles            # List available profiles
     ${self} --profile PROFILE     # Show specific profile
     ${self} MODELFILE             # Create model based on MODELFILE content
     cat MODELFILE | ${self}       # Same as above, but from stdin
    ,
-    # Create ${demo_target} model with ${demo_ctx} context based on ${demo_base}
-    cat << EOF | ${self}
-   ,  # Valid Modelfile format with TARGET model name as a comment (required).
-   ,  # Padding is trimmed.
-   ,  #
-   ,  # TARGET = ${demo_target}
-   ,  #
-   ,  FROM ${demo_base}
-   ,  PARAMETER num_ctx ${demo_ctx}
-   ,  PARAMETER num_predict -1
-    EOF
+   # ~~~ Demos ~~~
+   ,
+    # Create from profile
+    ${self} <(${self} --profile $(bash $0 --profiles | head -n 1))
+    ${self} --profile $(bash $0 --profiles | head -n 1) | ${self}
   " | sed -e 's/^\s\+//' -e 's/\s\+$//' -e '/^\s*$/d' -e 's/^,//'
 }
 
@@ -86,6 +81,9 @@ get_profiles() {
   declare -A profiles; profiles=(
     [gemma-4-it-hq:12b-128k]="$(
       sed -e 's#hf.co/unsloth/gemma-4-31B-it-GGUF:Q4_K_M#hf.co/unsloth/gemma-4-12b-it-GGUF:Q6_K#' <<< "${gemma_128k_hq}"
+    )"
+    [gemma-4-it-hq:26b-128k]="$(
+      sed -e 's#hf.co/unsloth/gemma-4-31B-it-GGUF:Q4_K_M#hf.co/unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q5_K_M#' <<< "${gemma_128k_hq}"
     )"
     [gemma-4-it-hq:31b-128k]="${gemma_128k_hq}"
     [gemma-4-it-lq:12b-128k]="$(
