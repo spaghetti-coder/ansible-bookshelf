@@ -32,7 +32,7 @@ ollama_models:
 # Can disable ports if plan to access only via tailnet or reverse-proxy
 ollama_tcp_port:        # Leave blank for bookshelf default, or '-1' to not expose the port
 # Optional extra env vars, will affect both Ollama and Tailscale.
-ollama_extra_env:       # "{{ lookup('template', playbook_dir + '/resources/ollama.env.j2') }}"
+ollama_extra_env:   |   # "{{ lookup('template', playbook_dir + '/resources/ollama.env.j2') }}"
   # # https://docs.ollama.com/faq#how-do-i-keep-a-model-loaded-in-memory-or-make-it-unload-immediately
   # OLLAMA_KEEP_ALIVE=2h
 ollama_secrets_env: |  # "{{ lookup('template', playbook_dir + '/resources/ollama.secret.env.j2') }}"

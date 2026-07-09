@@ -1,0 +1,56 @@
+---
+# LLM inference in C/C++
+#   https://github.com/ggml-org/llama.cpp
+# -----
+# VERSIONS:
+#   * https://github.com/ggml-org/llama.cpp/pkgs/container/llama.cpp
+#   * => See tailscale role versions
+# -----
+llama_cpp_managed: false
+llama_cpp_enabled: false
+llama_cpp_version:        # Leave blank to leverage bookshelf configuration
+# Image tag midfix,  e.g. "cuda13", "intel", ...
+# Used to compose llama_cpp_version tag, e.g. "server-cuda13-b9935"
+# No midfix -> "server-b9935"
+# https://github.com/ggml-org/llama.cpp/blob/master/docs/docker.md
+llama_cpp_tag_midfix:
+llama_cpp_compose_dir:    # Unless you know ..., leave blank to leverage bookshelf configuration
+llama_cpp_owner: "{{ ansible_facts.user_id }}"
+# Use NVidia card (must be configured, see docker role)
+#   llama_cpp_nvidia: "{{ docker_nvidia_toolkit }}"
+llama_cpp_nvidia: false
+llama_cpp_conf_dir: ~/conf/llama-cpp
+llama_cpp_service_name: llama-cpp
+llama_cpp_hostname: "{{ llama_cpp_service_name }}"
+llama_cpp_vhost: "{{ llama_cpp_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+llama_cpp_tcp_port:       # Leave blank for bookshelf default, or '-1' to not expose the port
+# Optional extra env vars, will affect both Llama.cpp and Tailscale.
+llama_cpp_extra_env: |    # "{{ lookup('template', playbook_dir + '/resources/llama-cpp.env.j2') }}"
+  # # https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md
+  # ----------
+  # LLAMA_ARG_HOST=192.168.1.10
+llama_cpp_secrets_env: |  # "{{ lookup('template', playbook_dir + '/resources/llama-cpp.secret.env.j2') }}"
+  # Same as extra env, but for secrets
+  # ----------
+  # HF_TOKEN=foobar
+llama_cpp_models: |       # Required. "{{ lookup('file', 'models.ini') }}"
+  ; See for demo models.ini under role files
+  ; ----------
+  [*]
+  jinja = true
+  ; ...
+# WUD settings
+llama_cpp_wudded: true    # Watched by WUD
+llama_cpp_tag_rex:        # Leave blank to leverage bookshelf configuration
+# ----------
+# The following settings configure Llama.cpp to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+llama_cpp_tailscaled: false
+llama_cpp_ts_version:          # Leave blank to leverage bookshelf configuration
+llama_cpp_ts_service_name: "{{ llama_cpp_service_name }}-ts"
+llama_cpp_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+llama_cpp_ts_hostname: "{{ llama_cpp_service_name }}"
+llama_cpp_ts_auth_key:

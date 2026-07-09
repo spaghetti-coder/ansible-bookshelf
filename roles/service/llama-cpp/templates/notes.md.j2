@@ -1,0 +1,7 @@
+## Llama.cpp
+{% if llama_cpp_tailscaled %}
+
+* Disable tailscale machine expiry:
+  1. Go to https://tailscale.com/admin/machines
+  2. `{{ llama_cpp_ts_hostname }} *** > Disable key expiry`
+{% endif %}

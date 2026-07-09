@@ -1,0 +1,4 @@
+---
+dependencies:
+  - bookshelf-const
+  - nginx-proxy

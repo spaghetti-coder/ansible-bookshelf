@@ -1,0 +1,58 @@
+{% set version = llama_cpp_version | default(bookshelf_const_version.llama_cpp, true) %}
+{% set tcp_port = llama_cpp_tcp_port | default(bookshelf_const_port.llama_cpp.tcp, true) %}
+{% set tag_rex = llama_cpp_tag_rex | default(bookshelf_const_version.llama_cpp_tag_rex, true) %}
+---
+{{ lookup('template', './../../tailscale/partial/sidecar-compose.yaml.j2', template_vars=dict(
+  ts_version = llama_cpp_ts_version | default(bookshelf_const_version.llama_cpp_tailscale, true),
+  ts_name = llama_cpp_ts_service_name, ts_conf_dir = conf_dir + '/tailscale'
+)) }}
+
+services:
+  {{ llama_cpp_service_name }}:
+    # https://github.com/ggml-org/llama.cpp/pkgs/container/llama.cpp
+    image: ghcr.io/ggml-org/llama.cpp:{{ version }}
+    container_name: {{ llama_cpp_service_name }}
+    restart: unless-stopped
+    labels:
+      - wud.watch={{ llama_cpp_wudded }}
+      - wud.tag.include={{ tag_rex }}
+    env_file:
+      - ./secret.env
+      - ./main.env
+    volumes:
+      - '{{ conf_dir }}/models:/root/.cache'
+      - '{{ compose_dir }}/models.ini:/models.ini:ro'
+{% if llama_cpp_nvidia %}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+{% endif %}
+{% if llama_cpp_tailscaled %}
+    network_mode: "service:{{ llama_cpp_ts_service_name }}"
+
+  {{ llama_cpp_ts_service_name }}:
+    <<: *tailscale
+{% endif %}
+    hostname: {{ llama_cpp_hostname }}
+{% if tcp_port | int > -1 %}
+    ports: [{{ tcp_port }}:{{ llama_cpp_tcp_port_int }}]
+{% else %}
+    # ports: [ {{ bookshelf_const_port.llama_cpp.tcp }}:{{ llama_cpp_tcp_port_int }} ]
+{% endif %}
+{% if not (nginx_proxy_enabled | default(false)) %}
+    network_mode: bridge
+{% else %}
+    networks:
+      - {{ nginx_proxy_net }}
+    environment:
+      - VIRTUAL_HOST={{ llama_cpp_vhost }}
+      - VIRTUAL_PORT={{ llama_cpp_tcp_port_int }}
+
+networks:
+  {{ nginx_proxy_net }}:
+    external: true
+{% endif %}{#                       <- NETMODE END #}

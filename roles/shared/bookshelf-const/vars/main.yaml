@@ -107,6 +107,10 @@ bookshelf_const_version: # <- Last update: 2026-06-20
   jotty: 1.25.1
   jotty_tag_rex: '^\d+\.\d+\.\d+$$'
   jotty_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
+  # https://github.com/ggml-org/llama.cpp/pkgs/container/llama.cpp
+  llama_cpp: '{{ ["server", llama_cpp_tag_midfix | default("", true)] | select | join("-") }}-b9935'
+  llama_cpp_tag_rex: '^{{ ["server", llama_cpp_tag_midfix | default("", true)] | select | join("-") }}-b\d+$$'
+  llama_cpp_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/BerriAI/litellm/pkgs/container/litellm
   litellm: v1.83.14-stable.patch.3
   litellm_tag_rex: '^v\d+\.\d+\.\d+.*-stable'
@@ -270,6 +274,8 @@ bookshelf_const_port:
     web_ui: 8092
   litellm:
     tcp: 8121
+  llama_cpp:
+    tcp: 8127   # <- Last (8081+)
   mealie:
     web_ui: 8100
   memos:
@@ -307,7 +313,7 @@ bookshelf_const_port:
   searxng_mcp:
     tcp: 8122
   searxng_proxy:
-    web_ui: 8126   # <- Last (8081+)
+    web_ui: 8126
   silverbullet:
     web_ui: 8103
   smtp4dev:

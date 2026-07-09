@@ -183,6 +183,10 @@
       tags: [litellm, upgradable]
       when: litellm_managed | default(false)
 
+    - role: llama-cpp
+      tags: [llama-cpp, upgradable]
+      when: llama_cpp_managed | default(false)
+
     - role: mealie
       tags: [mealie, upgradable]
       when: mealie_managed | default(false)
