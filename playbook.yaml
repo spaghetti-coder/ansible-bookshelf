@@ -56,6 +56,10 @@
       tags: [git]
       when: git_managed | default(false)
 
+    - role: hf-dl
+      tags: [hf-dl]
+      when: hf_dl_managed | default(false)
+
     - role: notify-sh
       tags: [notify-sh]
       when: notify_sh_managed | default(false)
@@ -186,6 +190,10 @@
     - role: llama-cpp
       tags: [llama-cpp, upgradable]
       when: llama_cpp_managed | default(false)
+
+    - role: llama-swap
+      tags: [llama-swap, upgradable]
+      when: llama_swap_managed | default(false)
 
     - role: mealie
       tags: [mealie, upgradable]

@@ -1,0 +1,4 @@
+---
+# Hugging Face models downloader
+# -----
+hf_dl_managed: false

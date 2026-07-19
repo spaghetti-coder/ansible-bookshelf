@@ -1,0 +1,158 @@
+#!/usr/bin/env bash
+
+DEFAULT_ARGS_FILE=hf-dl-args.sh
+
+print_help() {
+  local self; self="$(basename -- "${BASH_SOURCE[0]}")"
+  echo "
+    USAGE:
+    -----
+    ${self} ARGS_FILE   # <- Download models listed in args file
+    ${self}             # <- Will pick ${DEFAULT_ARGS_FILE} in the current directory
+    ${self} --demo      # <- Print demo args file
+   ,
+    EXAMPLES:
+    --------
+    # Will pick default.
+    # Models will be downloaded to ./ directory
+    ${self} --demo > ./${DEFAULT_ARGS_FILE}
+    ${self}
+   ,
+    # Will read from the file descriptor.
+    # Models will be downloaded to PWD directory
+    ${self} <(${self} --demo)
+   ,
+    # Will read from this file.
+    # Models will be downloaded to ~/Models directory
+    ${self} ~/Models/my-args.sh
+  " | sed -e 's/^\s*//' -e 's/\s*$//' -e '/^\s*$/d' -e 's/^,//'
+}
+
+print_demo() {
+  sed -n '/^\s*DEMO_ARGS=/,/^\s*#\s\+DEMO_ARGS/p' "${0}" \
+  | sed '$d' | sed -e 's/^\(\s*\)DEMO_ARGS=/\1ARGS=/'
+}
+
+[[ "${1}" =~ ^(-\?|-h|--help)$ ]] && {
+  print_help
+  exit
+}
+
+[ "${1}" = --demo ] && {
+  print_demo
+  exit
+}
+
+# shellcheck disable=SC2034
+DEMO_ARGS=(                              # <- The name must be ARGS
+  unsloth/gemma-4-26B-A4B-it-GGUF   # <- Repo name
+  gemma-4-26B-A4B-it-Q8_0.gguf      # <- Model.                 --model GGUF_FILE
+  mmproj-BF16.gguf                  # <- Multimodal projector.  --mmproj MMPROJ_GGUF
+  mtp-gemma-4-26B-A4B-it.gguf       # <- Draft model.           --model-draft MTP_GGUF
+  ---                               # <- Separator
+  unsloth/gemma-4-31B-it-GGUF
+  gemma-4-31B-it-Q8_0.gguf
+  mmproj-BF16.gguf
+  mtp-gemma-4-31B-it.gguf
+  ---
+  unsloth/Qwen3.6-27B-MTP-GGUF
+  Qwen3.6-27B-Q8_0.gguf
+  mmproj-BF16.gguf
+  ---
+  unsloth/Qwen3.6-35B-A3B-MTP-GGUF
+  Qwen3.6-35B-A3B-UD-Q6_K.gguf
+  Qwen3.6-35B-A3B-Q8_0.gguf
+  mmproj-BF16.gguf
+)
+# DEMO_ARGS
+
+# ~~~ Check prereqs ~~~
+
+hf --version >/dev/null 2>/dev/null || {
+  echo "Hugging Face CLI is required. See here:"
+  echo "  https://huggingface.co/docs/huggingface_hub/main/en/installation#install-the-hugging-face-cli"
+  exit 1
+}
+
+# ~~~ Detect and load args file ~~~
+
+FILISH=("${@:1:1}")
+! [ ${FILISH[1]+x} ] \
+  && [ -f "${DEFAULT_ARGS_FILE}" ] \
+  && FILISH=("${DEFAULT_ARGS_FILE}")
+ARGS_FILE="${FILISH[0]}"
+
+[ -n "${ARGS_FILE:+x}" ] || {
+  echo "Args file required" >&2
+  echo
+  print_help
+  exit 1
+}
+
+MODELS_DIR="."
+[ -f "${ARGS_FILE}" ] && MODELS_DIR="$(dirname -- "${ARGS_FILE}")"
+
+args_file_content="$(cat -- "${ARGS_FILE}")" || {
+  echo "Can't read the file: ${ARGS_FILE}" >&2
+  exit 1
+}
+
+# Return if the file is sourced
+(return 2>/dev/null) && return
+# shellcheck disable=SC1090
+{ . <(printf -- '%s\n' "${args_file_content}"); } >/dev/null 2>&1
+
+if [ "${#ARGS[@]}" -lt 2 ]; then
+  echo "Error: At least 2 args required!" >&2
+  exit 1
+fi
+
+# ~~~ Get repos list ~~~
+
+ctr=0; repos=()
+for i in "${ARGS[@]}"; do
+  [ ${ctr} -lt 1 ] && repos+=("${i}")
+  (( ctr++ ))
+  [ "${i}" = '---' ] && ctr=0
+done
+
+# ~~~ Choose repo ~~~
+
+repo_no=-1
+for i in "${!repos[@]}"; do
+  printf '%-4s%s\n' "$(( i + 1 ))" "- ${repos[$i]}"
+done
+
+echo "-------------------------------"
+while true; do
+  if [ "${repo_no,,}" = q ]; then exit; fi
+
+  printf -- '%s' "Select repo number (q for quit): "
+  read repo_no
+
+  [ "${repo_no,,}" = q ] && exit
+  [[ " ${!repos[*]} " == *" $(( repo_no - 1 )) "* ]] && break
+
+  echo "Invalid choise: ${repo_no}" >&2
+  continue
+done
+
+# ~~~ Get repo args ~~~
+
+repo_no="$(( repo_no - 1 ))"
+ctr=0; repo_args=()
+for i in "${ARGS[@]}"; do
+  [ "${i}" = '---' ] && { ctr=$(( ctr + 1 )); continue; }
+  ! [ ${ctr} = ${repo_no} ] && continue
+  repo_args+=("${i}")
+done
+
+dl_args=(
+  --local-dir "${MODELS_DIR}/${repo_args[0]}"
+  "${repo_args[0]}" -- "${repo_args[@]:1}"
+)
+
+(
+  set -x
+  hf download "${dl_args[@]}"
+)

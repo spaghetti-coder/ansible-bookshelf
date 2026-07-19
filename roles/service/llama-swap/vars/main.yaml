@@ -1,0 +1,8 @@
+---
+_llama_swap_version: "{{ llama_swap_version | default(bookshelf_const_version.llama_swap, true) }}"
+
+llama_swap_arch: "{{ 'arm64' if ansible_facts.architecture in ['aarch64', 'arm64'] else 'amd64' }}"
+llama_swap_dl_suffix: "v{{ _llama_swap_version }}/llama-swap_{{ _llama_swap_version }}_linux_{{ llama_swap_arch }}.tar.gz"
+llama_swap_dl_url: https://github.com/mostlygeek/llama-swap/releases/download/{{ llama_swap_dl_suffix }}
+llama_swap_dir: /opt/mostlygeek/llama-swap
+llama_swap_port_int: "{{ llama_swap_tcp_port | default(bookshelf_const_port.llama_swap.tcp, true) }}"

@@ -1,0 +1,29 @@
+---
+#
+# - ${env.HOME} points to llama_swap_owner HOME
+# - ${env.HF_TOKEN} and other env variables can be provided with llama_swap_env
+#
+# default 15s likely to fail for default models due to downloading models
+#
+healthCheckTimeout: 60
+
+models:
+  "qwen2.5":
+    cmd: |
+      docker run
+        --rm
+        -p \${PORT}:8080
+        --name qwen2.5
+      ghcr.io/ggml-org/llama.cpp:server
+        -hf bartowski/Qwen2.5-0.5B-Instruct-GGUF:Q4_K_M
+    cmdStop: docker stop qwen2.5
+
+  "smollm2":
+    cmd: |
+      docker run
+        --rm
+        -p \${PORT}:8080
+        --name smollm2
+      ghcr.io/ggml-org/llama.cpp:server
+        -hf bartowski/SmolLM2-135M-Instruct-GGUF:Q4_K_M
+    cmdStop: docker stop smollm2

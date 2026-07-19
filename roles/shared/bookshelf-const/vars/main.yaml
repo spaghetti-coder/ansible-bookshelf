@@ -26,6 +26,8 @@ bookshelf_const_version: # <- Last update: 2026-07-11
   nodejs_version: 24
   # https://github.com/tmux/tmux-builds/releases
   tmux: "3.7b"
+  # https://github.com/mostlygeek/llama-swap/releases
+  llama_swap: 240
   #
   # SERVICE
   #
@@ -275,7 +277,9 @@ bookshelf_const_port:
   litellm:
     tcp: 8121
   llama_cpp:
-    tcp: 8127   # <- Last (8081+)
+    tcp: 8127
+  llama_swap:
+    tcp: 8128   # <- Last (8081+)
   mealie:
     web_ui: 8100
   memos:

@@ -1,0 +1,23 @@
+#
+# llama_swap_port_int is detected by ansible
+#
+
+[Unit]
+Description=llama-swap
+After=network.target
+
+[Service]
+EnvironmentFile=/root/llama-swap.env
+User={{ llama_swap_owner }}
+Group={{ llama_swap_owner }}
+
+# set this to match your environment
+ExecStart={{ llama_swap_dir }}/llama-swap -config {{ llama_swap_dir }}/config.yaml -watch-config -listen :{{ llama_swap_port_int }}
+
+Restart=on-failure
+RestartSec=3
+StartLimitBurst=3
+StartLimitInterval=30
+
+[Install]
+WantedBy=multi-user.target

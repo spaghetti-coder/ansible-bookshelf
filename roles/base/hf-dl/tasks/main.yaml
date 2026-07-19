@@ -1,0 +1,23 @@
+---
+- name: Privileged
+  vars:
+    install_dir: /opt/varlog/hf-dl
+  become: true
+  block:
+    - name: Create directory
+      ansible.builtin.file:
+        path: "{{ install_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Install
+      ansible.builtin.copy:
+        src: hf-dl.sh
+        dest: "{{ install_dir }}/hf-dl.sh"
+        mode: '0755'
+
+    - name: Create symlink
+      ansible.builtin.file:
+        src: "{{ install_dir }}/hf-dl.sh"
+        dest: /usr/local/bin/hf-dl.sh
+        state: link
