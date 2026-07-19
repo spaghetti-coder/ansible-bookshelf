@@ -1272,6 +1272,24 @@ llama_cpp_ts_funnelled: false  # Expose to the world via TS funnel. Use with cau
 llama_cpp_ts_hostname: "{{ llama_cpp_service_name }}"
 llama_cpp_ts_auth_key:
 
+# ======================
+#       LLAMA-SWAP
+# ======================
+# VERSIONS:
+#   * https://github.com/mostlygeek/llama-swap/releases
+# -----
+llama_swap_managed: "{{ factum_os_family in ['debian'] }}"
+llama_swap_enabled: true
+llama_swap_version:       # Without 'v' prefix. Leave blank to leverage bookshelf configuration
+llama_swap_owner: "{{ ansible_facts.user_id }}"
+llama_swap_env: |         # Optional
+  # Without export!
+  HF_TOKEN=yarayara
+llama_swap_tcp_port:      # Leave blank for bookshelf default, or '-1' to not expose the port
+# See demos in the templates
+llama_swap_service: "{{ lookup('template', 'llama-swap.service.j2') }}"
+llama_swap_config: "{{ lookup('file', 'llama-swap.yaml.j2') }}"
+
 # ==================
 #       MEALIE
 # ==================

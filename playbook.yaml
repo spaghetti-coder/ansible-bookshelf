@@ -187,6 +187,10 @@
       tags: [llama-cpp, upgradable]
       when: llama_cpp_managed | default(false)
 
+    - role: llama-swap
+      tags: [llama-swap, upgradable]
+      when: llama_swap_managed | default(false)
+
     - role: mealie
       tags: [mealie, upgradable]
       when: mealie_managed | default(false)
