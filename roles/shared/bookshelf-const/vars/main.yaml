@@ -200,6 +200,10 @@ bookshelf_const_version: # <- Last update: 2026-07-11
   tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   tailscale_tag_rex: "{{ bookshelf_const_version_shared.tailscale_tag_rex }}"
   tailscale_alpine: "{{ bookshelf_const_version_shared.alpine }}"
+  # https://github.com/spaghetti-coder/tetris/pkgs/container/tetris
+  tetris: 0.0.2
+  tetris_tag_rex: '^\d+\.\d+\.\d+$$'
+  tetris_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/yourok/TorrServer/pkgs/container/torrserver
   torrserver: MatriX.142
   torrserver_tag_rex: '^.*\d+$$'
@@ -279,7 +283,7 @@ bookshelf_const_port:
   llama_cpp:
     tcp: 8127
   llama_swap:
-    tcp: 8128   # <- Last (8081+)
+    tcp: 8128
   mealie:
     web_ui: 8100
   memos:
@@ -328,6 +332,8 @@ bookshelf_const_port:
     web_ui: 8091
     file_transfers: 22000
     local_discovery: 21027
+  tetris:
+    web_ui: 8129   # <- Last (8081+)
   torrserver:
     web_ui: 8112
   uptime_kuma:

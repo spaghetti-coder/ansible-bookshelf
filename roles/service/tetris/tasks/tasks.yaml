@@ -1,0 +1,58 @@
+---
+- name: Docker
+  ansible.builtin.import_role: { name: docker }
+  vars: { docker_users: ["{{ tetris_owner }}"] }
+
+- name: Compose
+  become: true
+  become_user: "{{ tetris_owner }}"
+  vars:
+    compose_dir: "{{ tetris_compose_dir | default(bookshelf_const_compose_dir + '/tetris', true) }}"
+    conf_dir: "{{ tetris_conf_dir }}"
+    service_state: "{{ tetris_enabled | ternary('present', 'absent') }}"
+  block:
+    - name: Create compose directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop: ["{{ compose_dir }}", "{{ conf_dir }}"]
+
+    - name: Create compose files
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ compose_dir }}/{{ item }}"
+        mode: '0600'
+      loop:
+        - ts-serve.json   # <- For the first 2 files order matters
+        - compose.yaml
+        - main.env
+        - secret.env
+      register: tetris_compose_files_result
+
+    # MANAGE SERVICE STATE
+
+    - name: Apply service state
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: "{{ service_state }}"
+        remove_orphans: true
+      register: tetris_service_state
+
+    - name: Restart service
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: restarted
+        remove_orphans: true
+      when:
+        - tetris_enabled and not tetris_service_state.changed
+        - tetris_tailscaled and tetris_compose_files_result.results[0].changed
+
+    - name: Create note
+      ansible.builtin.import_role: { name: bookshelf-note }
+      # noqa: var-naming[no-role-prefix]
+      vars: { src: notes.md.j2, dest: tetris-service.md, present: "{{ tetris_enabled }}" }
+
+- name: Mark done
+  ansible.builtin.set_fact:
+    tetris_done: true
