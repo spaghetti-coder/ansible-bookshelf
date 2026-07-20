@@ -10,7 +10,9 @@
 
     - name: Setup plugins
       ansible.builtin.include_tasks: { file: setup-user-plugin.yaml }
-      when: config['plugin_' + item.key] | default(false)
+      # Disable plugins support
+      # Too hard to manage in opencode.jsonc
+      when: false  # config['plugin_' + item.key] | default(false)
       loop: "{{ opencode_plugins | dict2items }}"
       loop_control:
         label: "{{ item.key }}"

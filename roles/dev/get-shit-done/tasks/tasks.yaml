@@ -4,7 +4,7 @@
 
 - name: Install
   community.general.npm:
-    name: '@opengsd/get-shit-done-redux'
+    name: '@opengsd/gsd-core'
     global: true
   become: true
 
