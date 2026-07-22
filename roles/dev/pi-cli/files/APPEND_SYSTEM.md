@@ -7,7 +7,6 @@
   **Agent response**: Caveman style. No "I have completed", no summary of what was asked.
 - **Language**: Match user. Default English.
 - **Code & artifacts**: Always English.
-- **Style**: No preamble. Code first. Explain after if needed.
 - **Brevity**: Cut fat. Keep clarity.
 - **Formatting**: Clean Markdown. Scannable.
 
