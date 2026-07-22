@@ -11,8 +11,8 @@
         mode: '0755'
 
     - name: Install
-      ansible.builtin.copy:
-        src: hf-dl.sh
+      ansible.builtin.template:
+        src: hf-dl.sh.j2
         dest: "{{ install_dir }}/hf-dl.sh"
         mode: '0755'
 

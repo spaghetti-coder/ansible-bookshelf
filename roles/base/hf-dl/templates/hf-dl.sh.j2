@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
 
+# https://github.com/spaghetti-coder/hf-dl-docker/pkgs/container/hf-dl-docker
+DOCKER_IMAGE_VERSION='{{ hf_dl_image_versions | default(bookshelf_const_version.hf_dl_image, true) }}'
 DEFAULT_ARGS_FILE=hf-dl-args.sh
+DOCKER_IMAGE_VERSION="${DOCKER_IMAGE_VERSION:-master}"
 
 print_help() {
   local self; self="$(basename -- "${BASH_SOURCE[0]}")"
   echo "
+    PREREQS:
+   ,  - Hugging Face CLI or Docker engine installed
+   ,  - HF_TOKEN env var exported - desired, but not required
+   ,
     USAGE:
     -----
     ${self} ARGS_FILE   # <- Download models listed in args file
@@ -68,9 +75,16 @@ DEMO_ARGS=(                              # <- The name must be ARGS
 
 # ~~~ Check prereqs ~~~
 
-hf --version >/dev/null 2>/dev/null || {
-  echo "Hugging Face CLI is required. See here:"
-  echo "  https://huggingface.co/docs/huggingface_hub/main/en/installation#install-the-hugging-face-cli"
+HF_AVAILABLE=false
+DOCKER_AVAILABLE=false
+hf --version >/dev/null 2>/dev/null && HF_AVAILABLE=true
+docker --version >/dev/null 2>/dev/null && DOCKER_AVAILABLE=true
+
+
+! ${HF_AVAILABLE} && ! ${DOCKER_AVAILABLE} && {
+  echo "Hugging Face CLI or Docker engine is required. See here:"
+  echo "  - https://huggingface.co/docs/huggingface_hub/main/en/installation#install-the-hugging-face-cli"
+  echo "  - https://docs.docker.com/engine/install/"
   exit 1
 }
 
@@ -102,10 +116,12 @@ args_file_content="$(cat -- "${ARGS_FILE}")" || {
 # shellcheck disable=SC1090
 { . <(printf -- '%s\n' "${args_file_content}"); } >/dev/null 2>&1
 
+# {% raw %}
 if [ "${#ARGS[@]}" -lt 2 ]; then
   echo "Error: At least 2 args required!" >&2
   exit 1
 fi
+# {% endraw %}
 
 # ~~~ Get repos list ~~~
 
@@ -147,12 +163,20 @@ for i in "${ARGS[@]}"; do
   repo_args+=("${i}")
 done
 
-dl_args=(
-  --local-dir "${MODELS_DIR}/${repo_args[0]}"
-  "${repo_args[0]}" -- "${repo_args[@]:1}"
+dl_cmd=(hf download --local-dir "${MODELS_DIR}/${repo_args[0]}")
+dl_args=("${repo_args[0]}" -- "${repo_args[@]:1}")
+
+! ${HF_AVAILABLE} && dl_cmd=(
+  docker container run -it --rm \
+    -e PUID="$(id -u)" -e HF_TOKEN="${HF_TOKEN}" \
+    -v "${MODELS_DIR}:/Models" \
+  ghcr.io/spaghetti-coder/hf-dl-docker:${DOCKER_IMAGE_VERSION}
 )
 
 (
+  # Disguise the token
+  exec 3> >(sed 's/^\(.\+HF_TOKEN=\)[^ ]*/\1*****/' >&2)
+  BASH_XTRACEFD=3
   set -x
-  hf download "${dl_args[@]}"
+  "${dl_cmd[@]}" "${dl_args[@]}"
 )

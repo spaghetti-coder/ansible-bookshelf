@@ -163,9 +163,12 @@ git_extraconf:
 # =================
 #       HF-DL
 # =================
-# Hugging Face models downloader
+# VERSIONS:
+#   * https://github.com/spaghetti-coder/hf-dl-docker/pkgs/container/hf-dl-docker
 # -----
 hf_dl_managed: true
+hf_dl_image_versions:     # Leave blank to leverage bookshelf configuration
+
 
 # =====================
 #       NOTIFY-SH

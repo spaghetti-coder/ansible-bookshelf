@@ -26,8 +26,13 @@ bookshelf_const_version: # <- Last update: 2026-07-11
   nodejs_version: 24
   # https://github.com/tmux/tmux-builds/releases
   tmux: "3.7b"
+  #
+  # SPECIAL UPDATES
+  #
   # https://github.com/mostlygeek/llama-swap/releases
   llama_swap: 240
+  # https://github.com/spaghetti-coder/hf-dl-docker/pkgs/container/hf-dl-docker
+  hf_dl_image: 0.2.0
   #
   # SERVICE
   #

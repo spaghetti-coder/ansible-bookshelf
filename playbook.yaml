@@ -57,7 +57,7 @@
       when: git_managed | default(false)
 
     - role: hf-dl
-      tags: [hf-dl]
+      tags: [hf-dl, upgradable, upgradable-pkg]
       when: hf_dl_managed | default(false)
 
     - role: notify-sh
