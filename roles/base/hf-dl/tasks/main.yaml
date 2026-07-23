@@ -16,6 +16,13 @@
         dest: "{{ install_dir }}/hf-dl.sh"
         mode: '0755'
 
+    - name: Create args file
+      ansible.builtin.copy:
+        content: "{{ hf_dl_args_file }}"
+        dest: "{{ install_dir }}/hf-dl.args.sh"
+        mode: '0644'
+      when: hf_dl_args_file | default('', true) | length > 0
+
     - name: Create symlink
       ansible.builtin.file:
         src: "{{ install_dir }}/hf-dl.sh"

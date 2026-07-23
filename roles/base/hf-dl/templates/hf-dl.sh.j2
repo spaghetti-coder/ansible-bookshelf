@@ -2,7 +2,7 @@
 
 # https://github.com/spaghetti-coder/hf-dl-docker/pkgs/container/hf-dl-docker
 DOCKER_IMAGE_VERSION='{{ hf_dl_image_versions | default(bookshelf_const_version.hf_dl_image, true) }}'
-DEFAULT_ARGS_FILE=hf-dl-args.sh
+DEFAULT_ARGS_FILE=hf-dl.args.sh
 DOCKER_IMAGE_VERSION="${DOCKER_IMAGE_VERSION:-master}"
 
 print_help() {

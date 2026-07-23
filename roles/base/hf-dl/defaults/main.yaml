@@ -6,3 +6,6 @@
 # -----
 hf_dl_managed: false
 hf_dl_image_versions:     # Leave blank to leverage bookshelf configuration
+# Optional. Will be stored in the installation directory
+# and can be synlinked to your desired location
+hf_dl_args_file:          # "{{ lookup('file', playbook_dir + '/resources/hf-dl.args.sh') }}"
