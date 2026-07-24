@@ -439,6 +439,10 @@
   tags: [dev]
   hosts: all
   roles:
+    - role: agent-browser
+      tags: [agent-browser]
+      when: agent_browser_managed | default(false)
+
     - role: cloudcli
       tags: [cloudcli]
       when: cloudcli_managed | default(false)

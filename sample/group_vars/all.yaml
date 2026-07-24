@@ -3094,6 +3094,13 @@ whatsie_install_method: flatpak
 ###       DEV       ###
 #######################
 
+# =========================
+#       AGENT-BROWSER
+# =========================
+agent_browser_managed: false
+agent_browser_users:            # Optional
+  # - "{{ ansible_facts.user_id }}"
+
 # ====================
 #       CLOUDCLI
 # ====================

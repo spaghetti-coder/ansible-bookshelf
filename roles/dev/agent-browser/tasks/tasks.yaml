@@ -1,0 +1,23 @@
+---
+- name: Install
+  community.general.npm:
+    name: agent-browser
+    global: true
+  become: true
+
+- name: Install deps
+  ansible.builtin.package:
+    name: "{{ agent_browser_runtime_deps }}"
+  become: true
+
+- name: Setup users
+  ansible.builtin.command:
+    cmd: agent-browser install
+    creates: ~/.agent-browser/browsers
+  loop: "{{ agent_browser_users | default([], true) }}"
+  become: true
+  become_user: "{{ item }}"
+
+- name: Mark dones
+  ansible.builtin.set_fact:
+    agent_browser_done: true

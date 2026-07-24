@@ -2756,9 +2756,18 @@ whatsie_managed: false
 # * snap
 whatsie_install_method: flatpak
 
+
+
 #######################
 ###       DEV       ###
 #######################
+
+# =========================
+#       AGENT-BROWSER
+# =========================
+agent_browser_managed: "{{ factum_os_family not in ['alpine'] }}"
+agent_browser_users:            # Optional
+  - "{{ ansible_facts.user_id }}"
 
 # ====================
 #       CLOUDCLI

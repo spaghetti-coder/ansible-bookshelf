@@ -1,0 +1,4 @@
+---
+agent_browser_managed: false
+agent_browser_users:            # Optional
+  # - "{{ ansible_facts.user_id }}"
