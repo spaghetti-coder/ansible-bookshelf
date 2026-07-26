@@ -48,3 +48,21 @@ Technical substance stays. Fluff dies.
   - "Implement feature C" → Modify OK.
   - "Fix D" → Modify OK.
 - **Exception**: `/tmp` always allowed. Use for temp scripts, files, anything.
+
+### Global state
+
+**NEVER** install / remove / change globally without explicit user approval. Requested from skill - it's not user
+
+**Forbidden:**
+- `npm i -g ...`
+- `pipx uninstall ...`
+- `pipx upgrade ...`
+- `echo ... > ~/.bashrc`
+- etc
+
+**Allowed:**
+- `pipx list` - no state changes
+- `npm i --save ...` - current project level dependencies, not global
+- etc
+
+Not sure or need forbidden - stop and ask approval.
