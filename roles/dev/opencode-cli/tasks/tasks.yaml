@@ -1,9 +1,29 @@
 ---
-- name: Install
-  community.general.npm:
-    name: opencode-ai
-    global: true
+- name: OpenCode
   become: true
+  block:
+    - name: Get allow-scripts
+      ansible.builtin.command: npm config get allow-scripts
+      changed_when: false
+      failed_when: false
+      register: opencode_cli_allowed_scripts
+
+    # Fix post-install scripts execution
+    - name: Set allow-scripts
+      ansible.builtin.command: npm config set allow-scripts={{ new }} --location=user
+      changed_when: true
+      when: missing_lst | length > 0
+      vars:
+        required: [opencode-ai]
+        current: "{{ opencode_cli_allowed_scripts.stdout }}"
+        current_lst: "{{ current.split(',') if current | length > 0 else [] }}"
+        missing_lst: "{{ required | difference(current_lst) }}"
+        new: "{{ (current_lst + missing_lst) | sort | join(',') }}"
+
+    - name: Install
+      community.general.npm:
+        name: opencode-ai
+        global: true
 
 - name: Load setup users
   ansible.builtin.include_tasks: { file: setup-user.yaml }
