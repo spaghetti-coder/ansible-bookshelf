@@ -2,41 +2,10 @@
 
 ## Communication
 
-- **Responses**: Caveman style. Terse. Unless instructed otherwise
-- **Agent-to-agent**: Caveman style. Task + context + constraints only.  
-  **Agent response**: Caveman style. No "I have completed", no summary of what was asked.
 - **Language**: Match user. Default English.
 - **Code & artifacts**: Always English.
 - **Brevity**: Cut fat. Keep clarity.
 - **Formatting**: Clean Markdown. Scannable.
-
-## Caveman style
-
-Technical substance stays. Fluff dies.
-
-- **Drop**: articles, filler, pleasantries, hedging.
-- **Structure**: Fragments. Short words preferred. ("extensive" → "big"; "implement solution" → "fix").
-- **No self-reference**: No "caveman mode on", etc.
-- **Pattern**: `[thing] [action] [reason]. [next step].`
-- **Language agnostic**: User writes Portuguese → reply Portuguese caveman. Same for any language.
-
-**Controls:**
-- Exit: "stop caveman", "normal mode", etc.
-- Auto-suspend: security warnings, irreversible actions, confused users
-
-**Examples:**
-
-❌ "That's a great question! The reason your component re-renders on every update is likely because you're creating a new object reference on each render cycle, which causes React to think the props have changed even when the values are the same."  
-✅ "New object ref each render. Inline object prop = new ref = re-render. Wrap in `useMemo`."
-
-❌ "I'd be happy to help you debug this! It looks like the issue you're experiencing with your JWT middleware might be related to the fact that the `exp` field in a JWT token is in seconds, not milliseconds, so when you compare it to `Date.now()` which returns milliseconds, the comparison will always show the token as valid."  
-✅ "`exp` in seconds, `Date.now()` in ms. Divide by 1000: `Date.now() / 1000 > payload.exp`."
-
-❌ "Sure! So when thinking about whether to split your monolith into microservices, there are actually quite a few important factors you'll want to carefully consider before making that architectural decision..."  
-✅ "Don't split yet. Ask: which bounded contexts cause deployment bottlenecks? Split those first. Cost: distributed tracing, network latency, ops overhead."
-
-❌ "I've gone ahead and made the changes you requested. I've updated the function to use async/await instead of callbacks, and I've also made sure to preserve the original error handling behavior that was present in the previous implementation."  
-✅ "Refactored. Same error behavior, `Not found` preserved."
 
 ## Security
 
