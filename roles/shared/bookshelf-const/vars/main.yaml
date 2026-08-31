@@ -110,6 +110,11 @@ bookshelf_const_version: # <- Last update: 2026-08-23
   joplin_server: 3.7.1
   joplin_server_tag_rex: '^\d+\.\d+\.\d+$$'
   joplin_server_postgres: "{{ bookshelf_const_version_shared.postgres }}"
+  # https://ghcr.io/usekaneo/kaneo
+  kaneo: 2.22.0
+  kaneo_tag_rex: '^v\d+\.\d+\.\d+$$'
+  kaneo_postgres: "{{ bookshelf_const_version_shared.postgres }}"
+  kaneo_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/fccview/jotty/pkgs/container/jotty
   jotty: 1.26.1
   jotty_tag_rex: '^\d+\.\d+\.\d+$$'
@@ -283,6 +288,8 @@ bookshelf_const_port:
     client_discovery: 7359
   joplin_server:
     web_ui: 8092
+  kaneo:
+    web_ui: 8130   # <- Last (8081+)
   litellm:
     tcp: 8121
   llama_cpp:
@@ -338,7 +345,7 @@ bookshelf_const_port:
     file_transfers: 22000
     local_discovery: 21027
   tetris:
-    web_ui: 8129   # <- Last (8081+)
+    web_ui: 8129
   torrserver:
     web_ui: 8112
   uptime_kuma:

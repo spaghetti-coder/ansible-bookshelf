@@ -1,0 +1,3 @@
+---
+kaneo_web_ui_port_int: 5173
+kaneo_web_ui_port_ext: "{{ kaneo_web_ui_port | default(bookshelf_const_port.kaneo.web_ui, true) }}"

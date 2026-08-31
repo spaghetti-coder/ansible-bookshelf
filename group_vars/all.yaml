@@ -1183,6 +1183,58 @@ jotty_ts_funnelled: false # Expose to the world via TS funnel. Use with caution
 jotty_ts_hostname: "{{ jotty_service_name }}"
 jotty_ts_auth_key:
 
+# ================
+#       KANEO
+# ================
+# VERSIONS:
+#   * https://ghcr.io/usekaneo/kaneo
+#   * https://hub.docker.com/_/postgres/tags?name=alpine
+#   * => See tailscale role versions
+# -----
+kaneo_managed: "{{ factum_os_family in ['alpine'] }}"
+kaneo_enabled: true
+kaneo_version: # Leave blank to leverage bookshelf configuration
+kaneo_postgres_version: # Leave blank to leverage bookshelf configuration
+kaneo_compose_dir: # Unless you know ..., leave blank to leverage bookshelf configuration
+kaneo_owner: "{{ ansible_facts.user_id }}"
+kaneo_conf_dir: ~/conf/kaneo
+kaneo_service_name: kaneo
+kaneo_hostname: "{{ kaneo_service_name }}"
+kaneo_vhost: "{{ kaneo_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+kaneo_web_ui_port: # Leave blank for bookshelf default, or '-1' to not expose the port
+# Kaneo client url, must be reachable from the browser. Ex.:
+#   # kaneo_web_ui_port_ext - contains actual external port
+#   http://{{ kaneo_vhost }}
+#   http://{{ ansible_facts.default_ipv4.address }}:{{ kaneo_web_ui_port_ext }}
+kaneo_client_url: http://{{ ansible_facts.default_ipv4.address }}:{{ kaneo_web_ui_port_ext }}
+kaneo_db_service_name: "{{ kaneo_service_name }}-db"
+kaneo_db_pass: changeme # (REQUIRED) Something hard and random
+kaneo_auth_secret: 'dWl/6sHi2b+Ok/I+VumqTUjmX1hNhnzLPnovo+H56Kc=' # (REQUIRED) Something hard and random
+kaneo_tz: "{{ ansible_facts.date_time.tz | default('UTC', true) }}"
+kaneo_extra_env: |
+  # References:
+  #   * https://kaneo.app/docs/core/installation/environment-variables
+  #   * https://github.com/usekaneo/kaneo/blob/main/.env.sample
+  #   * https://hub.docker.com/_/postgres#environment-variables
+  #   * https://tailscale.com/kb/1282/docker#parameters
+  # ----------
+  # KANEO_API_URL=...
+# WUD settings
+kaneo_wudded: true # Watched by WUD
+kaneo_tag_rex: # Leave blank to leverage bookshelf configuration
+# ----------
+# The following settings configure Kaneo to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+kaneo_tailscaled: false
+kaneo_ts_version: # Leave blank to leverage bookshelf configuration
+kaneo_ts_service_name: "{{ kaneo_service_name }}-ts"
+kaneo_ts_funnelled: false # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+kaneo_ts_hostname: "{{ kaneo_service_name }}"
+kaneo_ts_auth_key:
+
 # ===================
 #       LITELLM
 # ===================

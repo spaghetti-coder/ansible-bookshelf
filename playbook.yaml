@@ -183,6 +183,10 @@
       tags: [jotty, upgradable]
       when: jotty_managed | default(false)
 
+    - role: kaneo
+      tags: [kaneo, upgradable]
+      when: kaneo_managed | default(false)
+
     - role: litellm
       tags: [litellm, upgradable]
       when: litellm_managed | default(false)

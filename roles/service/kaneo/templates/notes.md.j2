@@ -1,0 +1,10 @@
+## Kaneo
+
+* Set `kaneo_client_url` to a url reachable from the browser, e.g.:
+  `http://{{ kaneo_vhost }}` or `http://<public-ip>:{{ kaneo_web_ui_port | default(bookshelf_const_port.kaneo.web_ui, true) }}`
+{% if kaneo_tailscaled %}
+
+* Disable tailscale machine expiry:
+  1. Go to https://tailscale.com/admin/machines
+  2. `{{ kaneo_ts_hostname }} *** > Disable key expiry`
+{% endif %}
