@@ -2574,6 +2574,8 @@ wud_secrets_env:
   #   docker run --rm httpd htpasswd -nib john changeme | cut -d':' -f2-
   # WUD_AUTH_BASIC_JOHN_USER=john
   # WUD_AUTH_BASIC_JOHN_HASH='...'
+  WUD_AUTH_ADMIN_USER=foo
+  WUD_AUTH_ADMIN_PASSWORD=bar
 # WUD settings
 wud_wudded: true # Watched by WUD
 wud_tag_rex: # Leave blank to leverage bookshelf configuration
