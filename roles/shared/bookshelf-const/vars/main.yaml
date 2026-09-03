@@ -30,7 +30,7 @@ bookshelf_const_version: # <- Last update: 2026-08-23
   # SPECIAL UPDATES
   #
   # https://github.com/mostlygeek/llama-swap/releases
-  llama_swap: 251
+  llama_swap: 253
   # https://github.com/spaghetti-coder/hf-dl-docker/pkgs/container/hf-dl-docker
   hf_dl_image: 0.2.1
   #
@@ -53,7 +53,7 @@ bookshelf_const_version: # <- Last update: 2026-08-23
   caddy: "{{ bookshelf_const_version_shared.caddy }}"
   caddy_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/coder/code-server/releases
-  code_server: v4.132.0
+  code_server: v4.135.0
   # https://github.com/fccview/cronmaster/pkgs/container/cronmaster
   cronmaster: 2.3.2
   cronmaster_tag_rex: '^\d+\.\d+\.\d+$$'
@@ -95,15 +95,15 @@ bookshelf_const_version: # <- Last update: 2026-08-23
   heimdall: v2.8.1-ls358
   heimdall_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
   # https://hub.docker.com/r/nousresearch/hermes-agent/tags
-  hermes: v2026.8.27
+  hermes: v2026.8.31
   hermes_caddy: "{{ bookshelf_const_version_shared.caddy }}"
   hermes_tag_rex: '^.*$$'
   # https://hub.docker.com/r/b4bz/homer/tags
-  homer: v26.08.2
+  homer: v26.08.3
   homer_tag_rex: '^v\d+\.\d+\.\d+$$'
   homer_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/jellyfin/tags
-  jellyfin: 10.11.11ubu2604-ls46
+  jellyfin: 10.11.11ubu2604-ls47
   jellyfin_tag_rex: '^\d+\.\d+\.\d+.+-ls\d+$$'
   jellyfin_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/joplin/server/tags
@@ -120,15 +120,15 @@ bookshelf_const_version: # <- Last update: 2026-08-23
   jotty_tag_rex: '^\d+\.\d+\.\d+$$'
   jotty_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/ggml-org/llama.cpp/pkgs/container/llama.cpp
-  llama_cpp: '{{ ["server", llama_cpp_tag_midfix | default("", true)] | select | join("-") }}-b10689'
+  llama_cpp: '{{ ["server", llama_cpp_tag_midfix | default("", true)] | select | join("-") }}-b10795'
   llama_cpp_tag_rex: '^{{ ["server", llama_cpp_tag_midfix | default("", true)] | select | join("-") }}-b\d+$$'
   llama_cpp_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/BerriAI/litellm/pkgs/container/litellm
-  litellm: v1.98.0
+  litellm: v1.99.1
   litellm_tag_rex: '^v\d+\.\d+\.\d+(-stable.*)?$$'
   litellm_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
-  mealie: v3.24.0
+  mealie: v3.25.1
   mealie_tag_rex: '^v\d+\.\d+\.\d+$$'
   mealie_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/neosmemo/memos/tags
@@ -156,11 +156,11 @@ bookshelf_const_version: # <- Last update: 2026-08-23
   olivetin: 2025.11.25 # <- TODO: switch to 3k some day before 2028
   olivetin_tag_rex: '^20\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/ollama/ollama/tags
-  ollama: 0.33.2
+  ollama: 0.33.3
   ollama_tag_rex: '^\d+\.\d+\.\d+$$'
   ollama_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/open-webui/open-webui/releases
-  open_webui: v0.11.1
+  open_webui: v0.11.3
   open_webui_tag_rex: '^v\d+\.\d+\.\d+$$'
   open_webui_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/thomiceli/opengist/pkgs/container/opengist
@@ -180,11 +180,11 @@ bookshelf_const_version: # <- Last update: 2026-08-23
   portainer_agent_tag_rex: '^\d+\.\d+\.\d+-alpine$$'
   portainer_agent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/linuxserver/qbittorrent/tags?name=-ls
-  qbittorrent: 5.2.3_v2.0.14-ls473
+  qbittorrent: 5.2.3_v2.0.14-ls474
   qbittorrent_tag_rex: '^\d+\.\d+\.\d{1,2}[-_].*-ls\d+$$'
   qbittorrent_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/searxng/searxng/tags
-  searxng: 2026.8.29-d226b78bc
+  searxng: 2026.9.4-15b0c8ef3
   searxng_tag_rex: '^\d+\.\d+\.\d{1,2}-'
   searxng_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://hub.docker.com/r/isokoliuk/mcp-searxng/tags
@@ -229,7 +229,7 @@ bookshelf_const_version: # <- Last update: 2026-08-23
   vaultwarden: 1.37.2-alpine
   vaultwarden_tag_rex: '^\d+\.\d+\.\d+-alpine$$'
   # https://hub.docker.com/r/vikunja/vikunja/tags
-  vikunja: 2.5.0
+  vikunja: 2.6.0
   vikunja_tag_rex: '^\d+\.\d+\.\d+$$'
   vikunja_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   vikunja_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
@@ -239,12 +239,12 @@ bookshelf_const_version: # <- Last update: 2026-08-23
   wg_easy: 15.4.0
   wg_easy_tag_rex: '^\d+\.\d+\.\d+$$'
   # https://hub.docker.com/r/linuxserver/wikijs/tags?name=-ls
-  wikijs: v2.5.314-ls221
+  wikijs: v2.5.314-ls222
   wikijs_tag_rex: '^v\d+\.\d+\.\d+-ls\d+$$'
   wikijs_postgres: "{{ bookshelf_const_version_shared.postgres }}"
   wikijs_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://ghcr.io/getwud/wud
-  wud: 8.3.1
+  wud: 8.4.0
   wud_tag_rex: '^\d+\.\d+\.\d+$$'
   wud_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
 
