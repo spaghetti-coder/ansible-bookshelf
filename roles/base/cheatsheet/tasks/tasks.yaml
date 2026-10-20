@@ -2,7 +2,7 @@
 - name: Envar
   ansible.builtin.import_role: { name: envar }
   vars:
-    envar_users: "{{ cheatsheet_users_todo }}"
+    envar_users: "{{ dict(cheatsheet_users_todo | zip([{}] * (cheatsheet_users_todo | length))) }}"
 
 - name: Bash sane
   vars:

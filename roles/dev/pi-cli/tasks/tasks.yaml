@@ -27,10 +27,17 @@
 
 - name: Load setup users
   ansible.builtin.include_tasks: { file: setup-user.yaml }
-  loop: "{{ pi_cli_configs | default([], true) }}"
+  vars:
+    the_user: "{{ user_to_configs.key }}"
+    the_configs: "{{ user_to_configs.value.files | default({}, true) }}"
+    the_merge_configs: "{{ user_to_configs.value.merge_files | default({}, true) }}"
+  loop: "{{ pi_cli_configs | default({}, true) | dict2items }}"
   loop_control:
-    loop_var: config
-    label: "{{ config.user }}"
+    loop_var: user_to_configs
+    label: "{{ the_user }}"
+  when:
+    (the_configs | length > 0)
+    or (the_merge_configs | length > 0)
 
 - name: Mark dones
   ansible.builtin.set_fact:

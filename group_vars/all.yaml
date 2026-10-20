@@ -131,8 +131,15 @@ dydns_updater_extra:
 # =========
 envar_managed: true
 envar_users: # <- Existing users to have access to envar
-  - "{{ ansible_facts.user_id }}"
-  - root
+  "{{ ansible_facts.user_id }}":
+    config:   # <- Optional
+      # { TARGET_FILE: CONTENT }, i.e.
+      #   secrets.sh: 'export FOO=1'   #   <=>   `echo 'export FOO=1' > ~/.envar.d/secrets.sh`
+      secrets.sh: |
+        export FOO=bar
+      foo.sh: |
+        export MoL=42
+  root:
 
 # ===============
 #       FZF
@@ -2883,11 +2890,17 @@ opencode_cli_configs:   # <- opencode.jsonc to user
 # ==================
 pi_cli_managed: true
 pi_cli_configs: # <- per user global configs
-  - user: "{{ ansible_facts.user_id }}"                           # <- (REQUIRED, the rest is optional)
-    settings: "{{ lookup('file', 'settings.json') }}"             # <- See demo in files
-    models: "{{ lookup('file', 'models.json') }}"                 # <- See demo in files
-    agents_md: "{{ lookup('file', 'AGENTS.md') }}"                # <- See demo in files
-    append_system_md: "{{ lookup('file', 'APPEND_SYSTEM.md') }}"  # <- See demo in files
+  "{{ ansible_facts.user_id }}":
+    files:
+      # { TARGET_FILE: CONTENT }, i.e.
+      #   models.json: '{}'   #   <=>   `echo '{}' > ~/.pi/agents/models.json
+      models.json: "{{ lookup('file', 'models.json') }}"            # <- See demo in files
+      AGENTS.md: "{{ lookup('file', 'AGENTS.md') }}"                # <- See demo in files
+      APPEND_SYSTEM.md: "{{ lookup('file', 'APPEND_SYSTEM.md') }}"  # <- See demo in files
+    merge_files:
+      # Same as files, but json shallow merged with the existing ones
+      settings.json: "{{ lookup('file', 'settings.json') }}"        # <- See demo in files
+  root:   # <- Does nothing
 
 # ==================
 #       PYTHON

@@ -7,5 +7,10 @@
 # -----
 envar_managed: false
 envar_users:    # <- Existing users to have access to envar
-#   - "{{ ansible_facts.user_id }}"
-#   - root
+#   "{{ ansible_facts.user_id }}":
+#     config:   # <- Optional
+#       # { TARGET_FILE: CONTENT }, i.e.
+#       #   secrets.sh: 'export FOO=1'   #   <=>   `echo 'export FOO=1' > ~/.envar.d/secrets.sh`
+#       secrets.sh: "{{ lookup('file', 'path/to/secrets.sh') }}"
+#       foo.sh: "{{ lookup('file', '...') }}"
+#   root:

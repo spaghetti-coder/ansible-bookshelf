@@ -7,16 +7,15 @@
     file: install.yaml
   when: not (envar_install_done | default(false))
 
-- name: Setup users
-  ansible.builtin.command:
-    argv: ["{{ envar_path }}", 'setup']
-  register: envar_setup_result
-  changed_when:
-    - envar_setup_result.rc == 0
-    - envar_setup_result.stdout | lower == 'done'
-  become: true
-  become_user: "{{ item }}"
-  loop: "{{ envar_users_todo }}"
+- name: Load setup users
+  ansible.builtin.include_tasks: { file: setup-user.yaml }
+  vars:
+    the_user: "{{ user_obj.key }}"
+    the_configs: "{{ user_obj.value.config | default({}, true) }}"
+  loop: "{{ envar_users | default({}, true) | dict2items }}"
+  loop_control:
+    loop_var: user_obj
+    label: "{{ the_user }}"
 
 - name: Mark dones
   ansible.builtin.set_fact:

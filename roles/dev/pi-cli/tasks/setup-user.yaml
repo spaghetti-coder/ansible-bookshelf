@@ -1,53 +1,44 @@
 ---
 - name: User
   become: true
-  become_user: "{{ config.user }}"
+  become_user: "{{ the_user }}"
   vars:
-    conf_dir: ~/.pi
-    agent_dir: "{{ conf_dir }}/agent"
-    settings_file: "{{ agent_dir }}/settings.json"
+    agent_dir: ~/.pi/agent
   block:
-    - name: Get settings.json content
-      ansible.builtin.slurp: { src: "{{ settings_file }}" }
-      register: pi_cli_settings
-      failed_when: false
-
     - name: Create config directory
       ansible.builtin.file:
         path: "{{ agent_dir }}"
         state: directory
         mode: '0700'
 
-    - name: Create settings.json
+    - name: Create config file
+      ansible.builtin.copy:
+        content: |
+          {{- item.value }}
+        dest: "{{ agent_dir }}/{{ item.key }}"
+        mode: '0600'
+      loop: "{{ the_configs | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+
+    - name: Get configs contents
+      ansible.builtin.slurp: { src: "{{ agent_dir }}/{{ item.key }}" }
+      register: pi_cli_settings
+      failed_when: false
+      loop: "{{ the_merge_configs | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+
+    - name: Merge configs
       ansible.builtin.copy:
         content: "{{ final }}"
-        dest: "{{ settings_file }}"
+        dest: "{{ agent_dir }}/{{ item.key }}"
         mode: '0600'
       vars:
-        original: "{{ pi_cli_settings.content | default('', true) | b64decode | default('{}', true) | from_json }}"
-        update: "{{ config.settings | from_json }}"
+        original: "{{ pi_cli_settings.results[ix].content | default('', true) | b64decode | default('{}', true) | from_json }}"
+        update: "{{ item.value | from_json }}"
         final: "{{ original | combine(update) | to_nice_json(indent=2) }}"
-      when: config.settings | default("", true) | length > 0
-
-    - name: Create models.json
-      ansible.builtin.copy:
-        content: |
-          {{- config.models }}
-        dest: "{{ agent_dir }}/models.json"
-        mode: '0600'
-      when: config.models | default('', true) | length > 0
-
-    - name: Create prompt files
-      ansible.builtin.copy:
-        content: |
-          {{- config[item.key] }}
-        dest: "{{ agent_dir }}/{{ files_map[item.key] }}"
-        mode: '0600'
-      when: config[item.key] | default('', true) | length > 0
-      loop: "{{ files_map | dict2items }}"
+      loop: "{{ the_merge_configs | dict2items }}"
       loop_control:
-        label: "{{ files_map[item.key] }}"
-      vars:
-        files_map:
-          agents_md: AGENTS.md
-          append_system_md: APPEND_SYSTEM.md
+        index_var: ix
+        label: "{{ item.key }}"
