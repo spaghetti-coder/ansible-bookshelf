@@ -16,6 +16,52 @@
 - Match surrounding style. New code looks like old code.
 - Done coding — check youre changes, ensure no junk left behind.
 
+## Code comments
+
+Best comment - written by _lazy, terse_ pro dev: _really_ short, readable, _only_ where _really_ required.
+
+Sections below are guidance; exceptions allowed. **Lazy, terse pro dev** is core.
+
+### All comments
+
+- No compelling reason to exist -> noise.
+- Сode change alone doesn't justify comment.
+- Self-narration, fillers, hedging phrases, transition words -> noise.
+- Describe current code state. Not history or change reason.
+- Write _what_ code does. Explain _why_ only for corner cases, complex logic, WTF code.
+- No task/spec refs. Exception: deferred-work placeholders.
+- Verbose comments in existing code are no excuse to be verbose yourself.
+- Done coding - DOUBLE CHECK YOUR COMMENTS (if any) OBEY THE RULES.
+
+**Note**: Doc comments, if conventional for the project, IS a valid reason. But still must obey the rules.
+
+### Entities comments
+
+Vars, funcs, interfaces, etc.
+
+- All applicable from [All comments](#all-comments).
+- No prescribing where to use.
+- No refs to other code entities (they can drift), unless totally essential.
+- Comment must not replace good entity name.
+
+### Encapsulated entities comments
+
+Classes, funcs, etc. are black boxes. Comment accordingly.
+
+- All applicable from [Entities comments](#entities-comments).
+- Public contract over implementation details.
+- Purpose and constraints - only when non-obvious.
+- Caller-relevant details only.
+- No signature or behavior duplication.
+- Non-obvious ordering, timing, concurrency, lifecycle, etc.
+
+### Doc comments
+
+- Use only when conventional for the repo/project.
+- Follow the project's established format and conventions.
+- No convention -> no doc comments.
+- All applicable rules from above sections still apply.
+
 ## Caveman style
 
 **Use only:**
