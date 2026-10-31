@@ -212,6 +212,10 @@ bookshelf_const_version: # <- Last update: 2026-10-31
   tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   tailscale_tag_rex: "{{ bookshelf_const_version_shared.tailscale_tag_rex }}"
   tailscale_alpine: "{{ bookshelf_const_version_shared.alpine }}"
+  # https://github.com/spaghetti-coder/tbd-app/pkgs/container/tbd-app
+  tbd: 0.0.1
+  tbd_tag_rex: '^\d+\.\d+\.\d+$$'
+  tbd_tailscale: "{{ bookshelf_const_version_shared.tailscale }}"
   # https://github.com/spaghetti-coder/tetris/pkgs/container/tetris
   tetris: 0.0.13
   tetris_tag_rex: '^\d+\.\d+\.\d+$$'
@@ -293,7 +297,7 @@ bookshelf_const_port:
   jotty:
     web_ui: 8108
   kaneo:
-    web_ui: 8130   # <- Last (8081+)
+    web_ui: 8130
   litellm:
     tcp: 8121
   llama_cpp:
@@ -346,6 +350,8 @@ bookshelf_const_port:
     web_ui: 8091
     file_transfers: 22000
     local_discovery: 21027
+  tbd:
+    web_ui: 8131   # <- Last (8081+)
   tetris:
     web_ui: 8129
   torrserver:

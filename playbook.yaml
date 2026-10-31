@@ -283,6 +283,10 @@
       tags: [tailscale, upgradable]
       when: tailscale_managed | default(false)
 
+    - role: tbd
+      tags: [tbd, upgradable]
+      when: tbd_managed | default(false)
+
     - role: tetris
       tags: [tetris, upgradable]
       when: tetris_managed | default(false)

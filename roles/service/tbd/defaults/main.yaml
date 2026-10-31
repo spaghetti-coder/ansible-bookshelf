@@ -1,0 +1,41 @@
+---
+# A to-do list.
+#   https://github.com/spaghetti-coder/tbd-app
+# -----
+# VERSIONS:
+#   * https://github.com/spaghetti-coder/tbd-app/pkgs/container/tbd-app
+#   * => See tailscale role versions
+# -----
+tbd_managed: false
+tbd_enabled: false
+tbd_version:         # Leave blank to leverage bookshelf configuration
+tbd_compose_dir:     # Unless you know ..., leave blank to leverage bookshelf configuration
+tbd_conf_dir: ~/conf/tbd
+tbd_owner: "{{ ansible_facts.user_id }}"
+tbd_service_name: tbd
+tbd_hostname: "{{ tbd_service_name }}"
+tbd_vhost: "{{ tbd_service_name }}.domain.local"
+# Can disable ports if plan to access only via tailnet or reverse-proxy
+tbd_web_ui_port:     # Leave blank for bookshelf default, or '-1' to not expose the port
+# Optional extra env vars, will affect both TBD and Tailscale.
+tbd_extra_env: |
+  # ----------
+  # MY_VAR=123
+tbd_secrets_env: |    # "{{ lookup('template', playbook_dir + '/resources/tbd.secret.env.j2') }}"
+  # Can be used to pass secret values to the config file
+  # ----------
+  # MY_SECRET=123
+# WUD settings
+tbd_wudded: true      # Watched by WUD
+tbd_tag_rex:          # Leave blank to leverage bookshelf configuration
+# ----------
+# The following settings configure TBD to run as a part of tailnet
+#
+# IMPORTANT 1: See IMPORTANTs in tailscale service description
+tbd_tailscaled: false
+tbd_ts_version:          # Leave blank to leverage bookshelf configuration
+tbd_ts_service_name: "{{ tbd_service_name }}-ts"
+tbd_ts_funnelled: false  # Expose to the world via TS funnel. Use with caution
+# Hostname within tailnet
+tbd_ts_hostname: "{{ tbd_service_name }}"
+tbd_ts_auth_key:
