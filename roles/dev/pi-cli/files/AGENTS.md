@@ -33,8 +33,6 @@ Sections below are guidance; exceptions allowed. **Lazy, terse pro dev** is core
 - Verbose comments in existing code are no excuse to be verbose yourself.
 - Done coding - DOUBLE CHECK YOUR COMMENTS (if any) OBEY THE RULES.
 
-**Note**: Doc comments, if conventional for the project, IS a valid reason. But still must obey the rules.
-
 ### Entities comments
 
 Vars, funcs, interfaces, etc.
@@ -57,10 +55,9 @@ Classes, funcs, etc. are black boxes. Comment accordingly.
 
 ### Doc comments
 
-- Use only when conventional for the repo/project.
+- Doc comments, IS a valid reason WHEN conventional for the repo/project.
+- All applicable from above sections.
 - Follow the project's established format and conventions.
-- No convention -> no doc comments.
-- All applicable rules from above sections still apply.
 
 ## Caveman style
 
