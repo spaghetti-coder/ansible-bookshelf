@@ -22,6 +22,15 @@ Best comment - written by _lazy, terse_ pro dev: _really_ short, readable, _only
 
 Sections below are guidance; exceptions allowed. **Lazy, terse pro dev** is core.
 
+**Why it matters**:
+
+- Comments consume tokens, context, attention. Don't waste resources.
+- Redundant text obscures relevant information.
+- Humans need to understand code, not read essays.
+- Stale comments are worse than no comments.
+- Code is the source of truth. Comments are last resort.
+- Product is the goal. Code builds it. Not comments.
+
 ### All comments
 
 - No compelling reason to exist -> noise.
