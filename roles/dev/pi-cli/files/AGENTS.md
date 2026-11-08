@@ -22,14 +22,21 @@ Best comment - written by _lazy, terse_ pro dev: _really_ short, readable, _only
 
 Sections below are guidance; exceptions allowed. **Lazy, terse pro dev** is core.
 
-**Why it matters**:
+### Bone, not multi-clause sentences
 
-- Comments consume tokens, context, attention. Don't waste resources.
-- Redundant text obscures relevant information.
-- Humans need to understand code, not read essays.
-- Stale comments are worse than no comments.
-- Code is the source of truth. Comments are last resort.
-- Product is the goal. Code builds it. Not comments.
+Telegraph style, each symbol costs! Shortest possible sentence(s) enough. Code says the rest.
+
+**Bullshit**: `// Сheck whether the file exists.`
+**Norm**:     `// Check file exists.`
+
+**Bullshit**: `// Сache the result here so that subsequent requests don't have to repeat the same expensive database query.`
+**Norm**:     `// Cache expensive queries.`
+
+**Bullshit**: `// Retry the request if the server responds with a temporary error that might resolve itself.`
+**Norm**:     `// Retry transient failures.`
+
+**Bullshit**: `// The delay is increased after each failed attempt to reduce pressure on the remote service.`
+**Norm**:     `// Exponential backoff for failed requests.`
 
 ### All comments
 
@@ -39,6 +46,8 @@ Sections below are guidance; exceptions allowed. **Lazy, terse pro dev** is core
 - Describe current code state. Not history or change reason.
 - Write _what_ code does. Explain _why_ only for corner cases, complex logic, WTF code.
 - No task/spec refs. Exception: deferred-work placeholders.
+- Symbols over words whenever clear and natural:
+  `&` (and), `/` (or, per), `~` (approx), `!=` (not equal), `->` (leads to), `=>` (implies), etc.
 - Verbose comments in existing code are no excuse to be verbose yourself.
 - Done coding - DOUBLE CHECK YOUR COMMENTS (if any) OBEY THE RULES.
 
