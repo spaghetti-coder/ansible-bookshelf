@@ -31,6 +31,8 @@ bookshelf_const_version: # <- Last update: 2026-11-14
   #
   # https://github.com/mostlygeek/llama-swap/releases
   llama_swap: 272
+  # https://github.com/Niko1221/Strata/pkgs/container/strata
+  strata: 0.2.21-cuda13
   # https://github.com/spaghetti-coder/hf-dl-docker/pkgs/container/hf-dl-docker
   hf_dl_image: 0.2.1
   #
